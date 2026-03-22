@@ -1,0 +1,246 @@
+/* Self-hosted fonts */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/inter-latin-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/inter-latin-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/inter-latin-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/inter-latin-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Dark mode (default) */
+  :root,
+  .dark {
+    --background: 220 13% 6%;
+    --foreground: 210 17% 82%;
+
+    --card: 220 13% 9%;
+    --card-foreground: 210 17% 82%;
+
+    --popover: 220 13% 9%;
+    --popover-foreground: 210 17% 82%;
+
+    --primary: 212 92% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 13% 14%;
+    --secondary-foreground: 210 17% 82%;
+
+    --muted: 220 13% 14%;
+    --muted-foreground: 215 12% 50%;
+
+    --accent: 130 55% 42%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 18%;
+    --input: 220 13% 18%;
+    --ring: 212 92% 45%;
+
+    --radius: 0.5rem;
+
+    /* Custom tokens */
+    --surface-0: 220 13% 6%;
+    --surface-1: 220 13% 9%;
+    --surface-2: 220 13% 12%;
+    --surface-3: 220 13% 16%;
+
+    --python-blue: 212 92% 45%;
+    --python-yellow: 45 93% 58%;
+    --streak-green: 130 55% 42%;
+    --reward-gold: 40 90% 55%;
+    --expert-purple: 270 60% 55%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(212 92% 45% / 0.15), hsl(130 55% 42% / 0.08));
+    --gradient-card: linear-gradient(180deg, hsl(220 13% 12%), hsl(220 13% 9%));
+    --gradient-accent: linear-gradient(135deg, hsl(212 92% 45%), hsl(130 55% 42%));
+
+    --shadow-card: 0 1px 3px hsl(0 0% 0% / 0.3), 0 0 0 1px hsl(220 13% 18%);
+    --shadow-elevated: 0 8px 24px hsl(0 0% 0% / 0.4);
+
+    --sidebar-background: 220 13% 9%;
+    --sidebar-foreground: 210 17% 82%;
+    --sidebar-primary: 212 92% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 13% 14%;
+    --sidebar-accent-foreground: 210 17% 82%;
+    --sidebar-border: 220 13% 18%;
+    --sidebar-ring: 212 92% 45%;
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  }
+
+  /* Light mode */
+  .light {
+    --background: 0 0% 98%;
+    --foreground: 220 13% 15%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 13% 15%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 13% 15%;
+
+    --primary: 212 92% 45%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 90%;
+    --secondary-foreground: 220 13% 20%;
+
+    --muted: 0 0% 92%;
+    --muted-foreground: 220 13% 35%;
+
+    --accent: 130 55% 42%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 212 92% 45%;
+
+    --surface-0: 0 0% 98%;
+    --surface-1: 0 0% 100%;
+    --surface-2: 220 13% 95%;
+    --surface-3: 220 13% 90%;
+
+    --python-blue: 212 92% 45%;
+    --python-yellow: 45 93% 48%;
+    --streak-green: 130 55% 38%;
+    --reward-gold: 40 90% 45%;
+    --expert-purple: 270 60% 50%;
+
+    --gradient-hero: linear-gradient(135deg, hsl(212 92% 45% / 0.08), hsl(130 55% 42% / 0.05));
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(220 13% 97%));
+    --gradient-accent: linear-gradient(135deg, hsl(212 92% 45%), hsl(130 55% 42%));
+
+    --shadow-card: 0 1px 3px hsl(0 0% 0% / 0.08), 0 0 0 1px hsl(220 13% 90%);
+    --shadow-elevated: 0 8px 24px hsl(0 0% 0% / 0.1);
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 220 13% 15%;
+    --sidebar-primary: 212 92% 45%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 13% 93%;
+    --sidebar-accent-foreground: 220 13% 15%;
+    --sidebar-border: 220 13% 87%;
+    --sidebar-ring: 212 92% 45%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+  }
+
+  code, pre, .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* Activity graph cells */
+.activity-cell {
+  @apply rounded-sm transition-colors;
+}
+.activity-cell-0 { background: hsl(var(--surface-2)); }
+.activity-cell-1 { background: hsl(130 55% 42% / 0.3); }
+.activity-cell-2 { background: hsl(130 55% 42% / 0.5); }
+.activity-cell-3 { background: hsl(130 55% 42% / 0.7); }
+.activity-cell-4 { background: hsl(130 55% 42%); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: hsl(var(--surface-0)); }
+::-webkit-scrollbar-thumb { background: hsl(var(--surface-3)); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(var(--muted-foreground)); }
+
+/* Hide scrollbar for mobile nav */
+.scrollbar-none::-webkit-scrollbar { display: none; }
+.scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Code block styling */
+.code-block {
+  @apply rounded-lg overflow-hidden;
+  background: hsl(var(--surface-1));
+  box-shadow: var(--shadow-card);
+}
+.code-block pre {
+  @apply p-4 overflow-x-auto text-sm leading-relaxed;
+  font-family: var(--font-mono);
+}
+
+/* Section separators */
+.section-divider {
+  @apply relative;
+}
+.section-divider::after {
+  content: '';
+  @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-0.5 rounded-full;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), transparent);
+}

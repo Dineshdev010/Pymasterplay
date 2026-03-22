@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Primary SEO -->
+    <title>PyMaster — Learn Python Programming | Free Lessons & Challenges</title>
+    <meta name="description" content="Master Python programming from scratch with 25+ structured lessons, 180+ coding challenges, a built-in compiler, DSA mastery, and a reward system. Free and beginner-friendly." />
+    <meta name="keywords" content="learn python, python programming, python tutorial, coding challenges, python for beginners, python problems, DSA, data structures, algorithms, python compiler, python jobs" />
+    <meta name="author" content="Dinesh Raja M" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://pymaster.pro/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://pymaster.pro/" />
+    <meta property="og:title" content="PyMaster — Learn Python Programming for Free" />
+    <meta property="og:description" content="Master Python with 25+ lessons, 180+ coding challenges, built-in compiler, and rewards. Start your Python journey today!" />
+    <meta property="og:site_name" content="PyMaster" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://pymaster.pro/og-image.png" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="PyMaster — Learn Python Programming for Free" />
+    <meta name="twitter:description" content="Master Python with structured lessons, 180+ coding challenges, and a built-in compiler. Free for everyone." />
+    <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
+
+    <!-- Additional SEO -->
+    <meta name="theme-color" content="#0a0c10" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="PyMaster" />
+
+    <!-- PyMaster Official Logo Favicon -->
+    <link rel="icon" type="image/png" href="/logo.png" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <!-- Next -->
+    <link rel="preload" href="/fonts/inter-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/jetbrains-mono-latin-400.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "PyMaster",
+      "url": "https://pymaster.pro",
+      "description": "Master Python programming from scratch with structured lessons, 180+ coding challenges, a built-in compiler, and a reward system.",
+      "applicationCategory": "EducationalApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "author": {
+        "@type": "Person",
+        "name": "Dinesh Raja M"
+      },
+      "educationalLevel": "Beginner to Advanced",
+      "teaches": ["Python Programming", "Data Structures", "Algorithms", "Problem Solving"],
+      "inLanguage": "en"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      "name": "Learn Python Programming",
+      "description": "Complete Python programming course with 25+ lessons from basics to advanced topics",
+      "provider": {
+        "@type": "Organization",
+        "name": "PyMaster"
+      },
+      "isAccessibleForFree": true,
+      "educationalLevel": "Beginner",
+      "programmingLanguage": "Python",
+      "coursePrerequisites": "None - suitable for complete beginners"
+    }
+    </script>
+  </head>
+  <body>
+    <!-- Full-screen loader -->
+    <div id="app-loader" style="
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background: #0a0c10; transition: opacity 0.5s ease;
+    ">
+      <img src="/logo.png" alt="PyMaster" width="72" height="72" style="margin-bottom: 24px; border-radius: 16px;" />
+      <div style="font-family: 'Inter', system-ui, sans-serif; color: #e2e8f0; font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">
+        PyMaster
+      </div>
+      <div style="font-family: 'Inter', system-ui, sans-serif; color: #94a3b8; font-size: 13px; margin-bottom: 28px;">
+        Loading your Python journey...
+      </div>
+      <div style="width: 200px; height: 4px; background: #1e293b; border-radius: 4px; overflow: hidden;">
+        <div id="loader-bar" style="
+          width: 0%; height: 100%; border-radius: 4px;
+          background: linear-gradient(90deg, #3b82f6, #facc15);
+          transition: width 0.3s ease;
+        "></div>
+      </div>
+    </div>
+    <script>
+      (function() {
+        var bar = document.getElementById('loader-bar');
+        var progress = 0;
+        var interval = setInterval(function() {
+          progress += Math.random() * 15 + 5;
+          if (progress > 90) progress = 90;
+          bar.style.width = progress + '%';
+        }, 200);
+        window.__hideLoader = function() {
+          clearInterval(interval);
+          bar.style.width = '100%';
+          setTimeout(function() {
+            var loader = document.getElementById('app-loader');
+            if (loader) {
+              loader.style.opacity = '0';
+              setTimeout(function() { loader.remove(); }, 500);
+            }
+          }, 300);
+        };
+      })();
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

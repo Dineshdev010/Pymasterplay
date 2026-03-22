@@ -1,0 +1,441 @@
+import { type Exercise } from "./lessons";
+
+export interface CareerLesson {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  codeExample: string;
+  exercises: {
+    beginner: Exercise;
+    intermediate: Exercise;
+    advanced: Exercise;
+  };
+}
+
+export interface CareerTrack {
+  id: string;
+  title: string;
+  description: string;
+  color: string;
+  lessons: CareerLesson[];
+}
+
+function da(): CareerLesson[] {
+  return [
+    {
+      id: "da-intro", title: "Introduction to Data Analysis", description: "What is data analysis and why Python is the best tool for it",
+      content: "## What is Data Analysis?\n\nData analysis is the process of inspecting, cleaning, transforming, and modeling data to discover useful information.\n\n### Why Python for Data Analysis?\n- **Rich ecosystem** — Pandas, NumPy, Matplotlib, Seaborn\n- **Easy syntax** — Focus on logic, not boilerplate\n- **Community** — Millions of tutorials and StackOverflow answers\n- **Industry standard** — Used at Google, Netflix, NASA\n\n### The Data Analysis Workflow\n1. **Collect** data from files, APIs, or databases\n2. **Clean** — handle missing values, fix types\n3. **Explore** — summary statistics, distributions\n4. **Visualize** — charts, graphs, dashboards\n5. **Interpret** — draw conclusions, tell the story",
+      codeExample: "# A taste of data analysis in Python\nimport pandas as pd\n\ndata = {\n    \"Name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"Age\": [25, 30, 35],\n    \"Salary\": [50000, 60000, 70000]\n}\n\ndf = pd.DataFrame(data)\nprint(df)\nprint(\"Average salary:\", df['Salary'].mean())",
+      exercises: {
+        beginner: { prompt: "Create a list of 5 numbers and print their average using sum() and len().", starterCode: "numbers = [10, 20, 30, 40, 50]\n\n# Calculate and print the average\n", expectedOutput: "30.0" },
+        intermediate: { prompt: "Given a dictionary of students and scores, print the student with the highest score.", starterCode: "scores = {\"Alice\": 85, \"Bob\": 92, \"Charlie\": 78}\n\n# Find and print the top student\n", expectedOutput: "Bob" },
+        advanced: { prompt: "Calculate total revenue (price * quantity) for all products and print it.", starterCode: "products = [\n    {\"name\": \"Widget\", \"price\": 10, \"quantity\": 5},\n    {\"name\": \"Gadget\", \"price\": 25, \"quantity\": 3},\n    {\"name\": \"Doohickey\", \"price\": 15, \"quantity\": 8}\n]\n\n# Calculate and print total revenue\n", expectedOutput: "245" },
+      },
+    },
+    {
+      id: "da-lists-data", title: "Working with Data in Lists", description: "Use Python lists as your first data structure for analysis",
+      content: "## Lists as Data Containers\n\nBefore learning Pandas, master Python's built-in list for data manipulation.\n\n### Key Operations\n- **Filtering** — Select items that match a condition\n- **Mapping** — Transform every item\n- **Aggregating** — Reduce to a single value (sum, avg, max)\n- **Sorting** — Order data by a criterion\n\n### List Comprehensions\nThe Pythonic way to filter and transform data in one line.",
+      codeExample: "sales = [120, 340, 250, 410, 180, 520, 300]\nhigh_sales = [s for s in sales if s > 300]\nprint(\"High sales:\", high_sales)\nprint(\"Total:\", sum(sales))\nprint(\"Average:\", round(sum(sales)/len(sales), 1))",
+      exercises: {
+        beginner: { prompt: "Given temps=[72, 68, 75, 80, 65, 78], print the maximum temperature.", starterCode: "temps = [72, 68, 75, 80, 65, 78]\n\n# Print max temperature\n", expectedOutput: "80" },
+        intermediate: { prompt: "Filter the list to only include even numbers and print. nums=[1,2,3,4,5,6,7,8,9,10]", starterCode: "nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n\n# Filter even numbers and print\n", expectedOutput: "[2, 4, 6, 8, 10]" },
+        advanced: { prompt: "Given sales=[200,150,350], calculate and print the percentage the first sale contributes. Round to 1 decimal, format as '28.6%'.", starterCode: "sales = [200, 150, 350]\ntotal = sum(sales)\n\n# Print percentage of first sale\n", expectedOutput: "28.6%" },
+      },
+    },
+    {
+      id: "da-dictionaries", title: "Dictionaries for Structured Data", description: "Use dictionaries to represent records and datasets",
+      content: "## Dictionaries = Mini Databases\n\nDictionaries store structured data as key-value pairs — like a row in a spreadsheet.\n\n### Why Dictionaries?\n- Named access: record[\"name\"] instead of record[0]\n- Self-documenting: keys describe the data\n- Flexible: different records can have different keys\n\n### Common Patterns\n- **List of dicts** = a table (each dict is a row)\n- **Dict of lists** = columnar data\n- **Nested dicts** = hierarchical data",
+      codeExample: "employees = [\n    {\"name\": \"Alice\", \"dept\": \"Engineering\", \"salary\": 95000},\n    {\"name\": \"Bob\", \"dept\": \"Marketing\", \"salary\": 72000},\n    {\"name\": \"Charlie\", \"dept\": \"Engineering\", \"salary\": 88000},\n]\neng = [e for e in employees if e[\"dept\"] == \"Engineering\"]\nprint(\"Engineering team:\", len(eng), \"people\")\navg = sum(e[\"salary\"] for e in employees) / len(employees)\nprint(\"Average salary:\", int(avg))",
+      exercises: {
+        beginner: { prompt: "Create a dict student with keys 'name','grade','gpa'. Print the name.", starterCode: "student = {\"name\": \"Alice\", \"grade\": \"A\", \"gpa\": 3.8}\n\n# Print the name\n", expectedOutput: "Alice" },
+        intermediate: { prompt: "Given a list of products, print the name of the most expensive one.", starterCode: "products = [\n    {\"name\": \"Laptop\", \"price\": 999},\n    {\"name\": \"Phone\", \"price\": 699},\n    {\"name\": \"Tablet\", \"price\": 449}\n]\n\n# Print name of most expensive\n", expectedOutput: "Laptop" },
+        advanced: { prompt: "Count employees in 'Engineering' department. Print the count.", starterCode: "employees = [\n    {\"name\": \"Alice\", \"dept\": \"Engineering\"},\n    {\"name\": \"Bob\", \"dept\": \"Marketing\"},\n    {\"name\": \"Charlie\", \"dept\": \"Engineering\"},\n    {\"name\": \"Diana\", \"dept\": \"Marketing\"},\n    {\"name\": \"Eve\", \"dept\": \"Engineering\"}\n]\n\n# Count Engineering employees\n", expectedOutput: "3" },
+      },
+    },
+    {
+      id: "da-statistics", title: "Basic Statistics with Python", description: "Calculate mean, median, mode, and standard deviation",
+      content: "## Statistics in Python\n\nStatistics helps understand data distribution and central tendencies.\n\n### Key Measures\n- **Mean** — Average value: sum/count\n- **Median** — Middle value when sorted\n- **Mode** — Most frequent value\n- **Range** — Max minus min\n- **Standard Deviation** — How spread out values are",
+      codeExample: "scores = [85, 92, 78, 95, 88, 72, 90, 85, 88, 95]\nmean = sum(scores) / len(scores)\nsorted_s = sorted(scores)\nn = len(sorted_s)\nmedian = (sorted_s[n//2-1] + sorted_s[n//2]) / 2 if n % 2 == 0 else sorted_s[n//2]\nprint(\"Mean:\", mean)\nprint(\"Median:\", median)",
+      exercises: {
+        beginner: { prompt: "Given scores=[85, 90, 78, 92, 88], calculate and print the mean.", starterCode: "scores = [85, 90, 78, 92, 88]\n\n# Calculate and print mean\n", expectedOutput: "86.6" },
+        intermediate: { prompt: "Find the median of nums=[3,1,4,1,5,9,2,6]. Sort first.", starterCode: "nums = [3, 1, 4, 1, 5, 9, 2, 6]\nsorted_nums = sorted(nums)\nn = len(sorted_nums)\nmedian = (sorted_nums[n//2 - 1] + sorted_nums[n//2]) / 2\nprint(median)\n", expectedOutput: "3.5" },
+        advanced: { prompt: "Calculate standard deviation of data=[10,12,23,23,16,23,21,16]. Print rounded to 2 decimals.", starterCode: "data = [10, 12, 23, 23, 16, 23, 21, 16]\nmean = sum(data) / len(data)\nvariance = sum((x - mean) ** 2 for x in data) / len(data)\nstd_dev = variance ** 0.5\nprint(round(std_dev, 2))\n", expectedOutput: "4.9" },
+      },
+    },
+    {
+      id: "da-visualization", title: "Data Visualization Concepts", description: "Learn chart types and when to use them",
+      content: "## Visualizing Data\n\nCharts transform numbers into visual stories.\n\n### Common Chart Types\n- **Bar Chart** — Compare categories\n- **Line Chart** — Show trends over time\n- **Scatter Plot** — Show relationships\n- **Histogram** — Show distribution\n- **Pie Chart** — Show proportions",
+      codeExample: "categories = [\"Python\", \"JavaScript\", \"Java\", \"C++\"]\npopularity = [35, 30, 20, 15]\ntop_idx = popularity.index(max(popularity))\nprint(\"Most popular:\", categories[top_idx])\nprint(\"Share:\", str(popularity[top_idx]) + \"%\")",
+      exercises: {
+        beginner: { prompt: "Given categories and values, print which category has the highest value.", starterCode: "categories = [\"A\", \"B\", \"C\", \"D\"]\nvalues = [25, 40, 15, 30]\n\n# Print category with highest value\n", expectedOutput: "B" },
+        intermediate: { prompt: "Calculate the percentage each category represents. Print the largest rounded to 1 decimal.", starterCode: "labels = [\"Python\", \"JS\", \"Java\"]\nusers = [350, 300, 150]\ntotal = sum(users)\npercentages = [(u/total)*100 for u in users]\nprint(round(max(percentages), 1))\n", expectedOutput: "43.8" },
+        advanced: { prompt: "Calculate month-over-month growth rates and print the highest as percentage rounded to 1 decimal.", starterCode: "revenue = [1000, 1200, 1100, 1500, 1800]\ngrowth = []\nfor i in range(1, len(revenue)):\n    rate = ((revenue[i] - revenue[i-1]) / revenue[i-1]) * 100\n    growth.append(round(rate, 1))\nprint(max(growth))\n", expectedOutput: "36.4" },
+      },
+    },
+    {
+      id: "da-pandas-intro", title: "Introduction to Pandas", description: "DataFrames, Series, and basic operations",
+      content: "## Pandas: The Data Analysis Powerhouse\n\nPandas provides two main data structures:\n- **Series** — A single column of data\n- **DataFrame** — A table (like a spreadsheet)\n\n### Key Operations\n- df.head() — First 5 rows\n- df.describe() — Summary statistics\n- df.shape — (rows, columns)\n- df[\"column\"] — Select a column",
+      codeExample: "cities = {\"City\": [\"NYC\", \"LA\", \"Chicago\"], \"Pop\": [8336817, 3979576, 2693976]}\nprint(\"Rows:\", len(cities[\"City\"]))\nprint(\"Columns:\", len(cities))\nmax_idx = cities[\"Pop\"].index(max(cities[\"Pop\"]))\nprint(\"Largest:\", cities[\"City\"][max_idx])",
+      exercises: {
+        beginner: { prompt: "Create a dict with keys 'City' and 'Pop' with 3 cities. Print the dictionary.", starterCode: "data = {\"City\": [\"NYC\", \"LA\", \"Chicago\"], \"Pop\": [8336817, 3979576, 2693976]}\nprint(data)\n", expectedOutput: "{'City': ['NYC', 'LA', 'Chicago'], 'Pop': [8336817, 3979576, 2693976]}" },
+        intermediate: { prompt: "From a dict of cities and populations, find and print the city with the largest population.", starterCode: "cities = {\"NYC\": 8336817, \"LA\": 3979576, \"Chicago\": 2693976}\n\n# Print city with max population\n", expectedOutput: "NYC" },
+        advanced: { prompt: "Create paired tuples sorted by population descending. Print the first tuple's city name.", starterCode: "cities = [\"NYC\", \"LA\", \"Chicago\", \"Houston\"]\npops = [8336817, 3979576, 2693976, 2320268]\npaired = list(zip(cities, pops))\npaired.sort(key=lambda x: x[1], reverse=True)\nprint(paired[0][0])\n", expectedOutput: "NYC" },
+      },
+    },
+    {
+      id: "da-file-io", title: "Reading & Writing Data Files", description: "Work with CSV and text data",
+      content: "## File I/O for Data Analysis\n\nReal data lives in files — CSV, JSON, TXT.\n\n### CSV Files\nCSV (Comma-Separated Values) is the most common data format.\n\n### Key Concepts\n- open() — opens a file\n- with statement — automatically closes the file\n- csv.reader — reads rows as lists",
+      codeExample: "csv_data = \"Name,Age,City\\nAlice,25,NYC\\nBob,30,LA\\nCharlie,35,Chicago\"\nlines = csv_data.split(\"\\n\")\nheader = lines[0].split(\",\")\nrows = [line.split(\",\") for line in lines[1:]]\nfor row in rows:\n    print(row[0], \"is\", row[1], \"from\", row[2])",
+      exercises: {
+        beginner: { prompt: "Split a multi-line string into lines and print the count.", starterCode: "data = \"Name,Age\\nAlice,25\\nBob,30\\nCharlie,35\"\nlines = data.strip().split(\"\\n\")\nprint(len(lines))\n", expectedOutput: "4" },
+        intermediate: { prompt: "Parse CSV: extract the Age column and print the sum.", starterCode: "data = \"Name,Age\\nAlice,25\\nBob,30\\nCharlie,35\"\nlines = data.strip().split(\"\\n\")\nrows = [line.split(\",\") for line in lines[1:]]\nage_sum = sum(int(row[1]) for row in rows)\nprint(age_sum)\n", expectedOutput: "90" },
+        advanced: { prompt: "Filter CSV rows where Age > 25 and print the count.", starterCode: "data = \"Name,Age\\nAlice,25\\nBob,30\\nCharlie,35\\nDiana,22\"\nlines = data.strip().split(\"\\n\")\nrows = [line.split(\",\") for line in lines[1:]]\ncount = sum(1 for row in rows if int(row[1]) > 25)\nprint(count)\n", expectedOutput: "2" },
+      },
+    },
+  ];
+}
+
+function wd(): CareerLesson[] {
+  return [
+    {
+      id: "wd-intro", title: "Web Development with Python", description: "Overview of Python web frameworks",
+      content: "## Python for the Web\n\nPython powers Instagram, Pinterest, Spotify.\n\n### Popular Frameworks\n- **Django** — Full-featured, batteries-included\n- **Flask** — Lightweight, flexible\n- **FastAPI** — Modern, async-first\n\n### How the Web Works\n1. Browser sends HTTP request\n2. Server processes it\n3. Server sends HTTP response\n4. Browser renders result",
+      codeExample: "def handle_route(path):\n    routes = {\"/\": \"Home Page\", \"/about\": \"About Page\"}\n    return routes.get(path, \"404 Not Found\")\n\nprint(handle_route(\"/\"))\nprint(handle_route(\"/about\"))\nprint(handle_route(\"/xyz\"))",
+      exercises: {
+        beginner: { prompt: "Create a dict representing an HTTP response with 'status' and 'body'. Print status.", starterCode: "response = {\"status\": 200, \"body\": \"OK\"}\nprint(response[\"status\"])\n", expectedOutput: "200" },
+        intermediate: { prompt: "Write route(path) returning 'Home' for '/', 'About' for '/about', '404' else. Test '/'.", starterCode: "def route(path):\n    if path == \"/\":\n        return \"Home\"\n    elif path == \"/about\":\n        return \"About\"\n    else:\n        return \"404\"\n\nprint(route(\"/\"))\n", expectedOutput: "Home" },
+        advanced: { prompt: "Parse URL query 'name=Alice&age=25' into a dict and print it.", starterCode: "query = \"name=Alice&age=25\"\nparams = dict(pair.split(\"=\") for pair in query.split(\"&\"))\nprint(params)\n", expectedOutput: "{'name': 'Alice', 'age': '25'}" },
+      },
+    },
+    {
+      id: "wd-http", title: "HTTP & Request Handling", description: "HTTP methods and status codes",
+      content: "## HTTP Fundamentals\n\n### HTTP Methods\n- **GET** — Retrieve data\n- **POST** — Create data\n- **PUT** — Update data\n- **DELETE** — Remove data\n\n### Status Codes\n- **200** — OK\n- **201** — Created\n- **404** — Not Found\n- **500** — Server Error",
+      codeExample: "codes = {200: \"OK\", 201: \"Created\", 404: \"Not Found\", 500: \"Server Error\"}\nfor code, msg in codes.items():\n    print(code, \"-\", msg)",
+      exercises: {
+        beginner: { prompt: "Create a dict with status codes. Print the meaning of 404.", starterCode: "codes = {200: \"OK\", 404: \"Not Found\", 500: \"Error\"}\nprint(codes[404])\n", expectedOutput: "Not Found" },
+        intermediate: { prompt: "Write is_success(code) returning True if 200-299. Test with 201.", starterCode: "def is_success(code):\n    return 200 <= code <= 299\n\nprint(is_success(201))\n", expectedOutput: "True" },
+        advanced: { prompt: "Map (method, path) tuples to handler names. Print handler for GET /users.", starterCode: "routes = {\n    (\"GET\", \"/users\"): \"list_users\",\n    (\"POST\", \"/users\"): \"create_user\",\n}\nprint(routes[(\"GET\", \"/users\")])\n", expectedOutput: "list_users" },
+      },
+    },
+    {
+      id: "wd-rest", title: "REST API Design", description: "Build clean RESTful APIs",
+      content: "## REST APIs\n\nREST is the standard for building web APIs.\n\n### Principles\n- **Resources** — Everything is a resource\n- **URLs** — Each resource has a unique URL\n- **Methods** — CRUD maps to HTTP methods\n- **JSON** — Standard data format",
+      codeExample: "import json\nusers = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\ndef get_user(uid):\n    for u in users:\n        if u[\"id\"] == uid:\n            return json.dumps(u)\n    return json.dumps({\"error\": \"Not found\"})\nprint(get_user(1))",
+      exercises: {
+        beginner: { prompt: "Create 2 user dicts. Print the first user's name.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\nprint(users[0][\"name\"])\n", expectedOutput: "Alice" },
+        intermediate: { prompt: "Write find_user(users, id) returning matching user. Print name for id=2.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\ndef find_user(users, uid):\n    for u in users:\n        if u[\"id\"] == uid:\n            return u\n    return None\nprint(find_user(users, 2)[\"name\"])\n", expectedOutput: "Bob" },
+        advanced: { prompt: "Add user with auto-increment id. Print new user's id.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\ndef add_user(users, name):\n    new_id = max(u[\"id\"] for u in users) + 1\n    user = {\"id\": new_id, \"name\": name}\n    users.append(user)\n    return user\nresult = add_user(users, \"Charlie\")\nprint(result[\"id\"])\n", expectedOutput: "3" },
+      },
+    },
+    {
+      id: "wd-templates", title: "Templates & Rendering", description: "Dynamic HTML generation",
+      content: "## Templates\n\nTemplates generate dynamic HTML by inserting Python variables.\n\n### Jinja2 Template Engine\n- Variables: {{ name }}\n- Logic: {% if condition %}\n- Loops: {% for item in list %}\n\n### Why Templates?\n- Separate logic from presentation\n- Reuse layouts\n- Dynamic content",
+      codeExample: "def render(template, **kwargs):\n    result = template\n    for key, value in kwargs.items():\n        result = result.replace(\"{{ \" + key + \" }}\", str(value))\n    return result\n\nhtml = \"<h1>Hello, {{ name }}!</h1>\"\nprint(render(html, name=\"Alice\"))",
+      exercises: {
+        beginner: { prompt: "Use string formatting to print 'Hello, Alice!'.", starterCode: "name = \"Alice\"\nprint(\"Hello, \" + name + \"!\")\n", expectedOutput: "Hello, Alice!" },
+        intermediate: { prompt: "Write render(template, data) replacing {name} with data['name']. Test it.", starterCode: "def render(template, data):\n    for key, val in data.items():\n        template = template.replace(\"{\" + key + \"}\", str(val))\n    return template\nprint(render(\"Hello, {name}!\", {\"name\": \"World\"}))\n", expectedOutput: "Hello, World!" },
+        advanced: { prompt: "Generate an HTML list from items. Print '<ul><li>A</li><li>B</li><li>C</li></ul>'", starterCode: "items = [\"A\", \"B\", \"C\"]\nhtml = \"<ul>\" + \"\".join(\"<li>\" + i + \"</li>\" for i in items) + \"</ul>\"\nprint(html)\n", expectedOutput: "<ul><li>A</li><li>B</li><li>C</li></ul>" },
+      },
+    },
+    {
+      id: "wd-database", title: "Database Integration", description: "Connect Python to databases",
+      content: "## Databases with Python\n\n### SQLite — Built into Python\n- No setup required\n- File-based database\n- Perfect for learning\n\n### SQL Basics\n- CREATE TABLE — Define structure\n- INSERT — Add data\n- SELECT — Query data\n- UPDATE — Modify data\n- DELETE — Remove data",
+      codeExample: "table = [\n    {\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@email.com\"},\n    {\"id\": 2, \"name\": \"Bob\", \"email\": \"bob@email.com\"},\n]\nresult = [r for r in table if r[\"id\"] == 1]\nprint(result[0][\"name\"])",
+      exercises: {
+        beginner: { prompt: "Create a list of tuples (1,'Alice'), (2,'Bob'). Print the second row.", starterCode: "rows = [(1, \"Alice\"), (2, \"Bob\")]\nprint(rows[1])\n", expectedOutput: "(2, 'Bob')" },
+        intermediate: { prompt: "Filter tuples where id > 1. Print the result.", starterCode: "rows = [(1, \"Alice\"), (2, \"Bob\"), (3, \"Charlie\")]\nfiltered = [(id, name) for id, name in rows if id > 1]\nprint(filtered)\n", expectedOutput: "[(2, 'Bob'), (3, 'Charlie')]" },
+        advanced: { prompt: "Filter records where age > 25. Print count.", starterCode: "table = [\n    {\"name\": \"Alice\", \"age\": 25},\n    {\"name\": \"Bob\", \"age\": 30},\n    {\"name\": \"Charlie\", \"age\": 22},\n    {\"name\": \"Diana\", \"age\": 28}\n]\nresult = [r for r in table if r[\"age\"] > 25]\nprint(len(result))\n", expectedOutput: "2" },
+      },
+    },
+    {
+      id: "wd-auth", title: "Authentication & Sessions", description: "User login, tokens, and session management",
+      content: "## Authentication\n\nAuthentication verifies who a user is.\n\n### Methods\n- **Session-based** — Server stores session data\n- **Token-based (JWT)** — Client stores a signed token\n- **OAuth** — Login with Google, GitHub, etc.\n\n### Password Hashing\nNever store passwords in plain text! Use hashing.\n\n### JWT (JSON Web Token)\n- Header — Algorithm info\n- Payload — User data\n- Signature — Verifies integrity",
+      codeExample: "import hashlib\nimport json\nimport base64\n\n# Simple password hashing\ndef hash_password(pwd):\n    return hashlib.sha256(pwd.encode()).hexdigest()\n\n# JWT-like token concept\ndef create_token(user_id, secret):\n    payload = json.dumps({\"user_id\": user_id})\n    encoded = base64.b64encode(payload.encode()).decode()\n    return encoded\n\ntoken = create_token(42, \"secret\")\nprint(\"Token:\", token)\nprint(\"Hash:\", hash_password(\"mypassword\")[:16] + \"...\")",
+      exercises: {
+        beginner: { prompt: "Hash the string 'password123' using hashlib.sha256. Print first 10 chars of the hex digest.", starterCode: "import hashlib\nhashed = hashlib.sha256(\"password123\".encode()).hexdigest()\nprint(hashed[:10])\n", expectedOutput: "ef92b778ba" },
+        intermediate: { prompt: "Encode a dict {\"user\": \"Alice\"} to base64. Print the encoded string.", starterCode: "import json\nimport base64\ndata = json.dumps({\"user\": \"Alice\"})\nencoded = base64.b64encode(data.encode()).decode()\nprint(encoded)\n", expectedOutput: "eyJ1c2VyIjogIkFsaWNlIn0=" },
+        advanced: { prompt: "Verify a password by comparing hashes. Print True if match.", starterCode: "import hashlib\ndef verify(password, stored_hash):\n    return hashlib.sha256(password.encode()).hexdigest() == stored_hash\n\nstored = hashlib.sha256(\"secret\".encode()).hexdigest()\nprint(verify(\"secret\", stored))\n", expectedOutput: "True" },
+      },
+    },
+    {
+      id: "wd-middleware", title: "Middleware & Error Handling", description: "Request processing pipelines and error management",
+      content: "## Middleware\n\nMiddleware processes requests before they reach your routes.\n\n### Common Middleware\n- **Logging** — Log every request\n- **CORS** — Cross-origin resource sharing\n- **Rate Limiting** — Prevent abuse\n- **Authentication** — Verify tokens\n\n### Error Handling\n- Try/except for graceful failures\n- Custom error responses\n- Error logging and monitoring",
+      codeExample: "# Middleware chain concept\ndef logging_middleware(request):\n    print(f\"LOG: {request['method']} {request['path']}\")\n    return request\n\ndef auth_middleware(request):\n    if 'token' not in request:\n        return {\"error\": \"Unauthorized\", \"status\": 401}\n    return request\n\nreq = {\"method\": \"GET\", \"path\": \"/api/data\", \"token\": \"abc123\"}\nreq = logging_middleware(req)\nresult = auth_middleware(req)\nprint(\"Status:\", result.get(\"status\", 200))",
+      exercises: {
+        beginner: { prompt: "Write a function that logs a request method and path. Test with GET /home.", starterCode: "def log_request(method, path):\n    print(f\"{method} {path}\")\n\nlog_request(\"GET\", \"/home\")\n", expectedOutput: "GET /home" },
+        intermediate: { prompt: "Write rate_limit(requests, max_req) returning True if under limit. Test 5 < 10.", starterCode: "def rate_limit(requests, max_req):\n    return requests < max_req\n\nprint(rate_limit(5, 10))\n", expectedOutput: "True" },
+        advanced: { prompt: "Chain 2 middleware functions on a request dict. Print final status.", starterCode: "def add_timestamp(req):\n    req[\"timestamp\"] = \"2024-01-01\"\n    return req\n\ndef validate(req):\n    req[\"valid\"] = \"path\" in req\n    return req\n\nreq = {\"path\": \"/api\"}\nreq = add_timestamp(validate(req))\nprint(req[\"valid\"])\n", expectedOutput: "True" },
+      },
+    },
+    {
+      id: "wd-deploy", title: "Deployment & DevOps", description: "Deploy Python web apps to production",
+      content: "## Deploying Python Apps\n\n### Platforms\n- **Heroku** — Simple PaaS\n- **Railway / Render** — Modern alternatives\n- **AWS / GCP** — Full cloud\n- **Docker** — Containerization\n\n### Key Concepts\n- Environment variables for secrets\n- WSGI/ASGI servers (Gunicorn, Uvicorn)\n- Reverse proxy (Nginx)\n- CI/CD pipelines",
+      codeExample: "import os\n\n# Environment variables pattern\ndef get_config():\n    return {\n        \"debug\": os.environ.get(\"DEBUG\", \"False\") == \"True\",\n        \"port\": int(os.environ.get(\"PORT\", 8000)),\n        \"db_url\": os.environ.get(\"DATABASE_URL\", \"sqlite:///local.db\"),\n    }\n\nconfig = get_config()\nprint(\"Port:\", config[\"port\"])\nprint(\"Debug:\", config[\"debug\"])",
+      exercises: {
+        beginner: { prompt: "Use os.environ.get with a default value. Print the result.", starterCode: "import os\nport = os.environ.get(\"PORT\", \"8000\")\nprint(port)\n", expectedOutput: "8000" },
+        intermediate: { prompt: "Create a config dict from env vars with defaults. Print the database key.", starterCode: "import os\nconfig = {\n    \"host\": os.environ.get(\"HOST\", \"localhost\"),\n    \"database\": os.environ.get(\"DB\", \"myapp\")\n}\nprint(config[\"database\"])\n", expectedOutput: "myapp" },
+        advanced: { prompt: "Parse a connection string 'postgres://user:pass@host:5432/db'. Print the host.", starterCode: "url = \"postgres://user:pass@host:5432/db\"\nparts = url.split(\"@\")[1].split(\":\")\nhost = parts[0]\nprint(host)\n", expectedOutput: "host" },
+      },
+    },
+  ];
+}
+
+function aiml(): CareerLesson[] {
+  return [
+    {
+      id: "ml-intro", title: "What is Machine Learning?", description: "Core concepts and types of ML",
+      content: "## Machine Learning Overview\n\nML teaches computers to learn from data without explicit programming.\n\n### Types of ML\n- **Supervised** — Learn from labeled data\n- **Unsupervised** — Find patterns in unlabeled data\n- **Reinforcement** — Learn by trial and error\n\n### The ML Workflow\n1. Collect & prepare data\n2. Choose a model\n3. Train the model\n4. Evaluate performance\n5. Deploy & monitor",
+      codeExample: "features = [[1500, 3], [2000, 4], [1200, 2]]\nprices = [300000, 450000, 200000]\ntotal_sqft = sum(f[0] for f in features)\navg_price_per_sqft = sum(prices) / total_sqft\nnew_house = 1800\nprint(\"Predicted:\", int(new_house * avg_price_per_sqft))",
+      exercises: {
+        beginner: { prompt: "Calculate the mean of [1500, 2000, 1200]. Print rounded to 1 decimal.", starterCode: "features = [1500, 2000, 1200]\nmean = sum(features) / len(features)\nprint(round(mean, 1))\n", expectedOutput: "1566.7" },
+        intermediate: { prompt: "Calculate mean absolute error between predicted=[300,450,200] and actual=[310,440,210]. Print it.", starterCode: "predicted = [300, 450, 200]\nactual = [310, 440, 210]\nerrors = [abs(p - a) for p, a in zip(predicted, actual)]\nmae = sum(errors) / len(errors)\nprint(round(mae, 1))\n", expectedOutput: "10.0" },
+        advanced: { prompt: "Linear prediction y = mx + b. Given m=2, b=1, predict for x=[1,2,3,4,5]. Print list.", starterCode: "m = 2\nb = 1\nx_values = [1, 2, 3, 4, 5]\npredictions = [m * x + b for x in x_values]\nprint(predictions)\n", expectedOutput: "[3, 5, 7, 9, 11]" },
+      },
+    },
+    {
+      id: "ml-numpy", title: "NumPy Concepts for ML", description: "Array operations for machine learning",
+      content: "## NumPy: Foundation of ML\n\nNumPy provides fast array operations.\n\n### Why NumPy?\n- 10-100x faster than Python lists\n- Vectorization — operate on entire arrays\n- Broadcasting — automatic shape alignment\n- Linear algebra built-in",
+      codeExample: "a = [1, 2, 3]\nb = [4, 5, 6]\nresult = [x + y for x, y in zip(a, b)]\nprint(\"Add:\", result)\ndot = sum(x * y for x, y in zip(a, b))\nprint(\"Dot:\", dot)\nscaled = [x * 2 for x in a]\nprint(\"Scale:\", scaled)",
+      exercises: {
+        beginner: { prompt: "Add vectors [1,2,3] and [4,5,6] element-wise. Print result.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\nresult = [x + y for x, y in zip(a, b)]\nprint(result)\n", expectedOutput: "[5, 7, 9]" },
+        intermediate: { prompt: "Calculate dot product of [1,2,3] and [4,5,6]. Print it.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\ndot = sum(x * y for x, y in zip(a, b))\nprint(dot)\n", expectedOutput: "32" },
+        advanced: { prompt: "Calculate magnitude of vector [3,4]. Print it.", starterCode: "import math\nv = [3, 4]\nmagnitude = math.sqrt(sum(x**2 for x in v))\nprint(magnitude)\n", expectedOutput: "5.0" },
+      },
+    },
+    {
+      id: "ml-classification", title: "Classification Basics", description: "Predict categories from data",
+      content: "## Classification\n\nPredicts which category a data point belongs to.\n\n### Examples\n- Email: Spam or Not Spam\n- Image: Cat or Dog\n- Transaction: Fraud or Legit\n\n### K-Nearest Neighbors (KNN)\n1. Calculate distance to all training points\n2. Find K nearest\n3. Majority vote = prediction",
+      codeExample: "import math\ndata = [\n    [1, 2, \"A\"], [2, 3, \"A\"], [3, 1, \"A\"],\n    [6, 5, \"B\"], [7, 7, \"B\"], [8, 6, \"B\"],\n]\ndef distance(p1, p2):\n    return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)\nnew_point = [5, 5]\ndists = [(distance(new_point, d[:2]), d[2]) for d in data]\ndists.sort()\nprint(\"Nearest 3:\", [d[1] for d in dists[:3]])",
+      exercises: {
+        beginner: { prompt: "Calculate Euclidean distance between (0,0) and (3,4). Print it.", starterCode: "import math\nd = math.sqrt(3**2 + 4**2)\nprint(d)\n", expectedOutput: "5.0" },
+        intermediate: { prompt: "Find majority vote from ['A','A','B','A','B']. Print it.", starterCode: "labels = [\"A\", \"A\", \"B\", \"A\", \"B\"]\ncounts = {}\nfor l in labels:\n    counts[l] = counts.get(l, 0) + 1\nprint(max(counts, key=counts.get))\n", expectedOutput: "A" },
+        advanced: { prompt: "Calculate accuracy: predicted=['A','B','A','A'] vs actual=['A','B','B','A']. Print as percentage.", starterCode: "predicted = [\"A\", \"B\", \"A\", \"A\"]\nactual = [\"A\", \"B\", \"B\", \"A\"]\ncorrect = sum(p == a for p, a in zip(predicted, actual))\naccuracy = (correct / len(actual)) * 100\nprint(accuracy)\n", expectedOutput: "75.0" },
+      },
+    },
+    {
+      id: "ml-regression", title: "Linear Regression", description: "Predict continuous values with regression",
+      content: "## Linear Regression\n\nPredict a continuous value from input features.\n\n### The Math\n- y = mx + b (slope-intercept)\n- m = slope (rate of change)\n- b = y-intercept\n\n### Training\n- Find m and b that minimize error\n- Cost function: Mean Squared Error\n- Gradient descent optimization\n\n### Applications\n- House price prediction\n- Stock forecasting\n- Sales estimation",
+      codeExample: "# Simple linear regression from scratch\nX = [1, 2, 3, 4, 5]\ny = [2, 4, 5, 4, 5]\n\nn = len(X)\nmean_x = sum(X) / n\nmean_y = sum(y) / n\n\nnumerator = sum((X[i] - mean_x) * (y[i] - mean_y) for i in range(n))\ndenominator = sum((X[i] - mean_x) ** 2 for i in range(n))\n\nm = numerator / denominator\nb = mean_y - m * mean_x\n\nprint(\"Slope:\", round(m, 2))\nprint(\"Intercept:\", round(b, 2))\nprint(\"Predict x=6:\", round(m * 6 + b, 2))",
+      exercises: {
+        beginner: { prompt: "Given y=2x+1, predict y for x=5. Print it.", starterCode: "m = 2\nb = 1\nx = 5\ny = m * x + b\nprint(y)\n", expectedOutput: "11" },
+        intermediate: { prompt: "Calculate MSE for predictions [2,4,6] vs actual [2.5,3.5,6]. Print rounded to 2 decimals.", starterCode: "pred = [2, 4, 6]\nactual = [2.5, 3.5, 6]\nmse = sum((p - a) ** 2 for p, a in zip(pred, actual)) / len(pred)\nprint(round(mse, 2))\n", expectedOutput: "0.17" },
+        advanced: { prompt: "Calculate R-squared for predictions. Print rounded to 2 decimals.", starterCode: "actual = [3, 5, 7, 9]\npred = [2.8, 5.2, 6.8, 9.1]\nmean_a = sum(actual) / len(actual)\nss_res = sum((a - p) ** 2 for a, p in zip(actual, pred))\nss_tot = sum((a - mean_a) ** 2 for a in actual)\nr2 = 1 - (ss_res / ss_tot)\nprint(round(r2, 2))\n", expectedOutput: "0.99" },
+      },
+    },
+    {
+      id: "ml-neural-nets", title: "Neural Networks Basics", description: "Understand how neural networks work",
+      content: "## Neural Networks\n\nInspired by the brain — layers of connected neurons.\n\n### Architecture\n- **Input Layer** — Receives features\n- **Hidden Layers** — Learn patterns\n- **Output Layer** — Makes predictions\n\n### Activation Functions\n- **ReLU** — max(0, x)\n- **Sigmoid** — 1/(1+e^-x) → outputs 0-1\n- **Softmax** — Multi-class probabilities\n\n### Training: Backpropagation\n1. Forward pass — compute output\n2. Calculate loss\n3. Backward pass — compute gradients\n4. Update weights",
+      codeExample: "import math\n\n# Activation functions\ndef relu(x):\n    return max(0, x)\n\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\n# Simple neuron\ndef neuron(inputs, weights, bias):\n    total = sum(i * w for i, w in zip(inputs, weights)) + bias\n    return sigmoid(total)\n\nresult = neuron([1.0, 0.5], [0.8, 0.2], -0.1)\nprint(\"Output:\", round(result, 4))",
+      exercises: {
+        beginner: { prompt: "Implement ReLU: return max(0, x). Test with -3 and 5. Print results.", starterCode: "def relu(x):\n    return max(0, x)\n\nprint(relu(-3))\nprint(relu(5))\n", expectedOutput: "0\n5" },
+        intermediate: { prompt: "Calculate sigmoid(0). Print rounded to 1 decimal.", starterCode: "import math\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\nprint(round(sigmoid(0), 1))\n", expectedOutput: "0.5" },
+        advanced: { prompt: "Weighted sum of inputs=[1,2,3] with weights=[0.5,0.3,0.2] plus bias=0.1. Print rounded to 1.", starterCode: "inputs = [1, 2, 3]\nweights = [0.5, 0.3, 0.2]\nbias = 0.1\nresult = sum(i * w for i, w in zip(inputs, weights)) + bias\nprint(round(result, 1))\n", expectedOutput: "1.8" },
+      },
+    },
+    {
+      id: "ml-nlp", title: "Natural Language Processing", description: "Process and understand text with Python",
+      content: "## NLP — Teaching Computers to Read\n\n### Text Processing Pipeline\n1. **Tokenization** — Split text into words\n2. **Lowercasing** — Normalize case\n3. **Stop words** — Remove common words (the, is, a)\n4. **Stemming** — Reduce to root (running → run)\n5. **Vectorization** — Convert text to numbers\n\n### Applications\n- Chatbots & virtual assistants\n- Sentiment analysis\n- Translation\n- Text summarization",
+      codeExample: "# Simple NLP pipeline\ntext = \"The quick brown fox jumps over the lazy dog\"\n\n# Tokenize\ntokens = text.lower().split()\nprint(\"Tokens:\", len(tokens))\n\n# Remove stop words\nstop_words = {\"the\", \"over\", \"a\", \"is\", \"and\"}\nfiltered = [w for w in tokens if w not in stop_words]\nprint(\"Filtered:\", filtered)\n\n# Word frequency\nfreq = {}\nfor w in filtered:\n    freq[w] = freq.get(w, 0) + 1\nprint(\"Frequencies:\", freq)",
+      exercises: {
+        beginner: { prompt: "Tokenize 'Hello World Python' into a list. Print the list.", starterCode: "text = \"Hello World Python\"\ntokens = text.split()\nprint(tokens)\n", expectedOutput: "['Hello', 'World', 'Python']" },
+        intermediate: { prompt: "Count word frequency in 'the cat sat on the mat'. Print frequency of 'the'.", starterCode: "text = \"the cat sat on the mat\"\nwords = text.split()\nfreq = {}\nfor w in words:\n    freq[w] = freq.get(w, 0) + 1\nprint(freq[\"the\"])\n", expectedOutput: "2" },
+        advanced: { prompt: "Simple sentiment: count positive words. Print the count.", starterCode: "text = \"great amazing product but terrible shipping\"\npositive = {\"great\", \"amazing\", \"good\", \"excellent\"}\nwords = text.split()\ncount = sum(1 for w in words if w in positive)\nprint(count)\n", expectedOutput: "2" },
+      },
+    },
+    {
+      id: "ml-cv", title: "Computer Vision Concepts", description: "Image processing and recognition basics",
+      content: "## Computer Vision\n\nTeach computers to see and understand images.\n\n### Key Concepts\n- **Pixels** — Image = grid of numbers\n- **Channels** — RGB (Red, Green, Blue)\n- **Filters/Kernels** — Detect edges, blur, sharpen\n- **CNNs** — Convolutional Neural Networks\n\n### Applications\n- Face recognition\n- Object detection\n- Self-driving cars\n- Medical imaging",
+      codeExample: "# Image as a matrix concept\nimage = [\n    [0, 0, 255, 0, 0],\n    [0, 255, 255, 255, 0],\n    [255, 255, 255, 255, 255],\n    [0, 255, 255, 255, 0],\n    [0, 0, 255, 0, 0],\n]\n\n# Count bright pixels (> 128)\nbright = sum(1 for row in image for pixel in row if pixel > 128)\ntotal = sum(len(row) for row in image)\nprint(f\"Bright pixels: {bright}/{total}\")\nprint(f\"Brightness: {round(bright/total*100)}%\")",
+      exercises: {
+        beginner: { prompt: "Create a 3x3 grid of zeros. Print it.", starterCode: "grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]\nfor row in grid:\n    print(row)\n", expectedOutput: "[0, 0, 0]\n[0, 0, 0]\n[0, 0, 0]" },
+        intermediate: { prompt: "Flatten a 2x3 matrix to a 1D list. Print it.", starterCode: "matrix = [[1, 2, 3], [4, 5, 6]]\nflat = [val for row in matrix for val in row]\nprint(flat)\n", expectedOutput: "[1, 2, 3, 4, 5, 6]" },
+        advanced: { prompt: "Calculate average pixel value of image=[[100,200],[150,50]]. Print it.", starterCode: "image = [[100, 200], [150, 50]]\ntotal = sum(p for row in image for p in row)\ncount = sum(len(row) for row in image)\nprint(total / count)\n", expectedOutput: "125.0" },
+      },
+    },
+  ];
+}
+
+function auto(): CareerLesson[] {
+  return [
+    {
+      id: "auto-intro", title: "Python Automation Basics", description: "Automate repetitive tasks",
+      content: "## Why Automation?\n\nIf you do something more than twice, automate it.\n\n### What Can You Automate?\n- File organization & renaming\n- Data entry & form filling\n- Email sending & reporting\n- Web scraping & data collection\n- System monitoring\n\n### Python's Toolkit\n- os / shutil — File operations\n- requests — HTTP calls\n- BeautifulSoup — Web scraping\n- schedule — Task scheduling",
+      codeExample: "files = [\"report_jan.csv\", \"report_feb.csv\", \"image.png\", \"report_mar.csv\"]\ncsv_files = [f for f in files if f.endswith(\".csv\")]\nprint(\"CSV files:\", csv_files)\nfor f in csv_files:\n    month = f.split(\"_\")[1].split(\".\")[0]\n    print(\" \", month, \"->\", f)",
+      exercises: {
+        beginner: { prompt: "Filter image files (.png, .jpg) from a list. Print count.", starterCode: "files = [\"doc.pdf\", \"img.png\", \"data.csv\", \"pic.jpg\"]\nimages = [f for f in files if f.endswith((\".png\", \".jpg\"))]\nprint(len(images))\n", expectedOutput: "2" },
+        intermediate: { prompt: "Add 'backup_' prefix to filenames. Print new list.", starterCode: "files = [\"data.csv\", \"config.json\"]\nrenamed = [\"backup_\" + f for f in files]\nprint(renamed)\n", expectedOutput: "['backup_data.csv', 'backup_config.json']" },
+        advanced: { prompt: "Count ERROR entries in log lines. Print the count.", starterCode: "logs = [\n    \"INFO: Server started\",\n    \"ERROR: Connection failed\",\n    \"INFO: Request processed\",\n    \"ERROR: Timeout\",\n    \"ERROR: Disk full\"\n]\nerror_count = sum(1 for log in logs if log.startswith(\"ERROR\"))\nprint(error_count)\n", expectedOutput: "3" },
+      },
+    },
+    {
+      id: "auto-scraping", title: "Web Scraping Basics", description: "Extract data from websites",
+      content: "## Web Scraping\n\nExtract data from websites programmatically.\n\n### How It Works\n1. Send HTTP request\n2. Parse HTML content\n3. Extract needed data\n4. Store it\n\n### Tools\n- requests — Fetch pages\n- BeautifulSoup — Parse HTML\n- Scrapy — Full framework",
+      codeExample: "html = '<h1>Welcome</h1><p class=\"price\">29.99</p><p class=\"price\">49.99</p>'\nimport re\nprices = re.findall(r'class=\"price\">(\\d+\\.\\d+)', html)\nprint(\"Prices found:\", prices)\nprint(\"Total:\", sum(float(p) for p in prices))",
+      exercises: {
+        beginner: { prompt: "Extract text between <h1> tags. Print it.", starterCode: "html = \"<h1>Hello World</h1>\"\ntext = html.replace(\"<h1>\", \"\").replace(\"</h1>\", \"\")\nprint(text)\n", expectedOutput: "Hello World" },
+        intermediate: { prompt: "Parse '$29.99' to a float and print it.", starterCode: "price_str = \"$29.99\"\nprice = float(price_str.replace(\"$\", \"\"))\nprint(price)\n", expectedOutput: "29.99" },
+        advanced: { prompt: "Count URLs starting with 'https' in a text. Print count.", starterCode: "text = \"Visit https://example.com or http://old.com or https://secure.org\"\nwords = text.split()\nhttps_count = sum(1 for w in words if w.startswith(\"https://\"))\nprint(https_count)\n", expectedOutput: "2" },
+      },
+    },
+    {
+      id: "auto-regex", title: "Regular Expressions", description: "Pattern matching for text automation",
+      content: "## Regular Expressions (Regex)\n\nRegex lets you search for patterns in text.\n\n### Common Patterns\n- \\d — Any digit\n- \\w — Any word character\n- . — Any character\n- * — Zero or more\n- + — One or more\n- [] — Character class\n\n### Python's re module\n- re.search() — Find first match\n- re.findall() — Find all matches\n- re.sub() — Replace matches",
+      codeExample: "import re\n\ntext = \"Contact us at support@example.com or sales@company.org\"\n\n# Find all emails\nemails = re.findall(r'[\\w.]+@[\\w.]+', text)\nprint(\"Emails:\", emails)\n\n# Find all phone-like patterns\nphones = \"Call 555-1234 or 555-5678\"\nnumbers = re.findall(r'\\d{3}-\\d{4}', phones)\nprint(\"Numbers:\", numbers)",
+      exercises: {
+        beginner: { prompt: "Find all digits in 'abc123def456'. Print them as a list.", starterCode: "import re\ntext = \"abc123def456\"\ndigits = re.findall(r'\\d+', text)\nprint(digits)\n", expectedOutput: "['123', '456']" },
+        intermediate: { prompt: "Extract email domains from 'user@gmail.com admin@yahoo.com'. Print them.", starterCode: "import re\ntext = \"user@gmail.com admin@yahoo.com\"\ndomains = re.findall(r'@([\\w.]+)', text)\nprint(domains)\n", expectedOutput: "['gmail.com', 'yahoo.com']" },
+        advanced: { prompt: "Replace all digits with '#' in 'Phone: 555-1234'. Print result.", starterCode: "import re\ntext = \"Phone: 555-1234\"\nresult = re.sub(r'\\d', '#', text)\nprint(result)\n", expectedOutput: "Phone: ###-####" },
+      },
+    },
+    {
+      id: "auto-api", title: "API Integration", description: "Connect to external services via APIs",
+      content: "## API Integration\n\nAPIs let your scripts talk to other services.\n\n### REST API Basics\n- GET — Read data\n- POST — Send data\n- Headers — Authentication, content type\n- JSON — Standard data format\n\n### Common APIs\n- Weather data\n- Social media\n- Payment processing\n- Email services",
+      codeExample: "import json\n\n# Simulating API response\napi_response = json.dumps({\n    \"status\": \"success\",\n    \"data\": {\"temp\": 72, \"city\": \"New York\"},\n    \"count\": 1\n})\n\nparsed = json.loads(api_response)\nprint(\"City:\", parsed[\"data\"][\"city\"])\nprint(\"Temp:\", parsed[\"data\"][\"temp\"])",
+      exercises: {
+        beginner: { prompt: "Parse JSON string '{\"name\": \"Alice\"}'. Print the name.", starterCode: "import json\ndata = json.loads('{\"name\": \"Alice\"}')\nprint(data[\"name\"])\n", expectedOutput: "Alice" },
+        intermediate: { prompt: "Convert a dict to JSON string. Print it.", starterCode: "import json\ndata = {\"status\": \"ok\", \"code\": 200}\nresult = json.dumps(data)\nprint(result)\n", expectedOutput: '{"status": "ok", "code": 200}' },
+        advanced: { prompt: "Build a query string from dict params. Print it.", starterCode: "params = {\"q\": \"python\", \"page\": \"1\", \"sort\": \"new\"}\nquery = \"&\".join(f\"{k}={v}\" for k, v in params.items())\nprint(query)\n", expectedOutput: "q=python&page=1&sort=new" },
+      },
+    },
+    {
+      id: "auto-scheduling", title: "Task Scheduling & Cron", description: "Run scripts on a schedule",
+      content: "## Task Scheduling\n\nAutomate when scripts run.\n\n### Methods\n- **time.sleep()** — Simple delays\n- **schedule library** — Readable scheduling\n- **cron (Linux)** — OS-level scheduling\n- **Windows Task Scheduler**\n\n### Use Cases\n- Daily report generation\n- Hourly data sync\n- Monitoring & alerts\n- Backup automation",
+      codeExample: "import time\nfrom datetime import datetime\n\n# Simulating a scheduled task\ndef run_task():\n    now = datetime.now().strftime(\"%H:%M:%S\")\n    print(f\"[{now}] Task executed\")\n\n# Simulating cron-like schedule\nschedule = {\n    \"daily_report\": \"08:00\",\n    \"hourly_sync\": \"every 1h\",\n    \"backup\": \"02:00\"\n}\n\nfor task, when in schedule.items():\n    print(f\"{task}: runs at {when}\")",
+      exercises: {
+        beginner: { prompt: "Get current hour using datetime. Print it.", starterCode: "from datetime import datetime\nhour = datetime.now().hour\nprint(type(hour).__name__)\n", expectedOutput: "int" },
+        intermediate: { prompt: "Create a schedule dict with 3 tasks. Print the number of tasks.", starterCode: "schedule = {\n    \"backup\": \"02:00\",\n    \"report\": \"08:00\",\n    \"sync\": \"12:00\"\n}\nprint(len(schedule))\n", expectedOutput: "3" },
+        advanced: { prompt: "Parse cron-like string '*/5 * * * *'. Print the interval (5).", starterCode: "cron = \"*/5 * * * *\"\nminute_field = cron.split()[0]\ninterval = int(minute_field.split(\"/\")[1])\nprint(interval)\n", expectedOutput: "5" },
+      },
+    },
+    {
+      id: "auto-email", title: "Email Automation", description: "Send automated emails with Python",
+      content: "## Email Automation\n\nAutomate sending emails for reports, alerts, notifications.\n\n### Python Email Libraries\n- **smtplib** — Built-in SMTP client\n- **email.mime** — Create rich email messages\n- **SendGrid / Mailgun** — Cloud email APIs\n\n### Email Structure\n- From, To, Subject\n- Body (plain text or HTML)\n- Attachments",
+      codeExample: "# Email template builder\ndef build_email(to, subject, body, attachments=None):\n    email = {\n        \"to\": to,\n        \"subject\": subject,\n        \"body\": body,\n        \"attachments\": attachments or []\n    }\n    return email\n\nemail = build_email(\n    \"user@example.com\",\n    \"Daily Report\",\n    \"Here is your report for today.\"\n)\nprint(f\"To: {email['to']}\")\nprint(f\"Subject: {email['subject']}\")",
+      exercises: {
+        beginner: { prompt: "Create an email dict with 'to', 'subject', 'body'. Print the subject.", starterCode: "email = {\"to\": \"alice@mail.com\", \"subject\": \"Hello\", \"body\": \"Hi there\"}\nprint(email[\"subject\"])\n", expectedOutput: "Hello" },
+        intermediate: { prompt: "Format an email body with variables. Print it.", starterCode: "name = \"Alice\"\ntotal = 150\nbody = f\"Dear {name}, your total is ${total}.\"\nprint(body)\n", expectedOutput: "Dear Alice, your total is $150." },
+        advanced: { prompt: "Build a recipient list from a CSV-like string. Print the count.", starterCode: "csv = \"alice@mail.com,bob@mail.com,charlie@mail.com\"\nrecipients = csv.split(\",\")\nprint(len(recipients))\n", expectedOutput: "3" },
+      },
+    },
+  ];
+}
+
+function de(): CareerLesson[] {
+  return [
+    {
+      id: "de-intro", title: "Data Engineering Fundamentals", description: "Pipelines, ETL, and data infrastructure",
+      content: "## What is Data Engineering?\n\nData engineers build infrastructure that makes data usable.\n\n### Key Concepts\n- **ETL** — Extract, Transform, Load\n- **Data Pipeline** — Automated data flow\n- **Data Warehouse** — Centralized store\n- **Data Lake** — Raw data storage\n\n### ETL Process\n1. Extract — Pull from sources\n2. Transform — Clean, validate\n3. Load — Store in destination",
+      codeExample: "def extract():\n    return [{\"name\": \"Alice\", \"age\": \"25\"}, {\"name\": \"Bob\", \"age\": \"thirty\"}]\n\ndef transform(data):\n    clean = []\n    for row in data:\n        try:\n            row[\"age\"] = int(row[\"age\"])\n            clean.append(row)\n        except ValueError:\n            print(\"Skipping:\", row[\"name\"])\n    return clean\n\ndef load(data):\n    for row in data:\n        print(\"Loaded:\", row[\"name\"])\n\nload(transform(extract()))",
+      exercises: {
+        beginner: { prompt: "Remove None values from a list. Print clean list.", starterCode: "data = [1, None, 3, None, 5]\nclean = [x for x in data if x is not None]\nprint(clean)\n", expectedOutput: "[1, 3, 5]" },
+        intermediate: { prompt: "Convert string numbers to int, skip invalid. Print valid count.", starterCode: "raw = [\"10\", \"20\", \"abc\", \"40\", \"xyz\"]\nvalid = []\nfor item in raw:\n    try:\n        valid.append(int(item))\n    except ValueError:\n        pass\nprint(len(valid))\n", expectedOutput: "3" },
+        advanced: { prompt: "ETL: uppercase all names. Print first transformed name.", starterCode: "data = [{\"name\": \"alice\"}, {\"name\": \"bob\"}]\ntransformed = [{\"name\": d[\"name\"].upper()} for d in data]\nprint(transformed[0][\"name\"])\n", expectedOutput: "ALICE" },
+      },
+    },
+    {
+      id: "de-sql", title: "SQL for Data Engineers", description: "Master SQL queries and database design",
+      content: "## SQL Mastery\n\nData engineers live and breathe SQL.\n\n### Advanced SQL\n- **JOINs** — Combine tables\n- **GROUP BY** — Aggregate data\n- **Window Functions** — Running totals, rankings\n- **Subqueries** — Queries within queries\n- **CTEs** — Common Table Expressions\n\n### Database Design\n- Normalization (1NF, 2NF, 3NF)\n- Star schema vs snowflake\n- Indexing strategies",
+      codeExample: "# Simulating SQL operations in Python\norders = [\n    {\"id\": 1, \"customer\": \"Alice\", \"amount\": 100},\n    {\"id\": 2, \"customer\": \"Bob\", \"amount\": 200},\n    {\"id\": 3, \"customer\": \"Alice\", \"amount\": 150},\n]\n\n# GROUP BY customer, SUM(amount)\nfrom collections import defaultdict\ntotals = defaultdict(int)\nfor o in orders:\n    totals[o[\"customer\"]] += o[\"amount\"]\n\nfor customer, total in totals.items():\n    print(f\"{customer}: ${total}\")",
+      exercises: {
+        beginner: { prompt: "Group items by category and count. Print Engineering count.", starterCode: "items = [\"Engineering\", \"Marketing\", \"Engineering\", \"Sales\"]\ncounts = {}\nfor item in items:\n    counts[item] = counts.get(item, 0) + 1\nprint(counts[\"Engineering\"])\n", expectedOutput: "2" },
+        intermediate: { prompt: "Simulate a LEFT JOIN. Print matched count.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\norders = [{\"user_id\": 1, \"item\": \"Book\"}, {\"user_id\": 1, \"item\": \"Pen\"}]\njoined = [(u, [o for o in orders if o[\"user_id\"] == u[\"id\"]]) for u in users]\nprint(len(joined[0][1]))\n", expectedOutput: "2" },
+        advanced: { prompt: "Calculate running total of [100, 200, 150, 300]. Print the list.", starterCode: "values = [100, 200, 150, 300]\nrunning = []\ntotal = 0\nfor v in values:\n    total += v\n    running.append(total)\nprint(running)\n", expectedOutput: "[100, 300, 450, 750]" },
+      },
+    },
+    {
+      id: "de-pipelines", title: "Building Data Pipelines", description: "Design and implement data workflows",
+      content: "## Data Pipelines\n\nAutomate the flow of data from source to destination.\n\n### Pipeline Components\n1. **Source** — Where data comes from\n2. **Processor** — Transform/clean\n3. **Sink** — Where data goes\n4. **Scheduler** — When it runs\n5. **Monitor** — Track failures\n\n### Pipeline Patterns\n- Batch processing (hourly/daily)\n- Stream processing (real-time)\n- Lambda architecture (batch + stream)",
+      codeExample: "# Pipeline builder pattern\nclass Pipeline:\n    def __init__(self):\n        self.steps = []\n    \n    def add_step(self, name, func):\n        self.steps.append((name, func))\n        return self\n    \n    def run(self, data):\n        for name, func in self.steps:\n            data = func(data)\n            print(f\"Step '{name}': {len(data)} records\")\n        return data\n\np = Pipeline()\np.add_step(\"filter\", lambda d: [x for x in d if x > 0])\np.add_step(\"double\", lambda d: [x * 2 for x in d])\nresult = p.run([-1, 2, -3, 4, 5])\nprint(\"Result:\", result)",
+      exercises: {
+        beginner: { prompt: "Apply two transformations: filter positives, then double. Print result.", starterCode: "data = [-1, 2, -3, 4]\nstep1 = [x for x in data if x > 0]\nstep2 = [x * 2 for x in step1]\nprint(step2)\n", expectedOutput: "[4, 8]" },
+        intermediate: { prompt: "Chain 3 string transformations on a list. Print result.", starterCode: "names = [\" Alice \", \" BOB \", \" charlie \"]\ncleaned = [n.strip().lower().capitalize() for n in names]\nprint(cleaned)\n", expectedOutput: "['Alice', 'Bob', 'Charlie']" },
+        advanced: { prompt: "Implement a simple pipeline using functions. Print final count.", starterCode: "def extract():\n    return list(range(10))\n\ndef transform(data):\n    return [x for x in data if x % 2 == 0]\n\ndef load(data):\n    return len(data)\n\nresult = load(transform(extract()))\nprint(result)\n", expectedOutput: "5" },
+      },
+    },
+    {
+      id: "de-streaming", title: "Stream Processing", description: "Handle real-time data streams",
+      content: "## Stream Processing\n\nProcess data as it arrives, not in batches.\n\n### Concepts\n- **Events** — Individual data points\n- **Producers** — Generate events\n- **Consumers** — Process events\n- **Topics** — Event categories\n- **Windowing** — Group events by time\n\n### Tools\n- Apache Kafka — Event streaming\n- Apache Flink — Stream processing\n- Redis Streams — Lightweight streaming",
+      codeExample: "from collections import deque\n\n# Simulating a message queue\nclass MessageQueue:\n    def __init__(self):\n        self.queue = deque()\n    \n    def produce(self, message):\n        self.queue.append(message)\n    \n    def consume(self):\n        return self.queue.popleft() if self.queue else None\n\nmq = MessageQueue()\nmq.produce({\"event\": \"click\", \"user\": \"Alice\"})\nmq.produce({\"event\": \"purchase\", \"user\": \"Bob\"})\n\nwhile msg := mq.consume():\n    print(f\"Processing: {msg['event']} by {msg['user']}\")",
+      exercises: {
+        beginner: { prompt: "Use deque as a queue. Add 3 items, pop first. Print it.", starterCode: "from collections import deque\nq = deque()\nq.append(\"a\")\nq.append(\"b\")\nq.append(\"c\")\nprint(q.popleft())\n", expectedOutput: "a" },
+        intermediate: { prompt: "Implement sliding window average for [1,3,5,7,9] with window=3. Print last avg.", starterCode: "data = [1, 3, 5, 7, 9]\nwindow = 3\navgs = []\nfor i in range(len(data) - window + 1):\n    avg = sum(data[i:i+window]) / window\n    avgs.append(round(avg, 1))\nprint(avgs[-1])\n", expectedOutput: "7.0" },
+        advanced: { prompt: "Count events by type from a stream. Print click count.", starterCode: "events = [\"click\", \"view\", \"click\", \"purchase\", \"click\", \"view\"]\ncounts = {}\nfor e in events:\n    counts[e] = counts.get(e, 0) + 1\nprint(counts[\"click\"])\n", expectedOutput: "3" },
+      },
+    },
+    {
+      id: "de-cloud", title: "Cloud Data Platforms", description: "AWS, GCP, and Azure for data engineering",
+      content: "## Cloud Data Platforms\n\n### AWS Data Services\n- **S3** — Object storage\n- **Redshift** — Data warehouse\n- **Glue** — ETL service\n- **Kinesis** — Streaming\n\n### GCP Data Services\n- **BigQuery** — Serverless analytics\n- **Cloud Storage** — Object storage\n- **Dataflow** — Stream & batch processing\n\n### Key Concepts\n- Infrastructure as Code\n- Auto-scaling\n- Cost optimization",
+      codeExample: "# Cloud storage path patterns\ndef s3_path(bucket, prefix, date, filename):\n    return f\"s3://{bucket}/{prefix}/{date}/{filename}\"\n\n# Partitioned data paths\nfor month in [\"2024-01\", \"2024-02\", \"2024-03\"]:\n    path = s3_path(\"data-lake\", \"sales\", month, \"data.parquet\")\n    print(path)",
+      exercises: {
+        beginner: { prompt: "Build an S3-like path string. Print it.", starterCode: "bucket = \"my-bucket\"\nkey = \"data/file.csv\"\npath = f\"s3://{bucket}/{key}\"\nprint(path)\n", expectedOutput: "s3://my-bucket/data/file.csv" },
+        intermediate: { prompt: "Generate partitioned paths for 3 dates. Print count.", starterCode: "dates = [\"2024-01-01\", \"2024-01-02\", \"2024-01-03\"]\npaths = [f\"data/date={d}/part.parquet\" for d in dates]\nprint(len(paths))\n", expectedOutput: "3" },
+        advanced: { prompt: "Parse an S3 path to extract bucket and key. Print the bucket.", starterCode: "path = \"s3://analytics-bucket/raw/users/data.csv\"\nparts = path.replace(\"s3://\", \"\").split(\"/\", 1)\nprint(parts[0])\n", expectedOutput: "analytics-bucket" },
+      },
+    },
+  ];
+}
+
+function cs(): CareerLesson[] {
+  return [
+    {
+      id: "cs-intro", title: "Python for Cybersecurity", description: "Security fundamentals with Python",
+      content: "## Cybersecurity with Python\n\nPython is the go-to language for security pros.\n\n### Applications\n- Penetration testing\n- Forensics\n- Security automation\n- Cryptography\n\n### Key Libraries\n- hashlib — Hashing (MD5, SHA256)\n- cryptography — Encryption\n- socket — Network programming\n- scapy — Packet manipulation",
+      codeExample: "import hashlib\npassword = \"SecurePass123\"\nhashed = hashlib.sha256(password.encode()).hexdigest()\nprint(\"SHA256:\", hashed[:20] + \"...\")\n\ndef verify(pwd, hash_val):\n    return hashlib.sha256(pwd.encode()).hexdigest() == hash_val\nprint(\"Valid:\", verify(\"SecurePass123\", hashed))\nprint(\"Invalid:\", verify(\"wrong\", hashed))",
+      exercises: {
+        beginner: { prompt: "Caesar cipher: shift 'abc' by 1. Print encrypted.", starterCode: "text = \"abc\"\nencrypted = \"\".join(chr(ord(c) + 1) for c in text)\nprint(encrypted)\n", expectedOutput: "bcd" },
+        intermediate: { prompt: "Check password strength: 8+ chars, has digit, has uppercase. Test 'Secure1!'. Print True/False.", starterCode: "pwd = \"Secure1!\"\nis_strong = len(pwd) >= 8 and any(c.isdigit() for c in pwd) and any(c.isupper() for c in pwd)\nprint(is_strong)\n", expectedOutput: "True" },
+        advanced: { prompt: "XOR encrypt 'Hi' with key=42. Print list of encrypted values.", starterCode: "text = \"Hi\"\nkey = 42\nencrypted = [ord(c) ^ key for c in text]\nprint(encrypted)\n", expectedOutput: "[98, 67]" },
+      },
+    },
+    {
+      id: "cs-network", title: "Network Security", description: "Scanning, sockets, and network analysis",
+      content: "## Network Security\n\n### Key Concepts\n- **Ports** — Services listen on specific ports (80=HTTP, 443=HTTPS)\n- **TCP/UDP** — Transport protocols\n- **IP Addresses** — Network identification\n- **DNS** — Domain name resolution\n\n### Network Scanning\n- Port scanning — Find open services\n- Banner grabbing — Identify software\n- Vulnerability scanning\n\n### Python Tools\n- socket — Low-level networking\n- scapy — Packet crafting\n- nmap — Port scanning",
+      codeExample: "# Port scanning concept\ncommon_ports = {\n    21: \"FTP\", 22: \"SSH\", 23: \"Telnet\",\n    25: \"SMTP\", 53: \"DNS\", 80: \"HTTP\",\n    443: \"HTTPS\", 3306: \"MySQL\", 5432: \"PostgreSQL\"\n}\n\n# Simulated scan results\nopen_ports = [22, 80, 443]\nfor port in open_ports:\n    service = common_ports.get(port, \"Unknown\")\n    print(f\"Port {port}: {service} [OPEN]\")",
+      exercises: {
+        beginner: { prompt: "Create a dict of port numbers to service names. Print service for port 80.", starterCode: "ports = {80: \"HTTP\", 443: \"HTTPS\", 22: \"SSH\"}\nprint(ports[80])\n", expectedOutput: "HTTP" },
+        intermediate: { prompt: "Check if an IP is in private range (starts with 192.168). Print True/False.", starterCode: "ip = \"192.168.1.100\"\nis_private = ip.startswith(\"192.168.\")\nprint(is_private)\n", expectedOutput: "True" },
+        advanced: { prompt: "Parse IP address into octets and print the network part (first 3).", starterCode: "ip = \"192.168.1.100\"\noctets = ip.split(\".\")\nnetwork = \".\".join(octets[:3])\nprint(network)\n", expectedOutput: "192.168.1" },
+      },
+    },
+    {
+      id: "cs-crypto", title: "Cryptography Essentials", description: "Encryption, hashing, and digital signatures",
+      content: "## Cryptography\n\n### Types\n- **Symmetric** — Same key to encrypt & decrypt (AES)\n- **Asymmetric** — Public/private key pair (RSA)\n- **Hashing** — One-way transformation (SHA256)\n\n### Common Algorithms\n- AES — Advanced Encryption Standard\n- RSA — Public key encryption\n- SHA256 — Secure hash\n- bcrypt — Password hashing\n\n### Use Cases\n- Secure communication (HTTPS)\n- Password storage\n- Digital signatures\n- Blockchain",
+      codeExample: "# Simple substitution cipher\nimport string\n\ndef caesar_encrypt(text, shift):\n    result = \"\"\n    for char in text:\n        if char.isalpha():\n            base = ord('A') if char.isupper() else ord('a')\n            result += chr((ord(char) - base + shift) % 26 + base)\n        else:\n            result += char\n    return result\n\nencrypted = caesar_encrypt(\"Hello World\", 3)\nprint(\"Encrypted:\", encrypted)\ndecrypted = caesar_encrypt(encrypted, -3)\nprint(\"Decrypted:\", decrypted)",
+      exercises: {
+        beginner: { prompt: "ROT13 encrypt 'abc'. Print result.", starterCode: "text = \"abc\"\nresult = \"\".join(chr((ord(c) - ord('a') + 13) % 26 + ord('a')) for c in text)\nprint(result)\n", expectedOutput: "nop" },
+        intermediate: { prompt: "XOR encrypt and decrypt 'Hi' with key=7. Print decrypted matches original.", starterCode: "text = \"Hi\"\nkey = 7\nencrypted = [ord(c) ^ key for c in text]\ndecrypted = \"\".join(chr(c ^ key) for c in encrypted)\nprint(decrypted == text)\n", expectedOutput: "True" },
+        advanced: { prompt: "Generate a simple hash by summing char codes mod 1000. Print hash of 'password'.", starterCode: "text = \"password\"\nhash_val = sum(ord(c) for c in text) % 1000\nprint(hash_val)\n", expectedOutput: "879" },
+      },
+    },
+    {
+      id: "cs-forensics", title: "Digital Forensics", description: "Investigate and analyze digital evidence",
+      content: "## Digital Forensics\n\nInvestigating security incidents and analyzing evidence.\n\n### Key Areas\n- **Log Analysis** — Server and application logs\n- **File Analysis** — Metadata, hidden data\n- **Memory Forensics** — RAM analysis\n- **Network Forensics** — Packet capture analysis\n\n### Python Tools\n- os/pathlib — File system analysis\n- struct — Binary file parsing\n- datetime — Timeline analysis\n- json/csv — Log parsing",
+      codeExample: "# Log analysis for security\nlogs = [\n    \"2024-01-15 10:30:00 LOGIN alice 192.168.1.10 SUCCESS\",\n    \"2024-01-15 10:31:00 LOGIN root 10.0.0.5 FAILED\",\n    \"2024-01-15 10:31:05 LOGIN root 10.0.0.5 FAILED\",\n    \"2024-01-15 10:31:10 LOGIN root 10.0.0.5 FAILED\",\n    \"2024-01-15 10:35:00 LOGIN bob 192.168.1.20 SUCCESS\",\n]\n\n# Detect brute force (3+ failures from same IP)\nfailures = {}\nfor log in logs:\n    if \"FAILED\" in log:\n        ip = log.split()[3]\n        failures[ip] = failures.get(ip, 0) + 1\n\nfor ip, count in failures.items():\n    if count >= 3:\n        print(f\"ALERT: Brute force from {ip} ({count} attempts)\")",
+      exercises: {
+        beginner: { prompt: "Count FAILED entries in a list of log strings. Print count.", starterCode: "logs = [\"SUCCESS\", \"FAILED\", \"SUCCESS\", \"FAILED\", \"FAILED\"]\ncount = sum(1 for l in logs if l == \"FAILED\")\nprint(count)\n", expectedOutput: "3" },
+        intermediate: { prompt: "Extract unique IPs from logs. Print count.", starterCode: "logs = [\"192.168.1.1 GET /\", \"10.0.0.1 POST /login\", \"192.168.1.1 GET /about\"]\nips = set(log.split()[0] for log in logs)\nprint(len(ips))\n", expectedOutput: "2" },
+        advanced: { prompt: "Find the IP with most requests. Print it.", starterCode: "logs = [\"192.168.1.1\", \"10.0.0.1\", \"192.168.1.1\", \"192.168.1.1\", \"10.0.0.1\"]\ncounts = {}\nfor ip in logs:\n    counts[ip] = counts.get(ip, 0) + 1\nprint(max(counts, key=counts.get))\n", expectedOutput: "192.168.1.1" },
+      },
+    },
+    {
+      id: "cs-pentest", title: "Penetration Testing", description: "Ethical hacking techniques with Python",
+      content: "## Penetration Testing\n\nAuthorized testing to find vulnerabilities.\n\n### Methodology\n1. **Reconnaissance** — Gather information\n2. **Scanning** — Find attack surface\n3. **Exploitation** — Attempt attacks\n4. **Post-exploitation** — Maintain access\n5. **Reporting** — Document findings\n\n### Common Vulnerabilities\n- SQL Injection\n- XSS (Cross-Site Scripting)\n- CSRF (Cross-Site Request Forgery)\n- Directory traversal\n- Weak authentication",
+      codeExample: "# SQL Injection detection concept\ndef is_sql_injection(input_str):\n    suspicious = [\"'\", \"--\", \"OR 1=1\", \"DROP\", \"UNION SELECT\", \";\", \"/*\"]\n    input_upper = input_str.upper()\n    return any(s.upper() in input_upper for s in suspicious)\n\ntests = [\"Alice\", \"' OR 1=1 --\", \"normal_user\", \"'; DROP TABLE users;--\"]\nfor t in tests:\n    result = \"⚠️ INJECTION\" if is_sql_injection(t) else \"✅ Safe\"\n    print(f\"{t[:20]:20s} -> {result}\")",
+      exercises: {
+        beginner: { prompt: "Check if a string contains a single quote. Print True/False.", starterCode: "user_input = \"hello'world\"\nhas_quote = \"'\" in user_input\nprint(has_quote)\n", expectedOutput: "True" },
+        intermediate: { prompt: "Sanitize input by removing special SQL characters. Print cleaned.", starterCode: "user_input = \"admin'--\"\ncleaned = user_input.replace(\"'\", \"\").replace(\"--\", \"\")\nprint(cleaned)\n", expectedOutput: "admin" },
+        advanced: { prompt: "Check if password is in a common passwords list. Print 'Weak' or 'OK'.", starterCode: "common = [\"password\", \"123456\", \"admin\", \"qwerty\"]\npwd = \"admin\"\nresult = \"Weak\" if pwd in common else \"OK\"\nprint(result)\n", expectedOutput: "Weak" },
+      },
+    },
+  ];
+}
+
+export const careerTracks: CareerTrack[] = [
+  { id: "data-analysis", title: "Data Analysis", description: "Master data analysis with Python", color: "primary", lessons: da() },
+  { id: "web-development", title: "Web Development", description: "Build web apps and APIs", color: "streak-green", lessons: wd() },
+  { id: "ai-ml", title: "AI & Machine Learning", description: "Build intelligent systems", color: "expert-purple", lessons: aiml() },
+  { id: "automation", title: "Automation & Scripting", description: "Automate tasks with Python", color: "python-yellow", lessons: auto() },
+  { id: "data-engineering", title: "Data Engineering", description: "Build data pipelines", color: "reward-gold", lessons: de() },
+  { id: "cybersecurity", title: "Cybersecurity", description: "Security with Python", color: "destructive", lessons: cs() },
+];
