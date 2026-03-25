@@ -1,15 +1,15 @@
+import { useState, useEffect } from "react";
+import { ChevronDown, Clock, HeartHandshake, LogIn, LogOut, Menu, Moon, Settings, Sun, Trophy, User, Wallet } from "lucide-react";
+import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Trophy, Wallet, Menu, Sun, Moon, Clock, LogIn, LogOut, Play, User, Settings, ChevronDown } from "lucide-react";
-import { useProgress } from "@/contexts/ProgressContext";
-import { getStreakTitle } from "@/lib/progress";
+
+import { AdViewModal } from "@/components/AdViewModal";
 import { StreakFire } from "@/components/StreakFire";
 import { useTheme } from "@/components/ThemeProvider";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
-import { navItems } from "./navItems";
-import { useState, useEffect } from "react";
+import { useProgress } from "@/contexts/ProgressContext";
 import { useToast } from "@/hooks/use-toast";
-import { AdViewModal } from "@/components/AdViewModal";
-import { motion } from "framer-motion";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +18,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import { navItems } from "./navItems";
 
 function getUserLevelLabel(xp: number) {
   if (xp >= 3000) return "Advanced";
@@ -57,9 +59,11 @@ function TimeTracker() {
     : `${minutes}m ${secs}s`;
 
   return (
-    <div className="hidden lg:flex items-center gap-1.5 text-[11px] text-muted-foreground font-mono px-2 py-1 rounded-md bg-secondary/50 border border-border/50 shadow-[0_0_10px_rgba(59,130,246,0.1)]" title="Total Code Time">
-      <Clock className="w-3.5 h-3.5 text-primary animate-pulse" />
-      <span className="text-foreground tracking-wider font-semibold">{displayTime}</span>
+    <div className="hidden xl:flex items-center">
+      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-mono px-2 py-1 rounded-md bg-secondary/50 border border-border/50 shadow-[0_0_10px_rgba(59,130,246,0.1)]" title="Total Code Time">
+        <Clock className="w-3.5 h-3.5 text-primary animate-pulse" />
+        <span className="text-foreground tracking-wider font-semibold">{displayTime}</span>
+      </div>
     </div>
   );
 }
@@ -77,6 +81,9 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const { toast } = useToast();
   const levelNumber = Math.floor(progress.xp / 500) + 1;
   const levelLabel = getUserLevelLabel(progress.xp);
+  const primaryNavRoutes = ["/", "/learn", "/dsa", "/compiler", "/quick-prep", "/certificate"];
+  const primaryNavItems = navItems.filter((item) => primaryNavRoutes.includes(item.to));
+  const secondaryNavItems = navItems.filter((item) => !primaryNavRoutes.includes(item.to));
 
   const handleSignOut = async () => {
     try {
@@ -92,12 +99,17 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
   return (
     <>
-    <AdViewModal isOpen={showAd} onClose={() => setShowAd(false)} />
-    <header className="h-14 border-b border-border bg-card/80 backdrop-blur-md fixed top-0 left-0 right-0 z-[999] flex items-center px-2 sm:px-4 justify-between shrink-0 overflow-x-auto scrollbar-none">
-      <div className="flex items-center gap-1 sm:gap-3 shrink-0">
+    <AdViewModal
+      isOpen={showAd}
+      onClose={() => setShowAd(false)}
+      completionTitle="Thanks for supporting PyMaster"
+      completionDescription="You can keep learning while we grow the platform."
+    />
+    <header className="h-14 border-b border-border bg-card/80 backdrop-blur-md fixed top-0 left-0 right-0 z-[999] flex items-center px-2 sm:px-4 justify-between shrink-0">
+      <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-3">
         <button
           onClick={onMenuToggle}
-          className="hidden lg:flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
         >
           <Menu className="w-5 h-5" />
         </button>
@@ -133,33 +145,63 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             ))}
           </span>
         </Link>
-        <nav className="hidden lg:flex items-center gap-0.5 ml-2">
-          {navItems.map((item) => (
+        <nav className="ml-1 hidden min-w-0 flex-1 items-center gap-1 lg:flex xl:ml-2">
+          <div className="flex min-w-0 items-center gap-0.5">
+          {primaryNavItems.map((item) => (
             <Link
               key={item.to}
               to={item.to}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs transition-all duration-200 ${
+              className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-xs ${
                 location.pathname === item.to
                   ? "bg-secondary text-foreground font-medium scale-105"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 hover:scale-105 active:scale-95"
               }`}
             >
               <span className="text-sm">{item.emoji}</span>
-              {item.label.split(" ")[0]}
+              {item.to === "/quick-prep" ? "Quick" : item.to === "/certificate" ? "Cert" : item.label.split(" ")[0]}
             </Link>
           ))}
+          </div>
+          {secondaryNavItems.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-xs ${
+                    secondaryNavItems.some((item) => location.pathname === item.to)
+                      ? "bg-secondary text-foreground font-medium"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  }`}
+                  aria-label="Open more navigation links"
+                >
+                  <span className="text-sm">⋯</span>
+                  More
+                  <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="mt-2 w-52">
+                {secondaryNavItems.map((item) => (
+                  <DropdownMenuItem key={item.to} asChild>
+                    <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
+                      <span className="text-sm">{item.emoji}</span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </nav>
       </div>
-      <div className="flex items-center gap-2 sm:gap-3 shrink-0 ml-2">
+      <div className="ml-2 flex shrink-0 items-center gap-2 sm:gap-3">
         {/* Smooth Real-Time Study Clock */}
         <TimeTracker />
         <button
           onClick={() => setShowAd(true)}
-          className="hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors animate-pulse shrink-0"
-          title="Watch ad to earn $10"
+          className="hidden xl:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
+          title="Support PyMaster"
         >
-          <Play className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">Ad +$10</span>
+          <HeartHandshake className="w-3.5 h-3.5" />
+          <span className="hidden sm:inline">Support</span>
         </button>
         {!user && (
           <button
@@ -170,12 +212,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
           </button>
         )}
-        <StreakFire streak={progress.streak} size="sm" showQuote />
-        <div className="flex items-center gap-1.5 text-sm">
+        <div className="hidden md:flex">
+          <StreakFire streak={progress.streak} size="sm" showQuote />
+        </div>
+        <div className="hidden sm:flex items-center gap-1.5 text-sm">
           <Wallet className="w-4 h-4 text-reward-gold" />
           <span className="text-foreground font-medium">${progress.wallet}</span>
         </div>
-        <div className="hidden sm:flex items-center gap-1.5 text-xs px-2 py-1 rounded-full bg-secondary">
+        <div className="hidden xl:flex items-center gap-1.5 text-xs px-2 py-1 rounded-full bg-secondary">
           <Trophy className="w-3 h-3 text-python-yellow" />
           <span className="text-muted-foreground">{levelLabel} • Lv {levelNumber}</span>
         </div>
@@ -183,10 +227,19 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50 hover:bg-secondary transition-colors outline-none cursor-pointer shrink-0">
-                <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-xs font-bold text-primary shrink-0">
-                  {(localStorage.getItem("pymaster_name") || user.displayName || user.email || "U")[0]?.toUpperCase()}
-                </div>
-                <span className="hidden lg:block text-xs text-foreground font-medium truncate max-w-[80px]">
+                <Avatar className="h-7 w-7 shrink-0 border border-primary/25 ring-2 ring-primary/10 shadow-sm">
+                  {localStorage.getItem("pymaster_avatar") ? (
+                    <AvatarImage
+                      src={localStorage.getItem("pymaster_avatar") || ""}
+                      alt="Profile"
+                      className="object-cover"
+                    />
+                  ) : null}
+                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-python-yellow/20 text-xs font-bold text-primary">
+                    {(localStorage.getItem("pymaster_name") || user.displayName || user.email || "U")[0]?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="hidden xl:block text-xs text-foreground font-medium truncate max-w-[80px]">
                   {localStorage.getItem("pymaster_name") || user.displayName || user.email?.split("@")[0] || "User"}
                 </span>
                 <Settings className="w-3.5 h-3.5 text-muted-foreground hidden sm:block" />

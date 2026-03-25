@@ -9,10 +9,10 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
-import { Play, RotateCcw, FileCode, Loader2 } from "lucide-react";
+import { Play, RotateCcw, FileCode, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProgress } from "@/contexts/ProgressContext";
-import { executePython } from "@/lib/piston";
+import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
 
 // ---------- Pre-built code templates ----------
 // Users can select these from the dropdown to quickly try different concepts
@@ -35,6 +35,7 @@ export default function CompilerPage() {
   const [isRunning, setIsRunning] = useState(false);  // Whether code is currently executing
   const [executionTime, setExecutionTime] = useState<number | null>(null); // Execution time in ms
   const { logActivity } = useProgress();              // Record activity for streak
+  const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   // Update code when URL search param changes (e.g., navigating from a lesson)
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function CompilerPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)]">
       {/* ---------- Toolbar ---------- */}
       <div className="h-auto min-h-[3rem] bg-surface-1 border-b border-border flex flex-wrap items-center justify-between px-3 sm:px-4 py-2 gap-2 shrink-0">
         <div className="flex items-center gap-2">
@@ -106,10 +107,16 @@ export default function CompilerPage() {
             <RotateCcw className="w-3 h-3" /> <span className="hidden sm:inline">Clear</span>
           </Button>
           {/* Run button — executes the Python code */}
-          <Button size="sm" className="h-7 text-xs gap-1" onClick={runCode} disabled={isRunning}>
-            {isRunning ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />}
-            {isRunning ? "Running..." : "▶ Run"}
-          </Button>
+          {isRunning ? (
+            <Button size="sm" variant="destructive" className="h-7 text-xs gap-1" onClick={cancelActivePythonExecution}>
+              <Square className="w-3 h-3" /> Stop
+            </Button>
+          ) : (
+            <Button size="sm" className="h-7 text-xs gap-1" onClick={runCode}>
+              <Play className="w-3 h-3" />
+              ▶ Run
+            </Button>
+          )}
         </div>
       </div>
 
@@ -137,7 +144,7 @@ export default function CompilerPage() {
           />
         </div>
         {/* Output panel (right/bottom panel) */}
-        <div className="md:w-96 h-48 md:h-auto border-t md:border-t-0 md:border-l border-border bg-surface-0 flex flex-col">
+        <div className="md:w-96 h-56 md:h-auto border-t md:border-t-0 md:border-l border-border bg-surface-0 flex flex-col">
           {/* Output header with execution time */}
           <div className="px-4 py-2 border-b border-border bg-surface-1 text-xs text-muted-foreground font-mono flex items-center justify-between">
             <span className="flex items-center gap-2">
@@ -152,9 +159,9 @@ export default function CompilerPage() {
             output.includes("❌") || output.includes("⚠️") ? "text-destructive" : "text-foreground"
           }`}>
             {isRunning ? (
-              <span className="text-muted-foreground animate-pulse">⏳ Running Python in browser...</span>
+              <span className="text-muted-foreground animate-pulse">⏳ Running Python in browser worker...</span>
             ) : (
-              output || "Click '▶ Run' to execute your code (runs locally via Pyodide WASM)..."
+              output || `Click '▶ Run' to execute your code locally. Runs in an isolated browser worker with a ${timeoutSeconds}s safety timeout.`
             )}
           </pre>
         </div>

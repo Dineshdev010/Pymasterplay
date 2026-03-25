@@ -1,82 +1,218 @@
 // ============================================================
 // PYTHON EXECUTOR — src/lib/piston.ts
-// Runs Python code in the browser using Pyodide (WebAssembly).
-// No server needed — Python runs 100% client-side!
-// Optimized: preloads Pyodide eagerly after page load for speed.
+// Runs Python code in an isolated Web Worker using Pyodide.
+// This keeps user code off the main UI thread and lets us
+// terminate runaway scripts safely when they time out or are stopped.
 // ============================================================
 
-// --- Type definition for execution results ---
 export interface ExecutionResult {
-  output: string; // stdout (print() output)
-  error: string; // stderr (error messages)
-  exitCode: number; // 0 = success, 1 = error
+  output: string;
+  error: string;
+  exitCode: number;
 }
 
-// Cache the Pyodide instance so we only load it once
-let pyodideInstance: PyodideInstance | null = null;
-let pyodidePromise: Promise<PyodideInstance> | null = null;
+interface WorkerSuccessMessage {
+  type: "execution-result";
+  requestId: number;
+  result: ExecutionResult;
+}
 
-/**
- * Load Pyodide (Python-in-the-browser via WebAssembly).
- * Cached after first load — subsequent calls return instantly.
- */
-function loadPyodide(): Promise<PyodideInstance> {
-  if (pyodideInstance) return Promise.resolve(pyodideInstance);
-  if (pyodidePromise) return pyodidePromise;
+interface WorkerReadyMessage {
+  type: "worker-ready";
+}
 
-  pyodidePromise = (async () => {
-    try {
-      // Step 1: Add the Pyodide script tag (if not already there)
-      if (!window.loadPyodide) {
-        const script = document.createElement("script");
-        script.src = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js";
-        script.async = true;
-        await new Promise<void>((resolve, reject) => {
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error("Failed to load Pyodide"));
-          document.head.appendChild(script);
-        });
-      }
+interface WorkerErrorMessage {
+  type: "worker-error";
+  requestId?: number;
+  error: string;
+}
 
-      if (!window.loadPyodide) {
-        throw new Error("Pyodide loader did not initialize.");
-      }
+type WorkerMessage = WorkerSuccessMessage | WorkerReadyMessage | WorkerErrorMessage;
 
-      // Step 2: Initialize Pyodide
-      const pyodide = await window.loadPyodide({
-        indexURL: "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/",
-      });
+interface ExecutionOptions {
+  timeoutMs?: number;
+}
 
-      pyodideInstance = pyodide;
-      return pyodide;
-    } catch (err) {
-      pyodidePromise = null;
-      throw err;
+const DEFAULT_TIMEOUT_MS = 5000;
+const INIT_TIMEOUT_MS = 20000;
+
+let worker: Worker | null = null;
+let workerReadyPromise: Promise<void> | null = null;
+let nextRequestId = 1;
+let executionQueue: Promise<void> = Promise.resolve();
+let activeExecution:
+  | {
+      requestId: number;
+      resolve: (result: ExecutionResult) => void;
+      timeoutId: number;
     }
-  })();
+  | null = null;
 
-  return pyodidePromise;
-}
+function createWorker() {
+  const nextWorker = new Worker(new URL("../workers/pythonRunner.worker.ts", import.meta.url), {
+    type: "module",
+  });
 
-/**
- * Preload Pyodide in the background so first run is fast.
- * Called automatically after page loads.
- */
-export function preloadPyodide(): void {
-  // Use requestIdleCallback or setTimeout to avoid blocking UI
-  if (typeof window !== "undefined") {
-    const start = () => {
-      loadPyodide().catch(() => undefined);
+  worker = nextWorker;
+  workerReadyPromise = new Promise<void>((resolve, reject) => {
+    const initTimeoutId = window.setTimeout(() => {
+      cleanup();
+      reject(new Error("Python runtime initialization timed out."));
+    }, INIT_TIMEOUT_MS);
+
+    const cleanup = () => {
+      nextWorker.removeEventListener("message", handleMessage);
+      nextWorker.removeEventListener("error", handleError);
+      window.clearTimeout(initTimeoutId);
     };
-    if ("requestIdleCallback" in window) {
-      window.requestIdleCallback?.(() => start());
-    } else {
-      setTimeout(start, 2000);
+
+    const handleMessage = (event: MessageEvent<WorkerMessage>) => {
+      if (event.data.type !== "worker-ready") {
+        return;
+      }
+
+      cleanup();
+      resolve();
+    };
+
+    const handleError = () => {
+      cleanup();
+      reject(new Error("Failed to initialize Python worker."));
+    };
+
+    nextWorker.addEventListener("message", handleMessage);
+    nextWorker.addEventListener("error", handleError);
+    nextWorker.postMessage({ type: "init" });
+  });
+
+  return nextWorker;
+}
+
+function terminateWorker() {
+  if (worker) {
+    worker.terminate();
+  }
+
+  worker = null;
+  workerReadyPromise = null;
+}
+
+async function ensureWorkerReady() {
+  if (!worker || !workerReadyPromise) {
+    createWorker();
+  }
+
+  await workerReadyPromise;
+
+  if (!worker) {
+    throw new Error("Python worker is unavailable.");
+  }
+
+  return worker;
+}
+
+function formatWorkerFailure(message: string): ExecutionResult {
+  return {
+    output: "",
+    error: message,
+    exitCode: 1,
+  };
+}
+
+function runPythonExecution(code: string, options?: ExecutionOptions): Promise<ExecutionResult> {
+  return new Promise<ExecutionResult>(async (resolve) => {
+    const requestId = nextRequestId++;
+    const timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+
+    try {
+      const activeWorker = await ensureWorkerReady();
+
+      const cleanup = () => {
+        if (!worker) {
+          return;
+        }
+
+        worker.removeEventListener("message", handleMessage);
+        worker.removeEventListener("error", handleError);
+      };
+
+      const finish = (result: ExecutionResult) => {
+        if (!activeExecution || activeExecution.requestId !== requestId) {
+          return;
+        }
+
+        cleanup();
+        window.clearTimeout(activeExecution.timeoutId);
+        activeExecution = null;
+        resolve(result);
+      };
+
+      const handleMessage = (event: MessageEvent<WorkerMessage>) => {
+        const message = event.data;
+
+        if (message.type === "worker-error" && message.requestId === requestId) {
+          finish(formatWorkerFailure(message.error));
+          return;
+        }
+
+        if (message.type === "execution-result" && message.requestId === requestId) {
+          finish(message.result);
+        }
+      };
+
+      const handleError = () => {
+        finish(formatWorkerFailure("Python worker crashed during execution."));
+        terminateWorker();
+      };
+
+      activeExecution = {
+        requestId,
+        resolve: finish,
+        timeoutId: window.setTimeout(() => {
+          const timedOutExecution = activeExecution;
+          terminateWorker();
+
+          if (timedOutExecution && timedOutExecution.requestId === requestId) {
+            timedOutExecution.resolve(
+              formatWorkerFailure(
+                `Execution timed out after ${Math.round(timeoutMs / 1000)} seconds. Try a smaller input, fix any infinite loop, or stop the run earlier.`,
+              ),
+            );
+            activeExecution = null;
+          }
+        }, timeoutMs),
+      };
+
+      activeWorker.addEventListener("message", handleMessage);
+      activeWorker.addEventListener("error", handleError);
+      activeWorker.postMessage({ type: "execute", requestId, code });
+    } catch (error) {
+      terminateWorker();
+      resolve(
+        formatWorkerFailure(
+          `Failed to initialize Python: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ),
+      );
     }
+  });
+}
+
+export function preloadPyodide(): void {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const start = () => {
+    ensureWorkerReady().catch(() => undefined);
+  };
+
+  if ("requestIdleCallback" in window) {
+    window.requestIdleCallback?.(() => start());
+  } else {
+    window.setTimeout(start, 1500);
   }
 }
 
-// Auto-preload after page loads
 if (typeof window !== "undefined") {
   if (document.readyState === "complete") {
     preloadPyodide();
@@ -85,68 +221,33 @@ if (typeof window !== "undefined") {
   }
 }
 
-/**
- * Execute a Python code string and return the output.
- * Optimized: reuses cached Pyodide instance, minimal overhead.
- */
-export async function executePython(code: string): Promise<ExecutionResult> {
-  try {
-    const pyodide = await loadPyodide();
-
-    // Redirect stdout and stderr to capture print() output
-    pyodide.runPython(`
-import sys
-from io import StringIO
-sys.stdout = StringIO()
-sys.stderr = StringIO()
-`);
-
-    try {
-      // Run the user's Python code
-      pyodide.runPython(code);
-
-      // Read captured output
-      const stdout = pyodide.runPython("sys.stdout.getvalue()") || "";
-      const stderr = pyodide.runPython("sys.stderr.getvalue()") || "";
-
-      return {
-        output: stdout,
-        error: stderr,
-        exitCode: stderr ? 1 : 0,
-      };
-    } catch (err) {
-      let stdout = "";
-      try {
-        stdout = pyodide.runPython("sys.stdout.getvalue()") || "";
-      } catch {
-        // Keep best-effort stdout capture only.
-      }
-
-      const pyodideError = err as PyodideError;
-      const errorMessage = pyodideError.type
-        ? `${pyodideError.type}: ${pyodideError.message}`
-        : pyodideError.message || String(err);
-      return {
-        output: String(stdout),
-        error: errorMessage,
-        exitCode: 1,
-      };
-    } finally {
-      // Always reset stdout/stderr back to normal
-      try {
-        pyodide.runPython(`
-sys.stdout = sys.__stdout__
-sys.stderr = sys.__stderr__
-`);
-      } catch {
-        // Ignore cleanup failures from partially initialized runtimes.
-      }
-    }
-  } catch (err) {
-    return {
-      output: "",
-      error: `Failed to initialize Python: ${err instanceof Error ? err.message : "Unknown error"}`,
-      exitCode: 1,
-    };
+export function cancelActivePythonExecution(): void {
+  if (!activeExecution) {
+    return;
   }
+
+  const cancelledExecution = activeExecution;
+  terminateWorker();
+  window.clearTimeout(cancelledExecution.timeoutId);
+  cancelledExecution.resolve(
+    formatWorkerFailure("Execution stopped. You can update the code and run it again."),
+  );
+  activeExecution = null;
+}
+
+export function getPythonExecutionTimeoutMs(): number {
+  return DEFAULT_TIMEOUT_MS;
+}
+
+export async function executePython(code: string, options?: ExecutionOptions): Promise<ExecutionResult> {
+  const queuedExecution = executionQueue
+    .catch(() => undefined)
+    .then(() => runPythonExecution(code, options));
+
+  executionQueue = queuedExecution.then(
+    () => undefined,
+    () => undefined,
+  );
+
+  return queuedExecution;
 }

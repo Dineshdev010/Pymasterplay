@@ -6,6 +6,7 @@
 import { motion } from "framer-motion";
 import { Heart, Coffee, CreditCard, Star, Gift, ExternalLink, Smartphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Helmet } from "react-helmet-async";
 
 import gpayQR from "@/assets/gpay-qr.jpg";
 
@@ -14,7 +15,7 @@ const donationLinks = [
     name: "Buy Me a Coffee",
     emoji: "☕",
     description: "Support PyMaster with a coffee! Every cup fuels more lessons.",
-    url: "https://buymeacoffee.com",
+    url: "https://buymeacoffee.com/dineshjas9r",
     color: "bg-python-yellow/10 border-python-yellow/30 hover:border-python-yellow",
     buttonColor: "bg-python-yellow text-background hover:bg-python-yellow/90",
     icon: Coffee,
@@ -62,6 +63,13 @@ const fadeUp = {
 export default function DonatePage() {
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>Support PyMaster | Donate</title>
+        <meta
+          name="description"
+          content="Support PyMaster through Buy Me a Coffee, GPay, or PayPal to help keep Python lessons and practice resources growing."
+        />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-16 sm:py-24 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-destructive/5 to-transparent" />

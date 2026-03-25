@@ -24,11 +24,29 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const { showCelebration, celebrationData, dismissCelebration, logActivity } = useProgress();
   const [sidebarOpen, setSidebarOpen] = useState(false); // Controls sidebar visibility
   const isAuthPage = location.pathname === "/auth"; // Auth page has a simpler layout
+  const hideFooter =
+    isAuthPage ||
+    location.pathname.startsWith("/compiler") ||
+    location.pathname.startsWith("/problems/") ||
+    location.pathname === "/dashboard" ||
+    location.pathname === "/certificate" ||
+    location.pathname.startsWith("/learn") ||
+    location.pathname.startsWith("/dsa") ||
+    location.pathname === "/jobs";
   const hideActiveUsersBadge =
     location.pathname.startsWith("/learn") ||
     location.pathname.startsWith("/dsa") ||
     location.pathname.startsWith("/compiler");
   const { toast } = useToast();
+
+  useEffect(() => {
+    document.body.dataset.sidebarOpen = sidebarOpen ? "true" : "false";
+    window.dispatchEvent(new CustomEvent("pymaster-sidebar-change", { detail: { open: sidebarOpen } }));
+
+    return () => {
+      delete document.body.dataset.sidebarOpen;
+    };
+  }, [sidebarOpen]);
 
   // Log activity on first visit of the day to update streak counter
   useEffect(() => {
@@ -82,7 +100,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <TopNavbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
       {/* Live activity banner below the fixed navbar */}
-      {!hideActiveUsersBadge && <ActiveUsersBanner />}
+      {!hideActiveUsersBadge && !sidebarOpen && <ActiveUsersBanner />}
 
       {/* Sidebar: slides in from left when menu button is clicked */}
       <AnimatePresence>
@@ -108,8 +126,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </AnimatePresence>
       </main>
 
-      {/* Footer: only shown on home page and donate page */}
-      {(location.pathname === "/" || location.pathname === "/donate") && <Footer />}
+      {/* Footer: keep trust/navigation links visible across public pages */}
+      {!hideFooter && <Footer />}
 
       {/* Floating feedback button (bottom-right corner) */}
       <FeedbackForm />

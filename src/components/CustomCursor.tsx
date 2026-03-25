@@ -381,7 +381,6 @@ export function CustomCursor() {
           translateX: "-50%",
           translateY: "-50%",
           zIndex: 9998,
-          backdropFilter: "blur(6px)",
         }}
         animate={{
           width: theme.ringIdleSize,

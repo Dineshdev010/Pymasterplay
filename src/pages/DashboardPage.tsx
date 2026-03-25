@@ -16,10 +16,9 @@ import { StreakFire } from "@/components/StreakFire";
 import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Flame, Wallet, Trophy, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles } from "lucide-react";
+import { BookOpen, Code, Flame, Wallet, Trophy, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
-import html2canvas from "html2canvas";
 
 const trophyMilestones = [
 { stars: 20, emoji: "🥉", title: "Bronze Trophy", color: "bg-reward-gold/10 border-reward-gold/30" },
@@ -95,6 +94,39 @@ const DASHBOARD_THEMES = [
   },
 ];
 
+type SocialLinks = {
+  github: string;
+  linkedin: string;
+  portfolio: string;
+};
+
+const DEFAULT_SOCIAL_LINKS: SocialLinks = {
+  github: "",
+  linkedin: "",
+  portfolio: "",
+};
+
+function readSocialLinks(): SocialLinks {
+  try {
+    const parsed = JSON.parse(localStorage.getItem("pymaster_social_links") || "{}");
+    return {
+      github: typeof parsed.github === "string" ? parsed.github : "",
+      linkedin: typeof parsed.linkedin === "string" ? parsed.linkedin : "",
+      portfolio: typeof parsed.portfolio === "string" ? parsed.portfolio : "",
+    };
+  } catch {
+    return DEFAULT_SOCIAL_LINKS;
+  }
+}
+
+function formatCountdown(totalSeconds: number) {
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return `${minutes}m ${seconds}s`;
+}
+
+const TIME_GIFT_INTERVAL_SECONDS = 60 * 60;
+
 
 export default function DashboardPage() {
   const { progress, attemptStreakRecovery, canRecover, recoveryCost, addWallet } = useProgress();
@@ -118,6 +150,18 @@ export default function DashboardPage() {
   const [dashboardTheme, setDashboardTheme] = useState(() => localStorage.getItem("pymaster_dashboard_theme") || "pymaster");
   const [compareUsers, setCompareUsers] = useState<LeaderboardCompareRow[]>([]);
   const [exportingShareCard, setExportingShareCard] = useState(false);
+  const [profileBio, setProfileBio] = useState(() => localStorage.getItem("pymaster_bio") || "");
+  const [skillsInput, setSkillsInput] = useState(() => {
+    try {
+      const cachedSkills = JSON.parse(localStorage.getItem("pymaster_skills") || "[]");
+      return Array.isArray(cachedSkills) ? cachedSkills.join(", ") : "";
+    } catch {
+      return "";
+    }
+  });
+  const [socialLinks, setSocialLinks] = useState<SocialLinks>(() => readSocialLinks());
+  const [savingProfileDetails, setSavingProfileDetails] = useState(false);
+  const [giftTick, setGiftTick] = useState(0);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const shareCardRef = useRef<HTMLDivElement>(null);
 
@@ -130,11 +174,21 @@ export default function DashboardPage() {
     if (profile.avatarUrl) {
       setProfilePic(profile.avatarUrl);
     }
+    setProfileBio(profile.bio || "");
+    setSkillsInput((profile.skills || []).join(", "));
   }, [profile]);
 
   useEffect(() => {
     localStorage.setItem("pymaster_dashboard_theme", dashboardTheme);
   }, [dashboardTheme]);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setGiftTick((current) => current + 1);
+    }, 1000);
+
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -284,6 +338,20 @@ export default function DashboardPage() {
   const compareWindow = yourRank
     ? compareRankings.filter((entry) => Math.abs(entry.rank - yourRank.rank) <= 1).slice(0, 3)
     : compareRankings.slice(0, 3);
+  const liveTimeSpent = (progress.timeSpent || 0) + (giftTick % 60);
+  const countdownRemainder = liveTimeSpent % TIME_GIFT_INTERVAL_SECONDS;
+  const secondsUntilGift = countdownRemainder === 0 ? TIME_GIFT_INTERVAL_SECONDS : TIME_GIFT_INTERVAL_SECONDS - countdownRemainder;
+  const nextGiftAtHours = Math.floor(liveTimeSpent / TIME_GIFT_INTERVAL_SECONDS) + 1;
+  const parsedSkills = skillsInput
+    .split(",")
+    .map((skill) => skill.trim())
+    .filter(Boolean)
+    .slice(0, 8);
+  const visibleSocialLinks = [
+    socialLinks.github ? { label: "GitHub", href: socialLinks.github, icon: Github } : null,
+    socialLinks.linkedin ? { label: "LinkedIn", href: socialLinks.linkedin, icon: Linkedin } : null,
+    socialLinks.portfolio ? { label: "Portfolio", href: socialLinks.portfolio, icon: Globe } : null,
+  ].filter(Boolean) as { label: string; href: string; icon: typeof Github }[];
   const recentActivity = [
     progress.solvedProblems.length > 0 ? `Solved ${progress.solvedProblems.length} total coding problems` : null,
     progress.completedLessons.length > 0 ? `Completed ${progress.completedLessons.length} lessons in the learning track` : null,
@@ -302,7 +370,8 @@ export default function DashboardPage() {
 
   const shareText =
     `${profileName} is learning on PyMaster.\n` +
-    `XP: ${progress.xp.toLocaleString()} | Problems Solved: ${progress.solvedProblems.length} | Lessons: ${progress.completedLessons.length} | Streak: ${progress.streak} days | Stars: ${progress.starsCaught}`;
+    `XP: ${progress.xp.toLocaleString()} | Problems Solved: ${progress.solvedProblems.length} | Lessons: ${progress.completedLessons.length} | Streak: ${progress.streak} days | Stars: ${progress.starsCaught}` +
+    (profileBio ? `\nAbout: ${profileBio}` : "");
 
   const handleShareDashboard = async () => {
     try {
@@ -370,6 +439,7 @@ export default function DashboardPage() {
 
     setExportingShareCard(true);
     try {
+      const { default: html2canvas } = await import("html2canvas");
       const canvas = await html2canvas(card, {
         scale: 2,
         useCORS: true,
@@ -392,6 +462,41 @@ export default function DashboardPage() {
       });
     } finally {
       setExportingShareCard(false);
+    }
+  };
+
+  const handleSaveProfileDetails = async () => {
+    setSavingProfileDetails(true);
+    try {
+      const parsedSkills = skillsInput
+        .split(",")
+        .map((skill) => skill.trim())
+        .filter(Boolean)
+        .slice(0, 8);
+
+      await saveProfile({
+        displayName: profileName,
+        bio: profileBio,
+        avatarUrl: profilePic,
+        skills: parsedSkills,
+        profileComplete: true,
+      });
+
+      localStorage.setItem("pymaster_social_links", JSON.stringify(socialLinks));
+      setSkillsInput(parsedSkills.join(", "));
+
+      toast({
+        title: "Profile updated",
+        description: "Your bio, skills, and social links are saved.",
+      });
+    } catch (error) {
+      toast({
+        title: "Profile update failed",
+        description: error instanceof Error ? error.message : "We couldn't save your profile details.",
+        variant: "destructive",
+      });
+    } finally {
+      setSavingProfileDetails(false);
     }
   };
 
@@ -461,6 +566,34 @@ export default function DashboardPage() {
                 </span>
               )}
             </div>
+            {profileBio && (
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">{profileBio}</p>
+            )}
+            {parsedSkills.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {parsedSkills.map((skill) => (
+                  <span key={skill} className="rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-foreground">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            )}
+            {visibleSocialLinks.length > 0 && (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {visibleSocialLinks.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="rounded-2xl border border-border bg-background/90 p-5 backdrop-blur">
@@ -511,18 +644,20 @@ export default function DashboardPage() {
       {/* Profile header */}
       <div className="flex items-center gap-4 mb-8">
         <div className="relative group">
-          <Avatar className="w-16 h-16 border-2 border-primary">
+          <Avatar className="w-20 h-20 border-2 border-primary/40 ring-4 ring-primary/10 shadow-xl shadow-primary/10">
             {profilePic ? <AvatarImage src={profilePic} alt="Profile" /> : null}
-            <AvatarFallback className="text-2xl bg-primary/20">{selectedEmoji || trophy.emoji}</AvatarFallback>
+            <AvatarFallback className="text-2xl bg-gradient-to-br from-primary/20 via-python-yellow/10 to-primary/10 text-primary">
+              {selectedEmoji || trophy.emoji}
+            </AvatarFallback>
           </Avatar>
           {selectedEmoji &&
-          <span className="absolute -bottom-1 -right-1 text-lg bg-card border border-border rounded-full w-7 h-7 flex items-center justify-center shadow-sm">
+          <span className="absolute -bottom-1 -right-1 text-lg bg-card border border-border rounded-full w-8 h-8 flex items-center justify-center shadow-md">
               {selectedEmoji}
             </span>
           }
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="absolute inset-0 rounded-full bg-background/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            className="absolute inset-0 rounded-full bg-background/65 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
             
             <Camera className="w-5 h-5 text-foreground" />
           </button>
@@ -563,6 +698,128 @@ export default function DashboardPage() {
             </span>
           </div>
         </div>
+      </div>
+
+      <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] mb-8">
+        <SectionErrorBoundary section="Profile Editor">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                  <Pencil className="w-5 h-5 text-primary" />
+                  Edit Profile
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  Keep your public card fresh with a bio, skill tags, and your main links.
+                </p>
+              </div>
+              <Button type="button" size="sm" className="gap-2" onClick={handleSaveProfileDetails} disabled={savingProfileDetails}>
+                <Save className="w-4 h-4" />
+                {savingProfileDetails ? "Saving..." : "Save"}
+              </Button>
+            </div>
+
+            <div className="mt-5 space-y-4">
+              <div>
+                <label className="text-sm font-medium text-foreground">Bio</label>
+                <textarea
+                  value={profileBio}
+                  onChange={(event) => setProfileBio(event.target.value.slice(0, 180))}
+                  className="mt-2 min-h-[96px] w-full rounded-xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                  placeholder="Tell people what you are learning, building, or aiming for."
+                />
+                <div className="mt-1 text-right text-xs text-muted-foreground">{profileBio.length}/180</div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-foreground">Skills</label>
+                <input
+                  value={skillsInput}
+                  onChange={(event) => setSkillsInput(event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                  placeholder="Python, Flask, Pandas, APIs"
+                />
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {parsedSkills.length > 0 ? parsedSkills.map((skill) => (
+                    <span key={skill} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+                      {skill}
+                    </span>
+                  )) : (
+                    <span className="text-xs text-muted-foreground">Comma-separated skills will appear here.</span>
+                  )}
+                </div>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                <div>
+                  <label className="text-sm font-medium text-foreground">GitHub</label>
+                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
+                    <Github className="w-4 h-4 text-muted-foreground" />
+                    <input
+                      value={socialLinks.github}
+                      onChange={(event) => setSocialLinks((current) => ({ ...current, github: event.target.value }))}
+                      className="w-full bg-transparent text-sm text-foreground outline-none"
+                      placeholder="https://github.com/username"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground">LinkedIn</label>
+                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
+                    <Linkedin className="w-4 h-4 text-muted-foreground" />
+                    <input
+                      value={socialLinks.linkedin}
+                      onChange={(event) => setSocialLinks((current) => ({ ...current, linkedin: event.target.value }))}
+                      className="w-full bg-transparent text-sm text-foreground outline-none"
+                      placeholder="https://linkedin.com/in/username"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-foreground">Portfolio</label>
+                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
+                    <Globe className="w-4 h-4 text-muted-foreground" />
+                    <input
+                      value={socialLinks.portfolio}
+                      onChange={(event) => setSocialLinks((current) => ({ ...current, portfolio: event.target.value }))}
+                      className="w-full bg-transparent text-sm text-foreground outline-none"
+                      placeholder="https://your-site.com"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </SectionErrorBoundary>
+
+        <SectionErrorBoundary section="Time Gift">
+          <div className="bg-card border border-border rounded-2xl p-6">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Clock className="w-5 h-5 text-primary" />
+              Time Gift Countdown
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Stay on the platform and PyMaster drops a wallet gift every 10 minutes.
+            </p>
+
+            <div className="mt-5 rounded-2xl border border-primary/20 bg-primary/5 p-5">
+              <div className="text-xs uppercase tracking-[0.2em] text-primary">Next Gift</div>
+              <div className="mt-2 text-4xl font-bold text-foreground">{formatCountdown(secondsUntilGift)}</div>
+              <div className="mt-2 text-sm text-muted-foreground">
+                Hourly gift #{nextGiftAtHours} unlocks with a <span className="font-semibold text-foreground">+$5 wallet bonus</span>.
+              </div>
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-background">
+                <div
+                  className="h-full rounded-full bg-primary transition-all"
+                  style={{ width: `${((TIME_GIFT_INTERVAL_SECONDS - secondsUntilGift) / TIME_GIFT_INTERVAL_SECONDS) * 100}%` }}
+                />
+              </div>
+              <div className="mt-3 text-xs text-muted-foreground">
+                Time tracked so far: <span className="font-semibold text-foreground">{formatTime(liveTimeSpent)}</span>
+              </div>
+            </div>
+          </div>
+        </SectionErrorBoundary>
       </div>
 
       {/* Streak Recovery Banner */}

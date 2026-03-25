@@ -623,7 +623,7 @@ export default function DSAPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)]">
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)] md:flex-row">
       <Helmet>
         <title>Data Structures & Algorithms in Python | PyMaster</title>
         <meta name="description" content="Master Python Data Structures and Algorithms with visual explanations, complexity analysis, and real-world patterns. Free DSA course." />

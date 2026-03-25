@@ -7,7 +7,7 @@
 // - Star catching from the landing page
 // ============================================================
 
-import { createContext, useContext, useState, useEffect, ReactNode, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from "react";
 import {
   UserProgress,
   getProgress,
@@ -64,6 +64,9 @@ const STREAK_MILESTONES: Record<7 | 14 | 30 | 100, { title: string; subtitle: st
 
 // Cash reward amounts for each streak milestone
 const STREAK_REWARDS: Record<7 | 14 | 30 | 100, number> = { 7: 10, 14: 25, 30: 50, 100: 200 };
+const TIME_GIFT_INTERVAL_SECONDS = 60 * 60;
+const TIME_GIFT_REWARD = 5;
+const CLOUD_SYNC_DEBOUNCE_MS = 8000;
 
 // ============================================================
 // PROGRESS PROVIDER — wraps the app to provide progress state
@@ -74,6 +77,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ title: string; subtitle: string; emoji: string; reward?: string } | null>(null);
   const [hydratedUserId, setHydratedUserId] = useState<string | null>(user?.uid ?? null);
+  const lastCloudSnapshotRef = useRef<string>("");
 
   // 1. Fetch from Supabase whenever user logs in or mounts
   useEffect(() => {
@@ -83,6 +87,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       // Fallback to local storage if not logged in
       setProgress(getProgress());
       setHydratedUserId(null);
+      lastCloudSnapshotRef.current = "";
       return () => {
         active = false;
       };
@@ -104,7 +109,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         if (error) {
           console.error("Cloud Load Error", error);
           setProgress(localProgress);
-          setCloudReady(true);
+          setHydratedUserId(user.uid);
           return;
         }
 
@@ -112,6 +117,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         const mergedProgress = mergeProgress(localProgress, remoteProgress);
         setProgress(mergedProgress);
         saveProgress(mergedProgress);
+        lastCloudSnapshotRef.current = JSON.stringify(progressToProfileUpdate(mergedProgress));
         setHydratedUserId(user.uid);
       });
 
@@ -135,17 +141,29 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    if (!user) {
+      return;
+    }
+
+    const payload = progressToProfileUpdate(progress);
+    const snapshot = JSON.stringify(payload);
+    if (snapshot === lastCloudSnapshotRef.current) {
+      return;
+    }
+
     const handler = setTimeout(() => {
-      // Background cloud sync!
-      if (user) {
-        supabase.from('profiles').upsert({
-          id: user.uid,
-          ...progressToProfileUpdate(progress),
-        }).then(({ error }) => {
-          if (error) console.error("Cloud Sync Error", error);
-        });
-      }
-    }, 1500); // 1.5 sec global execution buffer
+      supabase.from("profiles").upsert({
+        id: user.uid,
+        ...payload,
+      }).then(({ error }) => {
+        if (error) {
+          console.error("Cloud Sync Error", error);
+          return;
+        }
+
+        lastCloudSnapshotRef.current = snapshot;
+      });
+    }, CLOUD_SYNC_DEBOUNCE_MS);
     
     return () => clearTimeout(handler);
   }, [hydratedUserId, progress, user]);
@@ -263,9 +281,9 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     });
   }, [triggerCelebration]);
 
-  // ---------- Unlock a lesson by paying $25 ----------
+  // ---------- Unlock a lesson by paying $100 ----------
   // Returns true if successful, false if not enough money
-  const unlockLesson = useCallback((lessonId: string, cost = 25): boolean => {
+  const unlockLesson = useCallback((lessonId: string, cost = 100): boolean => {
     let success = false;
     setProgress(prev => {
       // Already unlocked? No cost needed
@@ -452,8 +470,35 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addTimeSpent = useCallback((seconds: number) => {
-    setProgress(prev => ({ ...prev, timeSpent: (prev.timeSpent || 0) + seconds }));
-  }, []);
+    setProgress(prev => {
+      const previousTimeSpent = prev.timeSpent || 0;
+      const nextTimeSpent = previousTimeSpent + seconds;
+      const previousGiftCount = Math.floor(previousTimeSpent / TIME_GIFT_INTERVAL_SECONDS);
+      const nextGiftCount = Math.floor(nextTimeSpent / TIME_GIFT_INTERVAL_SECONDS);
+      const earnedGiftCount = nextGiftCount - previousGiftCount;
+
+      if (earnedGiftCount <= 0) {
+        return { ...prev, timeSpent: nextTimeSpent };
+      }
+
+      const rewardTotal = earnedGiftCount * TIME_GIFT_REWARD;
+
+      setTimeout(() => {
+        triggerCelebration(
+          "🎁 Time Gift Unlocked!",
+          `Thanks for staying consistent. You earned a bonus for spending time on PyMaster.`,
+          "⏱️",
+          `+$${rewardTotal} bonus`
+        );
+      }, 250);
+
+      return {
+        ...prev,
+        timeSpent: nextTimeSpent,
+        wallet: prev.wallet + rewardTotal,
+      };
+    });
+  }, [triggerCelebration]);
 
   // Provide all progress state and actions to child components
   return (

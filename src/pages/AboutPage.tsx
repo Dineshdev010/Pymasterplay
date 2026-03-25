@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { Users, Target, Heart, Code, BookOpen, Trophy } from "lucide-react";
 import { motion } from "framer-motion";
 import { AboutUsSection } from "@/components/landing/AboutUsSection";
+import { Helmet } from "react-helmet-async";
 
 import type { Variants } from "framer-motion";
 
@@ -31,6 +32,13 @@ const scaleIn: Variants = {
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background overflow-hidden">
+      <Helmet>
+        <title>About PyMaster | Python Learning Platform</title>
+        <meta
+          name="description"
+          content="Learn about PyMaster, its mission, what the platform offers, and how it helps learners build Python skills through lessons, practice, and projects."
+        />
+      </Helmet>
       {/* Hero */}
       <section className="relative py-20 px-4">
         <motion.div

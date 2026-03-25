@@ -1,4 +1,11 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://pymaster.lovable.app/sitemap.xml
+# Private or low-value utility routes
+Disallow: /auth
+Disallow: /dashboard
+Disallow: /complete-profile
+Disallow: /reset-password
+Disallow: /certificate
+
+Sitemap: https://pymaster.pro/sitemap.xml

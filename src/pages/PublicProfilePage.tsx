@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import { Trophy, Flame, Code, Wallet, ArrowLeft, Share2, Copy, Medal } from "lucide-react";
+import { Trophy, Flame, Code, Wallet, ArrowLeft, Share2, Copy, Medal, Github, Linkedin, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from "@/lib/supabase";
@@ -8,6 +8,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getStreakTitle } from "@/lib/progress";
+import { readLeaderboardCache, writeLeaderboardCache, type CachedLeaderboardRow } from "@/lib/leaderboardCache";
 
 type PublicProfileRow = {
   user_id: string;
@@ -19,6 +20,19 @@ type PublicProfileRow = {
   wallet: number;
 };
 
+function readSocialLinks() {
+  try {
+    const parsed = JSON.parse(localStorage.getItem("pymaster_social_links") || "{}");
+    return {
+      github: typeof parsed.github === "string" ? parsed.github : "",
+      linkedin: typeof parsed.linkedin === "string" ? parsed.linkedin : "",
+      portfolio: typeof parsed.portfolio === "string" ? parsed.portfolio : "",
+    };
+  } catch {
+    return { github: "", linkedin: "", portfolio: "" };
+  }
+}
+
 export default function PublicProfilePage() {
   const { userId } = useParams();
   const { user, profile } = useAuth();
@@ -26,33 +40,61 @@ export default function PublicProfilePage() {
   const { toast } = useToast();
   const [entry, setEntry] = useState<PublicProfileRow | null>(null);
   const [loading, setLoading] = useState(true);
+  const isOwnProfile = user?.uid === userId;
+
+  const localOwnEntry = useMemo<PublicProfileRow | null>(() => {
+    if (!isOwnProfile || !user) {
+      return null;
+    }
+
+    return {
+      user_id: user.uid,
+      display_name: profile?.displayName || localStorage.getItem("pymaster_name") || "Python Learner",
+      avatar_url: profile?.avatarUrl || localStorage.getItem("pymaster_avatar") || "",
+      xp: progress.xp,
+      solved_count: progress.solvedProblems.length,
+      streak: progress.streak,
+      wallet: progress.wallet,
+    };
+  }, [isOwnProfile, profile?.avatarUrl, profile?.displayName, progress.solvedProblems.length, progress.streak, progress.wallet, progress.xp, user]);
 
   useEffect(() => {
     let active = true;
     setLoading(true);
+    const cachedRows = readLeaderboardCache();
+    const cachedEntry = cachedRows?.find((row) => row.user_id === userId) || null;
+
+    if (cachedEntry) {
+      setEntry(cachedEntry);
+      setLoading(false);
+    } else if (localOwnEntry) {
+      setEntry(localOwnEntry);
+      setLoading(false);
+    }
+
+    if (localOwnEntry && !cachedEntry) {
+      return () => {
+        active = false;
+      };
+    }
 
     supabase.rpc("get_leaderboard").then(({ data, error }) => {
       if (!active) return;
       if (error) {
         console.error("Public profile load failed", error);
-        setEntry(null);
+        if (!cachedEntry && !localOwnEntry) {
+          setEntry(null);
+        }
         setLoading(false);
         return;
       }
 
-      const rows = (data || []) as PublicProfileRow[];
+      const rows = (data || []) as CachedLeaderboardRow[];
+      writeLeaderboardCache(rows);
       const leaderboardEntry = rows.find((row) => row.user_id === userId) || null;
 
-      if (!leaderboardEntry && user?.uid === userId) {
-        setEntry({
-          user_id: user.uid,
-          display_name: profile?.displayName || localStorage.getItem("pymaster_name") || "Python Learner",
-          avatar_url: profile?.avatarUrl || localStorage.getItem("pymaster_avatar") || "",
-          xp: progress.xp,
-          solved_count: progress.solvedProblems.length,
-          streak: progress.streak,
-          wallet: progress.wallet,
-        });
+      if (!leaderboardEntry && localOwnEntry) {
+        setEntry(localOwnEntry);
       } else {
         setEntry(leaderboardEntry);
       }
@@ -63,7 +105,7 @@ export default function PublicProfilePage() {
     return () => {
       active = false;
     };
-  }, [profile?.avatarUrl, profile?.displayName, progress.solvedProblems.length, progress.streak, progress.wallet, progress.xp, user?.uid, userId]);
+  }, [localOwnEntry, userId]);
 
   const publicUrl = typeof window !== "undefined" ? window.location.href : "";
   const shareText = useMemo(() => {
@@ -91,6 +133,23 @@ export default function PublicProfilePage() {
 
   const streakTitle = entry ? getStreakTitle(entry.streak) : "Learner";
   const level = entry ? Math.floor(entry.xp / 500) + 1 : 1;
+  const bio = isOwnProfile ? profile?.bio || localStorage.getItem("pymaster_bio") || "" : "";
+  const skills = isOwnProfile
+    ? (profile?.skills?.length ? profile.skills : (() => {
+        try {
+          const parsed = JSON.parse(localStorage.getItem("pymaster_skills") || "[]");
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      })())
+    : [];
+  const socialLinks = isOwnProfile ? readSocialLinks() : { github: "", linkedin: "", portfolio: "" };
+  const visibleSocialLinks = [
+    socialLinks.github ? { label: "GitHub", href: socialLinks.github, icon: Github } : null,
+    socialLinks.linkedin ? { label: "LinkedIn", href: socialLinks.linkedin, icon: Linkedin } : null,
+    socialLinks.portfolio ? { label: "Portfolio", href: socialLinks.portfolio, icon: Globe } : null,
+  ].filter(Boolean) as { label: string; href: string; icon: typeof Github }[];
 
   if (loading) {
     return (
@@ -227,6 +286,48 @@ export default function PublicProfilePage() {
             </div>
           </div>
         </div>
+
+        {(bio || skills.length > 0 || visibleSocialLinks.length > 0) && (
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded-2xl border border-border bg-card/80 p-6">
+              <h2 className="text-lg font-semibold text-foreground">About</h2>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {bio || "This learner has not added a public bio yet."}
+              </p>
+              {skills.length > 0 && (
+                <div className="mt-5 flex flex-wrap gap-2">
+                  {skills.map((skill) => (
+                    <span key={skill} className="rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-medium text-foreground">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-border bg-card/80 p-6">
+              <h2 className="text-lg font-semibold text-foreground">Links</h2>
+              <div className="mt-4 space-y-3">
+                {visibleSocialLinks.length > 0 ? visibleSocialLinks.map((item) => (
+                  <a
+                    key={item.label}
+                    href={item.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="flex items-center gap-3 rounded-xl border border-border bg-surface-1 p-4 text-sm text-foreground hover:border-primary/30"
+                  >
+                    <item.icon className="w-4 h-4 text-primary" />
+                    {item.label}
+                  </a>
+                )) : (
+                  <div className="rounded-xl border border-dashed border-border bg-surface-1 p-4 text-sm text-muted-foreground">
+                    No public links added yet.
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

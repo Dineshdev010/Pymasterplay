@@ -6,6 +6,7 @@ import { getStreakTitle } from "@/lib/progress";
 import { StreakFire } from "@/components/StreakFire";
 import { useAuth } from "@/contexts/AuthContext";
 import { navItems } from "./navItems";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SidebarProps {
   open: boolean;
@@ -78,13 +79,12 @@ export function Sidebar({ open, onClose }: SidebarProps) {
           {/* Account info */}
           {user && (
             <Link to="/dashboard" onClick={onClose} className="flex items-center gap-2 p-2 rounded-lg bg-secondary/50 hover:bg-secondary transition-colors">
-              {profilePic ? (
-                <img src={profilePic} alt="User Profile Avatar" className="w-7 h-7 rounded-full object-cover" />
-              ) : (
-                <div className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center">
-                  <User className="w-3.5 h-3.5 text-primary" />
-                </div>
-              )}
+              <Avatar className="h-8 w-8 shrink-0 border border-primary/20 ring-2 ring-primary/10 shadow-sm">
+                {profilePic ? <AvatarImage src={profilePic} alt="User Profile Avatar" className="object-cover" /> : null}
+                <AvatarFallback className="bg-gradient-to-br from-primary/20 to-python-yellow/20 text-primary">
+                  <User className="w-3.5 h-3.5" />
+                </AvatarFallback>
+              </Avatar>
               <div className="min-w-0 flex-1">
                 <p className="text-xs font-medium text-foreground truncate">{profileName}</p>
                 <p className="text-[10px] text-muted-foreground truncate">{user.email}</p>

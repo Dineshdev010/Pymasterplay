@@ -11,12 +11,13 @@ import confetti from "canvas-confetti";
 import { problems, getDifficultyColor, getDifficultyBg } from "@/data/problems";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getRewardForDifficulty } from "@/lib/progress";
-import { executePython } from "@/lib/piston";
+import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import { Play, Send, Eye, EyeOff, ArrowLeft, ArrowRight, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Loader2 } from "lucide-react";
+import { Play, Send, Eye, EyeOff, ArrowLeft, ArrowRight, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Loader2, Square } from "lucide-react";
 import { AdViewModal } from "@/components/AdViewModal";
 import { LiveProblemUpdates } from "@/components/LiveProblemUpdates";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 function normalizeOutput(output: string) {
   return output.replace(/\r\n/g, "\n").trim();
@@ -51,6 +52,7 @@ export default function ProblemPage() {
   const { id } = useParams<{ id: string }>();
   const problem = problems.find(p => p.id === id);
   const { progress, solveProblem } = useProgress();
+  const isMobile = useIsMobile();
   const [code, setCode] = useState(problem?.starterCode || "");
   const [output, setOutput] = useState("");
   const [showSolution, setShowSolution] = useState(false);
@@ -58,7 +60,7 @@ export default function ProblemPage() {
   const [adWatchedForSolution, setAdWatchedForSolution] = useState(false);
   const [testResults, setTestResults] = useState<{ passed: boolean; input: string; expected: string }[] | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [showDescription, setShowDescription] = useState(window.innerWidth >= 768);
+  const [showDescription, setShowDescription] = useState(!isMobile);
   const [isRunning, setIsRunning] = useState(false);
 
   // ---------- Reset all state when problem changes ----------
@@ -74,6 +76,10 @@ export default function ProblemPage() {
     }
   }, [id, problem]);
 
+  useEffect(() => {
+    setShowDescription(!isMobile);
+  }, [id, isMobile]);
+
   if (!problem) {
     return <div className="p-8 text-center text-red-500">Problem not found.</div>;
   }
@@ -84,6 +90,7 @@ export default function ProblemPage() {
   const prevProblem = problemIndex > 0 ? problems[problemIndex - 1] : null;
   const nextProblem = problemIndex < problems.length - 1 ? problems[problemIndex + 1] : null;
   const serial = problemIndex + 1;
+  const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   const handleRun = async () => {
     setIsRunning(true);
@@ -181,7 +188,7 @@ export default function ProblemPage() {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)]">
       <Helmet>
         <title>{problem.title} | PyMaster Problems</title>
         <meta name="description" content={`Solve ${problem.title} in Python. ${problem.description.substring(0, 100)}... Challenge yourself with our built-in compiler.`} />
@@ -282,7 +289,7 @@ export default function ProblemPage() {
               }}
             >
               {showSolution ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              {showSolution ? "Hide Solution" : "👀 Reveal Solution (Watch Ad)"}
+              {showSolution ? "Hide Solution" : "👀 Reveal Solution (Sponsor Message)"}
             </Button>
             {showSolution && (
               <div className="mt-4">
@@ -315,33 +322,47 @@ export default function ProblemPage() {
               value={code}
               onChange={(v) => setCode(v || "")}
               options={{
-                fontSize: window.innerWidth < 640 ? 12 : 14,
+                fontSize: isMobile ? 12 : 14,
                 fontFamily: "'JetBrains Mono', monospace",
                 minimap: { enabled: false },
                 padding: { top: 12 },
                 scrollBeyondLastLine: false,
                 wordWrap: "on",
                 automaticLayout: true,
-                lineNumbers: window.innerWidth < 640 ? "off" : "on",
+                lineNumbers: isMobile ? "off" : "on",
               }}
             />
           </div>
 
-          <div className="h-40 sm:h-48 border-t border-border bg-surface-0 flex flex-col shrink-0">
+          <div className="h-48 border-t border-border bg-surface-0 flex flex-col shrink-0">
             <div className="flex items-center justify-between px-3 sm:px-4 py-2 border-b border-border bg-surface-1">
               <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">📺 Output</span>
               <div className="flex gap-2">
-                <Button size="sm" variant="outline" className="h-7 text-xs gap-1 px-2 sm:px-3" onClick={handleRun} disabled={isRunning}>
-                  {isRunning ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />}
-                  <span className="hidden sm:inline">{isRunning ? "Running..." : "▶ Run"}</span>
-                </Button>
-                <Button size="sm" className="h-7 text-xs gap-1 px-2 sm:px-3" onClick={handleSubmit} disabled={isRunning}>
-                  {isRunning ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
-                  <span className="hidden sm:inline">{isRunning ? "Running..." : "🚀 Submit"}</span>
-                </Button>
+                {isRunning ? (
+                  <Button size="sm" variant="destructive" className="h-7 text-xs gap-1 px-2 sm:px-3" onClick={cancelActivePythonExecution}>
+                    <Square className="w-3 h-3" />
+                    <span className="hidden sm:inline">Stop</span>
+                  </Button>
+                ) : (
+                  <>
+                    <Button size="sm" variant="outline" className="h-7 text-xs gap-1 px-2 sm:px-3" onClick={handleRun}>
+                      <Play className="w-3 h-3" />
+                      <span className="hidden sm:inline">▶ Run</span>
+                    </Button>
+                    <Button size="sm" className="h-7 text-xs gap-1 px-2 sm:px-3" onClick={handleSubmit}>
+                      <Send className="w-3 h-3" />
+                      <span className="hidden sm:inline">🚀 Submit</span>
+                    </Button>
+                  </>
+                )}
               </div>
             </div>
             <div className="flex-1 overflow-auto p-3 sm:p-4">
+              {!output && (
+                <p className="text-[11px] text-muted-foreground mb-3">
+                  Runs in an isolated browser worker with a {timeoutSeconds}s safety timeout.
+                </p>
+              )}
               {testResults && (
                 <div className="space-y-1.5 mb-3">
                   {testResults.map((r, i) => (
@@ -380,7 +401,9 @@ export default function ProblemPage() {
         onComplete={() => {
           setAdWatchedForSolution(true);
           setShowSolution(true);
-        }} 
+        }}
+        completionTitle="Solution unlocked"
+        completionDescription="Thanks for viewing the sponsor message."
       />
 
       <LiveProblemUpdates problemTitle={problem.title} />

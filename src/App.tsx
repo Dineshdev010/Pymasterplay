@@ -52,7 +52,9 @@ const AuthPage = lazy(() => import("./pages/AuthPage"));
 const CompleteProfilePage = lazy(() => import("./pages/CompleteProfilePage"));
 const ResetPasswordPage = lazy(() => import("./pages/ResetPasswordPage"));
 const PrivacyPolicyPage = lazy(() => import("./pages/PrivacyPolicyPage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
 const CertificatePage = lazy(() => import("./pages/CertificatePage"));
+const CertificateVerificationPage = lazy(() => import("./pages/CertificateVerificationPage"));
 const QuickPrepPage = lazy(() => import("./pages/QuickPrepPage"));
 const PublicProfilePage = lazy(() => import("./pages/PublicProfilePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -104,9 +106,11 @@ const App = () => (
                     <Route path="/reset-password" element={<Suspense fallback={<PageSkeleton />}><ResetPasswordPage /></Suspense>} />
                     <Route path="/complete-profile" element={<ProtectedRoute><Suspense fallback={<PageSkeleton />}><CompleteProfilePage /></Suspense></ProtectedRoute>} />
                     <Route path="/certificate" element={<ProtectedRoute><Suspense fallback={<PageSkeleton />}><CertificatePage /></Suspense></ProtectedRoute>} />
+                    <Route path="/certificate/verify/:certificateId" element={<Suspense fallback={<PageSkeleton />}><CertificateVerificationPage /></Suspense>} />
                     <Route path="/quick-prep" element={<Suspense fallback={<PageSkeleton />}><QuickPrepPage /></Suspense>} />
                     <Route path="/u/:userId" element={<Suspense fallback={<PageSkeleton />}><PublicProfilePage /></Suspense>} />
                     <Route path="/privacy" element={<Suspense fallback={<PageSkeleton />}><PrivacyPolicyPage /></Suspense>} />
+                    <Route path="/contact" element={<Suspense fallback={<PageSkeleton />}><ContactPage /></Suspense>} />
                     {/* Catch-all: any unknown URL shows 404 */}
                     <Route path="*" element={<Suspense fallback={<PageSkeleton />}><NotFound /></Suspense>} />
                   </Routes>

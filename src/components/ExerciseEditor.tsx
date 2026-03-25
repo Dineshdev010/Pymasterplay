@@ -3,10 +3,10 @@ import Editor from "@monaco-editor/react";
 import confetti from "canvas-confetti";
 import { Exercise } from "@/data/lessons";
 import { useProgress } from "@/contexts/ProgressContext";
-import { executePython } from "@/lib/piston";
+import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { Button } from "@/components/ui/button";
 import { AdViewModal } from "@/components/AdViewModal";
-import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, Loader2, RotateCcw, Lightbulb, Eye, Tv } from "lucide-react";
+import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Tv, Square } from "lucide-react";
 
 interface ExerciseEditorProps {
   exercise: Exercise;
@@ -51,6 +51,7 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
   const [showHint, setShowHint] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   const { progress, completeExercise } = useProgress();
+  const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   const exerciseKey = `${lessonId}:${level}`;
   const alreadyCompleted = progress.completedExercises.includes(exerciseKey);
@@ -73,7 +74,7 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
     }
 
     setIsRunning(true);
-    setOutput("⏳ Running on server...");
+    setOutput(`⏳ Running in browser worker (up to ${timeoutSeconds}s)...`);
 
     const result = await executePython(userCode);
     const actualOutput = result.output.trim();
@@ -125,7 +126,7 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
               className="h-7 text-xs gap-1 border-primary/30 text-primary hover:bg-primary/10"
               onClick={() => setShowAdModal(true)}
             >
-              <Tv className="w-3 h-3" /> Watch Ad to Unlock
+              <Tv className="w-3 h-3" /> View Sponsor Message
             </Button>
           </div>
         </div>
@@ -133,7 +134,8 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
           isOpen={showAdModal}
           onClose={() => setShowAdModal(false)}
           onComplete={() => setUnlockedByAd(true)}
-          rewardAmount={0}
+          completionTitle="Exercise unlocked"
+          completionDescription="Thanks for viewing the sponsor message."
         />
       </>
     );
@@ -229,10 +231,15 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
                 <Button size="sm" variant="ghost" className="h-7 text-xs gap-1 text-muted-foreground hover:text-foreground" onClick={() => { setCode(exercise.starterCode); setOutput(""); setPassed(false); }}>
                   <RotateCcw className="w-3 h-3" /> Reset
                 </Button>
-                <Button size="sm" className="h-7 text-xs gap-1" onClick={runAndCheck} disabled={isRunning}>
-                  {isRunning ? <Loader2 className="w-3 h-3 animate-spin" /> : <Play className="w-3 h-3" />}
-                  {isRunning ? "Running..." : "Run & Check"}
-                </Button>
+                {isRunning ? (
+                  <Button size="sm" variant="destructive" className="h-7 text-xs gap-1" onClick={cancelActivePythonExecution}>
+                    <Square className="w-3 h-3" /> Stop
+                  </Button>
+                ) : (
+                  <Button size="sm" className="h-7 text-xs gap-1" onClick={runAndCheck}>
+                    <Play className="w-3 h-3" /> Run & Check
+                  </Button>
+                )}
               </div>
             </div>
             {output && (

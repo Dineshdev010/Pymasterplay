@@ -8,6 +8,12 @@ import { createRoot } from "react-dom/client"; // React 18's method to create a 
 import App from "./App.tsx"; // The main App component
 import "./index.css"; // Global styles (Tailwind CSS + custom styles)
 
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js").catch(() => undefined);
+  });
+}
+
 // Mount the App component into the <div id="root"> in index.html
 createRoot(document.getElementById("root")!).render(<App />);
 

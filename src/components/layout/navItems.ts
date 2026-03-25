@@ -4,7 +4,7 @@
 // top navbar, and mobile bottom nav.
 // ============================================================
 
-import { Home, BookOpen, Brain, Terminal, Code, Briefcase, Trophy, LayoutDashboard, Heart, Info, Award, Zap } from "lucide-react";
+import { Home, BookOpen, Brain, Terminal, Code, Briefcase, Trophy, LayoutDashboard, Heart, Info, Award, Zap, Mail } from "lucide-react";
 
 // Each item has: route path, Lucide icon, label text, and emoji (for mobile nav)
 export const navItems = [
@@ -20,4 +20,9 @@ export const navItems = [
   { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard", emoji: "📊" },
   { to: "/donate", icon: Heart, label: "Donate", emoji: "❤️" },
   { to: "/about", icon: Info, label: "About Us", emoji: "ℹ️" },
+  { to: "/contact", icon: Mail, label: "Contact", emoji: "✉️" },
 ];
+
+export const mobileNavItems = navItems.filter((item) =>
+  ["/", "/learn", "/problems", "/jobs", "/dashboard"].includes(item.to),
+);

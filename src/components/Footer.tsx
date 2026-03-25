@@ -51,6 +51,7 @@ export function Footer() {
               <li><a href="https://pypi.org/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">PyPI Packages</a></li>
               <li><a href="https://pep8.org/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">PEP 8 Style Guide</a></li>
               <li><Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">🔒 Privacy Policy</Link></li>
+              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">✉️ Contact</Link></li>
             </ul>
           </div>
         </div>

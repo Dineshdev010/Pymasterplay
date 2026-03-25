@@ -1,6 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
-import rocketImg from "@/assets/rocket-streak.png";
 
 const motivationQuotes = [
   "🔥 You're on fire! Keep that Python momentum going!",
@@ -28,12 +27,21 @@ export function StreakFire({ streak, size = "sm", showQuote = false }: StreakFir
   );
 
   const sizeConfig = {
-    sm: { img: 28, numSize: "text-sm" },
-    md: { img: 40, numSize: "text-lg" },
-    lg: { img: 56, numSize: "text-2xl" },
+    sm: { icon: "text-xl", numSize: "text-sm" },
+    md: { icon: "text-3xl", numSize: "text-lg" },
+    lg: { icon: "text-4xl", numSize: "text-2xl" },
   };
 
   const config = sizeConfig[size];
+
+  const streakEmoji =
+    streak >= 100 ? "👑" :
+    streak >= 30 ? "🏆" :
+    streak >= 14 ? "🚀" :
+    streak >= 7 ? "🔥" :
+    streak >= 3 ? "⚡" :
+    streak >= 1 ? "✨" :
+    "🌱";
 
   const streakColor =
     streak >= 100 ? "text-purple-400" :
@@ -49,13 +57,11 @@ export function StreakFire({ streak, size = "sm", showQuote = false }: StreakFir
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      {/* Rocket image with hover animation */}
-      <motion.img
-        src={rocketImg}
-        alt="Streak rocket"
-        width={config.img}
-        height={config.img}
-        className="relative z-10"
+      {/* Streak emoji changes as the streak grows */}
+      <motion.span
+        role="img"
+        aria-label={`${streak} day streak`}
+        className={`relative z-10 select-none leading-none ${config.icon}`}
         style={{
           filter: streak >= 7
             ? `drop-shadow(0 2px ${4 + Math.min(streak, 50) * 0.12}px rgba(255,140,0,0.45))`
@@ -70,7 +76,9 @@ export function StreakFire({ streak, size = "sm", showQuote = false }: StreakFir
           repeat: Infinity,
           ease: "easeInOut",
         }}
-      />
+      >
+        {streakEmoji}
+      </motion.span>
 
       {/* Streak number */}
       <span className={`${config.numSize} font-extrabold ${streakColor} tabular-nums`}>

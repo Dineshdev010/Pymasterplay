@@ -5,10 +5,18 @@
 
 import { Link } from "react-router-dom";
 import { Shield, ArrowLeft } from "lucide-react";
+import { Helmet } from "react-helmet-async";
 
 export default function PrivacyPolicyPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 py-12">
+      <Helmet>
+        <title>Privacy Policy | PyMaster</title>
+        <meta
+          name="description"
+          content="Read the PyMaster privacy policy covering account data, progress tracking, local storage, and how the platform handles user information."
+        />
+      </Helmet>
       {/* Back button */}
       <Link to="/" className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6 transition-colors">
         <ArrowLeft className="w-4 h-4" /> Back to Home
@@ -51,16 +59,15 @@ export default function PrivacyPolicyPage() {
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
           <h2 className="text-lg font-semibold text-foreground">3. Data Storage</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Most of your learning data is stored <strong className="text-foreground">locally on your device</strong> using browser localStorage. 
-            Account authentication data is securely managed through Firebase Authentication. We do not sell or share your personal data with third parties.
+            PyMaster stores some learning state <strong className="text-foreground">locally on your device</strong> using browser localStorage for speed and convenience.
+            Account authentication and synced profile data are managed through <strong className="text-foreground">Supabase</strong>. We do not sell your personal data to third parties.
           </p>
         </div>
 
         <div className="bg-card border border-border rounded-xl p-6 space-y-4">
           <h2 className="text-lg font-semibold text-foreground">4. Cookies & Local Storage</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
-            We use localStorage to save your preferences, progress, and theme settings. No third-party tracking cookies are used. 
-            Firebase may use essential cookies for authentication purposes.
+            We use localStorage to save your preferences, progress, theme settings, and lightweight cached data. Essential authentication and platform services may use cookies or browser storage where required for sign-in and security.
           </p>
         </div>
 
@@ -78,6 +85,20 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-lg font-semibold text-foreground">6. Children's Privacy</h2>
           <p className="text-sm text-muted-foreground leading-relaxed">
             PyMaster is designed for learners of all ages. We do not knowingly collect personal information from children under 13 without parental consent.
+          </p>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-foreground">7. Advertising & Sponsor Content</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            PyMaster may show clearly labeled sponsor content or advertising on selected public pages. These placements are intended to stay separate from core learning actions such as code execution, certificate actions, and account security flows.
+          </p>
+        </div>
+
+        <div className="bg-card border border-border rounded-xl p-6 space-y-4">
+          <h2 className="text-lg font-semibold text-foreground">8. Contact</h2>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            If you have privacy questions or want to request account deletion, contact us at <a className="text-primary hover:underline" href="mailto:dineshjas986@gmail.com">dineshjas986@gmail.com</a>.
           </p>
         </div>
 

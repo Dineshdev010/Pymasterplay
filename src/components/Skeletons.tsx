@@ -47,7 +47,7 @@ export function CardSkeleton() {
  */
 export function EditorSkeleton() {
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)] animate-pulse">
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)] animate-pulse">
       <div className="h-12 bg-surface-1 border-b border-border" /> {/* Toolbar */}
       <div className="flex-1 flex">
         <div className="flex-1 bg-muted/30 p-4 space-y-2">

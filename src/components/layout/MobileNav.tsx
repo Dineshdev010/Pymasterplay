@@ -5,7 +5,7 @@
 // ============================================================
 
 import { Link, useLocation } from "react-router-dom";
-import { navItems } from "./navItems";
+import { mobileNavItems } from "./navItems";
 
 export function MobileNav() {
   const location = useLocation();
@@ -14,7 +14,7 @@ export function MobileNav() {
     // Fixed bottom bar, visible only on mobile (hidden on lg screens)
     // Horizontal scrollable to fit all navigation items
     <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-14 bg-card border-t border-border overflow-x-auto z-40 px-1 gap-1 scrollbar-thin scrollbar-thumb-primary/30 scrollbar-track-transparent flex items-center">
-      {navItems.map((item) =>
+      {mobileNavItems.map((item) =>
         <Link
           key={item.to}
           to={item.to}

@@ -14,6 +14,7 @@ import { useProgress } from "@/contexts/ProgressContext";
 import { useRef } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import { StreakFire } from "@/components/StreakFire";
+import { AddToHomeScreenButton } from "@/components/AddToHomeScreenButton";
 
 // ---------- Platform stats shown below the CTA ----------
 const stats = [
@@ -122,6 +123,18 @@ export function HeroSection() {
               <Code className="w-4 h-4" /> Browse Problems
             </Link>
           </Button>
+        </motion.div>
+
+        <motion.div
+          className="mb-10 flex justify-center"
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          custom={3.2}
+        >
+          <div className="w-full flex justify-center">
+            <AddToHomeScreenButton />
+          </div>
         </motion.div>
 
         {/* Stats grid — shows platform numbers */}

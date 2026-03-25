@@ -13,6 +13,8 @@ import { AdViewModal } from "@/components/AdViewModal";
 import { BookOpen, CheckCircle2, ChevronRight, Terminal, Lock, Play, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { GoogleAd } from "@/components/ads/GoogleAd";
+import { Helmet } from "react-helmet-async";
 
 // Group lessons by category
 const categories = ["Beginner", "Intermediate", "Advanced"] as const;
@@ -28,7 +30,7 @@ export default function LearnPage() {
   // A lesson is unlocked if:
   // - It's the first one
   // - All 3 exercises of the previous lesson are completed
-  // - User paid $25 to unlock it
+  // - User paid $100 to unlock it
   const isLessonUnlocked = (index: number): boolean => {
     if (index === 0) return true;
     const lesson = lessons[index];
@@ -59,7 +61,7 @@ export default function LearnPage() {
   const handleAdComplete = () => {
     if (showAdForLesson) {
       unlockLesson(showAdForLesson, 0);
-      toast.success("Chapter unlocked! 🔓", { description: "Thanks for watching the ad." });
+      toast.success("Chapter unlocked! 🔓", { description: "Thanks for viewing the sponsor message." });
       setSelectedId(showAdForLesson);
       setShowAdForLesson(null);
     }
@@ -68,11 +70,11 @@ export default function LearnPage() {
   const handleWalletUnlock = (lessonId: string) => {
     const unlocked = unlockLesson(lessonId);
     if (!unlocked) {
-      toast.error("Not enough cash", { description: "You need $25 in your wallet to unlock this lesson instantly." });
+      toast.error("Not enough cash", { description: "You need $100 in your wallet to unlock this lesson instantly." });
       return;
     }
 
-    toast.success("Chapter unlocked! 🔓", { description: "You spent $25 to unlock this lesson." });
+    toast.success("Chapter unlocked! 🔓", { description: "You spent $100 to unlock this lesson." });
     setSelectedId(lessonId);
   };
 
@@ -102,13 +104,21 @@ export default function LearnPage() {
 
   return (
     <>
+    <Helmet>
+      <title>Learn Python | Structured Lessons on PyMaster</title>
+      <meta
+        name="description"
+        content="Study Python step by step with beginner, intermediate, and advanced lessons, code examples, and hands-on exercises."
+      />
+    </Helmet>
     <AdViewModal
       isOpen={!!showAdForLesson}
       onClose={() => setShowAdForLesson(null)}
       onComplete={handleAdComplete}
-      rewardAmount={0}
+      completionTitle="Lesson unlocked"
+      completionDescription="Thanks for viewing the sponsor message."
     />
-    <div className="flex h-[calc(100vh-3.5rem)]">
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)] md:flex-row">
       {/* Sidebar */}
       <aside className="w-72 border-r border-border bg-surface-1 overflow-y-auto shrink-0 hidden md:block">
         <div className="p-4 border-b border-border">
@@ -119,7 +129,7 @@ export default function LearnPage() {
             {progress.completedLessons.length}/{lessons.length} completed
           </p>
           <p className="text-xs text-muted-foreground flex items-center gap-1 mt-1">
-            <Play className="w-3 h-3" /> Watch an ad or pay $25 to unlock lessons
+            <Play className="w-3 h-3" /> View a sponsor message or pay $100 to unlock lessons
           </p>
         </div>
         <nav className="p-2">
@@ -161,7 +171,7 @@ export default function LearnPage() {
                         )}
                         <span className="truncate flex-1">{lesson.title}</span>
                         {!unlocked && (
-                          <span className="text-[10px] text-primary flex items-center gap-0.5"><Play className="w-3 h-3" />Ad / $25</span>
+                          <span className="text-[10px] text-primary flex items-center gap-0.5"><Play className="w-3 h-3" />Sponsor / $100</span>
                         )}
                       </div>
                       {/* Progress bar for unlocked lessons */}
@@ -245,6 +255,13 @@ export default function LearnPage() {
               </pre>
             </div>
 
+            <GoogleAd
+              slot={import.meta.env.VITE_ADSENSE_SLOT_LEARN}
+              label="Sponsored Resource"
+              className="mb-8"
+              minHeight={160}
+            />
+
             {/* Exercises */}
             <div className="mb-8">
               <h3 className="text-lg font-semibold text-foreground mb-4">
@@ -285,7 +302,7 @@ export default function LearnPage() {
                       )}
                       <div>
                         <p className="text-sm font-medium text-foreground">
-                          {canProceed ? "Next Chapter Unlocked!" : "Locked — complete all 3 exercises, watch an ad, or pay $25"}
+                          {canProceed ? "Next Chapter Unlocked!" : "Locked — complete all 3 exercises, watch an ad, or pay $100"}
                         </p>
                         <p className="text-xs text-muted-foreground">{nextLesson.title}</p>
                       </div>
@@ -299,7 +316,7 @@ export default function LearnPage() {
                             onClick={() => handleAdUnlock(nextLesson.id)}
                             className="gap-1 text-primary border-primary/30 hover:bg-primary/10"
                           >
-                            <Play className="w-3 h-3" /> Watch Ad
+                            <Play className="w-3 h-3" /> Sponsor Message
                           </Button>
                           <Button
                             size="sm"
@@ -307,7 +324,7 @@ export default function LearnPage() {
                             onClick={() => handleWalletUnlock(nextLesson.id)}
                             className="gap-1 text-reward-gold border-reward-gold/30 hover:bg-reward-gold/10"
                           >
-                            Pay $25
+                            Pay $100
                           </Button>
                         </>
                       )}
@@ -369,7 +386,7 @@ export default function LearnPage() {
                               </div>
                             </div>
                             {!unlocked ? (
-                              <span className="text-xs text-primary flex items-center gap-1"><Play className="w-3 h-3" />Ad / $25</span>
+                              <span className="text-xs text-primary flex items-center gap-1"><Play className="w-3 h-3" />Sponsor / $100</span>
                             ) : (
                               <span className={`text-xs ${allDone ? "text-streak-green" : "text-muted-foreground"}`}>{exercisesDone}/3</span>
                             )}

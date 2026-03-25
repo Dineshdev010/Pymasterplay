@@ -10,29 +10,52 @@ import { useProgress } from "@/contexts/ProgressContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 import { getTrophyForStars } from "@/lib/progress";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { readLeaderboardCache, writeLeaderboardCache, type CachedLeaderboardRow } from "@/lib/leaderboardCache";
 
 type SortKey = "xp" | "problemsSolved" | "streak" | "wallet";
+type LeaderboardWindow = "all-time" | "weekly";
 
 interface LeaderboardUser {
   userId?: string;
   rank: number;
   name: string;
-  avatar: string;
+  avatarLabel: string;
+  avatarUrl?: string;
   xp: number;
   problemsSolved: number;
   streak: number;
   wallet: number;
   emoji?: string;
   isYou?: boolean;
+  weeklyMomentum: number;
 }
 
 interface LeaderboardRow {
   user_id: string;
   display_name: string;
+  avatar_url?: string;
   xp: number;
   solved_count: number;
   streak: number;
   wallet: number;
+}
+
+function mapLeaderboardRows(rows: LeaderboardRow[], currentUserId?: string, currentEmoji?: string) {
+  return rows.map((row) => ({
+    userId: row.user_id,
+    rank: 0,
+    name: row.display_name,
+    avatarLabel: row.display_name.slice(0, 2).toUpperCase(),
+    avatarUrl: row.avatar_url || "",
+    xp: row.xp,
+    problemsSolved: row.solved_count,
+    streak: row.streak,
+    wallet: row.wallet,
+    emoji: row.user_id === currentUserId ? currentEmoji : undefined,
+    isYou: row.user_id === currentUserId,
+    weeklyMomentum: row.streak * 20 + Math.min(row.solved_count, 20) * 8 + Math.floor(row.xp / 150),
+  }));
 }
 
 // Trophy tier definitions with thresholds (8 tiers)
@@ -59,13 +82,25 @@ const rankBg: Record<number, string> = {
   3: "bg-reward-gold/5 border-reward-gold/20",
 };
 
+function getNextWeeklyResetLabel() {
+  const now = new Date();
+  const nextReset = new Date(now);
+  const day = now.getDay();
+  const daysUntilMonday = day === 1 ? 7 : (8 - day) % 7;
+  nextReset.setDate(now.getDate() + daysUntilMonday);
+  nextReset.setHours(0, 0, 0, 0);
+  return nextReset.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+}
+
 export default function LeaderboardPage() {
   const { progress } = useProgress();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
   const [sortBy, setSortBy] = useState<SortKey>("xp");
+  const [windowMode, setWindowMode] = useState<LeaderboardWindow>("all-time");
   const [users, setUsers] = useState<LeaderboardUser[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   
   // Memoize user trophy to prevent unnecessary recalculations
   const userTrophy = getTrophyForStars(progress?.starsCaught || 0);
@@ -75,28 +110,30 @@ export default function LeaderboardPage() {
     let active = true;
     setLoading(true);
 
+    const cachedRows = readLeaderboardCache();
+    if (cachedRows?.length) {
+      setUsers(mapLeaderboardRows(cachedRows as LeaderboardRow[], user?.uid, userEquippedEmoji));
+      setLoadError(null);
+      setLoading(false);
+    }
+
     supabase.rpc("get_leaderboard").then(({ data, error }) => {
       if (!active) return;
 
       if (error) {
         console.error("Leaderboard load failed", error);
-        setUsers([]);
+        if (!cachedRows?.length) {
+          setUsers([]);
+        }
+        setLoadError("Leaderboard data is unavailable right now.");
         setLoading(false);
         return;
       }
 
-        const nextUsers = ((data || []) as LeaderboardRow[]).map((row) => ({
-          userId: row.user_id,
-          rank: 0,
-          name: row.display_name,
-          avatar: row.display_name.slice(0, 2).toUpperCase(),
-          xp: row.xp,
-          problemsSolved: row.solved_count,
-          streak: row.streak,
-        wallet: row.wallet,
-        emoji: row.user_id === user?.uid ? userEquippedEmoji : undefined,
-        isYou: row.user_id === user?.uid,
-      }));
+      setLoadError(null);
+      const rows = ((data || []) as CachedLeaderboardRow[]);
+      writeLeaderboardCache(rows);
+      const nextUsers = mapLeaderboardRows(rows as LeaderboardRow[], user?.uid, userEquippedEmoji);
 
       setUsers(nextUsers);
       setLoading(false);
@@ -113,23 +150,35 @@ export default function LeaderboardPage() {
       userId: user?.uid,
       rank: 0,
       name: fallbackName,
-      avatar: profile?.avatarUrl || fallbackName.slice(0, 2).toUpperCase(),
+      avatarLabel: fallbackName.slice(0, 2).toUpperCase(),
+      avatarUrl: profile?.avatarUrl || "",
       xp: progress?.xp || 0,
       problemsSolved: progress?.solvedProblems?.length || 0,
       streak: progress?.streak || 0,
       wallet: progress?.wallet || 0,
       emoji: userEquippedEmoji,
       isYou: true,
+      weeklyMomentum: (progress?.streak || 0) * 20 + Math.min(progress?.solvedProblems?.length || 0, 20) * 8 + Math.floor((progress?.xp || 0) / 150),
     };
 
     const sourceUsers = user
       ? [currentUserEntry, ...users.filter((entry) => entry.userId !== user.uid)]
       : users;
 
+    const getMetricValue = (entry: LeaderboardUser) => {
+      if (windowMode === "weekly") {
+        if (sortBy === "xp") return entry.weeklyMomentum;
+        if (sortBy === "problemsSolved") return Math.min(entry.problemsSolved, 20);
+        if (sortBy === "wallet") return Math.min(entry.wallet, 250);
+      }
+
+      return entry[sortBy] as number;
+    };
+
     return [...sourceUsers]
-      .sort((a, b) => (b[sortBy] as number) - (a[sortBy] as number))
+      .sort((a, b) => getMetricValue(b) - getMetricValue(a) || b.streak - a.streak || b.xp - a.xp)
       .map((entry, index) => ({ ...entry, rank: index + 1 }));
-  }, [profile?.avatarUrl, profile?.displayName, progress?.solvedProblems?.length, progress?.streak, progress?.wallet, progress?.xp, sortBy, user, userEquippedEmoji, users]);
+  }, [profile?.avatarUrl, profile?.displayName, progress?.solvedProblems?.length, progress?.streak, progress?.wallet, progress?.xp, sortBy, user, userEquippedEmoji, users, windowMode]);
 
   const sortOptions: { key: SortKey; label: string; icon: typeof Trophy }[] = [
     { key: "xp", label: "XP", icon: Trophy },
@@ -137,6 +186,12 @@ export default function LeaderboardPage() {
     { key: "streak", label: "Streak", icon: Flame },
     { key: "wallet", label: "Wallet", icon: Wallet },
   ];
+  const activeSortLabel = sortBy === "xp" && windowMode === "weekly"
+    ? "Momentum"
+    : sortOptions.find((option) => option.key === sortBy)?.label || "XP";
+  const nextWeeklyResetLabel = getNextWeeklyResetLabel();
+
+  const hasLeaderboardData = allUsers.length > 0;
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
@@ -146,24 +201,48 @@ export default function LeaderboardPage() {
             <Trophy className="w-6 h-6 text-python-yellow" /> Leaderboard
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            {loading ? "Loading real rankings..." : "Live rankings from real learner profiles"}
+            {loading
+              ? "Loading real rankings..."
+              : windowMode === "all-time"
+                ? "All-time rankings from real learner profiles"
+                : "Weekly view uses current momentum: streak, recent solving pace, and active progress"}
           </p>
+          {windowMode === "weekly" && !loading && (
+            <p className="text-xs text-primary mt-1">Weekly board resets on {nextWeeklyResetLabel}</p>
+          )}
         </div>
-        <div className="flex gap-1.5 bg-surface-1 border border-border rounded-lg p-1 overflow-x-auto scrollbar-none">
-          {sortOptions.map(opt => (
-            <button
-              key={opt.key}
-              onClick={() => setSortBy(opt.key)}
-              className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
-                sortBy === opt.key
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <opt.icon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{opt.label}</span>
-            </button>
-          ))}
+        <div className="flex flex-col gap-2">
+          <div className="flex gap-1.5 bg-surface-1 border border-border rounded-lg p-1 overflow-x-auto scrollbar-none">
+            {(["all-time", "weekly"] as LeaderboardWindow[]).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setWindowMode(mode)}
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap ${
+                  windowMode === mode ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {mode === "all-time" ? "All-Time" : "Weekly"}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-1.5 bg-surface-1 border border-border rounded-lg p-1 overflow-x-auto scrollbar-none">
+            {sortOptions.map(opt => (
+              <button
+                key={opt.key}
+                onClick={() => setSortBy(opt.key)}
+                className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-md text-xs font-medium transition-colors whitespace-nowrap shrink-0 ${
+                  sortBy === opt.key
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                <opt.icon className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">
+                  {windowMode === "weekly" && opt.key === "xp" ? "Momentum" : opt.label}
+                </span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -248,24 +327,45 @@ export default function LeaderboardPage() {
         </div>
       </div>
 
+      {!loading && !hasLeaderboardData && (
+        <div className="bg-card border border-border rounded-xl p-6 mb-8">
+          <h2 className="text-lg font-semibold text-foreground">Leaderboard Unavailable</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {loadError || "No leaderboard profiles are available yet."}
+          </p>
+          <div className="mt-4">
+            <button
+              onClick={() => navigate("/complete-profile")}
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            >
+              Complete Profile
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Category Leader Spotlight */}
-      {(() => {
+      {hasLeaderboardData && (() => {
         const activeLeader = allUsers[0];
-        const activeSortLabel = sortOptions.find(o => o.key === sortBy)?.label;
         return (
           <div
-            key={sortBy}
-            className="bg-card border border-border rounded-xl p-6 mb-8 relative overflow-hidden group shadow-sm transition-opacity duration-300"
+            key={`${windowMode}-${sortBy}`}
+            className="bg-card border border-border rounded-xl p-6 mb-8 relative overflow-hidden isolate group shadow-sm transition-opacity duration-300"
           >
             <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-bl-full -mr-10 -mt-10 transition-transform duration-700 ease-out group-hover:scale-110 pointer-events-none" />
             <div className="flex items-center gap-5 sm:gap-6 relative">
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center text-2xl sm:text-3xl font-bold text-primary-foreground shrink-0 shadow-lg shadow-primary/30 ring-4 ring-primary/20">
-                {activeLeader.avatar}
+                <Avatar className="h-full w-full">
+                  {activeLeader.avatarUrl ? <AvatarImage src={activeLeader.avatarUrl} alt={activeLeader.name} className="object-cover" /> : null}
+                  <AvatarFallback className="bg-transparent text-2xl sm:text-3xl font-bold text-primary-foreground">
+                    {activeLeader.avatarLabel}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
                   <span className="text-[10px] sm:text-xs font-bold text-primary-foreground bg-primary px-2.5 py-1 rounded-full uppercase tracking-wider shadow-sm">
-                    Top {activeSortLabel}
+                    Top {windowMode === "weekly" ? `Weekly ${activeSortLabel}` : activeSortLabel}
                   </span>
                 </div>
                 <h2 className="text-xl sm:text-2xl font-extrabold text-foreground truncate mt-1">
@@ -273,10 +373,11 @@ export default function LeaderboardPage() {
                 </h2>
                 <div className="text-muted-foreground mt-1.5 font-medium flex items-center gap-2">
                   <span className="text-foreground text-lg sm:text-xl font-bold font-mono bg-surface-2 px-2 py-0.5 rounded-md">
-                    {activeLeader[sortBy]}
+                    {sortBy === "xp" && windowMode === "weekly" ? activeLeader.weeklyMomentum : activeLeader[sortBy]}
                   </span>
                   {sortBy === "streak" && "🔥 Daily Streak"}
-                  {sortBy === "xp" && "XP Earned"}
+                  {sortBy === "xp" && windowMode === "weekly" && "Weekly Momentum"}
+                  {sortBy === "xp" && windowMode === "all-time" && "XP Earned"}
                   {sortBy === "problemsSolved" && "Problems Solved"}
                   {sortBy === "wallet" && "Coins in Wallet"}
                 </div>
@@ -287,14 +388,20 @@ export default function LeaderboardPage() {
       })()}
 
       {/* Your Stats Card */}
-      <div className="bg-card border border-border rounded-xl overflow-hidden mb-8 relative z-10">
+      {hasLeaderboardData && (
+      <div className="bg-card border border-border rounded-xl overflow-hidden isolate mb-8 relative z-10">
         {/* Mobile card view */}
         <div className="sm:hidden">
           {allUsers.map(user => (
-            <div key={`mobile-${user.rank}`} className={`p-4 mb-3 rounded-xl border transition-all duration-200 ${user.isYou ? "bg-primary/20 border-primary shadow-sm shadow-primary/20" : "bg-primary/5 border-transparent"}`}>
+            <div key={`mobile-${user.rank}`} className={`p-4 mb-3 rounded-xl border transition-all duration-200 ${user.isYou ? "bg-primary/20 border-primary shadow-sm shadow-primary/20" : "bg-surface-1 border-border"}`}>
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 bg-primary text-primary-foreground">
-                  {user.avatar}
+                  <Avatar className="h-full w-full">
+                    {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} className="object-cover" /> : null}
+                    <AvatarFallback className="bg-transparent text-sm font-bold text-primary-foreground">
+                      {user.avatarLabel}
+                    </AvatarFallback>
+                  </Avatar>
                 </div>
                 <div>
                   <span className="text-sm font-bold text-primary">{user.name}{user.emoji && ` ${user.emoji}`}{user.isYou && ` ${userTrophy.emoji}`}</span>
@@ -335,8 +442,8 @@ export default function LeaderboardPage() {
           {allUsers.map(user => (
             <div
               key={`desktop-${user.rank}`}
-              className={`grid grid-cols-[3rem_1fr_6rem_6rem_6rem_6rem] gap-2 px-4 py-3 border-b items-center transition-colors duration-200 ${
-                user.isYou ? "bg-primary/15 border-primary shadow-sm relative z-10" : "bg-primary/5 border-border last:border-0"
+              className={`grid grid-cols-[3rem_1fr_6rem_6rem_6rem_6rem] gap-2 px-4 py-3 border-b items-center overflow-hidden transition-colors duration-200 ${
+                user.isYou ? "bg-primary/15 border-primary shadow-sm relative z-10" : "bg-surface-1 border-border last:border-0"
               }`}
             >
             <span className="text-sm font-medium text-muted-foreground">
@@ -344,7 +451,12 @@ export default function LeaderboardPage() {
             </span>
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 bg-primary text-primary-foreground">
-                {user.avatar}
+                <Avatar className="h-full w-full">
+                  {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt={user.name} className="object-cover" /> : null}
+                  <AvatarFallback className="bg-transparent text-xs font-bold text-primary-foreground">
+                    {user.avatarLabel}
+                  </AvatarFallback>
+                </Avatar>
               </div>
               <span className="text-sm font-bold text-primary truncate">
                 {user.name}{user.emoji && ` ${user.emoji}`}{user.isYou && ` ${userTrophy.emoji}`}
@@ -366,6 +478,7 @@ export default function LeaderboardPage() {
         ))}
         </div>
       </div>
+      )}
 
       {/* How to climb */}
       <div className="bg-card border border-border rounded-xl p-6">

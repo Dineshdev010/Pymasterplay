@@ -1,17 +1,27 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Play, DollarSign, Clock, CheckCircle2 } from "lucide-react";
-import { useProgress } from "@/contexts/ProgressContext";
+import { Clock, CheckCircle2, HeartHandshake } from "lucide-react";
 import { toast } from "sonner";
 import { getNextAd, type AdConfig } from "@/data/ads";
 
 const AD_DURATION = 15; // seconds to watch
 
-export function AdViewModal({ isOpen, onClose, onComplete, rewardAmount = 10 }: { isOpen: boolean; onClose: () => void; onComplete?: () => void; rewardAmount?: number }) {
+export function AdViewModal({
+  isOpen,
+  onClose,
+  onComplete,
+  completionTitle = "Thanks for supporting PyMaster",
+  completionDescription = "Your request has been unlocked.",
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onComplete?: () => void;
+  completionTitle?: string;
+  completionDescription?: string;
+}) {
   const [timeLeft, setTimeLeft] = useState(AD_DURATION);
   const [completed, setCompleted] = useState(false);
   const [ad] = useState<AdConfig>(() => getNextAd());
-  const { addWallet } = useProgress();
 
   // NOTE: Google AdSense integration pending
   // When ready, replace the ad content div below with a GoogleAd component
@@ -35,10 +45,7 @@ export function AdViewModal({ isOpen, onClose, onComplete, rewardAmount = 10 }: 
     if (timeLeft <= 0) {
       if (!completed) {
         setCompleted(true);
-        if (rewardAmount > 0) {
-          addWallet(rewardAmount);
-          toast.success(`You earned $${rewardAmount}! 💰`, { description: "Thanks for watching the ad!" });
-        }
+        toast.success(completionTitle, { description: completionDescription });
         onComplete?.();
       }
       return;
@@ -46,7 +53,7 @@ export function AdViewModal({ isOpen, onClose, onComplete, rewardAmount = 10 }: 
 
     const timer = setTimeout(() => setTimeLeft(t => t - 1), 1000);
     return () => clearTimeout(timer);
-  }, [isOpen, timeLeft, completed, addWallet, onComplete, rewardAmount]);
+  }, [completionDescription, completionTitle, isOpen, timeLeft, completed, onComplete]);
 
   return (
     <AnimatePresence>
@@ -71,14 +78,14 @@ export function AdViewModal({ isOpen, onClose, onComplete, rewardAmount = 10 }: 
               <p className="text-white/90 text-sm leading-relaxed">{ad.description}</p>
             </div>
 
-            {/* Timer / Reward */}
+            {/* Timer / Completion */}
             <div className="p-6 space-y-4">
               {!completed ? (
                 <>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground flex items-center gap-1.5">
                       <Clock className="w-4 h-4" />
-                      Watch to earn reward
+                      Support message in progress
                     </span>
                     <span className="font-mono font-bold text-foreground">{timeLeft}s</span>
                   </div>
@@ -91,7 +98,7 @@ export function AdViewModal({ isOpen, onClose, onComplete, rewardAmount = 10 }: 
                     />
                   </div>
                   <p className="text-center text-xs text-muted-foreground">
-                    Don't close — you'll earn <span className="text-primary font-semibold">$10</span> when the timer ends!
+                    Keep this open for a moment to continue.
                   </p>
                 </>
               ) : (
@@ -100,14 +107,14 @@ export function AdViewModal({ isOpen, onClose, onComplete, rewardAmount = 10 }: 
                   animate={{ scale: 1, opacity: 1 }}
                   className="text-center space-y-3"
                 >
-                  <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto" />
-                  <h4 className="text-lg font-bold text-foreground">You earned $10! 🎉</h4>
-                  <p className="text-sm text-muted-foreground">The reward has been added to your wallet.</p>
+                  <HeartHandshake className="w-12 h-12 text-primary mx-auto" />
+                  <h4 className="text-lg font-bold text-foreground">{completionTitle}</h4>
+                  <p className="text-sm text-muted-foreground">{completionDescription}</p>
                   <button
                     onClick={onClose}
                     className="px-6 py-2 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
                   >
-                    Collect & Close
+                    Continue
                   </button>
                 </motion.div>
               )}

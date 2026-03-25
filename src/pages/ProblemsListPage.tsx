@@ -9,6 +9,8 @@ import { problems, getDifficultyColor, getDifficultyBg } from "@/data/problems";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getRewardForDifficulty } from "@/lib/progress";
 import { Code, CheckCircle2, ChevronRight, Wallet, Search } from "lucide-react";
+import { GoogleAd } from "@/components/ads/GoogleAd";
+import { Helmet } from "react-helmet-async";
 
 export default function ProblemsListPage() {
   const { progress } = useProgress();
@@ -35,6 +37,13 @@ export default function ProblemsListPage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <Helmet>
+        <title>Python Problems | Practice Coding Challenges on PyMaster</title>
+        <meta
+          name="description"
+          content="Practice Python coding challenges from basic to expert difficulty with rewards, progress tracking, and built-in problem pages."
+        />
+      </Helmet>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>
@@ -84,6 +93,13 @@ export default function ProblemsListPage() {
           {filtered.length} result{filtered.length !== 1 ? "s" : ""} for "{search}"
         </p>
       )}
+
+      <GoogleAd
+        slot={import.meta.env.VITE_ADSENSE_SLOT_PROBLEMS}
+        label="Sponsored Challenge Pick"
+        className="mb-6"
+        minHeight={160}
+      />
 
       {/* Problem list */}
       <div className="space-y-2">

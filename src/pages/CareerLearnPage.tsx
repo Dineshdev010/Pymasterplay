@@ -19,7 +19,7 @@ export default function CareerLearnPage() {
 
   if (!track) {
     return (
-      <div className="flex items-center justify-center h-[calc(100vh-3.5rem)]">
+      <div className="flex min-h-[calc(100vh-3.5rem)] items-center justify-center">
         <div className="text-center">
           <p className="text-muted-foreground mb-4">Career track not found</p>
           <Button asChild variant="outline"><Link to="/">Go Home</Link></Button>
@@ -49,7 +49,7 @@ export default function CareerLearnPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-3.5rem)]">
+    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)] md:flex-row">
       {/* Sidebar */}
       <aside className="w-72 border-r border-border bg-surface-1 overflow-y-auto shrink-0 hidden md:block">
         <div className="p-4 border-b border-border">
