@@ -121,6 +121,11 @@ VITE_ADSENSE_SLOT_HOME=your-home-slot
 VITE_ADSENSE_SLOT_LEARN=your-learn-slot
 VITE_ADSENSE_SLOT_JOBS=your-jobs-slot
 VITE_ADSENSE_SLOT_PROBLEMS=your-problems-slot
+
+# Optional: footer social links (hide icons if not set)
+VITE_SOCIAL_GITHUB=https://github.com/yourname
+VITE_SOCIAL_LINKEDIN=https://linkedin.com/in/yourname
+VITE_SOCIAL_YOUTUBE=https://youtube.com/@yourchannel
 ```
 
 Notes:

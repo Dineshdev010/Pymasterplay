@@ -11,15 +11,27 @@ import { getRewardForDifficulty } from "@/lib/progress";
 import { Code, CheckCircle2, ChevronRight, Wallet, Search } from "lucide-react";
 import { GoogleAd } from "@/components/ads/GoogleAd";
 import { Helmet } from "react-helmet-async";
+import { CompanyBadge } from "@/components/CompanyBadge";
 
 export default function ProblemsListPage() {
   const { progress } = useProgress();
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
+  const [companyFilter, setCompanyFilter] = useState("all");
+  const canonical = "https://pymaster.pro/problems";
+
+  const companyOptions = ["all", ...Array.from(new Set(problems.flatMap((problem) => problem.companies ?? []))).sort()];
 
   const filtered = problems
     .filter(p => filter === "all" || p.difficulty === filter)
-    .filter(p => p.title.toLowerCase().includes(search.toLowerCase()));
+    .filter(p => companyFilter === "all" || p.companies?.includes(companyFilter))
+    .filter((p) => {
+      const query = search.toLowerCase();
+      return (
+        p.title.toLowerCase().includes(query) ||
+        p.companies?.some((company) => company.toLowerCase().includes(query))
+      );
+    });
 
   // Build a serial number map: each problem gets a global index (1-based)
   const serialMap = new Map<string, number>();
@@ -43,6 +55,11 @@ export default function ProblemsListPage() {
           name="description"
           content="Practice Python coding challenges from basic to expert difficulty with rewards, progress tracking, and built-in problem pages."
         />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content="Python Problems | PyMaster" />
+        <meta property="og:description" content="Practice Python coding challenges from basic to expert difficulty with rewards, progress tracking, and built-in problem pages." />
       </Helmet>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
@@ -94,6 +111,37 @@ export default function ProblemsListPage() {
         </p>
       )}
 
+      <div className="mb-6">
+        <div className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Filter by company
+        </div>
+        <div className="flex gap-2 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
+          <button
+            onClick={() => setCompanyFilter("all")}
+            className={`rounded-full border px-3 py-1.5 text-xs font-medium whitespace-nowrap transition-colors ${
+              companyFilter === "all"
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            All companies
+          </button>
+          {companyOptions.filter((company) => company !== "all").map((company) => (
+            <button
+              key={company}
+              onClick={() => setCompanyFilter(company)}
+              className={`rounded-full transition-transform ${companyFilter === company ? "scale-[1.02]" : ""}`}
+            >
+              <CompanyBadge
+                company={company}
+                compact
+                className={companyFilter === company ? "ring-2 ring-primary/20" : "opacity-85 hover:opacity-100"}
+              />
+            </button>
+          ))}
+        </div>
+      </div>
+
       <GoogleAd
         slot={import.meta.env.VITE_ADSENSE_SLOT_PROBLEMS}
         label="Sponsored Challenge Pick"
@@ -137,6 +185,13 @@ export default function ProblemsListPage() {
                     <Wallet className="w-3 h-3" /> ${getRewardForDifficulty(problem.difficulty)}
                   </span>
                 </div>
+                {problem.companies?.length ? (
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {problem.companies.slice(0, 3).map((company) => (
+                      <CompanyBadge key={company} company={company} compact />
+                    ))}
+                  </div>
+                ) : null}
               </div>
 
               <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-foreground transition-colors shrink-0" />
@@ -150,7 +205,7 @@ export default function ProblemsListPage() {
         <div className="text-center py-12">
           <Code className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
           <p className="text-muted-foreground text-sm">No problems found</p>
-          <button onClick={() => { setFilter("all"); setSearch(""); }} className="text-primary text-sm mt-2 hover:underline">
+          <button onClick={() => { setFilter("all"); setSearch(""); setCompanyFilter("all"); }} className="text-primary text-sm mt-2 hover:underline">
             Clear filters
           </button>
         </div>

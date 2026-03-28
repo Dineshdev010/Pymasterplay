@@ -12,7 +12,16 @@ import Editor from "@monaco-editor/react";
 import { Play, RotateCcw, FileCode, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProgress } from "@/contexts/ProgressContext";
-import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
+import {
+  cancelActivePythonExecution,
+  executePython,
+  getPythonExecutionTimeoutMs,
+  getPythonRuntimeError,
+  getPythonRuntimeStatus,
+  preloadPyodide,
+  subscribePythonRuntimeStatus,
+  type PythonRuntimeStatus,
+} from "@/lib/piston";
 
 // ---------- Pre-built code templates ----------
 // Users can select these from the dropdown to quickly try different concepts
@@ -34,6 +43,8 @@ export default function CompilerPage() {
   const [output, setOutput] = useState("");           // Output from Python execution
   const [isRunning, setIsRunning] = useState(false);  // Whether code is currently executing
   const [executionTime, setExecutionTime] = useState<number | null>(null); // Execution time in ms
+  const [runtimeStatus, setRuntimeStatus] = useState<PythonRuntimeStatus>(getPythonRuntimeStatus());
+  const [runtimeError, setRuntimeError] = useState(getPythonRuntimeError());
   const { logActivity } = useProgress();              // Record activity for streak
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
@@ -43,11 +54,19 @@ export default function CompilerPage() {
     if (c) setCode(c);
   }, [searchParams]);
 
+  useEffect(() => {
+    preloadPyodide();
+    return subscribePythonRuntimeStatus((status, error) => {
+      setRuntimeStatus(status);
+      setRuntimeError(error);
+    });
+  }, []);
+
   // ---------- Run Python code ----------
   // Executes the code using Pyodide (WebAssembly) in the browser
   const runCode = async () => {
     setIsRunning(true);
-    setOutput("");
+    setOutput(runtimeStatus === "ready" ? "" : "⏳ Python runtime is loading in your browser. First run may take a little longer...");
     setExecutionTime(null);
 
     // Measure execution time
@@ -88,6 +107,15 @@ export default function CompilerPage() {
           {/* Badge showing this runs in browser via WebAssembly */}
           <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
             🌐 Browser WASM
+          </span>
+          <span className={`inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded-full border ${
+            runtimeStatus === "ready"
+              ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-600"
+              : runtimeStatus === "error"
+                ? "border-destructive/20 bg-destructive/10 text-destructive"
+                : "border-amber-500/20 bg-amber-500/10 text-amber-600"
+          }`}>
+            {runtimeStatus === "ready" ? "Ready" : runtimeStatus === "error" ? "Runtime Error" : "Loading Runtime"}
           </span>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
@@ -159,9 +187,18 @@ export default function CompilerPage() {
             output.includes("❌") || output.includes("⚠️") ? "text-destructive" : "text-foreground"
           }`}>
             {isRunning ? (
-              <span className="text-muted-foreground animate-pulse">⏳ Running Python in browser worker...</span>
+              <span className="text-muted-foreground animate-pulse">
+                {runtimeStatus === "ready"
+                  ? "⏳ Running Python in browser worker..."
+                  : "⏳ Loading Python runtime and preparing browser worker..."}
+              </span>
             ) : (
-              output || `Click '▶ Run' to execute your code locally. Runs in an isolated browser worker with a ${timeoutSeconds}s safety timeout.`
+              output ||
+              (runtimeStatus === "error"
+                ? `❌ Runtime failed to load.\n${runtimeError || "Please refresh and try again."}`
+                : runtimeStatus === "loading"
+                  ? "Python runtime is warming up in the background. Your first run should feel faster once loading completes."
+                  : `Click '▶ Run' to execute your code locally. Runs in an isolated browser worker with a ${timeoutSeconds}s safety timeout.`)
             )}
           </pre>
         </div>

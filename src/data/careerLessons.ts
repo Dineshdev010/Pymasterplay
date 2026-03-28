@@ -93,6 +93,26 @@ function da(): CareerLesson[] {
         advanced: { prompt: "Filter CSV rows where Age > 25 and print the count.", starterCode: "data = \"Name,Age\\nAlice,25\\nBob,30\\nCharlie,35\\nDiana,22\"\nlines = data.strip().split(\"\\n\")\nrows = [line.split(\",\") for line in lines[1:]]\ncount = sum(1 for row in rows if int(row[1]) > 25)\nprint(count)\n", expectedOutput: "2" },
       },
     },
+    {
+      id: "da-pandas-mastery", title: "Pandas Mastery Patterns", description: "GroupBy, merge, pivot, and performance habits",
+      content: "## Pandas Mastery\n\nOnce you know the basics, these patterns make you *fast* in real jobs.\n\n### Core patterns\n- **groupby + agg** — summarize by category\n- **merge / join** — combine datasets\n- **pivot_table** — reshape for reporting\n- **missing values** — fill, drop, flag\n- **types** — convert early (int, float, datetime)\n\n### Performance habits\n- Avoid row-by-row loops when possible\n- Prefer vectorized ops and boolean masks\n- Use `value_counts()` / `groupby()` for summaries\n\nYou do not need to memorize everything; you need to know the *patterns* and where to look.",
+      codeExample: "# Pandas-like operations (conceptual, using Python)\nrows = [\n    {\"dept\": \"Eng\", \"salary\": 100},\n    {\"dept\": \"Eng\", \"salary\": 120},\n    {\"dept\": \"Sales\", \"salary\": 90},\n]\n\n# groupby dept -> avg salary\nsums = {}\ncounts = {}\nfor r in rows:\n    d = r[\"dept\"]\n    sums[d] = sums.get(d, 0) + r[\"salary\"]\n    counts[d] = counts.get(d, 0) + 1\n\navgs = {d: round(sums[d] / counts[d], 1) for d in sums}\nprint(avgs)\n",
+      exercises: {
+        beginner: { prompt: "Group by category and print total for 'A'. data=[('A',10),('B',5),('A',7)]", starterCode: "data = [(\"A\", 10), (\"B\", 5), (\"A\", 7)]\ntotals = {}\nfor cat, val in data:\n    totals[cat] = totals.get(cat, 0) + val\nprint(totals[\"A\"]) \n", expectedOutput: "17" },
+        intermediate: { prompt: "Left join two lists of dicts on id and print the joined name for id=2.", starterCode: "users = [{\"id\": 1, \"name\": \"A\"}, {\"id\": 2, \"name\": \"B\"}]\norders = [{\"id\": 2, \"total\": 50}]\norder_by_id = {o[\"id\"]: o for o in orders}\njoined = []\nfor u in users:\n    row = {**u, **order_by_id.get(u[\"id\"], {})}\n    joined.append(row)\nprint(joined[1][\"name\"]) \n", expectedOutput: "B" },
+        advanced: { prompt: "Build a pivot-like summary: counts by dept from rows. Print Eng count.", starterCode: "rows = [\n    {\"dept\": \"Eng\"}, {\"dept\": \"Eng\"}, {\"dept\": \"Sales\"}, {\"dept\": \"Eng\"}\n]\ncounts = {}\nfor r in rows:\n    d = r[\"dept\"]\n    counts[d] = counts.get(d, 0) + 1\nprint(counts[\"Eng\"]) \n", expectedOutput: "3" },
+      },
+    },
+    {
+      id: "da-case-study", title: "Case Study: From Raw Data to Insights", description: "A portfolio-style mini project workflow",
+      content: "## Case Study Workflow\n\nRecruiters love seeing end-to-end thinking.\n\n### A strong case study includes\n1. **Problem statement** — what you are trying to answer\n2. **Data cleaning** — handle missing and bad values\n3. **Exploration** — summary statistics and patterns\n4. **Insights** — 3 to 5 clear findings\n5. **Recommendation** — what to do next\n6. **Limitations** — what the data cannot prove\n\n### Output idea\n- A single clean notebook or markdown report\n- A few charts (even simple ones)\n- A short conclusion section\n\nYou are practicing *storytelling*, not just code.",
+      codeExample: "# Mini case study: find top product by revenue\nsales = [\n    {\"product\": \"A\", \"price\": 10, \"qty\": 3},\n    {\"product\": \"B\", \"price\": 7, \"qty\": 6},\n    {\"product\": \"A\", \"price\": 10, \"qty\": 1},\n]\n\nrevenue = {}\nfor s in sales:\n    revenue[s[\"product\"]] = revenue.get(s[\"product\"], 0) + s[\"price\"] * s[\"qty\"]\n\ntop = max(revenue, key=revenue.get)\nprint(top, revenue[top])\n",
+      exercises: {
+        beginner: { prompt: "Compute revenue for price=12, qty=4. Print it.", starterCode: "price = 12\nqty = 4\nprint(price * qty)\n", expectedOutput: "48" },
+        intermediate: { prompt: "Find the max value in revenue={'A':40,'B':42,'C':10}. Print the key.", starterCode: "revenue = {\"A\": 40, \"B\": 42, \"C\": 10}\nprint(max(revenue, key=revenue.get))\n", expectedOutput: "B" },
+        advanced: { prompt: "Given nums=[10, None, 30, None, 5], replace None with 0 and print sum.", starterCode: "nums = [10, None, 30, None, 5]\nclean = [0 if x is None else x for x in nums]\nprint(sum(clean))\n", expectedOutput: "45" },
+      },
+    },
   ];
 }
 
@@ -178,6 +198,26 @@ function wd(): CareerLesson[] {
         advanced: { prompt: "Parse a connection string 'postgres://user:pass@host:5432/db'. Print the host.", starterCode: "url = \"postgres://user:pass@host:5432/db\"\nparts = url.split(\"@\")[1].split(\":\")\nhost = parts[0]\nprint(host)\n", expectedOutput: "host" },
       },
     },
+    {
+      id: "wd-auth-security", title: "Authentication & Security Basics", description: "Passwords, sessions, JWT concepts, and common mistakes",
+      content: "## Auth & Security (Web)\n\n### Authentication vs Authorization\n- **Authentication**: who you are\n- **Authorization**: what you can access\n\n### Password storage (must)\n- Never store plaintext passwords\n- Store a *salted hash* (e.g., PBKDF2/bcrypt/argon2)\n\n### Sessions vs JWT\n- **Sessions**: server stores session, browser stores cookie\n- **JWT**: server signs a token, browser stores token\n\n### Common pitfalls\n- Missing input validation\n- Insecure secrets in code\n- No rate limiting on login\n- Broken access control",
+      codeExample: "import hashlib\n\n# Hash password (demo only; use proper password hash libs in real apps)\ndef hash_password(pwd, salt=\"mysalt\"):\n    return hashlib.sha256((salt + pwd).encode()).hexdigest()\n\nstored = hash_password(\"Pass123\")\nprint(stored[:12])\nprint(hash_password(\"Pass123\") == stored)\n",
+      exercises: {
+        beginner: { prompt: "Check if '/admin' starts with '/'. Print True/False.", starterCode: "path = \"/admin\"\nprint(path.startswith(\"/\"))\n", expectedOutput: "True" },
+        intermediate: { prompt: "Validate username is at least 3 chars and alphanumeric. Test 'ab'. Print False.", starterCode: "u = \"ab\"\nok = len(u) >= 3 and u.isalnum()\nprint(ok)\n", expectedOutput: "False" },
+        advanced: { prompt: "Implement a tiny rate-limit: allow max 3 tries. Given tries=4 print 'Blocked'.", starterCode: "tries = 4\nprint(\"Blocked\" if tries > 3 else \"OK\")\n", expectedOutput: "Blocked" },
+      },
+    },
+    {
+      id: "wd-testing", title: "Testing & Debugging Like a Pro", description: "Unit tests, integration tests, and predictable debugging",
+      content: "## Testing\n\n### Why tests matter\n- Prevent regressions\n- Make refactors safe\n- Improve confidence before deploy\n\n### What to test\n- Pure functions: easiest\n- API routes: status code + JSON shape\n- Database logic: constraints and edge cases\n\n### Debugging checklist\n- Reproduce the bug\n- Reduce to a minimal case\n- Add logs for inputs/outputs\n- Write a test that fails, then fix",
+      codeExample: "import unittest\n\ndef add(a, b):\n    return a + b\n\nclass TestAdd(unittest.TestCase):\n    def test_add(self):\n        self.assertEqual(add(2, 3), 5)\n\nif __name__ == \"__main__\":\n    suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestAdd)\n    result = unittest.TextTestRunner(verbosity=0).run(suite)\n    print(\"OK\" if result.wasSuccessful() else \"FAIL\")\n",
+      exercises: {
+        beginner: { prompt: "Write a function that returns 'OK' if status code is 200 else 'ERR'. Test 200 and print.", starterCode: "def status_label(code):\n    return \"OK\" if code == 200 else \"ERR\"\n\nprint(status_label(200))\n", expectedOutput: "OK" },
+        intermediate: { prompt: "Given items=[1,2,3], assert length is 3 using a simple if and print 'pass'.", starterCode: "items = [1, 2, 3]\nif len(items) == 3:\n    print(\"pass\")\n", expectedOutput: "pass" },
+        advanced: { prompt: "Given response={'user':{'id':1}}, check nested key exists safely and print True.", starterCode: "response = {\"user\": {\"id\": 1}}\nprint(\"user\" in response and \"id\" in response[\"user\"]) \n", expectedOutput: "True" },
+      },
+    },
   ];
 }
 
@@ -253,6 +293,26 @@ function aiml(): CareerLesson[] {
         advanced: { prompt: "Calculate average pixel value of image=[[100,200],[150,50]]. Print it.", starterCode: "image = [[100, 200], [150, 50]]\ntotal = sum(p for row in image for p in row)\ncount = sum(len(row) for row in image)\nprint(total / count)\n", expectedOutput: "125.0" },
       },
     },
+    {
+      id: "ml-feature-engineering", title: "Feature Engineering", description: "Turn raw data into model-ready signals",
+      content: "## Feature Engineering\n\nModels learn from *features*.\n\n### Common transformations\n- **Scaling**: min-max, standardization\n- **Encoding**: one-hot for categories\n- **Text**: bag-of-words, TF-IDF (concept)\n- **Datetime**: day-of-week, month, hour\n\n### Rule of thumb\nIf a human can explain why a signal matters, it is often a good candidate feature.",
+      codeExample: "# Simple scaling (min-max)\nx = [10, 20, 15, 30]\nmn, mx = min(x), max(x)\nscaled = [round((v - mn) / (mx - mn), 2) for v in x]\nprint(scaled)\n",
+      exercises: {
+        beginner: { prompt: "Compute min-max scaled value of v=5 with min=0 max=10. Print it.", starterCode: "v = 5\nmn = 0\nmx = 10\nprint((v - mn) / (mx - mn))\n", expectedOutput: "0.5" },
+        intermediate: { prompt: "One-hot encode 'B' from categories=['A','B','C']. Print the list.", starterCode: "categories = [\"A\", \"B\", \"C\"]\nvalue = \"B\"\nvec = [1 if c == value else 0 for c in categories]\nprint(vec)\n", expectedOutput: "[0, 1, 0]" },
+        advanced: { prompt: "Extract day-of-week from '2024-01-07' (Sunday). Print 'Sun'.", starterCode: "from datetime import datetime\ns = \"2024-01-07\"\nd = datetime.strptime(s, \"%Y-%m-%d\")\nprint(d.strftime(\"%a\"))\n", expectedOutput: "Sun" },
+      },
+    },
+    {
+      id: "ml-evaluation", title: "Model Evaluation & Metrics", description: "Accuracy, precision, recall, and confusion matrices",
+      content: "## Evaluation\n\n### Why accuracy can be misleading\nIf 95% of transactions are not fraud, a model that always predicts \"not fraud\" is 95% accurate but useless.\n\n### Confusion matrix\n- TP: true positives\n- FP: false positives\n- TN: true negatives\n- FN: false negatives\n\n### Metrics\n- **Precision** = TP / (TP + FP)\n- **Recall** = TP / (TP + FN)\n- **F1** = harmonic mean of precision and recall",
+      codeExample: "# Compute precision/recall from predictions\nactual = [1, 0, 1, 1, 0]\npred =   [1, 0, 0, 1, 1]\n\nTP = sum(1 for a, p in zip(actual, pred) if a == 1 and p == 1)\nFP = sum(1 for a, p in zip(actual, pred) if a == 0 and p == 1)\nFN = sum(1 for a, p in zip(actual, pred) if a == 1 and p == 0)\n\nprecision = TP / (TP + FP) if TP + FP else 0\nrecall = TP / (TP + FN) if TP + FN else 0\nprint(round(precision, 2), round(recall, 2))\n",
+      exercises: {
+        beginner: { prompt: "Given TP=3, FP=1, compute precision. Print 0.75.", starterCode: "TP = 3\nFP = 1\nprint(TP / (TP + FP))\n", expectedOutput: "0.75" },
+        intermediate: { prompt: "Given TP=2, FN=1, compute recall. Print 0.6666666666666666.", starterCode: "TP = 2\nFN = 1\nprint(TP / (TP + FN))\n", expectedOutput: "0.6666666666666666" },
+        advanced: { prompt: "Compute accuracy for actual=[1,0,1,0] pred=[1,1,1,0]. Print 0.75.", starterCode: "actual = [1, 0, 1, 0]\npred = [1, 1, 1, 0]\ncorrect = sum(1 for a, p in zip(actual, pred) if a == p)\nprint(correct / len(actual))\n", expectedOutput: "0.75" },
+      },
+    },
   ];
 }
 
@@ -318,6 +378,26 @@ function auto(): CareerLesson[] {
         advanced: { prompt: "Build a recipient list from a CSV-like string. Print the count.", starterCode: "csv = \"alice@mail.com,bob@mail.com,charlie@mail.com\"\nrecipients = csv.split(\",\")\nprint(len(recipients))\n", expectedOutput: "3" },
       },
     },
+    {
+      id: "auto-cli-logging", title: "CLI Tools & Logging", description: "Build reusable command-line scripts with good logs",
+      content: "## CLI Tools\n\nA lot of real automation is just clean CLI scripts.\n\n### Must-have skills\n- **argparse** — parse command-line arguments\n- **logging** — structured output you can trust\n- **exit codes** — tell other tools success/failure\n\n### Logging levels\n- DEBUG: details\n- INFO: normal progress\n- WARNING: something odd\n- ERROR: failed",
+      codeExample: "import logging\n\nlogging.basicConfig(level=logging.INFO, format=\"%(levelname)s: %(message)s\")\n\ndef run(task):\n    logging.info(\"Starting %s\", task)\n    if task == \"backup\":\n        logging.info(\"Backup complete\")\n        return 0\n    logging.error(\"Unknown task\")\n    return 1\n\ncode = run(\"backup\")\nprint(code)\n",
+      exercises: {
+        beginner: { prompt: "Print 'INFO' if ok=True else 'ERROR'.", starterCode: "ok = True\nprint(\"INFO\" if ok else \"ERROR\")\n", expectedOutput: "INFO" },
+        intermediate: { prompt: "Write a function exit_code(success) returns 0 if True else 1. Print for False.", starterCode: "def exit_code(success):\n    return 0 if success else 1\n\nprint(exit_code(False))\n", expectedOutput: "1" },
+        advanced: { prompt: "Given args=['--task','clean'], parse task value without argparse and print it.", starterCode: "args = [\"--task\", \"clean\"]\nidx = args.index(\"--task\")\nprint(args[idx + 1])\n", expectedOutput: "clean" },
+      },
+    },
+    {
+      id: "auto-concurrency", title: "Concurrency for Faster Automation", description: "Run multiple tasks in parallel safely",
+      content: "## Concurrency\n\nWhen automation feels slow, it is often waiting on I/O (network, disk).\n\n### Options\n- **threads**: good for I/O bound tasks\n- **async**: good for many network calls\n- **processes**: for CPU heavy work\n\n### Safety rules\n- Limit parallelism (do not spawn 1000 tasks)\n- Timeouts everywhere\n- Retries with backoff for network calls",
+      codeExample: "from concurrent.futures import ThreadPoolExecutor\n\nitems = [1, 2, 3, 4]\n\ndef work(x):\n    return x * x\n\nwith ThreadPoolExecutor(max_workers=2) as ex:\n    results = list(ex.map(work, items))\n\nprint(results)\n",
+      exercises: {
+        beginner: { prompt: "Square numbers [1,2,3] using a loop and print list.", starterCode: "nums = [1, 2, 3]\nout = []\nfor n in nums:\n    out.append(n * n)\nprint(out)\n", expectedOutput: "[1, 4, 9]" },
+        intermediate: { prompt: "Use list comprehension to double [2,4,6]. Print list.", starterCode: "nums = [2, 4, 6]\nprint([n * 2 for n in nums])\n", expectedOutput: "[4, 8, 12]" },
+        advanced: { prompt: "Given tasks=['a','b','c'], limit concurrency to 2. Print 2.", starterCode: "tasks = [\"a\", \"b\", \"c\"]\nmax_workers = min(2, len(tasks))\nprint(max_workers)\n", expectedOutput: "2" },
+      },
+    },
   ];
 }
 
@@ -373,6 +453,26 @@ function de(): CareerLesson[] {
         advanced: { prompt: "Parse an S3 path to extract bucket and key. Print the bucket.", starterCode: "path = \"s3://analytics-bucket/raw/users/data.csv\"\nparts = path.replace(\"s3://\", \"\").split(\"/\", 1)\nprint(parts[0])\n", expectedOutput: "analytics-bucket" },
       },
     },
+    {
+      id: "de-data-modeling", title: "Data Modeling Mastery", description: "Dimensional modeling, keys, and schema design",
+      content: "## Data Modeling\n\nGood models make analytics easy.\n\n### Common models\n- **Star schema**: fact table + dimension tables\n- **Snowflake**: normalized dimensions\n\n### Key ideas\n- **Primary key**: unique row id\n- **Foreign key**: links tables\n- **Grain**: what one row represents\n\n### Interview gold\nAlways state the grain first. It avoids 50% of modeling bugs.",
+      codeExample: "# Fact table grain example\nfacts = [\n    {\"order_id\": 1, \"user_id\": 10, \"amount\": 50},\n    {\"order_id\": 2, \"user_id\": 10, \"amount\": 20},\n    {\"order_id\": 3, \"user_id\": 11, \"amount\": 30},\n]\n\n# Aggregate to user grain\nby_user = {}\nfor f in facts:\n    by_user[f[\"user_id\"]] = by_user.get(f[\"user_id\"], 0) + f[\"amount\"]\nprint(by_user[10])\n",
+      exercises: {
+        beginner: { prompt: "Print the grain phrase: 'one row = one order'.", starterCode: "print(\"one row = one order\")\n", expectedOutput: "one row = one order" },
+        intermediate: { prompt: "Given orders=[(1,10),(2,10),(3,11)], count orders for user 10 and print 2.", starterCode: "orders = [(1, 10), (2, 10), (3, 11)]\ncount = sum(1 for oid, uid in orders if uid == 10)\nprint(count)\n", expectedOutput: "2" },
+        advanced: { prompt: "Detect duplicate primary keys in ids=[1,2,2,3]. Print True.", starterCode: "ids = [1, 2, 2, 3]\nprint(len(ids) != len(set(ids)))\n", expectedOutput: "True" },
+      },
+    },
+    {
+      id: "de-data-quality", title: "Data Quality & Reliability", description: "Validation checks, null handling, and pipeline trust",
+      content: "## Data Quality\n\nIf data is wrong, everything is wrong.\n\n### Common checks\n- Not null for key columns\n- Uniqueness for ids\n- Valid ranges (age 0-120)\n- Referential integrity (foreign keys exist)\n\n### Reliability habits\n- Add checks at every stage\n- Fail fast for bad data\n- Track metrics: rows in/out, null rate, duplicates",
+      codeExample: "# Simple data validation checks\nrows = [\n    {\"id\": 1, \"age\": 25},\n    {\"id\": 2, \"age\": None},\n    {\"id\": 2, \"age\": 40},\n]\n\nids = [r[\"id\"] for r in rows]\nnull_age = sum(1 for r in rows if r[\"age\"] is None)\nduplicates = len(ids) - len(set(ids))\nprint(null_age, duplicates)\n",
+      exercises: {
+        beginner: { prompt: "Count None values in [1,None,2,None]. Print 2.", starterCode: "data = [1, None, 2, None]\nprint(sum(1 for x in data if x is None))\n", expectedOutput: "2" },
+        intermediate: { prompt: "Check if all ages are between 0 and 120 for ages=[10,50,130]. Print False.", starterCode: "ages = [10, 50, 130]\nok = all(0 <= a <= 120 for a in ages)\nprint(ok)\n", expectedOutput: "False" },
+        advanced: { prompt: "Compute duplicate count for ids=[1,2,2,2]. Print 2.", starterCode: "ids = [1, 2, 2, 2]\ndups = len(ids) - len(set(ids))\nprint(dups)\n", expectedOutput: "2" },
+      },
+    },
   ];
 }
 
@@ -380,7 +480,7 @@ function cs(): CareerLesson[] {
   return [
     {
       id: "cs-intro", title: "Python for Cybersecurity", description: "Security fundamentals with Python",
-      content: "## Cybersecurity with Python\n\nPython is the go-to language for security pros.\n\n### Applications\n- Penetration testing\n- Forensics\n- Security automation\n- Cryptography\n\n### Key Libraries\n- hashlib — Hashing (MD5, SHA256)\n- cryptography — Encryption\n- socket — Network programming\n- scapy — Packet manipulation",
+      content: "## Cybersecurity with Python\n\nPython is widely used by security teams for **defense**, **automation**, and **incident response**.\n\n### First Rule (Important)\nOnly test systems you **own** or have **written permission** to test. Learning security is great, but \"hacking anything\" is illegal and harmful.\n\n### Applications\n- Security automation\n- Log analysis and detection\n- Forensics\n- Secure coding and hardening\n- Authorized security testing (with permission)\n\n### Key Libraries\n- hashlib — Hashing (MD5, SHA256)\n- hmac — Secure comparisons and signatures\n- secrets — Secure random tokens\n- cryptography — Encryption\n- socket — Network programming (safe diagnostics)\n- re/json/csv — Parsing security logs",
       codeExample: "import hashlib\npassword = \"SecurePass123\"\nhashed = hashlib.sha256(password.encode()).hexdigest()\nprint(\"SHA256:\", hashed[:20] + \"...\")\n\ndef verify(pwd, hash_val):\n    return hashlib.sha256(pwd.encode()).hexdigest() == hash_val\nprint(\"Valid:\", verify(\"SecurePass123\", hashed))\nprint(\"Invalid:\", verify(\"wrong\", hashed))",
       exercises: {
         beginner: { prompt: "Caesar cipher: shift 'abc' by 1. Print encrypted.", starterCode: "text = \"abc\"\nencrypted = \"\".join(chr(ord(c) + 1) for c in text)\nprint(encrypted)\n", expectedOutput: "bcd" },
@@ -389,13 +489,23 @@ function cs(): CareerLesson[] {
       },
     },
     {
-      id: "cs-network", title: "Network Security", description: "Scanning, sockets, and network analysis",
-      content: "## Network Security\n\n### Key Concepts\n- **Ports** — Services listen on specific ports (80=HTTP, 443=HTTPS)\n- **TCP/UDP** — Transport protocols\n- **IP Addresses** — Network identification\n- **DNS** — Domain name resolution\n\n### Network Scanning\n- Port scanning — Find open services\n- Banner grabbing — Identify software\n- Vulnerability scanning\n\n### Python Tools\n- socket — Low-level networking\n- scapy — Packet crafting\n- nmap — Port scanning",
-      codeExample: "# Port scanning concept\ncommon_ports = {\n    21: \"FTP\", 22: \"SSH\", 23: \"Telnet\",\n    25: \"SMTP\", 53: \"DNS\", 80: \"HTTP\",\n    443: \"HTTPS\", 3306: \"MySQL\", 5432: \"PostgreSQL\"\n}\n\n# Simulated scan results\nopen_ports = [22, 80, 443]\nfor port in open_ports:\n    service = common_ports.get(port, \"Unknown\")\n    print(f\"Port {port}: {service} [OPEN]\")",
+      id: "cs-ethics", title: "Ethics, Law, and Safe Labs", description: "Learn safely without harming anyone",
+      content: "## Ethics and Permission\n\nSecurity skills must be used responsibly.\n\n### What is allowed\n- Your own devices and applications\n- Systems you have **explicit written permission** to test\n- Practice targets designed for learning (CTFs and labs)\n\n### What is not allowed\n- Testing random websites/apps\n- Attempting to access accounts/data you do not own\n- \"Trying\" attacks on public networks\n\n### Safe practice labs (recommended)\n- OWASP Juice Shop (web app practice)\n- DVWA (web vulnerability practice)\n- TryHackMe / Hack The Box (guided labs)\n\n### A professional pentest always includes\n1. Scope + permission\n2. Testing plan\n3. Evidence (screenshots/logs)\n4. Fix recommendations\n5. Final report",
+      codeExample: "# Scope guard: only allow testing approved targets\nallowed = {\"localhost\", \"127.0.0.1\", \"example.com\"}\n\ndef in_scope(host: str) -> bool:\n    return host.strip().lower() in allowed\n\ntests = [\"localhost\", \"Example.com\", \"google.com\"]\nfor host in tests:\n    print(host, \"->\", \"IN SCOPE\" if in_scope(host) else \"OUT OF SCOPE\")\n",
       exercises: {
-        beginner: { prompt: "Create a dict of port numbers to service names. Print service for port 80.", starterCode: "ports = {80: \"HTTP\", 443: \"HTTPS\", 22: \"SSH\"}\nprint(ports[80])\n", expectedOutput: "HTTP" },
-        intermediate: { prompt: "Check if an IP is in private range (starts with 192.168). Print True/False.", starterCode: "ip = \"192.168.1.100\"\nis_private = ip.startswith(\"192.168.\")\nprint(is_private)\n", expectedOutput: "True" },
-        advanced: { prompt: "Parse IP address into octets and print the network part (first 3).", starterCode: "ip = \"192.168.1.100\"\noctets = ip.split(\".\")\nnetwork = \".\".join(octets[:3])\nprint(network)\n", expectedOutput: "192.168.1" },
+        beginner: { prompt: "Create an allowlist of 2 hosts and check if 'localhost' is allowed. Print True/False.", starterCode: "allowed = {\"localhost\", \"127.0.0.1\"}\nprint(\"localhost\" in allowed)\n", expectedOutput: "True" },
+        intermediate: { prompt: "Normalize a host to lowercase and strip spaces. Print it.", starterCode: "host = \"  ExAmPlE.Com  \"\nprint(host.strip().lower())\n", expectedOutput: "example.com" },
+        advanced: { prompt: "Given hosts list, print count of in-scope hosts.", starterCode: "allowed = {\"localhost\", \"127.0.0.1\"}\nhosts = [\"localhost\", \"google.com\", \"127.0.0.1\", \"example.com\"]\ncount = sum(1 for h in hosts if h in allowed)\nprint(count)\n", expectedOutput: "2" },
+      },
+    },
+    {
+      id: "cs-network", title: "Network Monitoring", description: "DNS, traffic basics, and safe diagnostics",
+      content: "## Network Monitoring (Defensive)\n\nThis section focuses on **defensive** network skills: understanding traffic, reading logs, and doing safe diagnostics.\n\n### Key Concepts\n- **Ports** — Services listen on specific ports (80=HTTP, 443=HTTPS)\n- **TCP/UDP** — Transport protocols\n- **IP Addresses** — Network identification\n- **DNS** — Domain name resolution\n\n### Defensive tasks\n- Read firewall logs\n- Detect repeated failed connections\n- Spot suspicious spikes\n- Track top source IPs\n\n### Python tools\n- socket — DNS lookup and safe connectivity checks\n- collections — counting and grouping\n- datetime — timelines",
+      codeExample: "# Firewall log parsing (defensive)\nlogs = [\n    \"ALLOW 192.168.1.10 -> 10.0.0.2:443\",\n    \"DENY 10.0.0.5 -> 10.0.0.2:22\",\n    \"DENY 10.0.0.5 -> 10.0.0.2:22\",\n    \"DENY 10.0.0.5 -> 10.0.0.2:22\",\n    \"ALLOW 192.168.1.20 -> 10.0.0.2:80\",\n]\n\ncounts = {}\nfor line in logs:\n    action, src, _, _ = line.split(maxsplit=3)\n    if action == \"DENY\":\n        counts[src] = counts.get(src, 0) + 1\n\nfor src, c in counts.items():\n    if c >= 3:\n        print(f\"ALERT: repeated denies from {src} ({c})\")\n",
+      exercises: {
+        beginner: { prompt: "Count how many DENY lines exist. Print count.", starterCode: "logs = [\"ALLOW\", \"DENY\", \"DENY\"]\ncount = sum(1 for x in logs if x == \"DENY\")\nprint(count)\n", expectedOutput: "2" },
+        intermediate: { prompt: "Extract port number from '10.0.0.2:443'. Print 443.", starterCode: "dest = \"10.0.0.2:443\"\nport = int(dest.split(\":\")[1])\nprint(port)\n", expectedOutput: "443" },
+        advanced: { prompt: "Find the most common source IP. Print it.", starterCode: "sources = [\"10.0.0.5\", \"10.0.0.5\", \"192.168.1.10\"]\ncounts = {}\nfor s in sources:\n    counts[s] = counts.get(s, 0) + 1\nprint(max(counts, key=counts.get))\n", expectedOutput: "10.0.0.5" },
       },
     },
     {
@@ -419,13 +529,33 @@ function cs(): CareerLesson[] {
       },
     },
     {
-      id: "cs-pentest", title: "Penetration Testing", description: "Ethical hacking techniques with Python",
-      content: "## Penetration Testing\n\nAuthorized testing to find vulnerabilities.\n\n### Methodology\n1. **Reconnaissance** — Gather information\n2. **Scanning** — Find attack surface\n3. **Exploitation** — Attempt attacks\n4. **Post-exploitation** — Maintain access\n5. **Reporting** — Document findings\n\n### Common Vulnerabilities\n- SQL Injection\n- XSS (Cross-Site Scripting)\n- CSRF (Cross-Site Request Forgery)\n- Directory traversal\n- Weak authentication",
+      id: "cs-pentest", title: "Ethical Security Testing", description: "Authorized testing and professional reporting",
+      content: "## Ethical Security Testing (With Permission)\n\nThis is about **authorized** security testing, not hacking random targets.\n\n### Always required\n- Written permission + scope\n- A safe test environment (labs/CTFs/staging)\n- A report that helps developers fix issues\n\n### High-level workflow\n1. **Scope** — what is allowed and not allowed\n2. **Discovery** — identify assets and entry points\n3. **Validation** — confirm issues safely (no data theft)\n4. **Fix guidance** — recommend secure changes\n5. **Reporting** — evidence + impact + remediation\n\n### Common web risk categories (OWASP-style)\n- Injection\n- Broken authentication\n- Security misconfiguration\n- Sensitive data exposure\n- Access control issues",
       codeExample: "# SQL Injection detection concept\ndef is_sql_injection(input_str):\n    suspicious = [\"'\", \"--\", \"OR 1=1\", \"DROP\", \"UNION SELECT\", \";\", \"/*\"]\n    input_upper = input_str.upper()\n    return any(s.upper() in input_upper for s in suspicious)\n\ntests = [\"Alice\", \"' OR 1=1 --\", \"normal_user\", \"'; DROP TABLE users;--\"]\nfor t in tests:\n    result = \"⚠️ INJECTION\" if is_sql_injection(t) else \"✅ Safe\"\n    print(f\"{t[:20]:20s} -> {result}\")",
       exercises: {
         beginner: { prompt: "Check if a string contains a single quote. Print True/False.", starterCode: "user_input = \"hello'world\"\nhas_quote = \"'\" in user_input\nprint(has_quote)\n", expectedOutput: "True" },
-        intermediate: { prompt: "Sanitize input by removing special SQL characters. Print cleaned.", starterCode: "user_input = \"admin'--\"\ncleaned = user_input.replace(\"'\", \"\").replace(\"--\", \"\")\nprint(cleaned)\n", expectedOutput: "admin" },
+        intermediate: { prompt: "Normalize input by trimming spaces. Print the cleaned username.", starterCode: "user_input = \"  admin  \"\nprint(user_input.strip())\n", expectedOutput: "admin" },
         advanced: { prompt: "Check if password is in a common passwords list. Print 'Weak' or 'OK'.", starterCode: "common = [\"password\", \"123456\", \"admin\", \"qwerty\"]\npwd = \"admin\"\nresult = \"Weak\" if pwd in common else \"OK\"\nprint(result)\n", expectedOutput: "Weak" },
+      },
+    },
+    {
+      id: "cs-secure-coding", title: "Secure Coding in Python", description: "Input validation, secrets, and safer defaults",
+      content: "## Secure Coding\n\nCybersecurity is not only pen testing. Secure coding prevents issues from existing.\n\n### Safer habits\n- Validate and sanitize user input\n- Never hardcode secrets (use environment variables)\n- Use constant-time comparisons for tokens\n- Keep dependencies updated\n\n### Common web-ish mistakes\n- Using `eval()` on user input\n- Building SQL strings with concatenation\n- Logging secrets\n\nThis lesson focuses on defensive practices you can apply anywhere.",
+      codeExample: "import hmac\n\n# Constant-time comparison\nexpected = \"token123\"\nprovided = \"token123\"\nprint(hmac.compare_digest(expected, provided))\n",
+      exercises: {
+        beginner: { prompt: "Reject input if it contains ';'. For s='ok;drop' print 'Reject'.", starterCode: "s = \"ok;drop\"\nprint(\"Reject\" if \";\" in s else \"OK\")\n", expectedOutput: "Reject" },
+        intermediate: { prompt: "Read env var with default. For missing var, print 'local'.", starterCode: "import os\nprint(os.environ.get(\"ENV\", \"local\"))\n", expectedOutput: "local" },
+        advanced: { prompt: "Avoid eval: safely convert '42' to int and print 42.", starterCode: "s = \"42\"\nprint(int(s))\n", expectedOutput: "42" },
+      },
+    },
+    {
+      id: "cs-detection-basics", title: "Detection Basics: Logs to Alerts", description: "Simple rules and anomaly checks on log data",
+      content: "## Detection Basics\n\nMany security roles involve detection engineering.\n\n### What you do\n- Collect logs (auth, app, network)\n- Normalize fields (time, user, ip, action)\n- Write rules (thresholds, patterns)\n- Reduce false positives\n\n### Example ideas\n- 5+ failed logins from one IP in 10 minutes\n- Rare admin actions\n- Sudden spike in 404/500s",
+      codeExample: "# Detect repeated failures per IP\nlogs = [\n    \"FAILED 10.0.0.1\",\n    \"FAILED 10.0.0.1\",\n    \"OK 10.0.0.1\",\n    \"FAILED 10.0.0.1\",\n]\n\nfails = {}\nfor line in logs:\n    status, ip = line.split()\n    if status == \"FAILED\":\n        fails[ip] = fails.get(ip, 0) + 1\n\nprint(fails.get(\"10.0.0.1\", 0))\n",
+      exercises: {
+        beginner: { prompt: "Count 'FAILED' in ['OK','FAILED','FAILED']. Print 2.", starterCode: "items = [\"OK\", \"FAILED\", \"FAILED\"]\nprint(sum(1 for x in items if x == \"FAILED\"))\n", expectedOutput: "2" },
+        intermediate: { prompt: "Given counts={'ip':4}, if >=3 print 'ALERT'.", starterCode: "counts = {\"ip\": 4}\nprint(\"ALERT\" if counts[\"ip\"] >= 3 else \"OK\")\n", expectedOutput: "ALERT" },
+        advanced: { prompt: "Extract IPs from ['FAILED 1.1.1.1','OK 2.2.2.2'] and print ['1.1.1.1','2.2.2.2'].", starterCode: "logs = [\"FAILED 1.1.1.1\", \"OK 2.2.2.2\"]\nips = [line.split()[1] for line in logs]\nprint(ips)\n", expectedOutput: "['1.1.1.1', '2.2.2.2']" },
       },
     },
   ];

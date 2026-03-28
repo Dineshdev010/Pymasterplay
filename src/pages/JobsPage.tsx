@@ -74,6 +74,14 @@ export default function JobsPage() {
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
 
+  const resetFilters = () => {
+    setSearch("");
+    setLevel("All");
+    setType("All");
+    setRegion("All Jobs");
+    setStatusFilter("All Jobs");
+  };
+
   const pythonJobs = useMemo<Job[]>(() =>
     pythonJobsRaw.map(j => ({ ...j, posted: formatPosted(j.daysOffset) })),
     []
@@ -321,7 +329,58 @@ export default function JobsPage() {
 
       {/* Job listings */}
       <div className="space-y-3">
-        {filtered.map(job => (
+        {filtered.length === 0 ? (
+          <div className="rounded-[1.4rem] border border-border bg-card p-6">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div>
+                <div className="text-lg font-semibold text-foreground">No jobs match your filters</div>
+                <div className="mt-2 text-sm text-muted-foreground">
+                  This usually happens when a level/type/status filter is too strict. For example, searching <span className="font-medium text-foreground">Analyst</span> while selecting <span className="font-medium text-foreground">Senior</span> can show zero results.
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
+                  <span className="rounded-full border border-border bg-background px-3 py-1">Level: {level}</span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1">Type: {type}</span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1">Region: {region}</span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1">Status: {statusFilter}</span>
+                  <span className="rounded-full border border-border bg-background px-3 py-1">Search: {search || "empty"}</span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Button type="button" onClick={resetFilters}>
+                  Reset Filters
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setSearch("analyst")}>
+                  Search Analyst
+                </Button>
+              </div>
+            </div>
+
+            {statusFilter === "Saved Jobs" && savedJobs.length === 0 ? (
+              <div className="mt-5 rounded-xl border border-border bg-surface-1 p-4 text-sm text-muted-foreground">
+                You have no saved jobs yet. Open any job and click <span className="font-medium text-foreground">Save</span>.
+              </div>
+            ) : null}
+            {statusFilter === "Applied Jobs" && appliedJobs.length === 0 ? (
+              <div className="mt-5 rounded-xl border border-border bg-surface-1 p-4 text-sm text-muted-foreground">
+                You have not applied to any jobs yet. Click <span className="font-medium text-foreground">Apply</span> on a job card to mark it applied.
+              </div>
+            ) : null}
+
+            <div className="mt-5 flex flex-wrap gap-2">
+              {["developer", "intern", "data", "django", "remote"].map((term) => (
+                <button
+                  key={term}
+                  type="button"
+                  onClick={() => setSearch(term)}
+                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
+                >
+                  Try “{term}”
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          filtered.map(job => (
           <div key={job.id} className="relative overflow-hidden rounded-[1.4rem] border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_rgba(59,130,246,0.08)] group">
             <div className="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-primary/5 transition-transform duration-500 group-hover:scale-125" />
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
@@ -378,7 +437,8 @@ export default function JobsPage() {
               </div>
             </div>
           </div>
-        ))}
+        ))
+        )}
       </div>
     </div>
   );

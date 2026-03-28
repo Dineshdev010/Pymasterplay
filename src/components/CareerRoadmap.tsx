@@ -21,7 +21,7 @@ const careerPaths = [
     description: "Analyze datasets, create visualizations, and derive insights using Python, Pandas, and Matplotlib.",
     skills: ["Pandas & NumPy", "Data Visualization", "SQL Queries", "Statistical Analysis", "Jupyter Notebooks"],
     tools: ["Pandas", "Matplotlib", "Seaborn", "Jupyter", "SQL"],
-    lessons: ["Python Fundamentals", "Variables & Data Types", "Lists & Arrays", "Dictionaries", "File Handling"],
+    lessons: ["Python Fundamentals", "Variables & Data Types", "Lists & Arrays", "Dictionaries", "File Handling", "Pandas Mastery", "Case Study Portfolio"],
   },
   {
     id: "web-development",
@@ -35,7 +35,7 @@ const careerPaths = [
     description: "Build web applications and APIs with Django, Flask, and FastAPI. Full-stack Python development.",
     skills: ["Django / Flask", "REST APIs", "Database Design", "Authentication", "Deployment"],
     tools: ["Django", "Flask", "FastAPI", "PostgreSQL", "Docker"],
-    lessons: ["Functions & Modules", "OOP Basics", "Error Handling", "File Handling", "Decorators"],
+    lessons: ["Functions & Modules", "OOP Basics", "Error Handling", "File Handling", "Decorators", "Auth & Security", "Testing & Debugging"],
   },
   {
     id: "ai-ml",
@@ -49,7 +49,7 @@ const careerPaths = [
     description: "Build intelligent systems with TensorFlow, PyTorch, and scikit-learn. From models to production.",
     skills: ["Machine Learning", "Deep Learning", "NLP", "Computer Vision", "Model Deployment"],
     tools: ["TensorFlow", "PyTorch", "scikit-learn", "Keras", "OpenCV"],
-    lessons: ["Python Fundamentals", "Lists & Arrays", "OOP Advanced", "Lambda & Map/Filter", "Generators"],
+    lessons: ["Python Fundamentals", "Lists & Arrays", "OOP Advanced", "Lambda & Map/Filter", "Generators", "Feature Engineering", "Model Evaluation"],
   },
   {
     id: "automation",
@@ -63,7 +63,7 @@ const careerPaths = [
     description: "Automate repetitive tasks, build scripts, and create bots. DevOps and system administration.",
     skills: ["Shell Scripting", "Web Scraping", "Task Automation", "CI/CD Pipelines", "API Integration"],
     tools: ["Selenium", "BeautifulSoup", "Scrapy", "Ansible", "Requests"],
-    lessons: ["Control Flow", "Loops", "Functions & Modules", "File Handling", "Regular Expressions"],
+    lessons: ["Control Flow", "Loops", "Functions & Modules", "File Handling", "Regular Expressions", "CLI Tools & Logging", "Concurrency Basics"],
   },
   {
     id: "data-engineering",
@@ -77,7 +77,7 @@ const careerPaths = [
     description: "Design data pipelines, ETL processes, and data warehouses. Scale data infrastructure.",
     skills: ["ETL Pipelines", "Data Modeling", "Cloud Platforms", "Streaming Data", "Data Warehousing"],
     tools: ["Apache Spark", "Airflow", "Kafka", "AWS/GCP", "dbt"],
-    lessons: ["Data Structures", "File Handling", "OOP Basics", "Modules & Packages", "Error Handling"],
+    lessons: ["Data Structures", "File Handling", "OOP Basics", "Modules & Packages", "Error Handling", "Data Modeling", "Data Quality"],
   },
   {
     id: "cybersecurity",
@@ -91,7 +91,7 @@ const careerPaths = [
     description: "Penetration testing, security automation, and vulnerability analysis with Python.",
     skills: ["Network Security", "Pen Testing", "Cryptography", "Forensics", "Security Automation"],
     tools: ["Scapy", "Nmap", "Metasploit", "Burp Suite", "Wireshark"],
-    lessons: ["Python Fundamentals", "Control Flow", "Modules & Packages", "Regular Expressions", "Error Handling"],
+    lessons: ["Python Fundamentals", "Control Flow", "Modules & Packages", "Regular Expressions", "Error Handling", "Secure Coding", "Detection Basics"],
   },
 ];
 

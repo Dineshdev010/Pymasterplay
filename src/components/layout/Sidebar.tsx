@@ -40,7 +40,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       >
         <div className="p-4 border-b border-border flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2" onClick={onClose}>
-            <img src="/logo.png" alt="PyMaster" className="w-9 h-9 rounded-lg" />
+            <img src="/logo.png" alt="PyMaster" className="w-9 h-9 rounded-lg" decoding="async" />
             <span className="font-bold text-foreground">PyMaster</span>
           </Link>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">

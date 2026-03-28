@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
     }
   },
   optimizeDeps: {
-    include: ['react', 'react-dom', 'framer-motion', 'lucide-react'],
+    include: ["react", "react-dom"],
   },
   plugins: [react()],
   resolve: {

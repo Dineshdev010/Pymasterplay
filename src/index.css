@@ -68,6 +68,8 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
+  text-size-adjust: 100%;
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -75,13 +77,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: geometricPrecision;
   font-feature-settings: "kern" 1;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ==================== ENHANCED SCROLLBAR ==================== */
 /* Firefox scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: hsla(var(--primary), 0.5) transparent;
+  scrollbar-color: hsla(var(--primary), 0.55) transparent;
 }
 
 /* Chrome/Safari/Edge scrollbar */
@@ -96,21 +104,36 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsla(var(--primary), 0.5);
+  background: linear-gradient(
+    180deg,
+    hsla(var(--primary), 0.65),
+    hsla(var(--primary), 0.35)
+  );
   border-radius: 5px;
   border: 2px solid transparent;
   background-clip: padding-box;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsla(var(--primary), 0.8);
+  background: linear-gradient(
+    180deg,
+    hsla(var(--primary), 0.85),
+    hsla(var(--primary), 0.5)
+  );
   background-clip: padding-box;
   border: 2px solid transparent;
 }
 
 ::-webkit-scrollbar-corner {
   background: transparent;
+}
+
+@media (pointer: coarse) {
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 }
 
 /* Smooth transitions for interactive elements only */
@@ -151,6 +174,12 @@ select {
 p, span, li, label {
   letter-spacing: 0.5px;
   line-height: 1.6;
+}
+
+/* Defer rendering/layout for large below-the-fold sections */
+.cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 900px;
 }
 
 @layer base {

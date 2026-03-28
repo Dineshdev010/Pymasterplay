@@ -1,185 +1,216 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { Terminal, Heart, Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { Heart, ArrowUpRight, Github, Linkedin, Youtube } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Footer() {
   const [sawPython, setSawPython] = useState<boolean | null>(null);
+  const year = useMemo(() => new Date().getFullYear(), []);
+  const { user } = useAuth();
+  const certificateLink = user ? "/certificate" : "/auth";
+
+  const socials = useMemo(
+    () => ({
+      github: (import.meta.env.VITE_SOCIAL_GITHUB as string | undefined) || "",
+      linkedin: (import.meta.env.VITE_SOCIAL_LINKEDIN as string | undefined) || "",
+      youtube: (import.meta.env.VITE_SOCIAL_YOUTUBE as string | undefined) || "",
+    }),
+    [],
+  );
 
   return (
-    <footer className="bg-card border-t border-border mt-auto">
+    <footer className="relative mt-auto border-t border-border bg-card/70 backdrop-blur-md">
+      {/* Top accent line */}
+      <div className="h-px w-full bg-gradient-to-r from-primary/30 via-python-yellow/25 to-streak-green/30" />
+
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
-          {/* Brand */}
-          <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-3">
-              <img src="/logo.png" alt="PyMaster" className="w-8 h-8 rounded-lg" />
-              <span className="font-bold text-lg text-foreground">PyMaster</span>
-            </Link>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Master Python from scratch with crystal-clear lessons, coding challenges, and a reward system.
+        {/* CTA strip */}
+        <div className="mb-10 grid gap-3 rounded-2xl border border-border bg-surface-1/70 p-4 sm:grid-cols-[1fr_auto] sm:items-center">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold text-foreground">Study smarter. Practice daily. Get job-ready.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              Lessons, problems, compiler, aptitude, DSA, and career tracks in one place.
             </p>
           </div>
-
-          {/* Learn */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3 text-sm">Learn</h4>
-            <ul className="space-y-2">
-              <li><Link to="/learn" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Python Lessons</Link></li>
-              <li><Link to="/problems" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Practice Problems</Link></li>
-              <li><Link to="/compiler" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Code Editor</Link></li>
-            </ul>
-          </div>
-
-          {/* Community */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3 text-sm">Community</h4>
-            <ul className="space-y-2">
-              <li><Link to="/leaderboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Leaderboard</Link></li>
-              <li><Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dashboard</Link></li>
-              <li><Link to="/jobs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Python Jobs</Link></li>
-              <li><Link to="/dsa" className="text-sm text-muted-foreground hover:text-foreground transition-colors">DSA Mastery</Link></li>
-              <li><Link to="/donate" className="text-sm text-muted-foreground hover:text-foreground transition-colors">❤️ Donate</Link></li>
-            </ul>
-          </div>
-
-          {/* Resources */}
-          <div>
-            <h4 className="font-semibold text-foreground mb-3 text-sm">Resources</h4>
-            <ul className="space-y-2">
-              <li><a href="https://docs.python.org/3/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Python Docs</a></li>
-              <li><a href="https://pypi.org/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">PyPI Packages</a></li>
-              <li><a href="https://pep8.org/" target="_blank" rel="noopener noreferrer" className="text-sm text-muted-foreground hover:text-foreground transition-colors">PEP 8 Style Guide</a></li>
-              <li><Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">🔒 Privacy Policy</Link></li>
-              <li><Link to="/contact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">✉️ Contact</Link></li>
-            </ul>
+          <div className="flex flex-col gap-2 sm:flex-row sm:justify-end">
+            <Link
+              to="/learn"
+              className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Start Learning <ArrowUpRight className="ml-2 h-4 w-4" />
+            </Link>
+            <Link
+              to="/problems"
+              className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground hover:bg-surface-2 transition-colors"
+            >
+              Practice Problems
+            </Link>
           </div>
         </div>
 
-        {/* Did you see the Python? */}
-        <motion.div
-          className="border-t border-border pt-6 mb-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          <div className="bg-secondary/50 rounded-xl p-4 text-center mb-6">
-            <motion.p
-              className="text-sm font-medium text-foreground mb-3 flex items-center justify-center gap-2"
-              animate={{ opacity: [0.7, 1, 0.7] }}
-              transition={{ duration: 3, repeat: Infinity }}
-            >
-              <span className="text-xl">🐍</span>
-              Did you see the Python slithering across your screen?
-              <span className="text-xl">🐍</span>
-            </motion.p>
-            <div className="flex items-center justify-center gap-3">
-              <motion.button
-                onClick={() => setSawPython(true)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  sawPython === true
-                    ? "bg-accent text-accent-foreground"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Eye className="w-4 h-4" />
-                Yes, I saw it! 🎉
-              </motion.button>
-              <motion.button
-                onClick={() => setSawPython(false)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  sawPython === false
-                    ? "bg-destructive text-destructive-foreground"
-                    : "bg-secondary text-muted-foreground hover:text-foreground"
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <EyeOff className="w-4 h-4" />
-                Not yet 👀
-              </motion.button>
-            </div>
-            {sawPython === true && (
-              <motion.p
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-xs text-accent mt-2 font-medium"
-              >
-                🎊 You've been blessed by the Python! Good luck with your coding! 🐍✨
-              </motion.p>
-            )}
-            {sawPython === false && (
-              <motion.p
-                initial={{ opacity: 0, y: 5 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-xs text-muted-foreground mt-2"
-              >
-                Keep watching! The Python visits every hour from a random direction 🔍
-              </motion.p>
-            )}
-          </div>
-        </motion.div>
-
-        {/* Animated donor section */}
-        <motion.div
-          className="border-t border-border pt-6 mb-6"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-4">
-            <motion.div
-              animate={{ scale: [1, 1.15, 1] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <Heart className="w-5 h-5 text-destructive fill-destructive" />
-            </motion.div>
-            <Link to="/donate" className="group">
-              <motion.p
-                className="text-sm text-muted-foreground group-hover:text-foreground transition-colors text-center"
-                animate={{ opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              >
-                Support PyMaster — <span className="font-semibold text-primary">Donate via UPI / GPay</span> 🙏
-              </motion.p>
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+          {/* Brand */}
+          <div className="col-span-2 md:col-span-2">
+            <Link to="/" className="flex items-center gap-2">
+              <img src="/logo.png" alt="PyMaster" className="w-9 h-9 rounded-xl shadow-sm" decoding="async" />
+              <span className="font-extrabold tracking-tight text-foreground text-lg">PyMaster</span>
             </Link>
+            <p className="mt-3 text-sm text-muted-foreground leading-relaxed max-w-md">
+              Crystal-clear Python learning with real practice: lessons, challenges, a built-in compiler, and a career roadmap.
+            </p>
+
+            <div className="mt-4 flex flex-wrap gap-2">
+              <span className="rounded-full border border-border bg-secondary/40 px-3 py-1 text-[11px] text-muted-foreground">Beginner Friendly</span>
+              <span className="rounded-full border border-border bg-secondary/40 px-3 py-1 text-[11px] text-muted-foreground">Daily Practice</span>
+              <span className="rounded-full border border-border bg-secondary/40 px-3 py-1 text-[11px] text-muted-foreground">Job Roadmap</span>
+            </div>
+
+            <div className="mt-6 flex items-center gap-2">
+              {socials.github ? (
+                <a
+                  href={socials.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                  aria-label="GitHub"
+                >
+                  <Github className="h-4 w-4" />
+                </a>
+              ) : null}
+              {socials.linkedin ? (
+                <a
+                  href={socials.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="h-4 w-4" />
+                </a>
+              ) : null}
+              {socials.youtube ? (
+                <a
+                  href={socials.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+                  aria-label="YouTube"
+                >
+                  <Youtube className="h-4 w-4" />
+                </a>
+              ) : null}
+            </div>
           </div>
-          <div className="flex flex-wrap items-center justify-center gap-2">
-            {["☕ Buy a Coffee", "💳 PayPal", "🇮🇳 UPI"].map((item, i) => (
-              <motion.span
-                key={item}
-                className="text-xs px-3 py-1 rounded-full bg-secondary border border-border text-muted-foreground"
-                initial={{ opacity: 0, y: 10 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
-                whileHover={{ scale: 1.05, borderColor: "hsl(var(--primary))" }}
+
+          {/* Product */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/90">Product</h4>
+            <ul className="mt-4 space-y-2.5">
+              <li><Link to="/learn" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Lessons</Link></li>
+              <li><Link to="/problems" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Problems</Link></li>
+              <li><Link to="/compiler" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Compiler</Link></li>
+              <li><Link to="/aptitude" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Aptitude</Link></li>
+              <li><Link to="/quick-prep" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Quick Prep</Link></li>
+            </ul>
+          </div>
+
+          {/* Career */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/90">Career</h4>
+            <ul className="mt-4 space-y-2.5">
+              <li><Link to="/jobs" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Python Jobs</Link></li>
+              <li><Link to="/dsa" className="text-sm text-muted-foreground hover:text-foreground transition-colors">DSA Mastery</Link></li>
+              <li><Link to="/career/data-analysis" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Job Roadmap</Link></li>
+              <li><Link to="/leaderboard" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Leaderboard</Link></li>
+            </ul>
+          </div>
+
+          {/* Support */}
+          <div className="col-span-2 md:col-span-1">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/90">Support</h4>
+            <div className="mt-4 space-y-3">
+              <Link
+                to="/donate"
+                className="group flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 hover:bg-surface-2 transition-colors"
               >
-                {item}
-              </motion.span>
-            ))}
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-foreground">Support PyMaster</p>
+                  <p className="text-xs text-muted-foreground">Donate via UPI / GPay</p>
+                </div>
+                <Heart className="h-4 w-4 text-destructive fill-destructive" />
+              </Link>
+
+              <Link
+                to={certificateLink}
+                className="group flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 hover:bg-surface-2 transition-colors"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-semibold text-foreground">Certificate</p>
+                  <p className="text-xs text-muted-foreground">{user ? "Delivered in 2 business days" : "Sign in to unlock"}</p>
+                </div>
+                <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground transition-colors" />
+              </Link>
+
+              <div className="flex flex-wrap gap-2">
+                <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy</Link>
+                <span className="text-xs text-muted-foreground/40">•</span>
+                <Link to="/contact" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
+                <span className="text-xs text-muted-foreground/40">•</span>
+                <Link to="/about" className="text-xs text-muted-foreground hover:text-foreground transition-colors">About</Link>
+              </div>
+            </div>
           </div>
-        </motion.div>
+        </div>
+
+        {/* Optional Easter egg (collapsed by default) */}
+        <details className="mt-10 rounded-2xl border border-border bg-surface-1/60 p-4">
+          <summary className="cursor-pointer select-none text-sm font-semibold text-foreground">
+            Easter egg
+            <span className="ml-2 text-xs font-normal text-muted-foreground">(optional)</span>
+          </summary>
+          <div className="mt-4">
+            <p className="text-sm text-muted-foreground">
+              Did you see the Python slithering across your screen?
+            </p>
+            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+              <button
+                onClick={() => setSawPython(true)}
+                className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
+                  sawPython === true ? "bg-accent text-accent-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Yes, I saw it
+              </button>
+              <button
+                onClick={() => setSawPython(false)}
+                className={`inline-flex items-center justify-center rounded-xl px-4 py-2 text-sm font-semibold transition-colors ${
+                  sawPython === false ? "bg-destructive text-destructive-foreground" : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Not yet
+              </button>
+            </div>
+            {sawPython === true ? (
+              <p className="mt-3 text-xs font-medium text-accent">You have been blessed by the Python. Good luck with your coding.</p>
+            ) : null}
+            {sawPython === false ? (
+              <p className="mt-3 text-xs text-muted-foreground">Keep watching. It visits every hour from a random direction.</p>
+            ) : null}
+          </div>
+        </details>
 
         {/* Bottom bar */}
-        <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <motion.p
-            className="text-xs text-muted-foreground flex items-center gap-1"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            Made with{" "}
-            <motion.span animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }}>
-              <Heart className="w-3 h-3 text-destructive fill-destructive" />
-            </motion.span>{" "}
-            by <span className="font-semibold text-foreground">Dinesh Raja M</span>
-          </motion.p>
+        <div className="mt-10 border-t border-border pt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} PyMaster. Learn Python, Build Skills, Earn Rewards.
+            © {year} PyMaster. Built by <span className="font-semibold text-foreground">Dinesh Raja M</span>.
           </p>
+          <button
+            type="button"
+            onClick={() => window.scrollTo({ top: 0, left: 0, behavior: "smooth" })}
+            className="inline-flex items-center justify-center rounded-xl border border-border bg-card px-3 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground hover:bg-surface-2 transition-colors"
+          >
+            Back to top <ArrowUpRight className="ml-2 h-3.5 w-3.5" />
+          </button>
         </div>
       </div>
     </footer>

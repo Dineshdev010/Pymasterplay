@@ -9,6 +9,7 @@ import { problems } from "@/data/problems";
 import { Helmet } from "react-helmet-async";
 import { supabase } from "@/lib/supabase";
 import { Link } from "react-router-dom";
+import gpayQR from "@/assets/gpay-qr.jpg";
 
 interface CertificateRecord {
   id: string;
@@ -142,7 +143,7 @@ export default function CertificatePage() {
       <div className="absolute inset-x-0 top-0 h-6 bg-[linear-gradient(90deg,#b68a3d,#eed7a3,#b68a3d)]" />
       <div className="absolute left-1/2 top-8 h-24 w-[420px] -translate-x-1/2 rounded-full bg-white/45 blur-3xl" />
       <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none">
-        <img src="/logo.png" alt="Watermark" className="h-[52%] w-[52%] object-contain grayscale" />
+        <img src="/logo.png" alt="Watermark" className="h-[52%] w-[52%] object-contain grayscale" loading="lazy" decoding="async" />
       </div>
       <div className="absolute left-10 top-10 h-24 w-24 rounded-full border border-[#eadcbc] opacity-70" />
       <div className="absolute right-10 top-10 h-24 w-24 rounded-full border border-[#eadcbc] opacity-70" />
@@ -152,7 +153,7 @@ export default function CertificatePage() {
       <div className="relative z-10 flex flex-1 flex-col px-16 pb-10 pt-12 text-center">
         <div className="mx-auto flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#d6c096] bg-white shadow-sm">
-            <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain" />
+            <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain" decoding="async" />
           </div>
           <div className="text-left">
             <div className="text-xs font-bold uppercase tracking-[0.48em] text-slate-600">PyMaster</div>
@@ -167,14 +168,14 @@ export default function CertificatePage() {
         </div>
 
         <div className={`mx-auto mt-7 inline-flex rounded-full border px-6 py-2 text-[10px] font-bold uppercase tracking-[0.38em] ${accentBorderClass} ${accentClass} bg-white/80 shadow-sm`}>
-          Professional Credential
+          Corporate Professional Credential
         </div>
 
         <h1 className="mt-7 font-serif text-[48px] font-semibold uppercase tracking-[0.18em] text-slate-900">
-          Certificate of Completion
+          Professional Certificate of Achievement
         </h1>
         <p className="mt-3 text-[13px] uppercase tracking-[0.34em] text-slate-500">
-          Awarded for demonstrated Python mastery and applied learning
+          Awarded for verified Python capability, applied problem solving, and practical execution
         </p>
         <div className="mx-auto mt-5 flex items-center gap-4">
           <div className="h-px w-28 bg-[#d6c096]" />
@@ -553,8 +554,8 @@ export default function CertificatePage() {
             <Award className="w-8 h-8 text-python-yellow" /> Python Mastery Certificate
           </h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            You are qualified for the certificate. The final verified certificate is provided after the
-            certificate fee is paid and marked as verified.
+            You are qualified for a professional-style certificate. Once payment is completed and verified,
+            the certificate will be processed and shared to your email within <strong className="text-foreground">2 business days</strong>.
           </p>
         </div>
 
@@ -571,8 +572,8 @@ export default function CertificatePage() {
             </div>
             <h3 className="text-xl font-bold text-foreground text-center mb-2">Certificate Fee Required</h3>
             <p className="text-sm text-center text-muted-foreground mb-6">
-              Pay <strong className="text-foreground">Rs. {certificateFee}</strong> to receive your verified certificate.
-              After payment verification, you can instantly download the certificate.
+              Pay <strong className="text-foreground">Rs. {certificateFee}</strong> to request your professional certificate.
+              After payment verification, the certificate will be reviewed and delivered to your registered email within <strong className="text-foreground">2 business days</strong>.
             </p>
 
             <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 mb-6">
@@ -582,12 +583,29 @@ export default function CertificatePage() {
               </div>
             </div>
 
+            <div className="mb-6 rounded-2xl border border-border bg-surface-1 p-4">
+              <div className="mb-3 text-center">
+                <div className="text-sm font-semibold text-foreground">Scan and pay with GPay / any UPI app</div>
+                <div className="mt-1 text-xs text-muted-foreground">
+                  Use this QR to complete your certificate payment, then mark payment verified to unlock download.
+                </div>
+              </div>
+              <div className="mx-auto w-full max-w-[220px] overflow-hidden rounded-xl border border-border bg-white p-3 shadow-sm">
+                <img
+                  src={gpayQR}
+                  alt="GPay QR code for certificate payment"
+                  className="w-full h-auto rounded-lg"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+
             <ul className="space-y-3 mb-6">
               {[
-                "Verified certificate is unlocked only after payment",
-                "The certificate record is created automatically when you download",
-                "PDF download unlocks as soon as the payment is marked paid",
-                "Use the Donate / UPI payment page to complete the fee",
+                "Professional certificate request starts only after payment",
+                "Our team verifies the payment and certificate details",
+                "Certificate is shared to your registered email within 2 business days",
+                "Scan the QR here using GPay or any UPI app",
               ].map((item) => (
                 <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
                   <CheckCircle2 className="w-4 h-4 text-streak-green mt-0.5 shrink-0" />
@@ -598,7 +616,7 @@ export default function CertificatePage() {
 
             <div className="space-y-3">
               <Button asChild className="w-full h-12 text-base font-bold">
-                <Link to="/donate">Pay Rs. {certificateFee}</Link>
+                <Link to="/donate">Open Full Payment Page</Link>
               </Button>
               <Button type="button" variant="outline" className="w-full gap-2" onClick={handleExportCertificateImage} disabled={exportingPreview}>
                 <ImageIcon className="w-4 h-4" />
@@ -609,7 +627,7 @@ export default function CertificatePage() {
                 Copy Certificate Link
               </Button>
               <p className="text-xs text-center text-muted-foreground">
-                After payment, mark your profile as paid in Supabase to unlock instant download.
+                After payment, mark your profile as paid in Supabase so your certificate request can be processed.
               </p>
             </div>
           </div>
@@ -633,7 +651,7 @@ export default function CertificatePage() {
         </h1>
         <p className="text-muted-foreground">
           Congratulations on achieving the <strong className="text-foreground">{effectiveLevel}</strong> rank.
-          {!certificate && " Your certificate record will be created automatically when you download."}
+          {!certificate && " Your professional certificate can be prepared and sent to your email within 2 business days after verification."}
         </p>
       </div>
 
@@ -695,8 +713,8 @@ export default function CertificatePage() {
             </h4>
             <p className="text-sm text-center text-muted-foreground">
               {certificate
-                ? "Your certificate is now backed by a server-side record and ready for export."
-                : "Your verified certificate record will be created instantly when you download the PDF."}
+                ? "Your professional certificate record is ready and can be exported or shared."
+                : "Once verified, your professional certificate can be delivered to your email within 2 business days."}
             </p>
 
             <ul className="space-y-3">
@@ -751,7 +769,7 @@ export default function CertificatePage() {
 
             {!certificate && (
               <div className="rounded-xl border border-primary/20 bg-primary/5 p-3 text-xs text-muted-foreground">
-                Your preview is already personalized. When you click download, PyMaster will create the certificate record first and then export the PDF immediately.
+                This preview reflects your personalized certificate style. Final verified delivery can be sent to your registered email within 2 business days.
               </div>
             )}
           </motion.div>

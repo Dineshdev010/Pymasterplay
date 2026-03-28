@@ -2,8 +2,21 @@
 
 const PYODIDE_VERSION = "0.26.4";
 const OUTPUT_LIMIT = 12000;
+const PYODIDE_BASE_URLS = [
+  "/pyodide/",
+  `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`,
+  `https://pyodide-cdn2.iodide.io/v${PYODIDE_VERSION}/full/`,
+];
 
-let pyodidePromise: Promise<any> | null = null;
+type PyodideRuntime = {
+  setStdout: (options: { batched?: (message: string) => void }) => void;
+  setStderr: (options: { batched?: (message: string) => void }) => void;
+  runPythonAsync: (code: string) => Promise<void>;
+};
+
+type LoadPyodide = (options: { indexURL: string }) => Promise<PyodideRuntime>;
+
+let pyodidePromise: Promise<PyodideRuntime> | null = null;
 
 function appendLimited(text: string, chunk: string) {
   if (!chunk) {
@@ -25,23 +38,36 @@ async function loadRuntime() {
 
   pyodidePromise = (async () => {
     const globalScope = self as typeof self & {
-      loadPyodide?: (options: { indexURL: string }) => Promise<any>;
+      loadPyodide?: LoadPyodide;
       importScripts: (...urls: string[]) => void;
     };
 
-    if (!globalScope.loadPyodide) {
-      globalScope.importScripts(
-        `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/pyodide.js`,
-      );
+    let lastError: unknown = null;
+
+    for (const baseUrl of PYODIDE_BASE_URLS) {
+      try {
+        if (!globalScope.loadPyodide) {
+          globalScope.importScripts(`${baseUrl}pyodide.js`);
+        }
+
+        if (!globalScope.loadPyodide) {
+          throw new Error("Pyodide loader did not initialize.");
+        }
+
+        return await globalScope.loadPyodide({
+          indexURL: baseUrl,
+        });
+      } catch (error) {
+        lastError = error;
+      }
     }
 
-    if (!globalScope.loadPyodide) {
-      throw new Error("Pyodide loader did not initialize.");
-    }
-
-    return globalScope.loadPyodide({
-      indexURL: `https://cdn.jsdelivr.net/pyodide/v${PYODIDE_VERSION}/full/`,
-    });
+    pyodidePromise = null;
+    throw new Error(
+      lastError instanceof Error
+        ? `Could not load Python runtime from the available CDNs. ${lastError.message}`
+        : "Could not load Python runtime from the available CDNs.",
+    );
   })();
 
   return pyodidePromise;

@@ -8,7 +8,9 @@ import { createRoot } from "react-dom/client"; // React 18's method to create a 
 import App from "./App.tsx"; // The main App component
 import "./index.css"; // Global styles (Tailwind CSS + custom styles)
 
-if ("serviceWorker" in navigator) {
+// Only register the service worker in production builds.
+// Registering in dev can slow HMR and cause confusing cache behavior.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("/sw.js").catch(() => undefined);
   });

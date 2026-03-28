@@ -23,6 +23,8 @@ export function AboutUsSection() {
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop" 
                   alt="M. Dinesh Raja" 
                   className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
                 />
                 
                 {/* Floating Badge */}

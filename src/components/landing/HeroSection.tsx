@@ -8,10 +8,10 @@
 
 import { Link, useNavigate } from "react-router-dom";
 import { motion, type Easing } from "framer-motion";
-import { ArrowRight, BookOpen, Code, Terminal, Trophy, Flame, Zap, Target, Sparkles, Rocket, Brain, ChevronDown } from "lucide-react";
+import { ArrowRight, BookOpen, Code, Flame, Target, Sparkles, Rocket, Brain, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useProgress } from "@/contexts/ProgressContext";
-import { useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useScroll, useTransform } from "framer-motion";
 import { StreakFire } from "@/components/StreakFire";
 import { AddToHomeScreenButton } from "@/components/AddToHomeScreenButton";
@@ -40,12 +40,56 @@ const floatingAnimation = {
 export function HeroSection() {
   const { progress } = useProgress();
   const heroRef = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+  const [selectedGuide, setSelectedGuide] = useState<"aptitude" | "coding" | "both" | null>(null);
 
   // ---------- Parallax scroll effect ----------
   // As user scrolls down, the hero fades out and slightly shrinks
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const heroOpacity = useTransform(scrollYProgress, [0, 1], [1, 0]);
   const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+
+  const guide = useMemo(() => {
+    const guides = {
+      aptitude: {
+        title: "Aptitude",
+        subtitle: "Company-style sets + timed mocks",
+        tone: "border-emerald-500/25 bg-emerald-500/10 text-emerald-700",
+        startTo: "/aptitude?track=beginner",
+        steps: [
+          "Pick 1 topic and revise formulas (3 minutes).",
+          "Solve 2 MCQs without revealing the answer (4 minutes).",
+          "Submit in practice mode and read the strategy line (5 minutes).",
+          "Start a short mock and review wrong questions (3 minutes).",
+        ],
+      },
+      coding: {
+        title: "Python Coding",
+        subtitle: "Lessons + quick practice",
+        tone: "border-sky-500/25 bg-sky-500/10 text-sky-700",
+        startTo: "/learn",
+        steps: [
+          "Open one lesson and read the key concept (4 minutes).",
+          "Type and run the example in the compiler (4 minutes).",
+          "Solve one basic problem with your own code (6 minutes).",
+          "Re-run and confirm output matches the expected result (1 minute).",
+        ],
+      },
+      both: {
+        title: "Both",
+        subtitle: "Balanced 15-minute sprint",
+        tone: "border-amber-500/25 bg-amber-500/10 text-amber-700",
+        startTo: "/quick-prep",
+        steps: [
+          "7 minutes: Quant or Reasoning practice (easy or medium).",
+          "7 minutes: Solve one basic coding problem.",
+          "1 minute: Note 1 mistake + 1 shortcut you learned.",
+        ],
+      },
+    } as const;
+
+    return selectedGuide ? guides[selectedGuide] : null;
+  }, [selectedGuide]);
 
   return (
     <section ref={heroRef} className="relative min-h-[90vh] flex items-center overflow-hidden">
@@ -123,6 +167,92 @@ export function HeroSection() {
               <Code className="w-4 h-4" /> Browse Problems
             </Link>
           </Button>
+        </motion.div>
+
+        <motion.div
+          className="mx-auto mb-10 max-w-3xl rounded-2xl border border-border/60 bg-card/50 p-4 backdrop-blur-sm"
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          custom={3.1}
+        >
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="text-left">
+              <div className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Instant Guide</div>
+              <div className="mt-1 text-sm font-semibold text-foreground">Next 15 minutes: pick your goal</div>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedGuide("aptitude")}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  selectedGuide === "aptitude" ? "border-emerald-500 bg-emerald-500 text-white" : "border-border bg-background text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Aptitude
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedGuide("coding")}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  selectedGuide === "coding" ? "border-sky-500 bg-sky-500 text-white" : "border-border bg-background text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Coding
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectedGuide("both")}
+                className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition-colors ${
+                  selectedGuide === "both" ? "border-amber-500 bg-amber-500 text-white" : "border-border bg-background text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                Both
+              </button>
+            </div>
+          </div>
+
+          {guide ? (
+            <div className="mt-4 grid gap-3 sm:grid-cols-[1fr_auto] sm:items-start">
+              <div className="text-left">
+                <div className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] ${guide.tone}`}>
+                  <Brain className="h-3.5 w-3.5" />
+                  {guide.title}
+                </div>
+                <div className="mt-2 text-sm text-muted-foreground">{guide.subtitle}</div>
+                <div className="mt-3 grid gap-2">
+                  {guide.steps.map((step) => (
+                    <div key={step} className="rounded-xl border border-border/60 bg-background/70 px-3 py-2 text-sm text-muted-foreground">
+                      {step}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="flex sm:flex-col gap-2 sm:justify-start">
+                <Button
+                  type="button"
+                  size="lg"
+                  className="h-11 px-6 gap-2 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 shadow-lg shadow-primary/25"
+                  onClick={() => navigate(guide.startTo)}
+                >
+                  Start Now <ArrowRight className="h-4 w-4" />
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="lg"
+                  className="h-11 px-6 border-border hover:bg-surface-2"
+                  onClick={() => setSelectedGuide(null)}
+                >
+                  Reset
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <div className="mt-3 text-left text-sm text-muted-foreground">
+              After you pick a goal, the page shows a quick checklist and a single start button.
+            </div>
+          )}
         </motion.div>
 
         <motion.div

@@ -9,6 +9,7 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "sync:pyodide": "node scripts/sync-pyodide.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -58,6 +59,7 @@
     "lovable-tagger": "^1.1.13",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
+    "pyodide": "^0.26.4",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",

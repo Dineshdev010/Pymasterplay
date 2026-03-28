@@ -3,6 +3,118 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      /* App Loader (renders before React + CSS load) */
+      .pym-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background:
+          radial-gradient(900px 460px at 30% 18%, rgba(56,189,248,0.16), rgba(0,0,0,0) 60%),
+          radial-gradient(760px 420px at 78% 20%, rgba(250,204,21,0.10), rgba(0,0,0,0) 55%),
+          linear-gradient(180deg, #070b14 0%, #05060a 100%);
+        transition: opacity 380ms ease, transform 380ms ease;
+        will-change: opacity, transform;
+      }
+
+      .pym-loader[data-variant="day"] {
+        background:
+          radial-gradient(980px 520px at 42% 10%, rgba(255,255,255,0.85), rgba(0,0,0,0) 55%),
+          radial-gradient(980px 520px at 80% 16%, rgba(250,204,21,0.16), rgba(0,0,0,0) 55%),
+          linear-gradient(180deg, rgba(125,211,252,0.92) 0%, rgba(147,197,253,0.55) 38%, rgba(2,6,23,0.92) 100%);
+      }
+
+      .pym-loader__card {
+        width: min(520px, 100%);
+        border-radius: 20px;
+        border: 1px solid rgba(148,163,184,0.18);
+        background: rgba(2,6,23,0.55);
+        box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+        padding: 22px 22px 18px;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        text-align: center;
+      }
+
+      .pym-loader__top {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        margin-bottom: 12px;
+      }
+
+      .pym-loader__logo {
+        width: 56px;
+        height: 56px;
+        border-radius: 14px;
+        box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+      }
+
+      .pym-loader__title {
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        font-size: 22px;
+        font-weight: 800;
+        letter-spacing: -0.6px;
+        color: #e2e8f0;
+        line-height: 1.1;
+      }
+
+      .pym-loader__sub {
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        font-size: 12px;
+        color: rgba(148,163,184,0.92);
+        line-height: 1.55;
+        margin-bottom: 16px;
+      }
+
+      .pym-loader__bar {
+        height: 5px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(148,163,184,0.16);
+        position: relative;
+      }
+
+      .pym-loader__bar::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        width: 44%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, rgba(59,130,246,0.15), rgba(59,130,246,0.95), rgba(250,204,21,0.90));
+        transform: translateX(-60%);
+        animation: pymLoaderSweep 1.15s ease-in-out infinite;
+      }
+
+      .pym-loader__hint {
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        font-size: 11px;
+        color: rgba(148,163,184,0.78);
+        margin-top: 12px;
+      }
+
+      .pym-loader.is-done {
+        opacity: 0;
+        transform: scale(0.99);
+        pointer-events: none;
+      }
+
+      @keyframes pymLoaderSweep {
+        0% { transform: translateX(-60%); opacity: 0.85; }
+        50% { transform: translateX(80%); opacity: 1; }
+        100% { transform: translateX(180%); opacity: 0.85; }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .pym-loader__bar::before { animation: none; width: 60%; transform: translateX(20%); }
+        .pym-loader { transition: none; }
+      }
+    </style>
     
     <!-- Primary SEO -->
     <title>PyMaster — Learn Python Programming | Free Lessons & Challenges</title>
@@ -87,45 +199,31 @@
   </head>
   <body>
     <!-- Full-screen loader -->
-    <div id="app-loader" style="
-      position: fixed; inset: 0; z-index: 9999;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      background: #0a0c10; transition: opacity 0.5s ease;
-    ">
-      <img src="/logo.png" alt="PyMaster" width="72" height="72" style="margin-bottom: 24px; border-radius: 16px;" />
-      <div style="font-family: 'Inter', system-ui, sans-serif; color: #e2e8f0; font-size: 22px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.5px;">
-        PyMaster
-      </div>
-      <div style="font-family: 'Inter', system-ui, sans-serif; color: #94a3b8; font-size: 13px; margin-bottom: 28px;">
-        Loading your Python journey...
-      </div>
-      <div style="width: 200px; height: 4px; background: #1e293b; border-radius: 4px; overflow: hidden;">
-        <div id="loader-bar" style="
-          width: 0%; height: 100%; border-radius: 4px;
-          background: linear-gradient(90deg, #3b82f6, #facc15);
-          transition: width 0.3s ease;
-        "></div>
+    <div id="app-loader" class="pym-loader" role="status" aria-live="polite" aria-label="Loading PyMaster">
+      <div class="pym-loader__card">
+        <div class="pym-loader__top">
+          <img src="/logo.png" alt="PyMaster" class="pym-loader__logo" width="56" height="56" decoding="async" fetchpriority="high" />
+          <div class="pym-loader__title">PyMaster</div>
+        </div>
+        <div class="pym-loader__sub">Loading lessons, problems, and your progress…</div>
+        <div class="pym-loader__bar" aria-hidden="true"></div>
+        <div class="pym-loader__hint">Tip: Use Search on Problems to find company questions faster.</div>
       </div>
     </div>
     <script>
       (function() {
-        var bar = document.getElementById('loader-bar');
-        var progress = 0;
-        var interval = setInterval(function() {
-          progress += Math.random() * 15 + 5;
-          if (progress > 90) progress = 90;
-          bar.style.width = progress + '%';
-        }, 200);
+        var loader = document.getElementById('app-loader');
+        try {
+          var hour = new Date().getHours();
+          var isNight = hour < 6 || hour >= 18;
+          loader && loader.setAttribute('data-variant', isNight ? 'night' : 'day');
+        } catch (e) {}
+
         window.__hideLoader = function() {
-          clearInterval(interval);
-          bar.style.width = '100%';
-          setTimeout(function() {
-            var loader = document.getElementById('app-loader');
-            if (loader) {
-              loader.style.opacity = '0';
-              setTimeout(function() { loader.remove(); }, 500);
-            }
-          }, 300);
+          var l = document.getElementById('app-loader');
+          if (!l) return;
+          l.classList.add('is-done');
+          setTimeout(function() { try { l.remove(); } catch (e) {} }, 420);
         };
       })();
     </script>

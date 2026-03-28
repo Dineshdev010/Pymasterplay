@@ -7,28 +7,61 @@
 // ============================================================
 
 import { Helmet } from "react-helmet-async";
-import { Suspense, useEffect, useState } from "react";
-import { VantaBackground } from "@/components/VantaBackground";
-import { ShootingStars } from "@/components/ShootingStars";
-import { DailyWantedLevel } from "@/components/DailyWantedLevel";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { HeroSection } from "@/components/landing/HeroSection";
-import { GettingStartedSection } from "@/components/landing/GettingStartedSection";
-import { FeaturesSection } from "@/components/landing/FeaturesSection";
-import { RoadmapSection } from "@/components/landing/RoadmapSection";
-import { BasicProblemsSection } from "@/components/landing/BasicProblemsSection";
-import { TestimonialsSection } from "@/components/landing/TestimonialsSection";
-import { CareerRoadmap } from "@/components/CareerRoadmap";
-import { FutureLearningSection } from "@/components/landing/FutureLearningSection";
-import { CTASection } from "@/components/landing/CTASection";
-import { WinnerBanner } from "@/components/landing/WinnerBanner";
-import { LiveActivityFeed } from "@/components/landing/LiveActivityFeed";
-import { GoogleAd } from "@/components/ads/GoogleAd";
+import { SkyBackground } from "@/components/landing/SkyBackground";
 
-// Simple loading fallback for sections
-const SectionLoading = () => <div className="h-96 bg-surface-1 animate-pulse rounded-lg" />;
+// Defer non-critical sections to improve first load performance.
+const ShootingStars = lazy(() => import("@/components/ShootingStars").then((m) => ({ default: m.ShootingStars })));
+const DailyWantedLevel = lazy(() => import("@/components/DailyWantedLevel").then((m) => ({ default: m.DailyWantedLevel })));
+const GettingStartedSection = lazy(() => import("@/components/landing/GettingStartedSection").then((m) => ({ default: m.GettingStartedSection })));
+const FeaturesSection = lazy(() => import("@/components/landing/FeaturesSection").then((m) => ({ default: m.FeaturesSection })));
+const RoadmapSection = lazy(() => import("@/components/landing/RoadmapSection").then((m) => ({ default: m.RoadmapSection })));
+const BasicProblemsSection = lazy(() => import("@/components/landing/BasicProblemsSection").then((m) => ({ default: m.BasicProblemsSection })));
+const TestimonialsSection = lazy(() => import("@/components/landing/TestimonialsSection").then((m) => ({ default: m.TestimonialsSection })));
+const CareerRoadmap = lazy(() => import("@/components/CareerRoadmap").then((m) => ({ default: m.CareerRoadmap })));
+const FutureLearningSection = lazy(() => import("@/components/landing/FutureLearningSection").then((m) => ({ default: m.FutureLearningSection })));
+const CTASection = lazy(() => import("@/components/landing/CTASection").then((m) => ({ default: m.CTASection })));
+const WinnerBanner = lazy(() => import("@/components/landing/WinnerBanner").then((m) => ({ default: m.WinnerBanner })));
+const LiveActivityFeed = lazy(() => import("@/components/landing/LiveActivityFeed").then((m) => ({ default: m.LiveActivityFeed })));
+const GoogleAd = lazy(() => import("@/components/ads/GoogleAd").then((m) => ({ default: m.GoogleAd })));
 
 export default function LandingPage() {
   const [hideFloatingBadges, setHideFloatingBadges] = useState(false);
+  const [deferFx, setDeferFx] = useState(false);
+  const [clockIsNight, setClockIsNight] = useState(() => {
+    const hour = new Date().getHours();
+    return hour < 6 || hour >= 18;
+  });
+
+  useEffect(() => {
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReduced) return;
+
+    const idle = (window as unknown as { requestIdleCallback?: (cb: () => void, opts?: { timeout: number }) => number }).requestIdleCallback;
+    if (idle) {
+      idle(() => setDeferFx(true), { timeout: 1200 });
+      return;
+    }
+
+    const t = window.setTimeout(() => setDeferFx(true), 700);
+    return () => window.clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    const updatePhase = () => {
+      const hour = new Date().getHours();
+      setClockIsNight(hour < 6 || hour >= 18);
+    };
+
+    updatePhase();
+    const interval = window.setInterval(updatePhase, 2 * 60 * 1000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const syncSidebarState = (event?: Event) => {
@@ -58,14 +91,24 @@ export default function LandingPage() {
         <meta name="twitter:title" content="PyMaster | Learn Python with Real Practice" />
         <meta name="twitter:description" content="Structured Python lessons, interactive challenges, and practical job-focused prep." />
       </Helmet>
-      {/* Restored Native VantaJS Clouds - Guaranteed smooth functionality */}
-      <VantaBackground />
+      {/* Sky background (auto day/night) */}
+      <SkyBackground />
       {/* Clickable shooting stars that quiz users with Python riddles for XP */}
-      <ShootingStars />
-      {!hideFloatingBadges && <DailyWantedLevel />}
+      {deferFx && clockIsNight && (
+        <Suspense fallback={null}>
+          <ShootingStars />
+        </Suspense>
+      )}
+      {!hideFloatingBadges && deferFx && (
+        <Suspense fallback={null}>
+          <DailyWantedLevel />
+        </Suspense>
+      )}
       {!hideFloatingBadges && (
         <div className="fixed left-3 top-[6.1rem] z-[998] hidden sm:block sm:left-4">
-          <LiveActivityFeed />
+          <Suspense fallback={null}>
+            <LiveActivityFeed />
+          </Suspense>
         </div>
       )}
       {/* Main hero with headline, CTA buttons, and quick stats */}
@@ -73,30 +116,68 @@ export default function LandingPage() {
       {/* Visual divider between sections */}
       <div className="section-divider py-2" />
       {/* 4-step getting started guide for new users */}
-      <GettingStartedSection />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <GettingStartedSection />
+        </Suspense>
+      </div>
       {/* 6 feature cards (lessons, editor, problems, rewards, streaks, difficulty) */}
-      <FeaturesSection />
-      <section className="container mx-auto px-4 sm:px-6 py-4">
-        <GoogleAd
-          slot={import.meta.env.VITE_ADSENSE_SLOT_HOME}
-          label="Sponsored Learning Pick"
-          minHeight={170}
-        />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <FeaturesSection />
+        </Suspense>
+      </div>
+      <section className="container mx-auto px-4 sm:px-6 py-4 cv-auto">
+        <Suspense fallback={null}>
+          <GoogleAd
+            slot={import.meta.env.VITE_ADSENSE_SLOT_HOME}
+            label="Sponsored Learning Pick"
+            minHeight={170}
+          />
+        </Suspense>
       </section>
       {/* 5-step learning path from basics to advanced */}
-      <RoadmapSection />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <RoadmapSection />
+        </Suspense>
+      </div>
       {/* Preview of the 50 basic problems with code example */}
-      <BasicProblemsSection />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <BasicProblemsSection />
+        </Suspense>
+      </div>
       {/* $10K winner challenge banner */}
-      <WinnerBanner />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <WinnerBanner />
+        </Suspense>
+      </div>
       {/* User testimonials grid */}
-      <TestimonialsSection />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <TestimonialsSection />
+        </Suspense>
+      </div>
       {/* Career paths section (Data, Web, AI, etc.) with expandable details */}
-      <CareerRoadmap />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <CareerRoadmap />
+        </Suspense>
+      </div>
       {/* Coming soon: Java, JavaScript, React, AI/ML courses */}
-      <FutureLearningSection />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <FutureLearningSection />
+        </Suspense>
+      </div>
       {/* Final call-to-action with "Start Now" and "Browse Jobs" buttons */}
-      <CTASection />
+      <div className="cv-auto">
+        <Suspense fallback={null}>
+          <CTASection />
+        </Suspense>
+      </div>
     </div>
   );
 }

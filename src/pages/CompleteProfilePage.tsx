@@ -229,7 +229,7 @@ export default function CompleteProfilePage() {
               <X className="w-3.5 h-3.5" />
             </button>
             <p className="text-[10px] font-medium text-foreground mb-1.5 text-center">💝 Support PyMaster</p>
-            <img src={gpayQR} alt="Support QR" className="w-full rounded-lg" />
+            <img src={gpayQR} alt="Support QR" className="w-full rounded-lg" loading="lazy" decoding="async" />
             <p className="text-[9px] text-muted-foreground text-center mt-1">Scan to donate via UPI</p>
           </motion.div>
         )}

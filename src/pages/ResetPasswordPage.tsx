@@ -78,7 +78,7 @@ export default function ResetPasswordPage() {
       <div className="w-full max-w-md rounded-2xl border border-border bg-card p-6 shadow-2xl">
         <div className="text-center space-y-2 mb-6">
           <Link to="/" className="inline-flex items-center gap-2">
-            <img src="/logo.png" alt="PyMaster" className="w-10 h-10 rounded-xl shadow-lg" />
+            <img src="/logo.png" alt="PyMaster" className="w-10 h-10 rounded-xl shadow-lg" decoding="async" />
             <span className="font-bold text-2xl text-foreground">PyMaster</span>
           </Link>
           <h1 className="text-2xl font-bold text-foreground">Set a New Password</h1>

@@ -3,7 +3,7 @@
 // Individual career track learning page (Data Science, Web Dev,
 // AI/ML, etc.) with sequential lesson unlocking.
 // ============================================================
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { careerTracks } from "@/data/careerLessons";
 import { useProgress } from "@/contexts/ProgressContext";
@@ -16,6 +16,15 @@ export default function CareerLearnPage() {
   const track = careerTracks.find(t => t.id === trackId);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { progress } = useProgress();
+
+  // Auto-open the first lesson so the page never feels empty on first visit.
+  useEffect(() => {
+    if (!track) return;
+    if (selectedId) return;
+    if (track.lessons.length === 0) return;
+
+    setSelectedId(track.lessons[0].id);
+  }, [selectedId, track]);
 
   if (!track) {
     return (

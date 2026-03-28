@@ -36,7 +36,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const hideActiveUsersBadge =
     location.pathname.startsWith("/learn") ||
     location.pathname.startsWith("/dsa") ||
-    location.pathname.startsWith("/compiler");
+    location.pathname.startsWith("/compiler") ||
+    location.pathname.startsWith("/problems/");
   const { toast } = useToast();
 
   useEffect(() => {
@@ -47,6 +48,34 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       delete document.body.dataset.sidebarOpen;
     };
   }, [sidebarOpen]);
+
+  // Ensure every route change starts at the top (prevents landing at the footer).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Disable smooth scrolling just for this jump-to-top.
+    const el = document.documentElement;
+    const prevBehavior = el.style.scrollBehavior;
+    el.style.scrollBehavior = "auto";
+
+    // Reset any browser scroll restoration (helps on refresh/back behavior in some browsers).
+    try {
+      if ("scrollRestoration" in window.history) window.history.scrollRestoration = "manual";
+    } catch {
+      // ignore
+    }
+
+    // Window scroll
+    window.scrollTo({ top: 0, left: 0 });
+
+    // Also reset the document scrolling element (some browsers use this internally).
+    const scrollingEl = document.scrollingElement;
+    if (scrollingEl) scrollingEl.scrollTop = 0;
+
+    requestAnimationFrame(() => {
+      el.style.scrollBehavior = prevBehavior;
+    });
+  }, [location.pathname]);
 
   // Log activity on first visit of the day to update streak counter
   useEffect(() => {

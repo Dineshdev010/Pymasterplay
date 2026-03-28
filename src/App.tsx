@@ -47,6 +47,7 @@ const DashboardPage = lazy(() => import("./pages/DashboardPage"));
 const LeaderboardPage = lazy(() => import("./pages/LeaderboardPage"));
 const JobsPage = lazy(() => import("./pages/JobsPage"));
 const DSAPage = lazy(() => import("./pages/DSAPage"));
+const AptitudePage = lazy(() => import("./pages/AptitudePage"));
 const DonatePage = lazy(() => import("./pages/DonatePage"));
 const AuthPage = lazy(() => import("./pages/AuthPage"));
 const CompleteProfilePage = lazy(() => import("./pages/CompleteProfilePage"));
@@ -101,6 +102,7 @@ const App = () => (
                     <Route path="/leaderboard" element={<Suspense fallback={<PageSkeleton />}><LeaderboardPage /></Suspense>} />
                     <Route path="/jobs" element={<Suspense fallback={<PageSkeleton />}><JobsPage /></Suspense>} />
                     <Route path="/dsa" element={<Suspense fallback={<PageSkeleton />}><DSAPage /></Suspense>} />
+                    <Route path="/aptitude" element={<Suspense fallback={<PageSkeleton />}><AptitudePage /></Suspense>} />
                     <Route path="/donate" element={<Suspense fallback={<PageSkeleton />}><DonatePage /></Suspense>} />
                     <Route path="/auth" element={<Suspense fallback={<PageSkeleton />}><AuthPage /></Suspense>} />
                     <Route path="/reset-password" element={<Suspense fallback={<PageSkeleton />}><ResetPasswordPage /></Suspense>} />

@@ -2,6 +2,8 @@ export interface Problem {
   id: string;
   title: string;
   difficulty: "basic" | "junior" | "intermediate" | "advanced" | "expert";
+  companies?: string[];
+  learnBefore?: string[];
   description: string;
   examples: { input: string; output: string; explanation?: string }[];
   constraints: string[];
@@ -43,6 +45,70 @@ export function getDifficultyBg(difficulty: string): string {
   }
 }
 
+export function getRecommendedSubjects(problem: Problem): string[] {
+  if (problem.learnBefore?.length) {
+    return problem.learnBefore;
+  }
+
+  const text = `${problem.title} ${problem.description} ${problem.constraints.join(" ")}`.toLowerCase();
+  const subjects = new Set<string>();
+
+  if (text.includes("string") || text.includes("palindrome") || text.includes("char")) {
+    subjects.add("Strings");
+  }
+  if (text.includes("list") || text.includes("array") || text.includes("matrix")) {
+    subjects.add("Arrays and Lists");
+  }
+  if (text.includes("hash") || text.includes("dict") || text.includes("frequency")) {
+    subjects.add("Hash Maps and Dictionaries");
+  }
+  if (text.includes("sorted") || text.includes("two pointer") || text.includes("two numbers")) {
+    subjects.add("Two Pointers");
+  }
+  if (text.includes("stack") || text.includes("queue")) {
+    subjects.add("Stacks and Queues");
+  }
+  if (text.includes("tree") || text.includes("binary tree")) {
+    subjects.add("Trees");
+  }
+  if (text.includes("graph")) {
+    subjects.add("Graphs");
+  }
+  if (text.includes("prime") || text.includes("gcd") || text.includes("factorial") || text.includes("fibonacci")) {
+    subjects.add("Math Basics");
+  }
+  if (text.includes("search") || text.includes("binary")) {
+    subjects.add("Searching");
+  }
+  if (text.includes("sort") || text.includes("merge")) {
+    subjects.add("Sorting");
+  }
+  if (text.includes("dynamic")) {
+    subjects.add("Dynamic Programming");
+  }
+  if (text.includes("recurs")) {
+    subjects.add("Recursion");
+  }
+
+  if (problem.difficulty === "basic") {
+    subjects.add("Python Syntax");
+    subjects.add("Conditionals and Loops");
+  }
+  if (problem.difficulty === "junior") {
+    subjects.add("Functions");
+    subjects.add("Time Complexity Basics");
+  }
+  if (problem.difficulty === "intermediate") {
+    subjects.add("Problem-Solving Patterns");
+  }
+  if (problem.difficulty === "advanced" || problem.difficulty === "expert") {
+    subjects.add("Advanced Data Structures");
+    subjects.add("Complexity Analysis");
+  }
+
+  return Array.from(subjects).slice(0, 5);
+}
+
 // ═══════════════════════════════════════
 // PATTERN PROBLEMS — Star shapes
 // ═══════════════════════════════════════
@@ -60,17 +126,17 @@ function generatePatternProblems(): Problem[] {
 // ═══════════════════════════════════════
 function generateJuniorProblems(): Problem[] {
   return [
-    { id: "two-sum", title: "Two Sum", difficulty: "junior", description: "Given a list of integers and a target, return indices of two numbers that add up to target.", examples: [{ input: "nums=[2,7,11,15], target=9", output: "[0,1]" }], constraints: ["Exactly one solution"], starterCode: `def two_sum(nums, target):\n    pass\nprint(two_sum([2,7,11,15], 9))`, testCases: [{ input: "[2,7,11,15], 9", expected: "[0, 1]" }], solution: `def two_sum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        if target - n in seen: return [seen[target-n], i]\n        seen[n] = i`, solutionExplanation: "Hash map lookup. O(n)." },
-    { id: "palindrome-check", title: "Palindrome Check", difficulty: "junior", description: "Check if a string is a palindrome ignoring case and non-alphanumeric.", examples: [{ input: '"racecar"', output: "True" }], constraints: ["1 <= len(s) <= 2*10^5"], starterCode: `def is_palindrome(s):\n    pass\nprint(is_palindrome("racecar"))`, testCases: [{ input: '"racecar"', expected: "True" }, { input: '"hello"', expected: "False" }], solution: `def is_palindrome(s):\n    c = ''.join(x.lower() for x in s if x.isalnum())\n    return c == c[::-1]`, solutionExplanation: "Clean and reverse compare." },
-    { id: "fizzbuzz", title: "FizzBuzz", difficulty: "junior", description: "Return list: multiples of 3→'Fizz', 5→'Buzz', both→'FizzBuzz'.", examples: [{ input: "n=5", output: '["1","2","Fizz","4","Buzz"]' }], constraints: ["1 <= n <= 10^4"], starterCode: `def fizzbuzz(n):\n    pass\nprint(fizzbuzz(15))`, testCases: [{ input: "5", expected: '["1","2","Fizz","4","Buzz"]' }], solution: `def fizzbuzz(n):\n    r = []\n    for i in range(1,n+1):\n        if i%15==0: r.append("FizzBuzz")\n        elif i%3==0: r.append("Fizz")\n        elif i%5==0: r.append("Buzz")\n        else: r.append(str(i))\n    return r`, solutionExplanation: "Check 15 first, then 3, then 5." },
-    { id: "reverse-string", title: "Reverse String In-Place", difficulty: "junior", description: "Reverse a list of characters in-place.", examples: [{ input: '["h","e","l","l","o"]', output: '["o","l","l","e","h"]' }], constraints: ["O(1) extra space"], starterCode: `def reverse_string(s):\n    pass\ns=["h","e","l","l","o"]\nreverse_string(s)\nprint(s)`, testCases: [{ input: '["h","e","l","l","o"]', expected: '["o","l","l","e","h"]' }], solution: `def reverse_string(s):\n    l,r=0,len(s)-1\n    while l<r:\n        s[l],s[r]=s[r],s[l]\n        l+=1;r-=1`, solutionExplanation: "Two pointers swap inward." },
+    { id: "two-sum", title: "Two Sum", difficulty: "junior", companies: ["Amazon", "Google", "Meta"], description: "Given a list of integers and a target, return indices of two numbers that add up to target.", examples: [{ input: "nums=[2,7,11,15], target=9", output: "[0,1]" }], constraints: ["Exactly one solution"], starterCode: `def two_sum(nums, target):\n    pass\nprint(two_sum([2,7,11,15], 9))`, testCases: [{ input: "[2,7,11,15], 9", expected: "[0, 1]" }], solution: `def two_sum(nums, target):\n    seen = {}\n    for i, n in enumerate(nums):\n        if target - n in seen: return [seen[target-n], i]\n        seen[n] = i`, solutionExplanation: "Hash map lookup. O(n)." },
+    { id: "palindrome-check", title: "Palindrome Check", difficulty: "junior", companies: ["Meta", "Adobe", "PayPal"], description: "Check if a string is a palindrome ignoring case and non-alphanumeric.", examples: [{ input: '"racecar"', output: "True" }], constraints: ["1 <= len(s) <= 2*10^5"], starterCode: `def is_palindrome(s):\n    pass\nprint(is_palindrome("racecar"))`, testCases: [{ input: '"racecar"', expected: "True" }, { input: '"hello"', expected: "False" }], solution: `def is_palindrome(s):\n    c = ''.join(x.lower() for x in s if x.isalnum())\n    return c == c[::-1]`, solutionExplanation: "Clean and reverse compare." },
+    { id: "fizzbuzz", title: "FizzBuzz", difficulty: "junior", companies: ["Amazon", "Microsoft", "Accenture"], description: "Return list: multiples of 3→'Fizz', 5→'Buzz', both→'FizzBuzz'.", examples: [{ input: "n=5", output: '["1","2","Fizz","4","Buzz"]' }], constraints: ["1 <= n <= 10^4"], starterCode: `def fizzbuzz(n):\n    pass\nprint(fizzbuzz(15))`, testCases: [{ input: "5", expected: '["1","2","Fizz","4","Buzz"]' }], solution: `def fizzbuzz(n):\n    r = []\n    for i in range(1,n+1):\n        if i%15==0: r.append("FizzBuzz")\n        elif i%3==0: r.append("Fizz")\n        elif i%5==0: r.append("Buzz")\n        else: r.append(str(i))\n    return r`, solutionExplanation: "Check 15 first, then 3, then 5." },
+    { id: "reverse-string", title: "Reverse String In-Place", difficulty: "junior", companies: ["Apple", "Google", "Salesforce"], description: "Reverse a list of characters in-place.", examples: [{ input: '["h","e","l","l","o"]', output: '["o","l","l","e","h"]' }], constraints: ["O(1) extra space"], starterCode: `def reverse_string(s):\n    pass\ns=["h","e","l","l","o"]\nreverse_string(s)\nprint(s)`, testCases: [{ input: '["h","e","l","l","o"]', expected: '["o","l","l","e","h"]' }], solution: `def reverse_string(s):\n    l,r=0,len(s)-1\n    while l<r:\n        s[l],s[r]=s[r],s[l]\n        l+=1;r-=1`, solutionExplanation: "Two pointers swap inward." },
     { id: "max-element", title: "Maximum Element", difficulty: "junior", description: "Find max without built-in max().", examples: [{ input: "[3,1,4,1,5,9]", output: "9" }], constraints: ["1 <= len(nums)"], starterCode: `def find_max(nums):\n    pass\nprint(find_max([3,1,4,1,5,9]))`, testCases: [{ input: "[3,1,4,1,5,9]", expected: "9" }], solution: `def find_max(nums):\n    m=nums[0]\n    for n in nums[1:]:\n        if n>m: m=n\n    return m`, solutionExplanation: "Linear scan tracking max." },
     { id: "count-vowels", title: "Count Vowels", difficulty: "junior", description: "Count vowels in a string (case-insensitive).", examples: [{ input: '"Hello World"', output: "3" }], constraints: ["0 <= len(s)"], starterCode: `def count_vowels(s):\n    pass\nprint(count_vowels("Hello World"))`, testCases: [{ input: '"Hello World"', expected: "3" }], solution: `def count_vowels(s):\n    return sum(1 for c in s.lower() if c in 'aeiou')`, solutionExplanation: "Generator expression with vowel check." },
     { id: "remove-duplicates", title: "Remove Duplicates", difficulty: "junior", description: "Remove duplicates preserving order.", examples: [{ input: "[1,2,3,2,1,4]", output: "[1,2,3,4]" }], constraints: ["0 <= len(nums)"], starterCode: `def remove_dups(nums):\n    pass\nprint(remove_dups([1,2,3,2,1,4]))`, testCases: [{ input: "[1,2,3,2,1,4]", expected: "[1, 2, 3, 4]" }], solution: `def remove_dups(nums):\n    seen=set();r=[]\n    for n in nums:\n        if n not in seen: seen.add(n);r.append(n)\n    return r`, solutionExplanation: "Set for O(1) lookup." },
     { id: "sum-digits", title: "Sum of Digits", difficulty: "junior", description: "Sum all digits of a number.", examples: [{ input: "1234", output: "10" }], constraints: ["0 <= n <= 10^9"], starterCode: `def sum_digits(n):\n    pass\nprint(sum_digits(1234))`, testCases: [{ input: "1234", expected: "10" }], solution: `def sum_digits(n):\n    return sum(int(d) for d in str(n))`, solutionExplanation: "Convert to string, sum digits." },
-    { id: "is-prime", title: "Is Prime", difficulty: "junior", description: "Check if a number is prime.", examples: [{ input: "7", output: "True" }], constraints: ["1 <= n <= 10^6"], starterCode: `def is_prime(n):\n    pass\nprint(is_prime(7))`, testCases: [{ input: "7", expected: "True" }, { input: "4", expected: "False" }], solution: `def is_prime(n):\n    if n<2: return False\n    for i in range(2,int(n**0.5)+1):\n        if n%i==0: return False\n    return True`, solutionExplanation: "Check up to √n." },
+    { id: "is-prime", title: "Is Prime", difficulty: "junior", companies: ["Infosys", "TCS", "Wipro"], description: "Check if a number is prime.", examples: [{ input: "7", output: "True" }], constraints: ["1 <= n <= 10^6"], starterCode: `def is_prime(n):\n    pass\nprint(is_prime(7))`, testCases: [{ input: "7", expected: "True" }, { input: "4", expected: "False" }], solution: `def is_prime(n):\n    if n<2: return False\n    for i in range(2,int(n**0.5)+1):\n        if n%i==0: return False\n    return True`, solutionExplanation: "Check up to √n." },
     { id: "factorial", title: "Factorial", difficulty: "junior", description: "Calculate n! recursively.", examples: [{ input: "5", output: "120" }], constraints: ["0 <= n <= 20"], starterCode: `def factorial(n):\n    pass\nprint(factorial(5))`, testCases: [{ input: "5", expected: "120" }, { input: "0", expected: "1" }], solution: `def factorial(n):\n    if n<=1: return 1\n    return n*factorial(n-1)`, solutionExplanation: "Base case n<=1, recurse n*(n-1)!." },
-    { id: "fibonacci", title: "Fibonacci Number", difficulty: "junior", description: "Return nth Fibonacci number (0-indexed).", examples: [{ input: "6", output: "8" }], constraints: ["0 <= n <= 30"], starterCode: `def fib(n):\n    pass\nprint(fib(6))`, testCases: [{ input: "6", expected: "8" }], solution: `def fib(n):\n    if n<=1: return n\n    a,b=0,1\n    for _ in range(2,n+1): a,b=b,a+b\n    return b`, solutionExplanation: "Iterative O(n) approach." },
+    { id: "fibonacci", title: "Fibonacci Number", difficulty: "junior", companies: ["Microsoft", "Amazon", "Zoho"], description: "Return nth Fibonacci number (0-indexed).", examples: [{ input: "6", output: "8" }], constraints: ["0 <= n <= 30"], starterCode: `def fib(n):\n    pass\nprint(fib(6))`, testCases: [{ input: "6", expected: "8" }], solution: `def fib(n):\n    if n<=1: return n\n    a,b=0,1\n    for _ in range(2,n+1): a,b=b,a+b\n    return b`, solutionExplanation: "Iterative O(n) approach." },
     { id: "title-case", title: "Title Case", difficulty: "junior", description: "Capitalize first letter of each word.", examples: [{ input: '"hello world"', output: "Hello World" }], constraints: ["1 <= len(s)"], starterCode: `def title_case(s):\n    pass\nprint(title_case("hello world"))`, testCases: [{ input: '"hello world"', expected: "Hello World" }], solution: `def title_case(s):\n    return ' '.join(w.capitalize() for w in s.split())`, solutionExplanation: "Split, capitalize, rejoin." },
     { id: "flatten-list", title: "Flatten One Level", difficulty: "junior", description: "Flatten a list of lists one level deep.", examples: [{ input: "[[1,2],[3,4],[5]]", output: "[1,2,3,4,5]" }], constraints: ["Elements are lists"], starterCode: `def flatten(lst):\n    pass\nprint(flatten([[1,2],[3,4],[5]]))`, testCases: [{ input: "[[1,2],[3,4],[5]]", expected: "[1, 2, 3, 4, 5]" }], solution: `def flatten(lst):\n    return [x for sub in lst for x in sub]`, solutionExplanation: "Double comprehension." },
     { id: "rotate-list", title: "Rotate List", difficulty: "junior", description: "Rotate list k positions right.", examples: [{ input: "[1,2,3,4,5], k=2", output: "[4,5,1,2,3]" }], constraints: ["0 <= k"], starterCode: `def rotate(nums, k):\n    pass\nprint(rotate([1,2,3,4,5], 2))`, testCases: [{ input: "[1,2,3,4,5], 2", expected: "[4, 5, 1, 2, 3]" }], solution: `def rotate(nums, k):\n    k=k%len(nums)\n    return nums[-k:]+nums[:-k]`, solutionExplanation: "Slice and concatenate." },
@@ -80,7 +146,7 @@ function generateJuniorProblems(): Problem[] {
     { id: "caesar-cipher", title: "Caesar Cipher", difficulty: "junior", description: "Shift each letter by k positions.", examples: [{ input: '"abc", 3', output: "def" }], constraints: ["Lowercase letters"], starterCode: `def caesar(text, k):\n    pass\nprint(caesar("abc", 3))`, testCases: [{ input: '"abc", 3', expected: "def" }], solution: `def caesar(text, k):\n    r=""\n    for c in text:\n        if c.isalpha(): r+=chr((ord(c)-ord('a')+k)%26+ord('a'))\n        else: r+=c\n    return r`, solutionExplanation: "Modular arithmetic on char codes." },
     { id: "matrix-transpose", title: "Matrix Transpose", difficulty: "junior", description: "Transpose a 2D matrix.", examples: [{ input: "[[1,2,3],[4,5,6]]", output: "[[1,4],[2,5],[3,6]]" }], constraints: ["Non-empty"], starterCode: `def transpose(m):\n    pass\nprint(transpose([[1,2,3],[4,5,6]]))`, testCases: [{ input: "[[1,2,3],[4,5,6]]", expected: "[[1,4],[2,5],[3,6]]" }], solution: `def transpose(m):\n    return [list(r) for r in zip(*m)]`, solutionExplanation: "zip(*m) transposes." },
     { id: "power-function", title: "Power Without **", difficulty: "junior", description: "Calculate base^exp without ** operator.", examples: [{ input: "2, 10", output: "1024" }], constraints: ["0 <= exp <= 30"], starterCode: `def power(b, e):\n    pass\nprint(power(2, 10))`, testCases: [{ input: "2, 10", expected: "1024" }], solution: `def power(b, e):\n    r=1\n    for _ in range(e): r*=b\n    return r`, solutionExplanation: "Multiply base e times." },
-    { id: "merge-sorted", title: "Merge Two Sorted Lists", difficulty: "junior", description: "Merge two sorted lists into one.", examples: [{ input: "[1,3,5], [2,4,6]", output: "[1,2,3,4,5,6]" }], constraints: ["Sorted ascending"], starterCode: `def merge_sorted(a, b):\n    pass\nprint(merge_sorted([1,3,5], [2,4,6]))`, testCases: [{ input: "[1,3,5], [2,4,6]", expected: "[1, 2, 3, 4, 5, 6]" }], solution: `def merge_sorted(a, b):\n    r=[];i=j=0\n    while i<len(a) and j<len(b):\n        if a[i]<=b[j]: r.append(a[i]);i+=1\n        else: r.append(b[j]);j+=1\n    r.extend(a[i:]);r.extend(b[j:])\n    return r`, solutionExplanation: "Two-pointer merge. O(n+m)." },
+    { id: "merge-sorted", title: "Merge Two Sorted Lists", difficulty: "junior", companies: ["Amazon", "Oracle", "IBM"], description: "Merge two sorted lists into one.", examples: [{ input: "[1,3,5], [2,4,6]", output: "[1,2,3,4,5,6]" }], constraints: ["Sorted ascending"], starterCode: `def merge_sorted(a, b):\n    pass\nprint(merge_sorted([1,3,5], [2,4,6]))`, testCases: [{ input: "[1,3,5], [2,4,6]", expected: "[1, 2, 3, 4, 5, 6]" }], solution: `def merge_sorted(a, b):\n    r=[];i=j=0\n    while i<len(a) and j<len(b):\n        if a[i]<=b[j]: r.append(a[i]);i+=1\n        else: r.append(b[j]);j+=1\n    r.extend(a[i:]);r.extend(b[j:])\n    return r`, solutionExplanation: "Two-pointer merge. O(n+m)." },
     { id: "char-frequency", title: "Character Frequency", difficulty: "junior", description: "Return dict of character frequencies.", examples: [{ input: '"hello"', output: "{'h':1,'e':1,'l':2,'o':1}" }], constraints: ["0 <= len(s)"], starterCode: `def char_freq(s):\n    pass\nprint(char_freq("hello"))`, testCases: [{ input: '"hello"', expected: "{'h': 1, 'e': 1, 'l': 2, 'o': 1}" }], solution: `def char_freq(s):\n    f={}\n    for c in s: f[c]=f.get(c,0)+1\n    return f`, solutionExplanation: "dict.get with default 0." },
     { id: "pangram-check", title: "Pangram Check", difficulty: "junior", description: "Check if string contains all 26 letters.", examples: [{ input: '"The quick brown fox jumps over the lazy dog"', output: "True" }], constraints: ["Case insensitive"], starterCode: `def is_pangram(s):\n    pass\nprint(is_pangram("The quick brown fox jumps over the lazy dog"))`, testCases: [{ input: '"The quick brown fox jumps over the lazy dog"', expected: "True" }], solution: `def is_pangram(s):\n    return set('abcdefghijklmnopqrstuvwxyz').issubset(set(s.lower()))`, solutionExplanation: "Set subset check." },
     { id: "remove-char", title: "Remove All Occurrences", difficulty: "junior", description: "Remove all occurrences of a char.", examples: [{ input: '"hello", "l"', output: "heo" }], constraints: ["1 <= len(s)"], starterCode: `def remove_char(s, c):\n    pass\nprint(remove_char("hello", "l"))`, testCases: [{ input: '"hello", "l"', expected: "heo" }], solution: `def remove_char(s, c):\n    return s.replace(c, "")`, solutionExplanation: "str.replace removes all." },

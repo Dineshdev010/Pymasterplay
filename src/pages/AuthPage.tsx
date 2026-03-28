@@ -114,7 +114,7 @@ export default function AuthPage() {
         {/* Header Section */}
         <div className="text-center space-y-2">
           <Link to="/" className="inline-flex items-center gap-2 hover:scale-105 transition-transform">
-            <img src="/logo.png" alt="PyMaster" className="w-10 h-10 rounded-xl shadow-lg" />
+            <img src="/logo.png" alt="PyMaster" className="w-10 h-10 rounded-xl shadow-lg" decoding="async" fetchPriority="high" />
             <span className="font-bold text-2xl text-foreground">PyMaster</span>
           </Link>
           <p className="text-muted-foreground text-sm font-medium">

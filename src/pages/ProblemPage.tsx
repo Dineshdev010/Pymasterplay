@@ -8,16 +8,16 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import confetti from "canvas-confetti";
-import { problems, getDifficultyColor, getDifficultyBg } from "@/data/problems";
+import { problems, getDifficultyColor, getDifficultyBg, getRecommendedSubjects } from "@/data/problems";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getRewardForDifficulty } from "@/lib/progress";
 import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import { Play, Send, Eye, EyeOff, ArrowLeft, ArrowRight, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Loader2, Square } from "lucide-react";
+import { Play, Send, Eye, EyeOff, ArrowLeft, ArrowRight, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Square, Building2, BookOpenCheck } from "lucide-react";
 import { AdViewModal } from "@/components/AdViewModal";
-import { LiveProblemUpdates } from "@/components/LiveProblemUpdates";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { CompanyBadge } from "@/components/CompanyBadge";
 
 function normalizeOutput(output: string) {
   return output.replace(/\r\n/g, "\n").trim();
@@ -84,6 +84,7 @@ export default function ProblemPage() {
     return <div className="p-8 text-center text-red-500">Problem not found.</div>;
   }
 
+  const canonical = `https://pymaster.pro/problems/${problem.id}`;
   const solved = progress.solvedProblems.includes(problem.id);
   const reward = getRewardForDifficulty(problem.difficulty);
   const problemIndex = problems.findIndex(p => p.id === id);
@@ -91,6 +92,7 @@ export default function ProblemPage() {
   const nextProblem = problemIndex < problems.length - 1 ? problems[problemIndex + 1] : null;
   const serial = problemIndex + 1;
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
+  const recommendedSubjects = getRecommendedSubjects(problem);
 
   const handleRun = async () => {
     setIsRunning(true);
@@ -193,6 +195,9 @@ export default function ProblemPage() {
         <title>{problem.title} | PyMaster Problems</title>
         <meta name="description" content={`Solve ${problem.title} in Python. ${problem.description.substring(0, 100)}... Challenge yourself with our built-in compiler.`} />
         <meta property="og:title" content={`${problem.title} - Python Coding Challenge`} />
+        <meta property="og:description" content={`Solve ${problem.title} in Python. ${problem.description.substring(0, 140)}...`} />
+        <meta property="og:url" content={canonical} />
+        <link rel="canonical" href={canonical} />
         <script type="application/ld+json">
           {JSON.stringify(structuredData)}
         </script>
@@ -273,6 +278,42 @@ export default function ProblemPage() {
               <Wallet className="w-4 h-4 text-reward-gold" />
               <span className="text-sm text-reward-gold font-medium">💰 ${reward} reward</span>
             </div>
+
+            {problem.companies?.length ? (
+              <div className="mb-4 rounded-lg border border-border bg-surface-1 p-3 sm:p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <Building2 className="h-4 w-4 text-primary" />
+                  Companies that ask this question
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {problem.companies.map((company) => (
+                    <CompanyBadge key={company} company={company} />
+                  ))}
+                </div>
+              </div>
+            ) : null}
+
+            {recommendedSubjects.length ? (
+              <div className="mb-4 rounded-lg border border-border bg-surface-1 p-3 sm:p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+                  <BookOpenCheck className="h-4 w-4 text-primary" />
+                  Learn these subjects first
+                </div>
+                <p className="mb-3 text-xs leading-5 text-muted-foreground">
+                  These topics will make this problem much easier to understand and solve.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {recommendedSubjects.map((subject) => (
+                    <span
+                      key={subject}
+                      className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300"
+                    >
+                      {subject}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ) : null}
 
             <Button 
               variant="outline" 
@@ -405,8 +446,6 @@ export default function ProblemPage() {
         completionTitle="Solution unlocked"
         completionDescription="Thanks for viewing the sponsor message."
       />
-
-      <LiveProblemUpdates problemTitle={problem.title} />
     </div>
   );
 }

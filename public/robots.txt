@@ -6,6 +6,7 @@ Disallow: /auth
 Disallow: /dashboard
 Disallow: /complete-profile
 Disallow: /reset-password
+Allow: /certificate/verify
 Disallow: /certificate
 
 Sitemap: https://pymaster.pro/sitemap.xml

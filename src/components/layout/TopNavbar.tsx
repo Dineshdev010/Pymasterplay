@@ -120,6 +120,8 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             className="w-12 h-12 rounded-xl relative z-10 shadow-lg saturate-150" 
             animate={{ y: [0, -3, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            decoding="async"
+            fetchPriority="high"
           />
           <span className="font-bold text-lg text-foreground hidden sm:flex relative z-10 overflow-hidden">
             {"PyMaster".split("").map((char, index) => (
