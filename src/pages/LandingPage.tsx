@@ -54,6 +54,8 @@ export default function LandingPage() {
     return () => window.clearTimeout(t);
   }, []);
 
+  const compactSectionClass = "cv-auto -mt-4 sm:-mt-6";
+
   useEffect(() => {
     const updatePhase = () => {
       const hour = new Date().getHours();
@@ -120,7 +122,7 @@ export default function LandingPage() {
       )}
       {/* Main hero with headline, CTA buttons, and quick stats */}
       <HeroSection />
-      <section className="container mx-auto px-4 sm:px-6 py-3">
+      <section className="container mx-auto px-4 sm:px-6 py-2">
         <div className="rounded-2xl border border-primary/30 bg-primary/10 p-4 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
@@ -144,20 +146,20 @@ export default function LandingPage() {
         </div>
       </section>
       {/* Visual divider between sections */}
-      <div className="section-divider py-2" />
+      <div className="section-divider py-1" />
       {/* 4-step getting started guide for new users */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <GettingStartedSection />
         </Suspense>
       </div>
       {/* 6 feature cards (lessons, editor, problems, rewards, streaks, difficulty) */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <FeaturesSection />
         </Suspense>
       </div>
-      <section className="container mx-auto px-4 sm:px-6 py-4 cv-auto">
+      <section className="container mx-auto px-4 sm:px-6 py-3 cv-auto">
         <Suspense fallback={null}>
           <GoogleAd
             slot={import.meta.env.VITE_ADSENSE_SLOT_HOME}
@@ -167,43 +169,43 @@ export default function LandingPage() {
         </Suspense>
       </section>
       {/* 5-step learning path from basics to advanced */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <RoadmapSection />
         </Suspense>
       </div>
       {/* Preview of the 50 basic problems with code example */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <BasicProblemsSection />
         </Suspense>
       </div>
       {/* $10K winner challenge banner */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <WinnerBanner />
         </Suspense>
       </div>
       {/* User testimonials grid */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <TestimonialsSection />
         </Suspense>
       </div>
       {/* Career paths section (Data, Web, AI, etc.) with expandable details */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <CareerRoadmap />
         </Suspense>
       </div>
       {/* Coming soon: Java, JavaScript, React, AI/ML courses */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <FutureLearningSection />
         </Suspense>
       </div>
       {/* Final call-to-action with "Start Now" and "Browse Jobs" buttons */}
-      <div className="cv-auto">
+      <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <CTASection />
         </Suspense>

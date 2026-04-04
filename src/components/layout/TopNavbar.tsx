@@ -85,6 +85,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const levelLabel = getUserLevelLabel(progress.xp);
   const primaryNavRoutes = ["/", "/learn", "/dsa", "/compiler", "/quick-prep", "/python-game"];
   const primaryNavItems = navItems.filter((item) => primaryNavRoutes.includes(item.to));
+  const secondaryNavItems = navItems.filter((item) => !primaryNavRoutes.includes(item.to));
 
   const handleSignOut = async () => {
     try {
@@ -179,6 +180,33 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             </Link>
           ))}
           </div>
+          {secondaryNavItems.length > 0 && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-xs ${
+                    secondaryNavItems.some((item) => location.pathname === item.to)
+                      ? "bg-secondary text-foreground font-medium"
+                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                  }`}
+                  aria-label="Open more navigation links"
+                >
+                  Menu
+                  <ChevronDown className="h-3.5 w-3.5" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="start" className="mt-2 w-52">
+                {secondaryNavItems.map((item) => (
+                  <DropdownMenuItem key={item.to} asChild>
+                    <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
+                      <span className="text-sm">{item.emoji}</span>
+                      <span>{item.label}</span>
+                    </Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </nav>
       </div>
       <div className="ml-2 flex shrink-0 items-center gap-2 sm:gap-3">
