@@ -9,7 +9,6 @@ import { problems, getDifficultyColor, getDifficultyBg } from "@/data/problems";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getRewardForDifficulty } from "@/lib/progress";
 import { Code, CheckCircle2, ChevronRight, Wallet, Search } from "lucide-react";
-import { GoogleAd } from "@/components/ads/GoogleAd";
 import { Helmet } from "react-helmet-async";
 import { CompanyBadge } from "@/components/CompanyBadge";
 
@@ -141,13 +140,6 @@ export default function ProblemsListPage() {
           ))}
         </div>
       </div>
-
-      <GoogleAd
-        slot={import.meta.env.VITE_ADSENSE_SLOT_PROBLEMS}
-        label="Sponsored Challenge Pick"
-        className="mb-6"
-        minHeight={160}
-      />
 
       {/* Problem list */}
       <div className="space-y-2">

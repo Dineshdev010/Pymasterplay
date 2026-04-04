@@ -70,6 +70,7 @@ html {
   scroll-behavior: smooth;
   text-size-adjust: 100%;
   scrollbar-gutter: stable;
+  overflow-x: hidden;
 }
 
 body {
@@ -80,9 +81,26 @@ body {
   overflow-x: hidden;
 }
 
+#root {
+  width: 100%;
+  min-height: 100svh;
+}
+
 img {
   max-width: 100%;
   height: auto;
+}
+
+svg,
+canvas,
+video,
+iframe {
+  max-width: 100%;
+}
+
+pre,
+table {
+  max-width: 100%;
 }
 
 /* ==================== ENHANCED SCROLLBAR ==================== */
@@ -171,8 +189,8 @@ select {
 }
 
 /* ==================== TEXT RENDERING ==================== */
-p, span, li, label {
-  letter-spacing: 0.5px;
+p, li, label {
+  letter-spacing: 0.2px;
   line-height: 1.6;
 }
 

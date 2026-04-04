@@ -97,7 +97,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   // --- Simplified layout for the auth (login/signup) page ---
   if (isAuthPage) {
     return (
-      <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+      <div className="min-h-[100svh] flex flex-col overflow-x-hidden w-full">
         {/* Celebration modal (can appear on any page) */}
         <CelebrationModal
           isOpen={showCelebration}
@@ -114,7 +114,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   // --- Full layout for all other pages ---
   return (
-    <div className="min-h-screen flex flex-col overflow-x-hidden w-full">
+    <div className="min-h-[100svh] flex flex-col overflow-x-hidden w-full">
       {/* Achievement celebration popup */}
       <CelebrationModal
         isOpen={showCelebration}
@@ -140,7 +140,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       <MobileNav />
 
       {/* Main content area — pb-16 adds padding for mobile nav, pt-14 for fixed navbar */}
-      <main className="flex-1 pt-14 pb-16 lg:pb-0 w-full relative">
+      <main className="flex-1 pt-14 pb-[calc(4rem+env(safe-area-inset-bottom))] lg:pb-0 w-full relative">
         <AnimatePresence mode="wait">
           <motion.div
             key={location.pathname}

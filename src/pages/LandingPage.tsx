@@ -26,9 +26,9 @@ const FutureLearningSection = lazy(() => import("@/components/landing/FutureLear
 const CTASection = lazy(() => import("@/components/landing/CTASection").then((m) => ({ default: m.CTASection })));
 const WinnerBanner = lazy(() => import("@/components/landing/WinnerBanner").then((m) => ({ default: m.WinnerBanner })));
 const LiveActivityFeed = lazy(() => import("@/components/landing/LiveActivityFeed").then((m) => ({ default: m.LiveActivityFeed })));
-const GoogleAd = lazy(() => import("@/components/ads/GoogleAd").then((m) => ({ default: m.GoogleAd })));
 
 export default function LandingPage() {
+  const canonical = "https://pymaster.pro/";
   const [hideFloatingBadges, setHideFloatingBadges] = useState(false);
   const [deferFx, setDeferFx] = useState(false);
   const [clockIsNight, setClockIsNight] = useState(() => {
@@ -95,10 +95,17 @@ export default function LandingPage() {
         <title>PyMaster | Learn Python with Lessons, Challenges, Jobs, and Certificates</title>
         <meta name="description" content="Learn Python with structured lessons, coding challenges, interview prep, a browser compiler, certificate pathways, and a practical Python job board." />
         <meta name="keywords" content="Python, Learn Python, Python Course, Coding Interview, Data Structures, Algorithms" />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonical} />
         <meta property="og:title" content="PyMaster | Learn Python with Real Practice" />
         <meta property="og:description" content="Structured Python learning, coding challenges, quick prep, career tracks, and certificate pathways in one platform." />
+        <meta property="og:image" content="https://pymaster.pro/og-image.png" />
+        <meta property="og:image:alt" content="PyMaster Python learning platform preview" />
+        <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="PyMaster | Learn Python with Real Practice" />
         <meta name="twitter:description" content="Structured Python lessons, interactive challenges, and practical job-focused prep." />
+        <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
       </Helmet>
       {/* Sky background (auto day/night) */}
       <SkyBackground />
@@ -159,15 +166,6 @@ export default function LandingPage() {
           <FeaturesSection />
         </Suspense>
       </div>
-      <section className="container mx-auto px-4 sm:px-6 py-3 cv-auto">
-        <Suspense fallback={null}>
-          <GoogleAd
-            slot={import.meta.env.VITE_ADSENSE_SLOT_HOME}
-            label="Sponsored Learning Pick"
-            minHeight={170}
-          />
-        </Suspense>
-      </section>
       {/* 5-step learning path from basics to advanced */}
       <div className={compactSectionClass}>
         <Suspense fallback={null}>

@@ -710,6 +710,7 @@ function buildTreeLevels(values: number[]) {
 }
 
 export default function DSAPage() {
+  const canonical = "https://pymaster.pro/dsa";
   const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
   const [visualInput, setVisualInput] = useState("1,2,3,4,5");
   const [windowStart, setWindowStart] = useState(0);
@@ -748,8 +749,16 @@ export default function DSAPage() {
       <Helmet>
         <title>Data Structures & Algorithms in Python | PyMaster</title>
         <meta name="description" content="Master Python Data Structures and Algorithms with visual explanations, complexity analysis, and real-world patterns. Free DSA course." />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonical} />
         <meta property="og:title" content="Python DSA Mastery | PyMaster" />
         <meta property="og:description" content="Learn Arrays, Hash Maps, Dynamic Programming, and Graph patterns in Python with amazing visual examples." />
+        <meta property="og:image" content="https://pymaster.pro/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Python DSA Mastery | PyMaster" />
+        <meta name="twitter:description" content="Learn Arrays, Hash Maps, Dynamic Programming, and Graph patterns in Python with visual examples." />
+        <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
       </Helmet>
       
       {/* Sidebar */}

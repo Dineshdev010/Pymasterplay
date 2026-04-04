@@ -13,7 +13,6 @@ import { AdViewModal } from "@/components/AdViewModal";
 import { BookOpen, CheckCircle2, ChevronRight, Terminal, Lock, Play, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { GoogleAd } from "@/components/ads/GoogleAd";
 import { Helmet } from "react-helmet-async";
 
 const categoryOrder = ["Beginner", "Intermediate", "Advanced", "Expert"] as const;
@@ -216,6 +215,7 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
 }
 
 export default function LearnPage() {
+  const canonical = "https://pymaster.pro/learn";
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { progress, completeLesson, unlockLesson } = useProgress();
   const { user } = useAuth();
@@ -316,6 +316,16 @@ export default function LearnPage() {
         name="description"
         content="Study Python step by step with beginner, intermediate, and advanced lessons, code examples, and hands-on exercises."
       />
+      <link rel="canonical" href={canonical} />
+      <meta property="og:type" content="website" />
+      <meta property="og:url" content={canonical} />
+      <meta property="og:title" content="Learn Python | PyMaster" />
+      <meta property="og:description" content="Step-by-step Python lessons with clear explanations, code examples, and exercises." />
+      <meta property="og:image" content="https://pymaster.pro/og-image.png" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="Learn Python | PyMaster" />
+      <meta name="twitter:description" content="Step-by-step Python lessons with clear explanations, code examples, and exercises." />
+      <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
     </Helmet>
     <AdViewModal
       isOpen={!!showAdForLesson}
@@ -513,13 +523,6 @@ export default function LearnPage() {
                 {selectedLesson.codeExample}
               </pre>
             </div>
-
-            <GoogleAd
-              slot={import.meta.env.VITE_ADSENSE_SLOT_LEARN}
-              label="Sponsored Resource"
-              className="mb-8"
-              minHeight={160}
-            />
 
             {/* Exercises */}
             <div className="mb-8">

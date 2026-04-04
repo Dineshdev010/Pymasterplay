@@ -23,11 +23,11 @@ export function ActiveUsersBanner() {
   const activeUsers = getActiveUsersForWindow(windowKey);
 
   return (
-    <div className="fixed left-3 top-[4.15rem] z-[998] sm:left-4">
-      <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-background/85 px-2.5 py-1 text-[11px] shadow-lg backdrop-blur-md">
-        <Activity className="h-3.5 w-3.5 text-emerald-500" />
+    <div className="fixed left-2 top-[4rem] z-[998] sm:left-4 sm:top-[4.15rem]">
+      <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-background/85 px-2 py-1 text-[10px] shadow-lg backdrop-blur-md sm:px-2.5 sm:text-[11px]">
+        <Activity className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
         <span className="font-semibold text-foreground">{activeUsers.toLocaleString()}</span>
-        <Dot className="h-3.5 w-3.5 text-emerald-500" />
+        <Dot className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
         <span className="text-muted-foreground">active</span>
       </div>
     </div>

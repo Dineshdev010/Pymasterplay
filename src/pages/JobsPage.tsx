@@ -6,7 +6,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Briefcase, MapPin, DollarSign, Clock, ExternalLink, Search, Building2, Sparkles, Rocket, Bookmark, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GoogleAd } from "@/components/ads/GoogleAd";
 import { Helmet } from "react-helmet-async";
 
 interface Job {
@@ -66,6 +65,7 @@ function getJobRegion(job: Job): "Abroad Jobs" | "Origin Jobs" {
 }
 
 export default function JobsPage() {
+  const canonical = "https://pymaster.pro/jobs";
   const [search, setSearch] = useState("");
   const [level, setLevel] = useState("All");
   const [type, setType] = useState("All");
@@ -146,6 +146,16 @@ export default function JobsPage() {
           name="description"
           content="Browse curated Python job openings including fresher, remote, internship, and abroad opportunities."
         />
+        <link rel="canonical" href={canonical} />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content="Python Jobs | PyMaster" />
+        <meta property="og:description" content="Browse curated Python jobs for freshers, remote roles, internships, and abroad opportunities." />
+        <meta property="og:image" content="https://pymaster.pro/og-image.png" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Python Jobs | PyMaster" />
+        <meta name="twitter:description" content="Browse curated Python jobs for freshers, remote roles, internships, and abroad opportunities." />
+        <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
       </Helmet>
       <div className="mb-8 overflow-hidden rounded-[2rem] border border-primary/15 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_top_right,rgba(34,197,94,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.96))] p-6 shadow-sm">
         <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
@@ -319,13 +329,6 @@ export default function JobsPage() {
           </div>
         </div>
       )}
-
-      <GoogleAd
-        slot={import.meta.env.VITE_ADSENSE_SLOT_JOBS}
-        label="Sponsored Jobs Partner"
-        className="mb-6"
-        minHeight={180}
-      />
 
       {/* Job listings */}
       <div className="space-y-3">
