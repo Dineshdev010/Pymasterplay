@@ -37,6 +37,12 @@
     <priority>0.88</priority>
   </url>
   <url>
+    <loc>https://pymaster.pro/python-learning-for-beginners</loc>
+    <lastmod>2026-04-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.92</priority>
+  </url>
+  <url>
     <loc>https://pymaster.pro/career/data-analysis</loc>
     <lastmod>2026-03-28</lastmod>
     <changefreq>weekly</changefreq>

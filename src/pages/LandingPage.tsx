@@ -152,6 +152,17 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+      <section className="container mx-auto px-4 sm:px-6 py-2">
+        <div className="rounded-2xl border border-border bg-card/80 p-4">
+          <h2 className="text-sm font-semibold text-foreground sm:text-base">New: Python Learning For Beginners Guide</h2>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+            Follow a clear beginner roadmap with daily plan, lessons, compiler practice, and DSA basics.
+          </p>
+          <Link to="/python-learning-for-beginners" className="mt-2 inline-flex text-sm font-semibold text-primary hover:underline">
+            Open beginner guide
+          </Link>
+        </div>
+      </section>
       {/* Visual divider between sections */}
       <div className="section-divider py-1" />
       {/* 4-step getting started guide for new users */}
