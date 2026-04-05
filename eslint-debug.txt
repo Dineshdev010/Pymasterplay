@@ -1,0 +1,88 @@
+﻿
+D:\python play ground\Python-playground-pro\dev-dist\workbox-2ae722a1.js
+    52:7   error    Definition for rule '@typescript-eslint/ban-types' was not found                @typescript-eslint/ban-types
+   419:5   error    Definition for rule '@typescript-eslint/ban-types' was not found                @typescript-eslint/ban-types
+   435:5   warning  Unused eslint-disable directive (no problems were reported)
+   752:11  error    Definition for rule '@typescript-eslint/no-unsafe-member-access' was not found  @typescript-eslint/no-unsafe-member-access
+   754:13  error    Definition for rule '@typescript-eslint/no-unsafe-assignment' was not found     @typescript-eslint/no-unsafe-assignment
+   948:11  error    Definition for rule '@typescript-eslint/no-unsafe-assignment' was not found     @typescript-eslint/no-unsafe-assignment
+   964:13  error    Definition for rule '@typescript-eslint/no-unsafe-assignment' was not found     @typescript-eslint/no-unsafe-assignment
+   970:13  warning  Unused eslint-disable directive (no problems were reported)
+  1257:5   error    Definition for rule '@typescript-eslint/ban-types' was not found                @typescript-eslint/ban-types
+  1275:5   error    Definition for rule '@typescript-eslint/ban-types' was not found                @typescript-eslint/ban-types
+  2603:35  warning  Unused eslint-disable directive (no problems were reported)
+  3266:11  warning  Unused eslint-disable directive (no problems were reported)
+  3786:9   error    Definition for rule '@typescript-eslint/no-unsafe-return' was not found         @typescript-eslint/no-unsafe-return
+  3833:9   error    Definition for rule '@typescript-eslint/no-unsafe-return' was not found         @typescript-eslint/no-unsafe-return
+
+D:\python play ground\Python-playground-pro\src\components\AdViewModal.tsx
+  3:17  warning  'CheckCircle2' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\BadgeDisplay.tsx
+  2:32  warning  'Badge' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\ShootingStars.tsx
+  176:25  warning  'x' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+  176:36  warning  'y' is defined but never used. Allowed unused args must match /^_/u  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\landing\AboutUsSection.tsx
+  1:50  warning  'Users' is defined but never used   @typescript-eslint/no-unused-vars
+  1:57  warning  'Trophy' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\landing\BasicProblemsSection.tsx
+  9:23  warning  'Easing' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\landing\FeaturesSection.tsx
+  11:23  warning  'Easing' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\landing\GettingStartedSection.tsx
+  10:23  warning  'Easing' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\landing\HeroSection.tsx
+  41:7  warning  'brandPulseAnimation' is assigned a value but never used       @typescript-eslint/no-unused-vars
+  46:7  warning  'shimmerAnimation' is assigned a value but never used          @typescript-eslint/no-unused-vars
+  97:9  warning  'heroSubtitleBrandClasses' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\landing\RoadmapSection.tsx
+  9:23  warning  'Easing' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\components\landing\WinnerBanner.tsx
+  3:10  warning  'Trophy' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\hooks\use-toast.ts
+  15:7  warning  'actionTypes' is assigned a value but only used as a type  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\pages\AuthPage.tsx
+    5:35  warning  'ArrowRight' is defined but never used  @typescript-eslint/no-unused-vars
+  410:26  warning  'error' is defined but never used       @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\pages\CertificatePage.tsx
+  16:10  warning  'siteConfig' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\pages\CompilerPage.tsx
+  16:3   warning  'LineChart' is defined but never used     @typescript-eslint/no-unused-vars
+  17:3   warning  'Line' is defined but never used          @typescript-eslint/no-unused-vars
+  31:3   warning  'Info' is defined but never used          @typescript-eslint/no-unused-vars
+  77:28  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\python play ground\Python-playground-pro\src\pages\DSAPage.tsx
+  745:6  warning  React Hook useEffect has a missing dependency: 'topic'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+D:\python play ground\Python-playground-pro\src\pages\DashboardPage.tsx
+  19:33  warning  'Wallet' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\pages\LandingPage.tsx
+  34:10  warning  'clockIsNight' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\pages\LeaderboardPage.tsx
+  79:7  warning  'rankBg' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\pages\ProblemPage.tsx
+  17:46  warning  'ArrowRight' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\python play ground\Python-playground-pro\src\pages\PythonGamePage.tsx
+  127:9  warning  The 'dropped' logical expression could make the dependencies of useMemo Hook (at line 139) change on every render. To fix this, wrap the initialization of 'dropped' in its own useMemo() Hook  react-hooks/exhaustive-deps
+
+Γ£û 42 problems (11 errors, 31 warnings)
+  0 errors and 4 warnings potentially fixable with the `--fix` option.
+

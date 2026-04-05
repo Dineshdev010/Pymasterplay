@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
 import gpayQR from "@/assets/gpay-qr.jpg";
-import { siteConfig } from "@/config/site";
+
 
 interface CertificateRecord {
   id: string;

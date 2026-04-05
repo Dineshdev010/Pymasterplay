@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { getEarnedBadges, type Badge } from "@/lib/badges";
+import { getEarnedBadges } from "@/lib/badges";
 import { useProgress } from "@/contexts/ProgressContext";
 import { problems } from "@/data/problems";
 import { Lock } from "lucide-react";

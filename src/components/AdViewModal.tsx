@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Clock, CheckCircle2, HeartHandshake } from "lucide-react";
+import { Clock, HeartHandshake } from "lucide-react";
 import { toast } from "sonner";
 import { getNextAd, type AdConfig } from "@/data/ads";
 

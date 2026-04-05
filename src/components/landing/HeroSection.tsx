@@ -7,14 +7,14 @@
 // ============================================================
 
 import { Link } from "react-router-dom";
-import { motion, type Easing } from "framer-motion";
+import { motion, type Easing, useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { ArrowRight, BookOpen, Code, Flame, Target, Sparkles, Rocket, ChevronDown, Star, Gamepad2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/ThemeProvider";
 import { useProgress } from "@/contexts/ProgressContext";
 import { useLayoutEffect, useRef } from "react";
-import { useScroll, useTransform, useMotionValue, useSpring } from "framer-motion";
 import { StreakFire } from "@/components/StreakFire";
+import { LivePulse } from "@/components/LivePulse";
 import gsap from "gsap";
 
 // ---------- Platform stats shown below the CTA ----------
@@ -38,15 +38,7 @@ const floatingAnimation = {
   transition: { duration: 4, repeat: Infinity, ease: "easeInOut" as Easing },
 };
 
-const brandPulseAnimation = {
-  backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
-  transition: { duration: 9, repeat: Infinity, ease: "easeInOut" as Easing },
-};
 
-const shimmerAnimation = {
-  x: ["-120%", "125%"],
-  transition: { duration: 2.8, repeat: Infinity, repeatDelay: 1.8, ease: "easeInOut" as Easing },
-};
 
 export function HeroSection() {
   const { theme } = useTheme();
@@ -94,7 +86,7 @@ export function HeroSection() {
     ? "text-slate-300 drop-shadow-[0_4px_20px_rgba(2,6,23,0.6)]"
     : "text-slate-600 text-[1.1rem] drop-shadow-[0_2px_10px_rgba(255,255,255,0.55)]";
     
-  const heroSubtitleBrandClasses = isDarkTheme ? "text-white" : "text-slate-900";
+
   
   const snippetCardClasses = isDarkTheme
     ? "bg-slate-950/40 border-white/10 text-slate-300 shadow-2xl backdrop-blur-md"
@@ -248,6 +240,10 @@ export function HeroSection() {
       <motion.div style={{ opacity: heroOpacity, scale: heroScale }} className="relative isolate mx-auto w-full max-w-[1320px] px-3 pb-16 pt-10 text-center sm:px-5 sm:pt-4 md:pb-20 md:pt-4">
         <div className={`absolute inset-x-2 top-8 -bottom-2 -z-10 rounded-[3rem] blur-3xl sm:inset-x-6 sm:top-10 ${heroGlowClasses}`} />
         
+        <div className="flex justify-center mb-6">
+          <LivePulse />
+        </div>
+
         {/* "Free Python Learning Platform" badge */}
         <div>
           <span ref={heroBadgeRef} className={`inline-flex items-center gap-2 mb-8 rounded-full px-5 py-2 text-sm font-semibold backdrop-blur-md ${heroBadgeClasses}`}>

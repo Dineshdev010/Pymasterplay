@@ -6,7 +6,7 @@
 // ============================================================
 
 import { Link } from "react-router-dom";
-import { motion, type Easing } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, Zap, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { fadeUp } from "./HeroSection";

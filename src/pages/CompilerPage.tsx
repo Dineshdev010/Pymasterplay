@@ -9,8 +9,12 @@
 import { useState, useEffect, useRef } from "react";
 import { useSearchParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
-import { Play, RotateCcw, FileCode, Square, Terminal, Code2, Hash, ChevronRight, Quote, Type } from "lucide-react";
+import { Play, RotateCcw, FileCode, Square, Terminal, Brain } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from "recharts";
+import { analyzePythonCode } from "@/utils/PyBrainUtils";
 import { useProgress } from "@/contexts/ProgressContext";
 import {
   cancelActivePythonExecution,
@@ -49,8 +53,12 @@ export default function CompilerPage() {
   const [isEditorMounted, setIsEditorMounted] = useState(false);
   const [showEditorFallback, setShowEditorFallback] = useState(false);
   const [mobileView, setMobileView] = useState<"program" | "output">("program");
+  const [isBrainOpen, setIsBrainOpen] = useState(false);
+  const [executionHistory, setExecutionHistory] = useState<{runId: number; time: number}[]>([]);
+  const [activeTab, setActiveTab] = useState<"output" | "performance">("output");
   const editorPanelRef = useRef<HTMLDivElement | null>(null);
   const outputPanelRef = useRef<HTMLDivElement | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null); // Ref for Monaco editor instance
   const { logActivity } = useProgress();              // Record activity for streak
   const isMobile = useIsMobile();
@@ -107,7 +115,11 @@ export default function CompilerPage() {
     // Execute using Pyodide WASM engine
     const result = await executePython(code);
     const elapsed = performance.now() - startTime;
-    setExecutionTime(Math.round(elapsed));
+    const finalElapsed = Math.round(elapsed);
+    setExecutionTime(finalElapsed);
+    
+    // Add to execution history
+    setExecutionHistory(prev => [...prev, { runId: prev.length + 1, time: finalElapsed }]);
 
     // Format the output based on result
     let outputText = "";
@@ -167,8 +179,40 @@ export default function CompilerPage() {
     { label: "for", value: "for i in range():" },
   ];
 
+  const pyBrainAnalysis = analyzePythonCode(code);
+
   return (
     <div className="flex h-[calc(100dvh-3.5rem)] flex-col overflow-hidden">
+      {/* ---------- PyBrain Dialog ---------- */}
+      <Dialog open={isBrainOpen} onOpenChange={setIsBrainOpen}>
+        <DialogContent className="sm:max-w-[425px] bg-background/90 backdrop-blur-xl border border-white/10 shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-python-blue">
+              <Brain className="w-5 h-5" /> PyBrain Analysis
+            </DialogTitle>
+            <DialogDescription>
+              AI-driven insights for your current code.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 flex flex-col gap-3">
+            <div className="text-sm font-medium">Score: <span className={pyBrainAnalysis.score < 70 ? "text-destructive" : pyBrainAnalysis.score < 100 ? "text-python-yellow" : "text-streak-green"}>{pyBrainAnalysis.score}/100</span></div>
+            {pyBrainAnalysis.tips.length === 0 ? (
+              <div className="text-sm text-muted-foreground italic">Your code looks perfect! No structural tips at this time.</div>
+            ) : (
+              pyBrainAnalysis.tips.map(tip => (
+                <div key={tip.id} className="p-3 rounded-lg border border-white/5 bg-surface-0/50">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs uppercase tracking-wider font-bold text-muted-foreground">{tip.type}</span>
+                    <span className="font-semibold text-sm">{tip.title}</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">{tip.description}</div>
+                </div>
+              ))
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* ---------- Toolbar ---------- */}
       <div className="h-auto min-h-[3rem] bg-surface-1 border-b border-border flex flex-wrap items-center justify-between px-3 sm:px-4 py-2 gap-2 shrink-0">
         <div className="flex items-center gap-2">
@@ -204,6 +248,10 @@ export default function CompilerPage() {
           {/* Clear button — resets code and output */}
           <Button size="sm" variant="outline" className="h-8 text-xs gap-1 flex-1 sm:flex-none" onClick={() => { setCode(""); setOutput(""); setExecutionTime(null); }}>
             <RotateCcw className="w-3 h-3" /> Clear
+          </Button>
+          {/* PyBrain AI Button */}
+          <Button size="sm" variant="outline" className="h-8 text-xs gap-1 flex-1 sm:flex-none border-python-blue/30 text-python-blue hover:bg-python-blue/10 hover:text-python-blue" onClick={() => setIsBrainOpen(true)}>
+            <Brain className="w-3 h-3" /> PyBrain
           </Button>
           {/* Run button — executes the Python code */}
           {isRunning ? (
@@ -318,34 +366,69 @@ export default function CompilerPage() {
           ref={outputPanelRef}
           className={`${isMobile && mobileView === "program" ? "hidden" : "flex"} md:w-96 ${isMobile ? "flex-1 min-h-0" : "h-[40vh] min-h-[14rem] md:h-auto"} border-t md:border-t-0 md:border-l border-border bg-surface-0 flex-col`}
         >
-          {/* Output header with execution time */}
-          <div className="px-4 py-2 border-b border-border bg-surface-1 text-xs text-muted-foreground font-mono flex items-center justify-between">
-            <span className="flex items-center gap-2">
-              📺 Output
-            </span>
-            {executionTime !== null && (
-              <span className="text-[10px] text-muted-foreground">⏱ {executionTime}ms</span>
-            )}
-          </div>
-          {/* Output text area */}
-          <pre className={`flex-1 p-4 text-[13px] sm:text-sm font-mono overflow-auto whitespace-pre-wrap ${
-            output.includes("❌") || output.includes("⚠️") ? "text-destructive" : "text-foreground"
-          }`}>
-            {isRunning ? (
-              <span className="text-muted-foreground animate-pulse">
-                {runtimeStatus === "ready"
-                  ? "⏳ Running Python in browser worker..."
-                  : "⏳ Loading Python runtime and preparing browser worker..."}
-              </span>
-            ) : (
-              output ||
-              (runtimeStatus === "error"
-                ? `❌ Runtime failed to load.\n${runtimeError || "Please refresh and try again."}`
-                : runtimeStatus === "loading"
-                  ? "Python runtime is warming up in the background. Your first run should feel faster once loading completes."
-                  : `Click '▶ Run' to execute your code locally. Runs in an isolated browser worker with a ${timeoutSeconds}s safety timeout.`)
-            )}
-          </pre>
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "output" | "performance")} className="flex flex-col flex-1 min-h-0 bg-surface-0">
+            <div className="px-4 py-2 border-b border-border bg-surface-1 flex items-center justify-between shadow-sm shrink-0">
+              <TabsList className="h-8 md:h-6 bg-transparent p-0 gap-4">
+                <TabsTrigger value="output" className="h-8 md:h-6 px-2 text-xs font-mono data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-python-blue data-[state=active]:border-b-2 data-[state=active]:border-python-blue rounded-none">
+                  📺 Output
+                </TabsTrigger>
+                <TabsTrigger value="performance" className="h-8 md:h-6 px-2 text-xs font-mono data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:text-streak-green data-[state=active]:border-b-2 data-[state=active]:border-streak-green rounded-none">
+                  ⚡ Performance
+                </TabsTrigger>
+              </TabsList>
+              {executionTime !== null && activeTab === "output" && (
+                <span className="text-[10px] text-muted-foreground mr-2">⏱ {executionTime}ms</span>
+              )}
+            </div>
+            
+            <TabsContent value="output" className="flex-1 m-0 p-0 overflow-hidden flex flex-col focus-visible:outline-none">
+              <pre className={`flex-1 p-4 text-[13px] sm:text-sm font-mono overflow-auto whitespace-pre-wrap ${
+                output.includes("❌") || output.includes("⚠️") ? "text-destructive" : "text-foreground"
+              }`}>
+                {isRunning ? (
+                  <span className="text-muted-foreground animate-pulse">
+                    {runtimeStatus === "ready"
+                      ? "⏳ Running Python in browser worker..."
+                      : "⏳ Loading Python runtime and preparing browser worker..."}
+                  </span>
+                ) : (
+                  output ||
+                  (runtimeStatus === "error"
+                    ? `❌ Runtime failed to load.\n${runtimeError || "Please refresh and try again."}`
+                    : runtimeStatus === "loading"
+                      ? "Python runtime is warming up in the background. Your first run should feel faster once loading completes."
+                      : `Click '▶ Run' to execute your code locally. Runs in an isolated browser worker with a ${timeoutSeconds}s safety timeout.`)
+                )}
+              </pre>
+            </TabsContent>
+            
+            <TabsContent value="performance" className="flex-1 m-0 p-4 focus-visible:outline-none flex flex-col overflow-hidden">
+              {executionHistory.length > 0 ? (
+                <div className="flex-1 min-h-0 relative">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={executionHistory} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+                      <XAxis dataKey="runId" stroke="#888" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} />
+                      <YAxis stroke="#888" tick={{ fontSize: 10 }} tickLine={false} axisLine={false} tickFormatter={(val) => `${val}ms`} />
+                      <RechartsTooltip 
+                        contentStyle={{ backgroundColor: '#1a1b26', borderColor: '#2f3146', borderRadius: '8px', fontSize: '12px' }}
+                        itemStyle={{ color: '#4ade80' }}
+                        formatter={(value: number) => [`${value} ms`, 'Execution Time']}
+                        labelStyle={{ color: '#888' }}
+                        labelFormatter={(label) => `Run #${label}`}
+                      />
+                      <Line type="monotone" dataKey="time" stroke="#4ade80" strokeWidth={3} dot={{ r: 4, fill: '#1a1b26', stroke: '#4ade80', strokeWidth: 2 }} activeDot={{ r: 6, fill: '#4ade80', stroke: '#fff' }} animationDuration={1000} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              ) : (
+                <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm flex-col gap-2">
+                  <span className="text-2xl">⚡</span>
+                  Run code to see performance tracking
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>

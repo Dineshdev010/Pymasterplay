@@ -14,7 +14,7 @@ import { getRewardForDifficulty } from "@/lib/progress";
 import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
-import { Play, Send, Eye, EyeOff, ArrowLeft, ArrowRight, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Square, Building2, BookOpenCheck } from "lucide-react";
+import { Play, Send, Eye, EyeOff, ArrowLeft, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Square, Building2, BookOpenCheck } from "lucide-react";
 import { AdViewModal } from "@/components/AdViewModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CompanyBadge } from "@/components/CompanyBadge";

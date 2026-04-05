@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, Zap, ArrowRight, Ticket, Gift, Sparkles, CalendarClock } from "lucide-react";
+import { Zap, ArrowRight, Ticket, Gift, Sparkles, CalendarClock } from "lucide-react";
 import { Link } from "react-router-dom";
 import { problems } from "@/data/problems";
 import { useProgress } from "@/contexts/ProgressContext";

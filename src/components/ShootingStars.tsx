@@ -173,7 +173,7 @@ export function ShootingStars() {
     setShowRiddle({ star, answer: "" });
   };
 
-  const triggerBurst = (x: number, y: number) => {
+  const triggerBurst = (_x: number, _y: number) => {
     fireRewardConfetti();
   };
 

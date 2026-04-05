@@ -1,4 +1,4 @@
-import { Github, Linkedin, Twitter, Mail, Code2, Users, Trophy } from "lucide-react";
+import { Github, Linkedin, Twitter, Mail, Code2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export function AboutUsSection() {

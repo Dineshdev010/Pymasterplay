@@ -742,7 +742,7 @@ export default function DSAPage() {
     setVisualInput(topic.id === "graphs" ? "A-B,B-C,C-D,D-E" : "1,2,3,4,5");
     setWindowStart(0);
     setWindowSize(3);
-  }, [topic?.id]);
+  }, [topic]);
 
   return (
     <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)] md:flex-row">

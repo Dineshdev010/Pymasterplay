@@ -76,11 +76,7 @@ const rankIcons: Record<number, React.ReactNode> = {
   3: <Award className="w-5 h-5 text-reward-gold" />,
 };
 
-const rankBg: Record<number, string> = {
-  1: "bg-python-yellow/5 border-python-yellow/20",
-  2: "bg-muted/30 border-muted-foreground/20",
-  3: "bg-reward-gold/5 border-reward-gold/20",
-};
+
 
 function getNextWeeklyResetLabel() {
   const now = new Date();

@@ -6,7 +6,7 @@
 // ============================================================
 
 import { Link } from "react-router-dom";
-import { motion, type Easing } from "framer-motion";
+import { motion } from "framer-motion";
 import { BookOpen, Code, Zap, Target, Trophy } from "lucide-react";
 import { fadeUp } from "./HeroSection";
 

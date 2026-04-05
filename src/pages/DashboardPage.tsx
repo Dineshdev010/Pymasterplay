@@ -16,19 +16,11 @@ import { StreakFire } from "@/components/StreakFire";
 import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Code, Flame, Wallet, Trophy, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp } from "lucide-react";
+import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { getPublicUrl } from "@/lib/public-url";
-
-const trophyMilestones = [
-{ stars: 20, emoji: "🥉", title: "Bronze Trophy", color: "bg-reward-gold/10 border-reward-gold/30" },
-{ stars: 50, emoji: "🥈", title: "Silver Trophy", color: "bg-muted/10 border-muted/30" },
-{ stars: 100, emoji: "🏆", title: "Gold Trophy", color: "bg-python-yellow/10 border-python-yellow/30" },
-{ stars: 200, emoji: "💎", title: "Diamond Trophy", color: "bg-primary/10 border-primary/30" },
-{ stars: 350, emoji: "🌟", title: "Supernova", color: "bg-expert-purple/10 border-expert-purple/30" },
-{ stars: 500, emoji: "👑", title: "Legendary Crown", color: "bg-streak-green/10 border-streak-green/30" },
-{ stars: 1000, emoji: "🐉", title: "Dragon Master", color: "bg-destructive/10 border-destructive/30" }];
+import { TrophyHall } from "@/components/TrophyHall";
 
 
 const EMOJI_SHOP: {emoji: string;name: string;price: number;legendary?: boolean;}[] = [
@@ -1302,26 +1294,17 @@ export default function DashboardPage() {
       {/* Star Trophy Progress */}
       <SectionErrorBoundary section="Star Trophies">
         <div className="bg-card border border-border rounded-lg p-6 mb-8">
-          <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
-            ⭐ Star Trophies
-          </h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            Catch shooting stars on the home page to earn trophies! You've caught <span className="text-python-yellow font-bold">{progress.starsCaught}</span> stars.
-            {trophy.next > 0 && <> Next trophy at <span className="text-foreground font-bold">{trophy.next}</span> stars.</>}
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3">
-            {trophyMilestones.map((m) => {
-              const achieved = progress.starsCaught >= m.stars;
-              return (
-                <div key={m.stars} className={`rounded-lg p-4 text-center border transition-all duration-300 ${achieved ? m.color + " scale-105" : "bg-surface-1 border-border opacity-40"}`}>
-                  <div className="text-3xl mb-1">{m.emoji}</div>
-                  <div className="text-sm font-medium text-foreground">{m.title}</div>
-                  <div className="text-xs text-muted-foreground">{m.stars} stars</div>
-                  {achieved && <div className="text-[10px] text-streak-green mt-1">✅ Achieved</div>}
-                </div>);
-
-            })}
+          <div className="flex flex-col mb-6">
+            <h2 className="text-xl font-bold text-foreground flex items-center gap-2 mb-2">
+              <Trophy className="w-6 h-6 text-python-yellow" />
+              Trophy Hall
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Catch shooting stars on the home page to earn legendary trophies! You've caught <span className="text-python-yellow font-bold">{progress.starsCaught}</span> stars.
+              {trophy.next > 0 && <> Next trophy at <span className="text-foreground font-bold">{trophy.next}</span> stars.</>}
+            </p>
           </div>
+          <TrophyHall starsCaught={progress.starsCaught} />
         </div>
       </SectionErrorBoundary>
 

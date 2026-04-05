@@ -31,10 +31,7 @@ export default function LandingPage() {
   const canonical = "https://pymaster.pro/";
   const [hideFloatingBadges, setHideFloatingBadges] = useState(false);
   const [deferFx, setDeferFx] = useState(false);
-  const [clockIsNight, setClockIsNight] = useState(() => {
-    const hour = new Date().getHours();
-    return hour < 6 || hour >= 18;
-  });
+
 
   useEffect(() => {
     const prefersReduced =
@@ -56,16 +53,7 @@ export default function LandingPage() {
 
   const compactSectionClass = "cv-auto -mt-4 sm:-mt-6";
 
-  useEffect(() => {
-    const updatePhase = () => {
-      const hour = new Date().getHours();
-      setClockIsNight(hour < 6 || hour >= 18);
-    };
 
-    updatePhase();
-    const interval = window.setInterval(updatePhase, 2 * 60 * 1000);
-    return () => window.clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const syncSidebarState = (event?: Event) => {

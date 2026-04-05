@@ -8,7 +8,7 @@
 // ============================================================
 
 import { useNavigate } from "react-router-dom";
-import { motion, type Easing } from "framer-motion";
+import { motion } from "framer-motion";
 import { ArrowRight, BookOpen, Terminal, Code, Trophy, Flame, Brain } from "lucide-react";
 import { fadeUp } from "./HeroSection";
 

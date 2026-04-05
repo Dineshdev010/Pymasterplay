@@ -2,7 +2,7 @@ import { useState, useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, Lock, Eye, EyeOff, ArrowRight, User, Terminal, Code2, Sparkles, ShieldCheck } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, User, Terminal, Code2, Sparkles, ShieldCheck } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from "framer-motion";
@@ -407,7 +407,7 @@ export default function AuthPage() {
               onClick={async () => {
                 try {
                   await signInWithGoogle();
-                } catch (error) {
+                } catch {
                   toast({ title: "Google sign-in failed", description: "Please try again.", variant: "destructive" });
                 }
               }}

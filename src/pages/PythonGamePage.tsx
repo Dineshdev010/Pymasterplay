@@ -124,7 +124,7 @@ export default function PythonGamePage() {
   );
 
   const selectedTopic = topics.find((topic) => topic.id === selectedTopicId) || topics[0];
-  const dropped = droppedByTopic[selectedTopic.id] || [];
+  const dropped = useMemo(() => droppedByTopic[selectedTopic.id] || [], [droppedByTopic, selectedTopic.id]);
 
   const generatedCode = useMemo(() => {
     const snippets = dropped
