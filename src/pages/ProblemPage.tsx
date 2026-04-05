@@ -18,6 +18,7 @@ import { Play, Send, Eye, EyeOff, ArrowLeft, ArrowRight, CheckCircle2, XCircle, 
 import { AdViewModal } from "@/components/AdViewModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CompanyBadge } from "@/components/CompanyBadge";
+import { SPONSOR_DESTINATIONS } from "@/data/ads";
 
 function normalizeOutput(output: string) {
   return output.replace(/\r\n/g, "\n").trim();
@@ -444,6 +445,7 @@ export default function ProblemPage() {
           setAdWatchedForSolution(true);
           setShowSolution(true);
         }}
+        sponsorLink={SPONSOR_DESTINATIONS.problemSolutionUnlock}
         completionTitle="Solution unlocked"
         completionDescription="Thanks for viewing the sponsor message."
       />

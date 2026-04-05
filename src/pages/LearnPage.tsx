@@ -5,11 +5,13 @@
 // ============================================================
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Editor from "@monaco-editor/react";
 import { lessons } from "@/data/lessons";
 import { useProgress } from "@/contexts/ProgressContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { ExerciseEditor } from "@/components/ExerciseEditor";
 import { AdViewModal } from "@/components/AdViewModal";
+import { SPONSOR_DESTINATIONS } from "@/data/ads";
 import { BookOpen, CheckCircle2, ChevronRight, Terminal, Lock, Play, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -82,8 +84,223 @@ type LessonClarityGuide = {
   summary: string;
   analogy: string;
   steps: string[];
+  whereToUse: string[];
   commonMistakes: string[];
   quickCheck: string;
+};
+
+type LessonNarrative = {
+  explanation: string;
+  practicalUse: string[];
+  implementationFlow: string[];
+};
+
+type QuickExample = {
+  label: string;
+  code: string;
+};
+
+type LessonUsagePlaybook = {
+  whenToUse: string[];
+  howToApply: string[];
+  starterPattern: string;
+};
+
+type KeywordGuide = {
+  howToUse: string;
+  whereToUse: string;
+  example?: string;
+};
+
+const keywordGuides: Record<string, KeywordGuide> = {
+  ".upper()": { howToUse: "Call on a string to convert all letters to uppercase.", whereToUse: "Case-insensitive search and standardized display text." },
+  ".lower()": { howToUse: "Call on a string to convert all letters to lowercase.", whereToUse: "Normalizing user input like emails/usernames." },
+  ".title()": { howToUse: "Converts first letter of each word to uppercase.", whereToUse: "Formatting names and headings in UI." },
+  ".strip()": { howToUse: "Removes extra spaces/newlines from both ends.", whereToUse: "Cleaning form inputs and CSV/text data." },
+  ".split()": { howToUse: "Splits one string into a list using a separator.", whereToUse: "Parsing comma/space-separated data." },
+  ".join()": { howToUse: "Joins list items into one string with a separator.", whereToUse: "Building sentences, paths, CSV rows." },
+  ".find()": { howToUse: "Returns index of first match or -1 if not found.", whereToUse: "Keyword checks in logs/messages." },
+  ".replace()": { howToUse: "Replaces matching text with new text.", whereToUse: "Data cleanup and formatting corrections." },
+  ".count()": { howToUse: "Counts how many times a value appears.", whereToUse: "Frequency checks in strings/lists." },
+  ".startswith()": { howToUse: "Checks whether text starts with a prefix.", whereToUse: "Validating URL prefixes or file names." },
+  ".endswith()": { howToUse: "Checks whether text ends with a suffix.", whereToUse: "Extension checks like `.py`, `.csv`, `.jpg`." },
+  "range()": { howToUse: "Generates a sequence of numbers for loops.", whereToUse: "Index loops, repeated tasks, controlled iteration." },
+  "break": { howToUse: "Stops the loop immediately.", whereToUse: "Exit early when target condition is met." },
+  "continue": { howToUse: "Skips current iteration and moves to next one.", whereToUse: "Ignore invalid records while processing." },
+  "if": { howToUse: "Runs a block only when condition is True.", whereToUse: "Validation and decision branching." },
+  "elif": { howToUse: "Adds another condition after `if`.", whereToUse: "Multiple decision paths like grading/status." },
+  "else": { howToUse: "Fallback block when all conditions are False.", whereToUse: "Default behavior and error fallback." },
+  "int()": { howToUse: "Converts value to integer type.", whereToUse: "Math after reading string input." },
+  "float()": { howToUse: "Converts value to decimal number.", whereToUse: "Prices, percentages, measurements." },
+  "str()": { howToUse: "Converts value to text.", whereToUse: "Display and string concatenation." },
+  "bool()": { howToUse: "Converts value to boolean True/False.", whereToUse: "Condition checks and filters." },
+  "dict": { howToUse: "Store key-value pairs like `{name: value}`.", whereToUse: "Structured records and fast lookups." },
+  "list": { howToUse: "Ordered collection using square brackets.", whereToUse: "Sequences of tasks, items, users, scores." },
+  "set": { howToUse: "Unordered unique collection.", whereToUse: "Removing duplicates and membership tests." },
+  "tuple": { howToUse: "Ordered immutable collection.", whereToUse: "Fixed-value groups like coordinates." },
+};
+
+function getKeywordExample(token: string): string | undefined {
+  const t = token.trim();
+  const n = t.toLowerCase();
+
+  const examples: Record<string, string> = {
+    ".upper()": `text = "hello"\nprint(text.upper())`,
+    ".lower()": `text = "HELLO"\nprint(text.lower())`,
+    ".title()": `name = "python learning"\nprint(name.title())`,
+    ".strip()": `raw = "  user input  "\nprint(raw.strip())`,
+    ".split()": `line = "a,b,c"\nprint(line.split(","))`,
+    ".join()": `parts = ["python", "is", "fun"]\nprint(" ".join(parts))`,
+    ".find()": `msg = "hello python"\nprint(msg.find("python"))`,
+    ".replace()": `text = "I like Java"\nprint(text.replace("Java", "Python"))`,
+    ".count()": `text = "banana"\nprint(text.count("a"))`,
+    ".startswith()": `url = "https://pymaster.pro"\nprint(url.startswith("https://"))`,
+    ".endswith()": `file = "notes.py"\nprint(file.endswith(".py"))`,
+    "range()": `for i in range(1, 4):\n    print(i)`,
+    "if": `age = 20\nif age >= 18:\n    print("Adult")`,
+    "elif": `score = 75\nif score >= 90:\n    print("A")\nelif score >= 70:\n    print("B")`,
+    "else": `logged_in = False\nif logged_in:\n    print("Welcome")\nelse:\n    print("Please login")`,
+    "int()": `num = "42"\nprint(int(num) + 8)`,
+    "float()": `price = "19.99"\nprint(float(price) * 2)`,
+    "str()": `age = 21\nprint("Age: " + str(age))`,
+    "bool()": `print(bool(0))\nprint(bool(1))`,
+    "dict": `user = {"name": "Asha", "xp": 120}\nprint(user["xp"])`,
+    "list": `nums = [1, 2, 3]\nnums.append(4)\nprint(nums)`,
+    "set": `tags = {"python", "python", "api"}\nprint(tags)`,
+    "tuple": `point = (10, 20)\nprint(point[0])`,
+    "==": `print(5 == 5)`,
+    "!=": `print(5 != 3)`,
+    ">": `score = 80\nprint(score > 50)`,
+    "<": `temp = 18\nprint(temp < 20)`,
+    ">=": `age = 18\nprint(age >= 18)`,
+    "<=": `items = 10\nprint(items <= 10)`,
+    "and": `age = 20\npaid = True\nprint(age >= 18 and paid)`,
+    "or": `is_admin = False\nis_owner = True\nprint(is_admin or is_owner)`,
+    "not": `is_blocked = False\nprint(not is_blocked)`,
+    "break": `for n in [1, 2, 3, 4]:\n    if n == 3:\n        break\n    print(n)`,
+    "continue": `for n in [1, 2, 3, 4]:\n    if n == 3:\n        continue\n    print(n)`,
+  };
+
+  if (examples[t]) return examples[t];
+
+  if (n.endsWith("()")) {
+    return `# call ${t} in your code\n# Example:\nresult = ${t}\nprint(result)`;
+  }
+  if (n.startsWith(".")) {
+    return `value = "sample"\nprint(value${t})`;
+  }
+  if (n.includes("[start:stop:step]") || n.includes("[:]")) {
+    return `text = "Python"\nprint(text[1:4])\nprint(text[::-1])`;
+  }
+  return undefined;
+}
+
+function withKeywordExample(token: string, guide: KeywordGuide): KeywordGuide {
+  if (guide.example) return guide;
+  const example = getKeywordExample(token);
+  return example ? { ...guide, example } : guide;
+}
+
+function getFallbackKeywordGuide(token: string): KeywordGuide | null {
+  const normalized = token.trim().toLowerCase();
+
+  const direct: Record<string, KeywordGuide> = {
+    "==": { howToUse: "Checks if two values are equal.", whereToUse: "Condition checks in `if` statements and validations." },
+    "!=": { howToUse: "Checks if two values are not equal.", whereToUse: "Branching when values should be different." },
+    ">": { howToUse: "Checks if left value is greater than right value.", whereToUse: "Score cutoffs, thresholds, and sorting logic." },
+    "<": { howToUse: "Checks if left value is less than right value.", whereToUse: "Limit checks and boundary validation." },
+    ">=": { howToUse: "Checks if left value is greater than or equal to right value.", whereToUse: "Eligibility and minimum requirement checks." },
+    "<=": { howToUse: "Checks if left value is less than or equal to right value.", whereToUse: "Upper-limit and range validations." },
+    "+": { howToUse: "Adds numbers or combines strings/lists.", whereToUse: "Totals, counters, and simple concatenation." },
+    "-": { howToUse: "Subtracts one value from another.", whereToUse: "Difference calculations and decrement logic." },
+    "*": { howToUse: "Multiplies values.", whereToUse: "Scaling values, area calculations, and repeated patterns." },
+    "/": { howToUse: "Divides and returns a float result.", whereToUse: "Ratios, averages, and decimal calculations." },
+    "//": { howToUse: "Floor division; drops decimal part.", whereToUse: "Page counts, bucket sizing, integer quotient tasks." },
+    "%": { howToUse: "Returns remainder after division.", whereToUse: "Even/odd checks, wrap-around logic, cyclic operations." },
+    "**": { howToUse: "Raises a value to a power.", whereToUse: "Math formulas and growth calculations." },
+    "=": { howToUse: "Assigns a value to a variable.", whereToUse: "Creating and updating program state." },
+    "+=": { howToUse: "Adds and stores back in same variable.", whereToUse: "Counters, score updates, cumulative totals." },
+    "-=": { howToUse: "Subtracts and stores back in same variable.", whereToUse: "Countdowns and stock/quantity reduction." },
+    "*=": { howToUse: "Multiplies and stores back in same variable.", whereToUse: "Scaling values over repeated updates." },
+    "/=": { howToUse: "Divides and stores back in same variable.", whereToUse: "Normalizing values and ratio adjustments." },
+    "and": { howToUse: "All conditions must be True.", whereToUse: "Multi-rule validation and strict checks." },
+    "or": { howToUse: "At least one condition must be True.", whereToUse: "Alternative acceptance conditions." },
+    "not": { howToUse: "Reverses boolean value (True <-> False).", whereToUse: "Negation checks like `not is_valid`." },
+    "in": { howToUse: "Checks membership or iterates over a collection.", whereToUse: "Loops and contains checks in strings/lists/sets." },
+    "is": { howToUse: "Checks object identity.", whereToUse: "Comparing with `None` using `is None`." },
+    "def": { howToUse: "Defines a function.", whereToUse: "Reusable logic blocks for cleaner code." },
+    "return": { howToUse: "Sends a result back from a function.", whereToUse: "Reusable computations and testable functions." },
+    "class": { howToUse: "Defines a class blueprint for objects.", whereToUse: "Modeling entities and organizing larger systems." },
+    "try": { howToUse: "Starts a block that may raise errors.", whereToUse: "Safe parsing, file access, API calls." },
+    "except": { howToUse: "Handles exceptions raised in `try` block.", whereToUse: "Graceful error handling and recovery paths." },
+    "finally": { howToUse: "Runs cleanup code whether error happened or not.", whereToUse: "Closing resources and final state updates." },
+    "raise": { howToUse: "Throws an exception explicitly.", whereToUse: "Input validation and enforcing constraints." },
+    "with": { howToUse: "Manages resources with automatic cleanup.", whereToUse: "File handling and database/network resources." },
+    "as": { howToUse: "Binds alias or context-managed object name.", whereToUse: "Readable imports and `with ... as ...` blocks." },
+    "import": { howToUse: "Loads modules so their features can be used.", whereToUse: "Reusing standard library and third-party packages." },
+    "from": { howToUse: "Imports specific names from a module.", whereToUse: "Cleaner references and selective imports." },
+    "lambda": { howToUse: "Creates a small anonymous function expression.", whereToUse: "Inline transforms in `map`, `filter`, and sorting keys." },
+    "yield": { howToUse: "Returns a value from a generator and pauses state.", whereToUse: "Memory-efficient iteration over large datasets." },
+  };
+
+  if (direct[normalized]) return direct[normalized];
+
+  if (normalized.includes("[start:stop:step]") || normalized.includes("[:]") || normalized.includes("[::-1]")) {
+    return {
+      howToUse: "Use slicing as `sequence[start:stop:step]`; `start` inclusive, `stop` exclusive.",
+      whereToUse: "Substrings, sublists, reversing, and sampling sequence data.",
+    };
+  }
+
+  if (normalized.endsWith("()")) {
+    return {
+      howToUse: "Call this function with required arguments inside parentheses.",
+      whereToUse: "Use when this operation needs to run and return a result/value.",
+    };
+  }
+
+  if (normalized.startsWith(".")) {
+    return {
+      howToUse: "Call this method on an existing object value (like string/list/dict).",
+      whereToUse: "Transforming or querying object data in-place or via return values.",
+    };
+  }
+
+  return null;
+}
+
+function getKeywordGuidesForLine(line: string): Array<{ token: string; guide: KeywordGuide }> {
+  const tokens = Array.from(line.matchAll(/`([^`]+)`/g)).map((m) => m[1]?.trim()).filter(Boolean) as string[];
+  const matched: Array<{ token: string; guide: KeywordGuide }> = [];
+
+  for (const token of tokens) {
+    const exact = keywordGuides[token];
+    if (exact) {
+      matched.push({ token, guide: withKeywordExample(token, exact) });
+      continue;
+    }
+    const normalized = token.toLowerCase();
+    const fuzzy = Object.entries(keywordGuides).find(([k]) => normalized.includes(k.toLowerCase()));
+    if (fuzzy) {
+      matched.push({ token, guide: withKeywordExample(token, fuzzy[1]) });
+      continue;
+    }
+    const fallback = getFallbackKeywordGuide(token);
+    if (fallback) matched.push({ token, guide: withKeywordExample(token, fallback) });
+  }
+
+  const dedup = new Map<string, { token: string; guide: KeywordGuide }>();
+  for (const item of matched) {
+    if (!dedup.has(item.token)) dedup.set(item.token, item);
+  }
+  return Array.from(dedup.values()).slice(0, 3);
+}
+
+type DataTypeUsageItem = {
+  name: string;
+  whatItStores: string;
+  whenToUse: string;
+  example: string;
 };
 
 function extractGlossaryTerms(content: string) {
@@ -111,6 +328,11 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
         "Print it to verify the value.",
         "Change it and print again to understand updates.",
       ],
+      whereToUse: [
+        "Forms and profile data (`name`, `age`, `email`)",
+        "Counters, scores, XP, wallet totals",
+        "Flags like `is_logged_in` and `is_paid`",
+      ],
       commonMistakes: [
         "Using unclear names like `x1` for everything.",
         "Mixing text and numbers without conversion.",
@@ -129,6 +351,11 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
         "Use one method at a time (`upper`, `lower`, `strip`).",
         "Try slicing to take only part of the text.",
         "Use `split` and `join` to transform structure.",
+      ],
+      whereToUse: [
+        "User input cleanup (names, emails, messages)",
+        "Text formatting in dashboards and reports",
+        "Parsing logs, CSV lines, and API text fields",
       ],
       commonMistakes: [
         "Assuming strings can be changed in-place.",
@@ -149,6 +376,11 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
         "Print inside the loop to observe behavior.",
         "Use `break` and `continue` only when needed.",
       ],
+      whereToUse: [
+        "Iterating over lists from database/API responses",
+        "Generating reports and summaries",
+        "Processing many files, rows, or users in bulk",
+      ],
       commonMistakes: [
         "Forgetting to update condition in `while` loops.",
         "Infinite loops from missing exit logic.",
@@ -167,6 +399,11 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
         "Pass input through parameters.",
         "Use `return` for output.",
         "Call it with test values.",
+      ],
+      whereToUse: [
+        "Reusable business logic (`calculate_total`, `validate_user`)",
+        "Breaking large files into clean modules",
+        "Testing small units of logic independently",
       ],
       commonMistakes: [
         "Confusing `print` with `return`.",
@@ -187,6 +424,11 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
         "Loop through values and inspect output.",
         "Use built-in methods instead of manual work.",
       ],
+      whereToUse: [
+        "Lists for ordered records and queues",
+        "Dictionaries for fast key/value lookups",
+        "Sets for unique items like tags or IDs",
+      ],
       commonMistakes: [
         "Using list when unique values are needed (use set).",
         "Using wrong key names in dictionaries.",
@@ -196,14 +438,163 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
     };
   }
 
+  if (lower.includes("input") || lower.includes("output") || lower.includes("print")) {
+    return {
+      summary: "Input and output connect your program to users and display results clearly.",
+      analogy: "Input is listening, output is speaking.",
+      steps: [
+        "Read value from input or predefined variable.",
+        "Convert to required type (`int`, `float`, etc.).",
+        "Format output with f-strings for readability.",
+        "Print clean, predictable output.",
+      ],
+      whereToUse: [
+        "CLI tools and coding challenge programs",
+        "Data collection scripts and calculators",
+        "User-facing messages and logs",
+      ],
+      commonMistakes: [
+        "Forgetting type conversion after input.",
+        "Messy output formatting.",
+        "Printing debug text in final answer output.",
+      ],
+      quickCheck: "Why does `input()` usually need `int()` for numeric math?",
+    };
+  }
+
+  if (lower.includes("if") || lower.includes("elif") || lower.includes("else") || lower.includes("control flow") || lower.includes("boolean")) {
+    return {
+      summary: "Control flow lets your program choose different actions based on conditions.",
+      analogy: "Like traffic signals deciding which lane can move.",
+      steps: [
+        "Write a condition that evaluates to True/False.",
+        "Use `if` for first check, `elif` for extra checks.",
+        "Use `else` as default fallback.",
+        "Keep each branch simple and test all branches.",
+      ],
+      whereToUse: [
+        "Validation (`if age >= 18`)",
+        "Role/permission logic in apps",
+        "Error handling and alternate flows",
+      ],
+      commonMistakes: [
+        "Wrong indentation block.",
+        "Using assignment `=` instead of comparison `==`.",
+        "Overlapping conditions in wrong order.",
+      ],
+      quickCheck: "When should you use `elif` instead of another `if`?",
+    };
+  }
+
+  if (lower.includes("class") || lower.includes("oop") || lower.includes("object") || lower.includes("inheritance")) {
+    return {
+      summary: "OOP organizes code by modeling real entities with data and behavior.",
+      analogy: "A class is a blueprint; objects are real houses built from it.",
+      steps: [
+        "Define class with clear responsibility.",
+        "Store shared data in `__init__`.",
+        "Add methods for behavior.",
+        "Create objects and call methods.",
+      ],
+      whereToUse: [
+        "Large projects needing structure",
+        "User/order/product domain modeling",
+        "Reusable SDK/service clients",
+      ],
+      commonMistakes: [
+        "Not using `self` correctly.",
+        "Putting too many unrelated methods in one class.",
+        "Overusing classes when simple functions are enough.",
+      ],
+      quickCheck: "What is the difference between a class and an object?",
+    };
+  }
+
+  if (lower.includes("file") || lower.includes("exception") || lower.includes("error") || lower.includes("debug")) {
+    return {
+      summary: "This topic helps you build reliable programs that read data and handle failures safely.",
+      analogy: "Seatbelts for your program: things can go wrong, but you stay in control.",
+      steps: [
+        "Use `with open(...)` for safe file handling.",
+        "Wrap risky code in `try/except`.",
+        "Log useful error messages.",
+        "Fail gracefully with clear fallback behavior.",
+      ],
+      whereToUse: [
+        "Reading/writing configs and reports",
+        "API calls and parsing untrusted data",
+        "Production scripts that must not crash silently",
+      ],
+      commonMistakes: [
+        "Catching all exceptions without logging.",
+        "Forgetting to close file handles.",
+        "Ignoring edge cases and invalid input.",
+      ],
+      quickCheck: "Why is `with open(...)` preferred over manual open/close?",
+    };
+  }
+
+  if (lower.includes("api") || lower.includes("json") || lower.includes("web")) {
+    return {
+      summary: "You are learning how to exchange data between systems in structured formats.",
+      analogy: "APIs are waiters between your app and another app's kitchen.",
+      steps: [
+        "Send request to endpoint.",
+        "Check response status and errors.",
+        "Parse JSON data safely.",
+        "Extract and use required fields.",
+      ],
+      whereToUse: [
+        "Integrating payment/login/weather services",
+        "Backend-to-backend communication",
+        "Frontend data loading pipelines",
+      ],
+      commonMistakes: [
+        "Assuming response shape without checks.",
+        "Not handling timeout/network errors.",
+        "Hardcoding sensitive tokens.",
+      ],
+      quickCheck: "What should you validate before trusting API response data?",
+    };
+  }
+
+  if (lower.includes("recursion") || lower.includes("algorithm") || lower.includes("sort") || lower.includes("search")) {
+    return {
+      summary: "This lesson builds problem-solving speed and structured algorithmic thinking.",
+      analogy: "Break a big puzzle into smaller solvable puzzles.",
+      steps: [
+        "Define the input/output clearly.",
+        "Choose a method (iterative/recursive).",
+        "Handle edge cases first.",
+        "Test with small and tricky examples.",
+      ],
+      whereToUse: [
+        "Interview and coding challenge problems",
+        "Optimization and data processing tasks",
+        "Backend logic with predictable performance",
+      ],
+      commonMistakes: [
+        "Missing base case in recursion.",
+        "Ignoring time complexity.",
+        "Writing code before clarifying expected behavior.",
+      ],
+      quickCheck: "Why test edge cases before large random cases?",
+    };
+  }
+
   return {
-    summary: "This lesson builds practical Python thinking with examples you can run immediately.",
-    analogy: "Treat this topic like learning a new game: understand rules, try small rounds, then play bigger levels.",
+    summary: "This lesson teaches a practical Python concept you will use in real applications.",
+    analogy: "Learn it in three moves: understand idea, run example, apply to a small task.",
     steps: [
-      "Read the core idea once.",
-      "Run the code example and observe output.",
-      "Change one line and re-run.",
-      "Finish beginner, intermediate, and advanced exercises.",
+      "Read the concept and expected output.",
+      "Run the example exactly once.",
+      "Change one value and observe behavior.",
+      "Solve the three exercises in order.",
+    ],
+    whereToUse: [
+      "Coding interviews and challenge platforms",
+      "Automation scripts and utilities",
+      "Real backend/business logic in projects",
     ],
     commonMistakes: [
       "Reading without running code.",
@@ -214,8 +605,367 @@ function getLessonClarityGuide(title: string): LessonClarityGuide {
   };
 }
 
+function getDataTypeUsageGuide(lessonId: string): DataTypeUsageItem[] {
+  if (lessonId !== "variables") return [];
+
+  return [
+    {
+      name: "int",
+      whatItStores: "Whole numbers without decimals, like age, count, and score.",
+      whenToUse: "Use when you need exact counting or indexing.",
+      example: "age = 21",
+    },
+    {
+      name: "float",
+      whatItStores: "Decimal numbers, like price, height, and scientific values.",
+      whenToUse: "Use when decimal precision is needed.",
+      example: "price = 99.95",
+    },
+    {
+      name: "str",
+      whatItStores: "Text values such as names, messages, and addresses.",
+      whenToUse: "Use for any user-facing text or labels.",
+      example: 'username = "PyMaster"',
+    },
+    {
+      name: "bool",
+      whatItStores: "Logical values: True or False.",
+      whenToUse: "Use for conditions, flags, and decision checks.",
+      example: "is_logged_in = True",
+    },
+    {
+      name: "NoneType",
+      whatItStores: "A single special value, None, meaning no value yet.",
+      whenToUse: "Use when data is optional or not assigned.",
+      example: "middle_name = None",
+    },
+  ];
+}
+
+function getLessonNarrative(title: string): LessonNarrative {
+  const lower = title.toLowerCase();
+
+  if (lower.includes("variable") || lower.includes("data type")) {
+    return {
+      explanation:
+        "Variables and data types are the foundation of every Python program. A variable stores data, and the data type tells Python how that value should behave during operations like math, text formatting, and comparisons.",
+      practicalUse: [
+        "Store user profile fields (`name`, `email`, `age`) safely",
+        "Track counters, marks, wallet balances, and flags in app logic",
+        "Prevent runtime bugs by converting incoming values to correct types",
+      ],
+      implementationFlow: [
+        "Create descriptive variable names",
+        "Assign values and verify using `type()` while learning",
+        "Convert values before calculations (`int`, `float`, `str`)",
+        "Use booleans for decision logic and `None` for optional data",
+      ],
+    };
+  }
+
+  if (lower.includes("string")) {
+    return {
+      explanation:
+        "String handling is essential because most application data arrives as text. Python string methods help clean, format, search, and transform this data into a structure your program can use.",
+      practicalUse: [
+        "Normalize user input (trim spaces, standardize case)",
+        "Build readable output messages and reports",
+        "Extract and parse tokens from logs, CSV, and API responses",
+      ],
+      implementationFlow: [
+        "Read the raw string input",
+        "Clean it using methods like `strip()` and `lower()`",
+        "Use slicing/find/replace for controlled transformations",
+        "Format final output with f-strings",
+      ],
+    };
+  }
+
+  if (lower.includes("loop")) {
+    return {
+      explanation:
+        "Loops let you process repeated tasks efficiently. Instead of duplicating lines, one loop can apply the same logic to many values, users, files, or records.",
+      practicalUse: [
+        "Process lists of records from database/API calls",
+        "Generate repeated outputs such as reports and summaries",
+        "Run validation checks over multiple items",
+      ],
+      implementationFlow: [
+        "Choose `for` for sequence-based iteration",
+        "Choose `while` when repetition depends on a condition",
+        "Add debug prints to verify each iteration result",
+        "Use `break` and `continue` only for clear control points",
+      ],
+    };
+  }
+
+  if (lower.includes("function")) {
+    return {
+      explanation:
+        "Functions turn repeated logic into reusable building blocks. They improve readability, reduce duplication, and make testing easier by isolating behavior.",
+      practicalUse: [
+        "Separate validation, calculation, and formatting logic",
+        "Reuse the same logic across multiple screens or modules",
+        "Write unit tests for independent behavior blocks",
+      ],
+      implementationFlow: [
+        "Define a clear function name and purpose",
+        "Pass input through parameters instead of global variables",
+        "Return results so other code can reuse them",
+        "Test with multiple input cases",
+      ],
+    };
+  }
+
+  if (lower.includes("class") || lower.includes("oop") || lower.includes("object")) {
+    return {
+      explanation:
+        "Object-oriented programming helps structure large programs by grouping related data and behavior into classes. This keeps code modular and easier to maintain as complexity grows.",
+      practicalUse: [
+        "Model business entities like User, Product, and Order",
+        "Encapsulate service clients and reusable components",
+        "Organize large codebases by responsibilities",
+      ],
+      implementationFlow: [
+        "Define a class with one clear responsibility",
+        "Store shared state in `__init__`",
+        "Add methods that operate on that state",
+        "Instantiate objects and interact through methods",
+      ],
+    };
+  }
+
+  if (lower.includes("api") || lower.includes("json") || lower.includes("web")) {
+    return {
+      explanation:
+        "API and JSON topics teach your app to communicate with external systems. This is core for real applications, where data comes from services, not just hardcoded values.",
+      practicalUse: [
+        "Read live data from external services",
+        "Send and receive structured payloads safely",
+        "Build integrations with payment, auth, and analytics platforms",
+      ],
+      implementationFlow: [
+        "Call the endpoint and check status",
+        "Parse JSON and validate expected fields",
+        "Handle failures (timeouts, bad response shapes)",
+        "Map response data to internal variables cleanly",
+      ],
+    };
+  }
+
+  if (lower.includes("exception") || lower.includes("debug") || lower.includes("file")) {
+    return {
+      explanation:
+        "Reliable programs must handle unexpected conditions. File handling and exceptions help you build code that fails gracefully instead of crashing unexpectedly.",
+      practicalUse: [
+        "Safe file read/write in tools and scripts",
+        "Resilient API parsing and transformation flows",
+        "Production-grade logging and issue diagnosis",
+      ],
+      implementationFlow: [
+        "Use `with open(...)` for safe file operations",
+        "Wrap risk points in `try/except` blocks",
+        "Add meaningful error messages for debugging",
+        "Return fallback behavior when recovery is possible",
+      ],
+    };
+  }
+
+  return {
+    explanation:
+      "This lesson introduces a practical Python concept used in everyday coding tasks. Focus on understanding the core idea first, then applying it in small examples before moving to larger exercises.",
+    practicalUse: [
+      "Core interview and challenge problem solving",
+      "Automation scripts and backend feature logic",
+      "Data handling and application flow control",
+    ],
+    implementationFlow: [
+      "Read the concept and expected behavior",
+      "Run the example and inspect output carefully",
+      "Modify one line and observe the difference",
+      "Implement the same pattern in exercises",
+    ],
+  };
+}
+
+function getLessonQuickExamples(title: string): QuickExample[] {
+  const lower = title.toLowerCase();
+
+  if (lower.includes("variable") || lower.includes("data type")) {
+    return [
+      { label: "Store and print values", code: `name = "Asha"\nage = 21\nprint(name, age)` },
+      { label: "Type conversion", code: `price = "199"\nprint(int(price) + 1)` },
+      { label: "Boolean check", code: `is_paid = True\nprint("Access" if is_paid else "Blocked")` },
+    ];
+  }
+
+  if (lower.includes("string")) {
+    return [
+      { label: "Cleanup + normalize", code: `text = "  PyMaster  "\nprint(text.strip().lower())` },
+      { label: "Split and join", code: `line = "python,is,fun"\nprint(" | ".join(line.split(",")))` },
+      { label: "Find and replace", code: `msg = "I like Java"\nprint(msg.replace("Java", "Python"))` },
+    ];
+  }
+
+  if (lower.includes("loop")) {
+    return [
+      { label: "for loop with range", code: `for i in range(1, 4):\n    print(i)` },
+      { label: "while loop", code: `count = 3\nwhile count > 0:\n    print(count)\n    count -= 1` },
+      { label: "break usage", code: `for n in [2, 5, 7, 9]:\n    if n == 7:\n        break\n    print(n)` },
+    ];
+  }
+
+  if (lower.includes("function")) {
+    return [
+      { label: "Simple function", code: `def greet(name):\n    return f"Hello, {name}"\nprint(greet("PyMaster"))` },
+      { label: "Function with math", code: `def square(n):\n    return n * n\nprint(square(6))` },
+      { label: "Default argument", code: `def welcome(name="Learner"):\n    print("Welcome", name)\nwelcome()` },
+    ];
+  }
+
+  if (lower.includes("class") || lower.includes("oop") || lower.includes("object")) {
+    return [
+      { label: "Create class + object", code: `class User:\n    def __init__(self, name):\n        self.name = name\nu = User("Asha")\nprint(u.name)` },
+      { label: "Method call", code: `class Counter:\n    def __init__(self):\n        self.value = 0\n    def inc(self):\n        self.value += 1\nc = Counter(); c.inc(); print(c.value)` },
+      { label: "Inheritance basics", code: `class A:\n    def hello(self):\n        print("Hi")\nclass B(A):\n    pass\nB().hello()` },
+    ];
+  }
+
+  if (lower.includes("if") || lower.includes("elif") || lower.includes("else") || lower.includes("control flow")) {
+    return [
+      { label: "if/else", code: `score = 72\nif score >= 40:\n    print("Pass")\nelse:\n    print("Fail")` },
+      { label: "if/elif/else", code: `marks = 85\nif marks >= 90:\n    print("A")\nelif marks >= 75:\n    print("B")\nelse:\n    print("C")` },
+      { label: "Ternary", code: `age = 20\nstatus = "Adult" if age >= 18 else "Minor"\nprint(status)` },
+    ];
+  }
+
+  if (lower.includes("list") || lower.includes("dictionary") || lower.includes("set") || lower.includes("tuple")) {
+    return [
+      { label: "List basics", code: `nums = [1, 2, 3]\nnums.append(4)\nprint(nums)` },
+      { label: "Dictionary lookup", code: `user = {"name": "Asha", "xp": 120}\nprint(user["xp"])` },
+      { label: "Set uniqueness", code: `tags = {"python", "python", "api"}\nprint(tags)` },
+    ];
+  }
+
+  if (lower.includes("api") || lower.includes("json") || lower.includes("web")) {
+    return [
+      { label: "JSON encode", code: `import json\ndata = {"name": "PyMaster", "ok": True}\nprint(json.dumps(data))` },
+      { label: "JSON decode", code: `import json\ntext = '{"city":"Chennai","pin":600001}'\nprint(json.loads(text)["city"])` },
+      { label: "Safe key access", code: `payload = {"status": 200}\nprint(payload.get("message", "No message"))` },
+    ];
+  }
+
+  return [
+    { label: "Run first sample", code: `print("Start with this lesson example")` },
+    { label: "Modify one value", code: `x = 10\nprint(x)\nx = 20\nprint(x)` },
+    { label: "Check output", code: `result = 5 * 2\nprint("Result:", result)` },
+  ];
+}
+
+function getLessonUsagePlaybook(title: string): LessonUsagePlaybook {
+  const lower = title.toLowerCase();
+
+  if (lower.includes("string")) {
+    return {
+      whenToUse: ["Cleaning user input", "Formatting UI text", "Searching/replacing keywords in messages"],
+      howToApply: ["Normalize with `strip()` and `lower()`", "Transform with methods like `replace()`", "Print final output with clear formatting"],
+      starterPattern: `text = "  Hello Python  "\nclean = text.strip().lower()\nprint(clean)\nprint(clean.replace("python", "world"))`,
+    };
+  }
+
+  if (lower.includes("control flow") || lower.includes("if") || lower.includes("boolean")) {
+    return {
+      whenToUse: ["Decision making", "Validation checks", "Pass/fail or role-based logic"],
+      howToApply: ["Write one clear condition", "Use `elif` for extra branches", "Add `else` as default fallback"],
+      starterPattern: `score = 82\nif score >= 90:\n    print("A")\nelif score >= 75:\n    print("B")\nelse:\n    print("C")`,
+    };
+  }
+
+  if (lower.includes("loop")) {
+    return {
+      whenToUse: ["Processing list data", "Running repeated checks", "Building reports/summaries"],
+      howToApply: ["Pick `for` for sequences", "Use `while` for condition loops", "Use `break/continue` only when needed"],
+      starterPattern: `total = 0\nfor n in [10, 20, 30]:\n    total += n\nprint(total)`,
+    };
+  }
+
+  if (lower.includes("function")) {
+    return {
+      whenToUse: ["Reusing logic", "Reducing duplicate code", "Making code testable"],
+      howToApply: ["Define a clear function name", "Pass parameters instead of globals", "Return the result for reuse"],
+      starterPattern: `def calculate_total(price, tax):\n    return price + tax\n\nprint(calculate_total(100, 18))`,
+    };
+  }
+
+  if (lower.includes("list") || lower.includes("tuple") || lower.includes("set") || lower.includes("dict")) {
+    return {
+      whenToUse: ["Storing multiple values", "Fast lookups", "Unique-item filtering"],
+      howToApply: ["Choose right type (`list/dict/set/tuple`)", "Use built-in methods first", "Loop and print to verify structure"],
+      starterPattern: `users = ["Asha", "Raj", "Asha"]\nunique_users = set(users)\nprint(unique_users)\nprofile = {"name": "Asha", "xp": 120}\nprint(profile["xp"])`,
+    };
+  }
+
+  if (lower.includes("file") || lower.includes("error") || lower.includes("exception")) {
+    return {
+      whenToUse: ["Reading/writing files", "Handling runtime failures", "Building robust scripts"],
+      howToApply: ["Use `with open(...)` for safe resources", "Wrap risk code with `try/except`", "Print useful error context"],
+      starterPattern: `try:\n    with open("notes.txt", "r") as f:\n        print(f.read())\nexcept FileNotFoundError:\n    print("File not found")`,
+    };
+  }
+
+  return {
+    whenToUse: ["Coding challenges", "Feature implementation", "Interview problem solving"],
+    howToApply: ["Read concept once", "Run mini example", "Modify one value and observe output"],
+    starterPattern: `x = 10\nprint("Before:", x)\nx = x + 5\nprint("After:", x)`,
+  };
+}
+
 export default function LearnPage() {
   const canonical = "https://pymaster.pro/learn";
+  const learnStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "Course",
+    name: "Learn Python Step by Step",
+    description: "Structured Python learning path with clear explanations, code examples, exercises, and progression from beginner to expert.",
+    provider: {
+      "@type": "Organization",
+      name: "PyMaster",
+      url: "https://pymaster.pro",
+    },
+    educationalLevel: "Beginner to Advanced",
+    inLanguage: "en",
+    url: canonical,
+  };
+  const faqStructuredData = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: [
+      {
+        "@type": "Question",
+        name: "Can beginners learn Python on PyMaster?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Lessons start from fundamentals and provide clear explanations, examples, and exercises for beginners.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "Does PyMaster include coding practice?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "Yes. Each lesson includes exercises and you can run Python code in the built-in compiler.",
+        },
+      },
+      {
+        "@type": "Question",
+        name: "What Python topics are covered?",
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: "The platform covers Python basics, data structures, functions, OOP, files, exceptions, APIs, and advanced topics.",
+        },
+      },
+    ],
+  };
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const { progress, completeLesson, unlockLesson } = useProgress();
   const { user } = useAuth();
@@ -223,6 +973,11 @@ export default function LearnPage() {
   const categories = categoryOrder.filter((category) => lessons.some((lesson) => lesson.category === category));
 
   const selectedLesson = lessons.find(l => l.id === selectedId);
+  const exampleEditorHeight = useMemo(() => {
+    if (!selectedLesson) return 220;
+    const lineCount = selectedLesson.codeExample.split("\n").length;
+    return Math.min(460, Math.max(200, lineCount * 22 + 24));
+  }, [selectedLesson]);
 
   // A lesson is unlocked if:
   // - It's the first one
@@ -298,6 +1053,22 @@ export default function LearnPage() {
     () => (selectedLesson ? getLessonClarityGuide(selectedLesson.title) : null),
     [selectedLesson],
   );
+  const selectedLessonDataTypeGuide = useMemo(
+    () => (selectedLesson ? getDataTypeUsageGuide(selectedLesson.id) : []),
+    [selectedLesson],
+  );
+  const selectedLessonNarrative = useMemo(
+    () => (selectedLesson ? getLessonNarrative(selectedLesson.title) : null),
+    [selectedLesson],
+  );
+  const selectedLessonQuickExamples = useMemo(
+    () => (selectedLesson ? getLessonQuickExamples(selectedLesson.title) : []),
+    [selectedLesson],
+  );
+  const selectedLessonUsagePlaybook = useMemo(
+    () => (selectedLesson ? getLessonUsagePlaybook(selectedLesson.title) : null),
+    [selectedLesson],
+  );
 
   useEffect(() => {
     if (!selectedLesson) return;
@@ -316,21 +1087,27 @@ export default function LearnPage() {
         name="description"
         content="Study Python step by step with beginner, intermediate, and advanced lessons, code examples, and hands-on exercises."
       />
+      <meta name="keywords" content="learn python, python course, python for beginners, python exercises, python practice, python tutorials online" />
+      <meta name="robots" content="index, follow, max-image-preview:large" />
       <link rel="canonical" href={canonical} />
       <meta property="og:type" content="website" />
       <meta property="og:url" content={canonical} />
       <meta property="og:title" content="Learn Python | PyMaster" />
       <meta property="og:description" content="Step-by-step Python lessons with clear explanations, code examples, and exercises." />
       <meta property="og:image" content="https://pymaster.pro/og-image.png" />
+      <meta property="og:image:alt" content="Learn Python step by step with PyMaster lessons" />
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content="Learn Python | PyMaster" />
       <meta name="twitter:description" content="Step-by-step Python lessons with clear explanations, code examples, and exercises." />
       <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
+      <script type="application/ld+json">{JSON.stringify(learnStructuredData)}</script>
+      <script type="application/ld+json">{JSON.stringify(faqStructuredData)}</script>
     </Helmet>
     <AdViewModal
       isOpen={!!showAdForLesson}
       onClose={() => setShowAdForLesson(null)}
       onComplete={handleAdComplete}
+      sponsorLink={SPONSOR_DESTINATIONS.lessonUnlock}
       completionTitle="Lesson unlocked"
       completionDescription="Thanks for viewing the sponsor message."
     />
@@ -460,6 +1237,17 @@ export default function LearnPage() {
                     </ul>
                   </div>
                   <div>
+                    <div className="font-semibold text-foreground mb-1">Where to use this in real work</div>
+                    <ul className="space-y-1.5">
+                      {selectedLessonClarityGuide.whereToUse.map((useCase) => (
+                        <li key={useCase} className="flex items-start gap-2">
+                          <span className="mt-1 h-2 w-2 rounded-full bg-primary shrink-0" />
+                          <span>{useCase}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
                     <div className="font-semibold text-foreground mb-1">Common mistakes to avoid</div>
                     <ul className="space-y-1.5">
                       {selectedLessonClarityGuide.commonMistakes.map((mistake) => (
@@ -480,7 +1268,7 @@ export default function LearnPage() {
                 <div className="text-sm font-semibold text-foreground mb-3">In This Lesson</div>
                 <div className="flex flex-wrap gap-2">
                   {selectedLessonHeadings.map((heading) => (
-                    <span key={heading} className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
+                    <span key={heading} className="rounded-full border border-border bg-background px-3 py-1 text-sm text-muted-foreground">
                       {heading}
                     </span>
                   ))}
@@ -493,7 +1281,7 @@ export default function LearnPage() {
                 <div className="text-sm font-semibold text-foreground mb-3">Key Terms In This Lesson</div>
                 <div className="flex flex-wrap gap-2">
                   {selectedLessonGlossary.map((term) => (
-                    <span key={term} className="rounded-full border border-border bg-background px-3 py-1 text-xs text-muted-foreground">
+                    <span key={term} className="rounded-full border border-border bg-background px-3 py-1 text-sm text-muted-foreground">
                       {term}
                     </span>
                   ))}
@@ -501,30 +1289,240 @@ export default function LearnPage() {
               </div>
             )}
 
+            {selectedLessonDataTypeGuide.length > 0 && (
+              <div className="mb-6 rounded-2xl border border-primary/25 bg-primary/5 p-4 sm:p-5">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground mb-3">How To Use Each Data Type</h2>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {selectedLessonDataTypeGuide.map((item) => (
+                    <div key={item.name} className="rounded-xl border border-border bg-background/80 p-3">
+                      <div className="text-sm font-semibold text-foreground mb-1">{item.name}</div>
+                      <p className="text-sm text-muted-foreground mb-1">
+                        <span className="font-medium text-foreground">Stores:</span> {item.whatItStores}
+                      </p>
+                      <p className="text-sm text-muted-foreground mb-1">
+                        <span className="font-medium text-foreground">Use when:</span> {item.whenToUse}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        <span className="font-medium text-foreground">Example:</span> <code>{item.example}</code>
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedLessonNarrative && (
+              <div className="mb-6 rounded-2xl border border-border bg-card/70 p-4 sm:p-5">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground mb-3">Full Lesson Explanation</h2>
+                <p className="text-[15px] sm:text-base text-muted-foreground leading-relaxed mb-3">
+                  {selectedLessonNarrative.explanation}
+                </p>
+                <div className="mb-3">
+                  <div className="font-semibold text-foreground mb-1">Where you will use this</div>
+                  <ul className="space-y-1.5">
+                    {selectedLessonNarrative.practicalUse.map((item) => (
+                      <li key={item} className="text-[15px] sm:text-base text-muted-foreground leading-relaxed flex gap-2">
+                        <span className="text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <div className="font-semibold text-foreground mb-1">How to apply it in code</div>
+                  <ul className="space-y-1.5">
+                    {selectedLessonNarrative.implementationFlow.map((step) => (
+                      <li key={step} className="text-[15px] sm:text-base text-muted-foreground leading-relaxed flex gap-2">
+                        <span className="text-primary">•</span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {selectedLessonQuickExamples.length > 0 && (
+              <div className="mb-6 rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-5">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground mb-3">Quick Runnable Examples</h2>
+                <div className="grid gap-3">
+                  {selectedLessonQuickExamples.map((example, index) => (
+                    <div key={`${example.label}-${index}`} className="rounded-xl border border-border bg-background/80 p-3">
+                      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+                        <div className="text-sm font-semibold text-foreground">{example.label}</div>
+                        <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
+                          <Link to={`/compiler?code=${encodeURIComponent(example.code)}`}>
+                            <Terminal className="w-3 h-3" /> Try in Compiler
+                          </Link>
+                        </Button>
+                      </div>
+                      <pre className="rounded-lg border border-border bg-surface-1/60 p-2 text-xs sm:text-sm font-mono text-foreground whitespace-pre-wrap overflow-x-auto">
+                        {example.code}
+                      </pre>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {selectedLessonUsagePlaybook && (
+              <div className="mb-6 rounded-2xl border border-primary/25 bg-primary/5 p-4 sm:p-5">
+                <h2 className="text-base sm:text-lg font-semibold text-foreground mb-3">How To Use This In Real Code</h2>
+                <div className="mb-3">
+                  <div className="font-semibold text-foreground mb-1">When to use</div>
+                  <ul className="space-y-1.5">
+                    {selectedLessonUsagePlaybook.whenToUse.map((item) => (
+                      <li key={item} className="text-[15px] sm:text-base text-muted-foreground leading-relaxed flex gap-2">
+                        <span className="text-primary">•</span>
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="mb-3">
+                  <div className="font-semibold text-foreground mb-1">How to apply</div>
+                  <ul className="space-y-1.5">
+                    {selectedLessonUsagePlaybook.howToApply.map((step) => (
+                      <li key={step} className="text-[15px] sm:text-base text-muted-foreground leading-relaxed flex gap-2">
+                        <span className="text-primary">•</span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-xl border border-border bg-background/80 p-3">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <div className="text-sm font-semibold text-foreground">Starter pattern</div>
+                    <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
+                      <Link to={`/compiler?code=${encodeURIComponent(selectedLessonUsagePlaybook.starterPattern)}`}>
+                        <Terminal className="w-3 h-3" /> Try in Compiler
+                      </Link>
+                    </Button>
+                  </div>
+                  <pre className="rounded-lg border border-border bg-surface-1/60 p-2 text-xs sm:text-sm font-mono text-foreground whitespace-pre-wrap overflow-x-auto">
+                    {selectedLessonUsagePlaybook.starterPattern}
+                  </pre>
+                </div>
+              </div>
+            )}
+
             {/* Content */}
             <div className="mb-8">
               {selectedLesson.content.split("\n").map((line, i) => {
-                if (line.startsWith("### ")) return <h3 key={i} className="text-lg font-semibold text-foreground mt-6 mb-2">{line.replace("### ", "")}</h3>;
-                if (line.startsWith("## ")) return <h2 key={i} className="text-xl font-bold text-foreground mt-8 mb-3">{line.replace("## ", "")}</h2>;
-                if (line.startsWith("- ")) return <li key={i} className="text-muted-foreground ml-4 list-disc">{line.replace("- ", "")}</li>;
+                if (line.startsWith("### ")) return <h3 key={i} className="text-xl font-semibold text-foreground mt-6 mb-2">{line.replace("### ", "")}</h3>;
+                if (line.startsWith("## ")) return <h2 key={i} className="text-2xl font-bold text-foreground mt-8 mb-3">{line.replace("## ", "")}</h2>;
+                if (line.startsWith("- ")) {
+                  const guides = getKeywordGuidesForLine(line);
+                  return (
+                    <div key={i} className="space-y-1.5">
+                      <p className="text-[15px] sm:text-base text-muted-foreground leading-relaxed flex gap-2">
+                        <span className="text-primary">•</span>
+                        <span>{line.replace("- ", "")}</span>
+                      </p>
+                      {guides.map(({ token, guide }) => (
+                        <div key={`${i}-${token}`} className="ml-5 rounded-lg border border-border bg-surface-1/60 px-3 py-2">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            <span className="font-semibold text-foreground">{token}</span> - <span className="font-medium text-foreground">How:</span> {guide.howToUse}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            <span className="font-medium text-foreground">Where:</span> {guide.whereToUse}
+                          </p>
+                          {guide.example && (
+                            <div className="mt-2 rounded-md border border-border bg-background/80 p-2">
+                              <div className="mb-1 flex items-center justify-between gap-2">
+                                <p className="text-[11px] sm:text-xs font-medium text-foreground">Try this code</p>
+                                <Button asChild size="sm" variant="outline" className="h-6 text-[10px] sm:text-xs px-2 gap-1">
+                                  <Link to={`/compiler?code=${encodeURIComponent(guide.example)}`}>
+                                    <Terminal className="w-3 h-3" /> Run
+                                  </Link>
+                                </Button>
+                              </div>
+                              <pre className="overflow-x-auto whitespace-pre-wrap text-[11px] sm:text-xs text-foreground font-mono">
+                                {guide.example}
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }
                 if (line.trim() === "") return <br key={i} />;
-                return <p key={i} className="text-muted-foreground leading-relaxed">{line}</p>;
+                const inlineGuides = getKeywordGuidesForLine(line);
+                if (inlineGuides.length > 0) {
+                  return (
+                    <div key={i} className="space-y-1.5">
+                      <p className="text-[15px] sm:text-base text-muted-foreground leading-relaxed">{line}</p>
+                      {inlineGuides.map(({ token, guide }) => (
+                        <div key={`${i}-${token}`} className="ml-1 rounded-lg border border-border bg-surface-1/60 px-3 py-2">
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            <span className="font-semibold text-foreground">{token}</span> - <span className="font-medium text-foreground">How:</span> {guide.howToUse}
+                          </p>
+                          <p className="text-xs sm:text-sm text-muted-foreground">
+                            <span className="font-medium text-foreground">Where:</span> {guide.whereToUse}
+                          </p>
+                          {guide.example && (
+                            <div className="mt-2 rounded-md border border-border bg-background/80 p-2">
+                              <div className="mb-1 flex items-center justify-between gap-2">
+                                <p className="text-[11px] sm:text-xs font-medium text-foreground">Try this code</p>
+                                <Button asChild size="sm" variant="outline" className="h-6 text-[10px] sm:text-xs px-2 gap-1">
+                                  <Link to={`/compiler?code=${encodeURIComponent(guide.example)}`}>
+                                    <Terminal className="w-3 h-3" /> Run
+                                  </Link>
+                                </Button>
+                              </div>
+                              <pre className="overflow-x-auto whitespace-pre-wrap text-[11px] sm:text-xs text-foreground font-mono">
+                                {guide.example}
+                              </pre>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                }
+                return <p key={i} className="text-[15px] sm:text-base text-muted-foreground leading-relaxed">{line}</p>;
               })}
             </div>
 
             {/* Code Example */}
             <div className="code-block mb-8">
-              <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-                <span className="text-xs text-muted-foreground font-mono">example.py</span>
+              <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-1">
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-rose-500/80" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/80" />
+                  </div>
+                  <span className="text-xs text-muted-foreground font-mono">example.py</span>
+                </div>
                 <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
                   <Link to={`/compiler?code=${encodeURIComponent(selectedLesson.codeExample)}`}>
                     <Terminal className="w-3 h-3" /> Try in Compiler
                   </Link>
                 </Button>
               </div>
-              <pre className="p-4 text-sm font-mono text-foreground overflow-x-auto leading-relaxed">
-                {selectedLesson.codeExample}
-              </pre>
+              <Editor
+                height={exampleEditorHeight}
+                language="python"
+                theme="vs-dark"
+                value={selectedLesson.codeExample}
+                options={{
+                  readOnly: true,
+                  domReadOnly: true,
+                  minimap: { enabled: false },
+                  lineNumbers: "on",
+                  fontSize: 14,
+                  fontFamily: "'JetBrains Mono', monospace",
+                  scrollBeyondLastLine: false,
+                  wordWrap: "on",
+                  automaticLayout: true,
+                  contextmenu: false,
+                  renderLineHighlight: "none",
+                  cursorStyle: "line-thin",
+                  padding: { top: 14, bottom: 12 },
+                }}
+              />
             </div>
 
             {/* Exercises */}
@@ -538,7 +1536,7 @@ export default function LearnPage() {
               <div className="space-y-3">
                 {(["beginner", "intermediate", "advanced"] as const).map(level => (
                   <ExerciseEditor
-                    key={level}
+                    key={`${selectedLesson.id}:${level}`}
                     exercise={selectedLesson.exercises[level]}
                     level={level}
                     lessonId={selectedLesson.id}

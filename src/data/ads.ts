@@ -72,6 +72,13 @@ export const AD_LINKS: AdConfig[] = [
   },
 ];
 
+// Paste sponsor destination links here
+export const SPONSOR_DESTINATIONS = {
+  lessonUnlock: "",
+  problemSolutionUnlock: "",
+  exerciseUnlock: "",
+};
+
 // --- Ad Rotation ---
 let adIndex = 0;
 

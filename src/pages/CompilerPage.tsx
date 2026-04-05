@@ -22,6 +22,7 @@ import {
   subscribePythonRuntimeStatus,
   type PythonRuntimeStatus,
 } from "@/lib/piston";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // ---------- Pre-built code templates ----------
 // Users can select these from the dropdown to quickly try different concepts
@@ -46,6 +47,7 @@ export default function CompilerPage() {
   const [runtimeStatus, setRuntimeStatus] = useState<PythonRuntimeStatus>(getPythonRuntimeStatus());
   const [runtimeError, setRuntimeError] = useState(getPythonRuntimeError());
   const { logActivity } = useProgress();              // Record activity for streak
+  const isMobile = useIsMobile();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   // Update code when URL search param changes (e.g., navigating from a lesson)
@@ -97,7 +99,7 @@ export default function CompilerPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)]">
+    <div className="flex min-h-[calc(100dvh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)]">
       {/* ---------- Toolbar ---------- */}
       <div className="h-auto min-h-[3rem] bg-surface-1 border-b border-border flex flex-wrap items-center justify-between px-3 sm:px-4 py-2 gap-2 shrink-0">
         <div className="flex items-center gap-2">
@@ -118,10 +120,10 @@ export default function CompilerPage() {
             {runtimeStatus === "ready" ? "Ready" : runtimeStatus === "error" ? "Runtime Error" : "Loading Runtime"}
           </span>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap w-full sm:w-auto">
           {/* Template selector dropdown */}
           <select
-            className="bg-secondary text-foreground text-xs px-2 py-1.5 rounded-md border border-border"
+            className="bg-secondary text-foreground text-xs h-8 px-2 py-1.5 rounded-md border border-border w-full sm:w-auto"
             onChange={(e) => setCode(templates[e.target.value])}
             defaultValue=""
           >
@@ -131,16 +133,16 @@ export default function CompilerPage() {
             ))}
           </select>
           {/* Clear button — resets code and output */}
-          <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => { setCode(""); setOutput(""); setExecutionTime(null); }}>
-            <RotateCcw className="w-3 h-3" /> <span className="hidden sm:inline">Clear</span>
+          <Button size="sm" variant="outline" className="h-8 text-xs gap-1 flex-1 sm:flex-none" onClick={() => { setCode(""); setOutput(""); setExecutionTime(null); }}>
+            <RotateCcw className="w-3 h-3" /> Clear
           </Button>
           {/* Run button — executes the Python code */}
           {isRunning ? (
-            <Button size="sm" variant="destructive" className="h-7 text-xs gap-1" onClick={cancelActivePythonExecution}>
+            <Button size="sm" variant="destructive" className="h-8 text-xs gap-1 flex-1 sm:flex-none" onClick={cancelActivePythonExecution}>
               <Square className="w-3 h-3" /> Stop
             </Button>
           ) : (
-            <Button size="sm" className="h-7 text-xs gap-1" onClick={runCode}>
+            <Button size="sm" className="h-8 text-xs gap-1 flex-1 sm:flex-none" onClick={runCode}>
               <Play className="w-3 h-3" />
               ▶ Run
             </Button>
@@ -149,9 +151,9 @@ export default function CompilerPage() {
       </div>
 
       {/* ---------- Editor + Output split view ---------- */}
-      <div className="flex-1 flex flex-col md:flex-row">
+      <div className="flex-1 min-h-0 flex flex-col md:flex-row overflow-y-auto">
         {/* Monaco code editor (left/top panel) */}
-        <div className="flex-1 min-h-0">
+        <div className="flex-1 min-h-[52vh] md:min-h-0">
           <Editor
             height="100%"
             language="python"
@@ -159,20 +161,20 @@ export default function CompilerPage() {
             value={code}
             onChange={(v) => setCode(v || "")}
             options={{
-              fontSize: 14,
+              fontSize: isMobile ? 13 : 14,
               fontFamily: "'JetBrains Mono', monospace",
               minimap: { enabled: false },
               padding: { top: 16 },
               scrollBeyondLastLine: false,
               wordWrap: "on",
-              lineNumbers: "on",
+              lineNumbers: isMobile ? "off" : "on",
               renderLineHighlight: "gutter",
               automaticLayout: true,
             }}
           />
         </div>
         {/* Output panel (right/bottom panel) */}
-        <div className="md:w-96 h-56 md:h-auto border-t md:border-t-0 md:border-l border-border bg-surface-0 flex flex-col">
+        <div className="md:w-96 h-[40vh] min-h-[14rem] md:h-auto border-t md:border-t-0 md:border-l border-border bg-surface-0 flex flex-col">
           {/* Output header with execution time */}
           <div className="px-4 py-2 border-b border-border bg-surface-1 text-xs text-muted-foreground font-mono flex items-center justify-between">
             <span className="flex items-center gap-2">
@@ -183,7 +185,7 @@ export default function CompilerPage() {
             )}
           </div>
           {/* Output text area */}
-          <pre className={`flex-1 p-4 text-sm font-mono overflow-auto whitespace-pre-wrap ${
+          <pre className={`flex-1 p-4 text-[13px] sm:text-sm font-mono overflow-auto whitespace-pre-wrap ${
             output.includes("❌") || output.includes("⚠️") ? "text-destructive" : "text-foreground"
           }`}>
             {isRunning ? (

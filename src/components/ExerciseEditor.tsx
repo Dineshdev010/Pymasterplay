@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Editor from "@monaco-editor/react";
 import confetti from "canvas-confetti";
 import { Exercise } from "@/data/lessons";
@@ -6,6 +6,7 @@ import { useProgress } from "@/contexts/ProgressContext";
 import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { Button } from "@/components/ui/button";
 import { AdViewModal } from "@/components/AdViewModal";
+import { SPONSOR_DESTINATIONS } from "@/data/ads";
 import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Tv, Square } from "lucide-react";
 
 interface ExerciseEditorProps {
@@ -50,11 +51,25 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
   const [isRunning, setIsRunning] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const [showAdModal, setShowAdModal] = useState(false);
+  const [unlockedByAd, setUnlockedByAd] = useState(false);
   const { progress, completeExercise } = useProgress();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   const exerciseKey = `${lessonId}:${level}`;
   const alreadyCompleted = progress.completedExercises.includes(exerciseKey);
+
+  useEffect(() => {
+    setIsOpen(false);
+    setCode(exercise.starterCode);
+    setOutput("");
+    setPassed(false);
+    setIsRunning(false);
+    setShowHint(false);
+    setShowSolution(false);
+    setUnlockedByAd(false);
+    setShowAdModal(false);
+  }, [exerciseKey, exercise.starterCode]);
 
   const levelColors = {
     beginner: "bg-streak-green/10 border-streak-green/30 text-streak-green",
@@ -107,9 +122,6 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
     setIsRunning(false);
   };
 
-  const [showAdModal, setShowAdModal] = useState(false);
-  const [unlockedByAd, setUnlockedByAd] = useState(false);
-
   if (locked && !unlockedByAd) {
     return (
       <>
@@ -134,6 +146,7 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
           isOpen={showAdModal}
           onClose={() => setShowAdModal(false)}
           onComplete={() => setUnlockedByAd(true)}
+          sponsorLink={SPONSOR_DESTINATIONS.exerciseUnlock}
           completionTitle="Exercise unlocked"
           completionDescription="Thanks for viewing the sponsor message."
         />

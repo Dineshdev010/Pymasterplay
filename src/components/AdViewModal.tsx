@@ -10,18 +10,21 @@ export function AdViewModal({
   isOpen,
   onClose,
   onComplete,
+  sponsorLink,
   completionTitle = "Thanks for supporting PyMaster",
   completionDescription = "Your request has been unlocked.",
 }: {
   isOpen: boolean;
   onClose: () => void;
   onComplete?: () => void;
+  sponsorLink?: string;
   completionTitle?: string;
   completionDescription?: string;
 }) {
   const [timeLeft, setTimeLeft] = useState(AD_DURATION);
   const [completed, setCompleted] = useState(false);
   const [ad] = useState<AdConfig>(() => getNextAd());
+  const linkToOpen = sponsorLink?.trim() || ad.link;
 
   // NOTE: Google AdSense integration pending
   // When ready, replace the ad content div below with a GoogleAd component
@@ -30,10 +33,10 @@ export function AdViewModal({
 
   // Open ad link in new tab when modal opens (only if link exists)
   useEffect(() => {
-    if (isOpen && ad.link) {
-      window.open(ad.link, "_blank", "noopener,noreferrer");
+    if (isOpen && linkToOpen) {
+      window.open(linkToOpen, "_blank", "noopener,noreferrer");
     }
-  }, [isOpen, ad.link]);
+  }, [isOpen, linkToOpen]);
 
   useEffect(() => {
     if (!isOpen) {

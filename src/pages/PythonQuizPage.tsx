@@ -18,11 +18,52 @@ type QuizProgressSnapshot = {
   updatedAt: string;
 };
 
+type PersistedQuizState = QuizProgressSnapshot & {
+  version: 2;
+  mode: "all" | "tricky";
+  current: number;
+  submitted: boolean;
+  answers: Record<number, string>;
+};
+
+function readPersistedQuizState(): PersistedQuizState | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const parsed = JSON.parse(localStorage.getItem(QUIZ_PROGRESS_STORAGE_KEY) || "{}") as Partial<PersistedQuizState>;
+    if (!parsed || typeof parsed !== "object") return null;
+    const rawAnswers = parsed.answers && typeof parsed.answers === "object" ? parsed.answers : {};
+    const answers = Object.entries(rawAnswers).reduce<Record<number, string>>((acc, [k, v]) => {
+      const id = Number(k);
+      if (!Number.isFinite(id) || typeof v !== "string") return acc;
+      acc[id] = v;
+      return acc;
+    }, {});
+
+    return {
+      version: 2,
+      mode: parsed.mode === "tricky" ? "tricky" : "all",
+      current: typeof parsed.current === "number" ? parsed.current : 0,
+      submitted: Boolean(parsed.submitted),
+      answers,
+      allTotal: typeof parsed.allTotal === "number" ? parsed.allTotal : pythonQuizQuestions.length,
+      allAnswered: typeof parsed.allAnswered === "number" ? parsed.allAnswered : 0,
+      allScore: typeof parsed.allScore === "number" ? parsed.allScore : 0,
+      trickyTotal: typeof parsed.trickyTotal === "number" ? parsed.trickyTotal : 0,
+      trickyAnswered: typeof parsed.trickyAnswered === "number" ? parsed.trickyAnswered : 0,
+      trickyScore: typeof parsed.trickyScore === "number" ? parsed.trickyScore : 0,
+      updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
+    };
+  } catch {
+    return null;
+  }
+}
+
 export default function PythonQuizPage() {
-  const [current, setCurrent] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [submitted, setSubmitted] = useState(false);
-  const [mode, setMode] = useState<"all" | "tricky">("all");
+  const persistedState = readPersistedQuizState();
+  const [current, setCurrent] = useState(persistedState?.current ?? 0);
+  const [answers, setAnswers] = useState<Record<number, string>>(persistedState?.answers ?? {});
+  const [submitted, setSubmitted] = useState(persistedState?.submitted ?? false);
+  const [mode, setMode] = useState<"all" | "tricky">(persistedState?.mode ?? "all");
   const trickyPool = useMemo(() => pythonQuizQuestions.filter((q) => q.topic.startsWith("Tricky:")), []);
 
   const activeQuestions = useMemo(
@@ -37,6 +78,24 @@ export default function PythonQuizPage() {
   const question = activeQuestions[Math.min(current, Math.max(total - 1, 0))];
   const quizTitle = `${total} Python Quiz Questions | PyMaster`;
   const quizDescription = `Practice ${total} Python quiz questions with answers and explanations. Improve Python fundamentals through quick MCQ practice.`;
+  const quizStructuredData = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "Quiz",
+      name: quizTitle,
+      description: quizDescription,
+      educationalLevel: "Beginner to Advanced",
+      inLanguage: "en",
+      about: "Python programming",
+      url: canonical,
+      publisher: {
+        "@type": "Organization",
+        name: "PyMaster",
+        url: "https://pymaster.pro",
+      },
+    }),
+    [quizDescription, quizTitle],
+  );
   const answeredCount = useMemo(
     () => activeQuestions.filter((q) => answers[q.id] !== undefined).length,
     [activeQuestions, answers],
@@ -64,9 +123,8 @@ export default function PythonQuizPage() {
   );
 
   useEffect(() => {
-    setCurrent(0);
-    setSubmitted(false);
-  }, [mode]);
+    setCurrent((prev) => Math.min(Math.max(prev, 0), Math.max(total - 1, 0)));
+  }, [mode, total]);
 
   useEffect(() => {
     const allAnswered = pythonQuizQuestions.filter((q) => answers[q.id] !== undefined).length;
@@ -74,7 +132,12 @@ export default function PythonQuizPage() {
     const trickyAnswered = trickyPool.filter((q) => answers[q.id] !== undefined).length;
     const trickyScore = trickyPool.reduce((acc, q) => (answers[q.id] === q.answer ? acc + 1 : acc), 0);
 
-    const snapshot: QuizProgressSnapshot = {
+    const snapshot: PersistedQuizState = {
+      version: 2,
+      mode,
+      current,
+      submitted,
+      answers,
       allTotal: pythonQuizQuestions.length,
       allAnswered,
       allScore,
@@ -86,7 +149,7 @@ export default function PythonQuizPage() {
 
     localStorage.setItem(QUIZ_PROGRESS_STORAGE_KEY, JSON.stringify(snapshot));
     window.dispatchEvent(new CustomEvent("pymaster-quiz-progress-updated", { detail: snapshot }));
-  }, [answers, trickyPool]);
+  }, [answers, current, mode, submitted, trickyPool]);
 
   if (!question) return null;
 
@@ -95,12 +158,20 @@ export default function PythonQuizPage() {
       <Helmet>
         <title>{quizTitle}</title>
         <meta name="description" content={quizDescription} />
+        <meta name="keywords" content="python quiz, python mcq, python interview questions, learn python online, python practice questions, python fundamentals quiz" />
+        <meta name="robots" content="index, follow, max-image-preview:large" />
         <link rel="canonical" href={canonical} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonical} />
         <meta property="og:title" content={quizTitle} />
         <meta property="og:description" content={quizDescription} />
         <meta property="og:image" content="https://pymaster.pro/og-image.png" />
+        <meta property="og:image:alt" content="PyMaster Python quiz and practice questions" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={quizTitle} />
+        <meta name="twitter:description" content={quizDescription} />
+        <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
+        <script type="application/ld+json">{JSON.stringify(quizStructuredData)}</script>
       </Helmet>
 
       <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-72 bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.18),transparent_65%)]" />
@@ -196,7 +267,7 @@ export default function PythonQuizPage() {
 
               return (
                 <button
-                  key={option}
+                  key={`${question.id}-${idx}-${option}`}
                   type="button"
                   onClick={() => setAnswers((prev) => ({ ...prev, [question.id]: option }))}
                   className={`group w-full rounded-2xl border px-4 py-3 text-left text-sm transition-all sm:text-base ${
