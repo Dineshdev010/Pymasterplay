@@ -37,7 +37,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     location.pathname.startsWith("/learn") ||
     location.pathname.startsWith("/dsa") ||
     location.pathname.startsWith("/compiler") ||
-    location.pathname.startsWith("/problems/");
+    location.pathname.startsWith("/problems/") ||
+    location.pathname === "/";
   const { toast } = useToast();
 
   useEffect(() => {

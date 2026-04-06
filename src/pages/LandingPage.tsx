@@ -109,10 +109,14 @@ export default function LandingPage() {
         </Suspense>
       )}
       {!hideFloatingBadges && (
-        <div className="fixed left-3 top-[6.1rem] z-[998] hidden sm:block sm:left-4">
-          <Suspense fallback={null}>
-            <LiveActivityFeed />
-          </Suspense>
+        <div className="fixed left-2 top-[calc(env(safe-area-inset-top)+4.2rem)] z-[998] flex max-w-[calc(100vw-1rem)] flex-col gap-2 sm:left-4 sm:top-[4.15rem]">
+          {deferFx && (
+            <div className="hidden sm:block">
+              <Suspense fallback={null}>
+                <LiveActivityFeed />
+              </Suspense>
+            </div>
+          )}
         </div>
       )}
       {/* Main hero with headline, CTA buttons, and quick stats */}

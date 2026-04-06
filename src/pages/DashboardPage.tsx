@@ -16,7 +16,7 @@ import { StreakFire } from "@/components/StreakFire";
 import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp } from "lucide-react";
+import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp, Brain } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { getPublicUrl } from "@/lib/public-url";
@@ -183,8 +183,21 @@ export default function DashboardPage() {
   const [dashboardTheme, setDashboardTheme] = useState(() => localStorage.getItem("pymaster_dashboard_theme") || "pymaster");
   const [compareUsers, setCompareUsers] = useState<LeaderboardCompareRow[]>([]);
   const [exportingShareCard, setExportingShareCard] = useState(false);
-  const [profileBio, setProfileBio] = useState(() => localStorage.getItem("pymaster_bio") || "");
-  const [skillsInput, setSkillsInput] = useState(() => {
+  // Saved values: shown on the share card (only what the user has actually saved)
+  const [savedProfileBio, setSavedProfileBio] = useState(() => localStorage.getItem("pymaster_bio") || "");
+  const [savedSkills, setSavedSkills] = useState<string[]>(() => {
+    try {
+      const cachedSkills = JSON.parse(localStorage.getItem("pymaster_skills") || "[]");
+      return Array.isArray(cachedSkills) ? cachedSkills.filter((x): x is string => typeof x === "string") : [];
+    } catch {
+      return [];
+    }
+  });
+  const [savedSocialLinks, setSavedSocialLinks] = useState<SocialLinks>(() => readSocialLinks());
+
+  // Draft values: editable form state (can differ from saved until user clicks Save)
+  const [draftProfileBio, setDraftProfileBio] = useState(() => localStorage.getItem("pymaster_bio") || "");
+  const [draftSkillsInput, setDraftSkillsInput] = useState(() => {
     try {
       const cachedSkills = JSON.parse(localStorage.getItem("pymaster_skills") || "[]");
       return Array.isArray(cachedSkills) ? cachedSkills.join(", ") : "";
@@ -192,7 +205,7 @@ export default function DashboardPage() {
       return "";
     }
   });
-  const [socialLinks, setSocialLinks] = useState<SocialLinks>(() => readSocialLinks());
+  const [draftSocialLinks, setDraftSocialLinks] = useState<SocialLinks>(() => readSocialLinks());
   const [savingProfileDetails, setSavingProfileDetails] = useState(false);
   const [giftTick, setGiftTick] = useState(0);
   const [quizProgress, setQuizProgress] = useState<QuizProgressSnapshot>(() => readQuizProgressSnapshot());
@@ -208,8 +221,12 @@ export default function DashboardPage() {
     if (profile.avatarUrl) {
       setProfilePic(profile.avatarUrl);
     }
-    setProfileBio(profile.bio || "");
-    setSkillsInput((profile.skills || []).join(", "));
+    const nextBio = profile.bio || "";
+    const nextSkills = (profile.skills || []).filter((x): x is string => typeof x === "string");
+    setSavedProfileBio(nextBio);
+    setSavedSkills(nextSkills);
+    setDraftProfileBio(nextBio);
+    setDraftSkillsInput(nextSkills.join(", "));
   }, [profile]);
 
   useEffect(() => {
@@ -392,15 +409,21 @@ export default function DashboardPage() {
   const countdownRemainder = liveTimeSpent % TIME_GIFT_INTERVAL_SECONDS;
   const secondsUntilGift = countdownRemainder === 0 ? TIME_GIFT_INTERVAL_SECONDS : TIME_GIFT_INTERVAL_SECONDS - countdownRemainder;
   const nextGiftAtHours = Math.floor(liveTimeSpent / TIME_GIFT_INTERVAL_SECONDS) + 1;
-  const parsedSkills = skillsInput
+  const savedSkillsView = savedSkills
+    .map((skill) => skill.trim())
+    .filter(Boolean)
+    .slice(0, 8);
+
+  const draftSkillsParsed = draftSkillsInput
     .split(",")
     .map((skill) => skill.trim())
     .filter(Boolean)
     .slice(0, 8);
+
   const visibleSocialLinks = [
-    socialLinks.github ? { label: "GitHub", href: socialLinks.github, icon: Github } : null,
-    socialLinks.linkedin ? { label: "LinkedIn", href: socialLinks.linkedin, icon: Linkedin } : null,
-    socialLinks.portfolio ? { label: "Portfolio", href: socialLinks.portfolio, icon: Globe } : null,
+    savedSocialLinks.github ? { label: "GitHub", href: savedSocialLinks.github, icon: Github } : null,
+    savedSocialLinks.linkedin ? { label: "LinkedIn", href: savedSocialLinks.linkedin, icon: Linkedin } : null,
+    savedSocialLinks.portfolio ? { label: "Portfolio", href: savedSocialLinks.portfolio, icon: Globe } : null,
   ].filter(Boolean) as { label: string; href: string; icon: typeof Github }[];
   const recentActivity = [
     progress.solvedProblems.length > 0 ? `Solved ${progress.solvedProblems.length} total coding problems` : null,
@@ -423,7 +446,7 @@ export default function DashboardPage() {
   const shareText =
     `${profileName} is learning on PyMaster.\n` +
     `XP: ${progress.xp.toLocaleString()} | Problems Solved: ${progress.solvedProblems.length} | Lessons: ${progress.completedLessons.length} | Streak: ${progress.streak} days | Stars: ${progress.starsCaught}` +
-    (profileBio ? `\nAbout: ${profileBio}` : "");
+    (savedProfileBio ? `\nAbout: ${savedProfileBio}` : "");
 
   const handleShareDashboard = async () => {
     try {
@@ -520,7 +543,7 @@ export default function DashboardPage() {
   const handleSaveProfileDetails = async () => {
     setSavingProfileDetails(true);
     try {
-      const parsedSkills = skillsInput
+      const parsedSkills = draftSkillsInput
         .split(",")
         .map((skill) => skill.trim())
         .filter(Boolean)
@@ -528,14 +551,17 @@ export default function DashboardPage() {
 
       await saveProfile({
         displayName: profileName,
-        bio: profileBio,
+        bio: draftProfileBio,
         avatarUrl: profilePic,
         skills: parsedSkills,
         profileComplete: true,
       });
 
-      localStorage.setItem("pymaster_social_links", JSON.stringify(socialLinks));
-      setSkillsInput(parsedSkills.join(", "));
+      localStorage.setItem("pymaster_social_links", JSON.stringify(draftSocialLinks));
+      setSavedProfileBio(draftProfileBio);
+      setSavedSkills(parsedSkills);
+      setSavedSocialLinks(draftSocialLinks);
+      setDraftSkillsInput(parsedSkills.join(", "));
 
       toast({
         title: "Profile updated",
@@ -570,6 +596,92 @@ export default function DashboardPage() {
 
   return (
     <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 rounded-none md:rounded-[2rem] ${selectedTheme.shell}`}>
+      {/* Stats grid (kept at the top for quick visibility / screenshots) */}
+      <SectionErrorBoundary section="Stats">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6 md:mb-8">
+          {stats.map((s) => (
+            <div key={s.label} className="bg-card border border-border rounded-lg p-4 hover:border-primary/30 transition-colors">
+              <div className="flex items-center gap-1.5 mb-2">
+                <span className="text-lg">{s.emoji}</span>
+              </div>
+              <div className="text-xl font-bold text-foreground">{s.value}</div>
+              <div className="text-xs text-muted-foreground">{s.label}</div>
+              {s.total && typeof s.value === "number" ? (
+                <div className="mt-2 h-1.5 bg-surface-2 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all"
+                    style={{ width: `${Math.min((s.value / s.total) * 100, 100)}%` }}
+                  />
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </SectionErrorBoundary>
+
+      {/* Profile header */}
+      <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 mb-6 md:mb-8">
+        <div className="relative group">
+          <Avatar className="w-20 h-20 border-2 border-primary/40 ring-4 ring-primary/10 shadow-xl shadow-primary/10">
+            {profilePic ? <AvatarImage src={profilePic} alt="Profile" /> : null}
+            <AvatarFallback className="text-2xl bg-gradient-to-br from-primary/20 via-python-yellow/10 to-primary/10 text-primary">
+              {selectedEmoji || trophy.emoji}
+            </AvatarFallback>
+          </Avatar>
+          {selectedEmoji && (
+            <span className="absolute -bottom-1 -right-1 text-lg bg-card border border-border rounded-full w-8 h-8 flex items-center justify-center shadow-md">
+              {selectedEmoji}
+            </span>
+          )}
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute inset-0 rounded-full bg-background/65 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+          >
+            <Camera className="w-5 h-5 text-foreground" />
+          </button>
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={handlePicUpload} className="hidden" />
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col items-center sm:items-start w-full">
+          <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+            {editingName ? (
+              <div className="flex items-center gap-2">
+                <input
+                  value={nameInput}
+                  onChange={(e) => setNameInput(e.target.value)}
+                  className="bg-surface-1 border border-border rounded-md px-2 py-1 text-lg font-bold text-foreground w-full max-w-[14rem]"
+                  autoFocus
+                  onKeyDown={(e) => e.key === "Enter" && saveName()}
+                />
+                <Button size="sm" variant="ghost" onClick={saveName}>
+                  <Check className="w-4 h-4 text-streak-green" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2 flex-wrap">
+                <h1 className="text-2xl font-bold text-foreground">
+                  {profileName}
+                  {selectedEmoji && <span className="ml-1">{selectedEmoji}</span>}
+                </h1>
+                <button onClick={() => {setEditingName(true);setNameInput(profileName);}}>
+                  <Pencil className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+                </button>
+              </div>
+            )}
+          </div>
+          <div className="flex items-center justify-center sm:justify-start gap-2 mt-2 flex-wrap">
+            <StreakFire streak={progress.streak} size="sm" showQuote />
+            <span className="text-sm text-muted-foreground">{title}</span>
+            <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+              <Zap className="w-3.5 h-3.5" />
+              Level {Math.floor(progress.xp / 500) + 1}
+            </span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-python-yellow/10 text-python-yellow border border-python-yellow/20">
+              {trophy.emoji} {trophy.title}
+            </span>
+          </div>
+        </div>
+      </div>
+
       <div className={`mb-6 md:mb-8 rounded-2xl md:rounded-3xl border p-4 sm:p-6 shadow-sm ${selectedTheme.hero}`}>
         <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
           <div ref={shareCardRef} className="rounded-2xl border border-white/50 bg-background/90 p-5 backdrop-blur">
@@ -618,12 +730,12 @@ export default function DashboardPage() {
                 </span>
               )}
             </div>
-            {profileBio && (
-              <p className="mt-4 text-sm leading-6 text-muted-foreground">{profileBio}</p>
+            {savedProfileBio && (
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">{savedProfileBio}</p>
             )}
-            {parsedSkills.length > 0 && (
+            {savedSkillsView.length > 0 && (
               <div className="mt-4 flex flex-wrap gap-2">
-                {parsedSkills.map((skill) => (
+                {savedSkillsView.map((skill) => (
                   <span key={skill} className="rounded-full border border-border bg-card/80 px-3 py-1 text-xs font-medium text-foreground">
                     {skill}
                   </span>
@@ -693,7 +805,29 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Profile header */}
+      {/* Activity (moved below Public Profile) */}
+      <SectionErrorBoundary section="Coding Activity">
+        <div className="bg-card border border-border rounded-lg p-6 mb-8">
+          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                📊 Coding Activity
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Your consistency map for the last year, with stronger days glowing brighter.
+              </p>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              {Object.keys(progress.activityMap).length} active days tracked
+            </div>
+          </div>
+          <ActivityGraph activityMap={progress.activityMap} />
+        </div>
+      </SectionErrorBoundary>
+
+      {/*
+        <>
+      Profile header (duplicate - removed)
       <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 mb-6 md:mb-8">
         <div className="relative group">
           <Avatar className="w-20 h-20 border-2 border-primary/40 ring-4 ring-primary/10 shadow-xl shadow-primary/10">
@@ -722,7 +856,7 @@ export default function DashboardPage() {
                 <input
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
-                className="bg-surface-1 border border-border rounded-md px-2 py-1 text-lg font-bold text-foreground w-48"
+                className="bg-surface-1 border border-border rounded-md px-2 py-1 text-lg font-bold text-foreground w-full max-w-[14rem]"
                 autoFocus
                 onKeyDown={(e) => e.key === "Enter" && saveName()} />
               
@@ -751,6 +885,55 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
+        </>
+      */}
+
+      {/* Quick actions */}
+      <SectionErrorBoundary section="Quick Actions">
+        <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-python-yellow" />
+                Quick Actions
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                Jump back into learning in one click. Great for all ages—pick one small next step and continue.
+              </p>
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Tip: 15 minutes daily beats 2 hours once a week.
+            </div>
+          </div>
+
+          <div className="mt-5 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+            {[
+              { to: "/learn", title: "Learn", desc: "Continue lessons", icon: BookOpen, accent: "text-streak-green" },
+              { to: "/problems", title: "Problems", desc: "Practice daily", icon: Code, accent: "text-primary" },
+              { to: "/dsa", title: "DSA", desc: "Patterns + levels", icon: Brain, accent: "text-python-yellow" },
+              { to: "/compiler", title: "Compiler", desc: "Try quick code", icon: Target, accent: "text-blue-400" },
+              { to: "/blog", title: "Blog", desc: "Read guides", icon: Globe, accent: "text-expert-purple" },
+              { to: "/projects", title: "Projects", desc: "See how it’s built", icon: Award, accent: "text-python-yellow" },
+            ].map((item) => (
+              <button
+                key={item.to}
+                type="button"
+                onClick={() => navigate(item.to)}
+                className="rounded-xl border border-border bg-surface-1 p-4 text-left hover:border-primary/30 hover:bg-primary/5 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className={`rounded-lg border border-border bg-background p-2 ${item.accent}`}>
+                    <item.icon className="w-4 h-4" />
+                  </div>
+                  <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="mt-3 text-sm font-semibold text-foreground">{item.title}</div>
+                <div className="mt-1 text-[11px] leading-5 text-muted-foreground">{item.desc}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </SectionErrorBoundary>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] mb-8">
         <SectionErrorBoundary section="Profile Editor">
@@ -775,24 +958,24 @@ export default function DashboardPage() {
               <div>
                 <label className="text-sm font-medium text-foreground">Bio</label>
                 <textarea
-                  value={profileBio}
-                  onChange={(event) => setProfileBio(event.target.value.slice(0, 180))}
+                  value={draftProfileBio}
+                  onChange={(event) => setDraftProfileBio(event.target.value.slice(0, 180))}
                   className="mt-2 min-h-[96px] w-full rounded-xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
                   placeholder="Tell people what you are learning, building, or aiming for."
                 />
-                <div className="mt-1 text-right text-xs text-muted-foreground">{profileBio.length}/180</div>
+                <div className="mt-1 text-right text-xs text-muted-foreground">{draftProfileBio.length}/180</div>
               </div>
 
               <div>
                 <label className="text-sm font-medium text-foreground">Skills</label>
                 <input
-                  value={skillsInput}
-                  onChange={(event) => setSkillsInput(event.target.value)}
+                  value={draftSkillsInput}
+                  onChange={(event) => setDraftSkillsInput(event.target.value)}
                   className="mt-2 w-full rounded-xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
                   placeholder="Python, Flask, Pandas, APIs"
                 />
                 <div className="mt-2 flex flex-wrap gap-2">
-                  {parsedSkills.length > 0 ? parsedSkills.map((skill) => (
+                  {draftSkillsParsed.length > 0 ? draftSkillsParsed.map((skill) => (
                     <span key={skill} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                       {skill}
                     </span>
@@ -808,8 +991,8 @@ export default function DashboardPage() {
                   <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
                     <Github className="w-4 h-4 text-muted-foreground" />
                     <input
-                      value={socialLinks.github}
-                      onChange={(event) => setSocialLinks((current) => ({ ...current, github: event.target.value }))}
+                      value={draftSocialLinks.github}
+                      onChange={(event) => setDraftSocialLinks((current) => ({ ...current, github: event.target.value }))}
                       className="w-full bg-transparent text-sm text-foreground outline-none"
                       placeholder="https://github.com/username"
                     />
@@ -820,8 +1003,8 @@ export default function DashboardPage() {
                   <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
                     <Linkedin className="w-4 h-4 text-muted-foreground" />
                     <input
-                      value={socialLinks.linkedin}
-                      onChange={(event) => setSocialLinks((current) => ({ ...current, linkedin: event.target.value }))}
+                      value={draftSocialLinks.linkedin}
+                      onChange={(event) => setDraftSocialLinks((current) => ({ ...current, linkedin: event.target.value }))}
                       className="w-full bg-transparent text-sm text-foreground outline-none"
                       placeholder="https://linkedin.com/in/username"
                     />
@@ -832,8 +1015,8 @@ export default function DashboardPage() {
                   <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
                     <Globe className="w-4 h-4 text-muted-foreground" />
                     <input
-                      value={socialLinks.portfolio}
-                      onChange={(event) => setSocialLinks((current) => ({ ...current, portfolio: event.target.value }))}
+                      value={draftSocialLinks.portfolio}
+                      onChange={(event) => setDraftSocialLinks((current) => ({ ...current, portfolio: event.target.value }))}
                       className="w-full bg-transparent text-sm text-foreground outline-none"
                       placeholder="https://your-site.com"
                     />
@@ -895,27 +1078,6 @@ export default function DashboardPage() {
           </Button>
         </div>
       }
-
-      {/* Stats grid */}
-      <SectionErrorBoundary section="Stats">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
-          {stats.map((s) =>
-          <div key={s.label} className="bg-card border border-border rounded-lg p-4 hover:border-primary/30 transition-colors">
-              <div className="flex items-center gap-1.5 mb-2">
-                <span className="text-lg">{s.emoji}</span>
-                
-              </div>
-              <div className="text-xl font-bold text-foreground">{s.value}</div>
-              <div className="text-xs text-muted-foreground">{s.label}</div>
-              {s.total && typeof s.value === "number" &&
-            <div className="mt-2 h-1.5 bg-surface-2 rounded-full overflow-hidden">
-                  <div className="h-full bg-primary rounded-full transition-all" style={{ width: `${Math.min(s.value / s.total * 100, 100)}%` }} />
-                </div>
-            }
-            </div>
-          )}
-        </div>
-      </SectionErrorBoundary>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] mb-8">
         <SectionErrorBoundary section="Rank Card">
@@ -1199,7 +1361,7 @@ export default function DashboardPage() {
           <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
             🧗 How to Climb
           </h2>
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3">
             {howToClimb.map((item) =>
             <button
               key={item.title}
@@ -1225,7 +1387,7 @@ export default function DashboardPage() {
           <p className="text-sm text-muted-foreground mb-4">
             Buy emojis to customize your profile! Balance: <span className="text-reward-gold font-bold">${progress.wallet}</span>
           </p>
-          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 mb-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2 mb-3">
             {EMOJI_SHOP.filter((i) => !i.legendary).map((item) => {
               const owned = purchasedEmojis.includes(item.emoji);
               const equipped = selectedEmoji === item.emoji;
@@ -1262,7 +1424,7 @@ export default function DashboardPage() {
               <button
                 key={item.emoji}
                 onClick={() => buyEmoji(item.emoji, item.price)}
-                className={`w-full rounded-xl p-5 border-2 transition-all duration-300 relative overflow-hidden text-left ${
+                className={`w-full rounded-xl p-4 sm:p-5 border-2 transition-all duration-300 relative overflow-hidden text-left ${
                 equipped ?
                 "border-python-yellow bg-python-yellow/15 ring-4 ring-python-yellow/40 shadow-lg shadow-python-yellow/20" :
                 owned ?
@@ -1271,7 +1433,7 @@ export default function DashboardPage() {
                 }>
                 
                 <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-5">
-                  <div className="text-6xl drop-shadow-lg">{item.emoji}</div>
+                  <div className="text-5xl sm:text-6xl drop-shadow-lg">{item.emoji}</div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
                       <span className="text-lg font-extrabold text-python-yellow">{item.name}</span>
@@ -1305,26 +1467,6 @@ export default function DashboardPage() {
             </p>
           </div>
           <TrophyHall starsCaught={progress.starsCaught} />
-        </div>
-      </SectionErrorBoundary>
-
-      {/* Activity Graph */}
-      <SectionErrorBoundary section="Coding Activity">
-        <div className="bg-card border border-border rounded-lg p-6 mb-8">
-          <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                📊 Coding Activity
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Your consistency map for the last year, with stronger days glowing brighter.
-              </p>
-            </div>
-            <div className="text-xs text-muted-foreground">
-              {Object.keys(progress.activityMap).length} active days tracked
-            </div>
-          </div>
-          <ActivityGraph activityMap={progress.activityMap} />
         </div>
       </SectionErrorBoundary>
 

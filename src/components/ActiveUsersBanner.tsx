@@ -10,7 +10,9 @@ function getActiveUsersForWindow(windowKey: number) {
   return Math.round(MIN_ACTIVE_USERS + normalized * (MAX_ACTIVE_USERS - MIN_ACTIVE_USERS));
 }
 
-export function ActiveUsersBanner() {
+type ActiveUsersBannerMode = "fixed" | "inline";
+
+export function ActiveUsersBanner({ mode = "fixed" }: { mode?: ActiveUsersBannerMode }) {
   const initialWindow = useMemo(() => Math.floor(Date.now() / ROTATION_WINDOW_MS), []);
   const [windowKey, setWindowKey] = useState(initialWindow);
 
@@ -22,14 +24,20 @@ export function ActiveUsersBanner() {
 
   const activeUsers = getActiveUsersForWindow(windowKey);
 
+  const pill = (
+    <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-background/85 px-2 py-1 text-[10px] shadow-lg backdrop-blur-md sm:px-2.5 sm:text-[11px]">
+      <Activity className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
+      <span className="font-semibold text-foreground">{activeUsers.toLocaleString()}</span>
+      <Dot className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
+      <span className="text-muted-foreground">active</span>
+    </div>
+  );
+
+  if (mode === "inline") return pill;
+
   return (
-    <div className="fixed left-2 top-[calc(env(safe-area-inset-top)+4.2rem)] z-[998] sm:left-4 sm:top-[4.15rem]">
-      <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-background/85 px-2 py-1 text-[10px] shadow-lg backdrop-blur-md sm:px-2.5 sm:text-[11px]">
-        <Activity className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
-        <span className="font-semibold text-foreground">{activeUsers.toLocaleString()}</span>
-        <Dot className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
-        <span className="text-muted-foreground">active</span>
-      </div>
+    <div className="fixed left-2 top-[calc(env(safe-area-inset-top)+4.2rem)] z-[998] sm:left-4 sm:top-[4.15rem] max-w-[calc(100vw-1rem)]">
+      {pill}
     </div>
   );
 }

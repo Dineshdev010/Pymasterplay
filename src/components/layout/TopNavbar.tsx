@@ -22,6 +22,8 @@ import {
 
 import { navItems } from "./navItems";
 
+const MENU_HINT_KEY = "pymaster_menu_hint_dismissed";
+
 function getUserLevelLabel(xp: number) {
   if (xp >= 3000) return "Advanced";
   if (xp >= 1000) return "Intermediate";
@@ -83,9 +85,30 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const { toast } = useToast();
   const levelNumber = Math.floor(progress.xp / 500) + 1;
   const levelLabel = getUserLevelLabel(progress.xp);
-  const primaryNavRoutes = ["/", "/learn", "/dsa", "/compiler", "/quick-prep", "/python-game"];
+  const primaryNavRoutes = ["/", "/learn", "/problems", "/dsa", "/dashboard"];
   const primaryNavItems = navItems.filter((item) => primaryNavRoutes.includes(item.to));
   const secondaryNavItems = navItems.filter((item) => !primaryNavRoutes.includes(item.to));
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showMenuHint, setShowMenuHint] = useState(false);
+
+  const menuGroups: Array<{ label: string; routes: string[] }> = [
+    { label: "Content", routes: ["/blog", "/projects"] },
+    { label: "Practice", routes: ["/compiler", "/quick-prep", "/python-game", "/python-quiz-100", "/aptitude"] },
+    { label: "Career", routes: ["/jobs", "/leaderboard", "/certificate"] },
+    { label: "Support", routes: ["/donate", "/about", "/contact"] },
+  ];
+
+  const groupedMenuItems = menuGroups
+    .map((group) => ({
+      label: group.label,
+      items: group.routes
+        .map((route) => secondaryNavItems.find((item) => item.to === route))
+        .filter(Boolean),
+    }))
+    .filter((group) => group.items.length > 0);
+
+  const groupedRouteSet = new Set(menuGroups.flatMap((g) => g.routes));
+  const ungroupedMenuItems = secondaryNavItems.filter((item) => !groupedRouteSet.has(item.to));
 
   const handleSignOut = async () => {
     try {
@@ -99,6 +122,25 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
   const [showAd, setShowAd] = useState(false);
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      const dismissed = localStorage.getItem(MENU_HINT_KEY) === "1";
+      if (!dismissed) setShowMenuHint(true);
+    } catch {
+      // ignore (privacy modes can block storage)
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    try {
+      localStorage.setItem(MENU_HINT_KEY, "1");
+    } catch {
+      // ignore
+    }
+    setShowMenuHint(false);
+  }, [menuOpen]);
 
   useEffect(() => {
     document.body.dataset.navProfileOpen = profileMenuOpen ? "true" : "false";
@@ -181,22 +223,44 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           ))}
           </div>
           {secondaryNavItems.length > 0 && (
-            <DropdownMenu>
+            <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <button
-                  className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-xs ${
+                  className={`relative flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-3 xl:text-xs border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                     secondaryNavItems.some((item) => location.pathname === item.to)
-                      ? "bg-secondary text-foreground font-medium"
-                      : "text-muted-foreground hover:text-foreground hover:bg-secondary/50"
+                      ? "bg-secondary text-foreground font-semibold border-primary/30 shadow-sm"
+                      : "bg-secondary/40 border-border/60 text-foreground/90 hover:bg-secondary hover:border-primary/30 hover:shadow-sm"
                   }`}
                   aria-label="Open more navigation links"
                 >
+                  {showMenuHint && !menuOpen ? (
+                    <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary text-primary-foreground px-3 py-1 text-[10px] font-semibold shadow-md border border-primary/30">
+                      More pages here
+                      <span className="absolute left-1/2 top-full -translate-x-1/2 h-2 w-2 rotate-45 bg-primary border-r border-b border-primary/30" />
+                    </span>
+                  ) : null}
                   Menu
                   <ChevronDown className="h-3.5 w-3.5" />
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="mt-2 w-52">
-                {secondaryNavItems.map((item) => (
+                {groupedMenuItems.map((group, groupIndex) => (
+                  <div key={group.label}>
+                    <DropdownMenuLabel className={groupIndex === 0 ? "px-2 py-1.5 text-xs" : "px-2 py-1.5 text-xs mt-1"}>
+                      {group.label}
+                    </DropdownMenuLabel>
+                    {group.items.map((item) => (
+                      <DropdownMenuItem key={item.to} asChild>
+                        <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
+                          <span className="text-sm">{item.emoji}</span>
+                          <span>{item.label}</span>
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuSeparator />
+                  </div>
+                ))}
+                {ungroupedMenuItems.map((item) => (
                   <DropdownMenuItem key={item.to} asChild>
                     <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
                       <span className="text-sm">{item.emoji}</span>
@@ -308,5 +372,3 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
     </>
   );
 }
-
-

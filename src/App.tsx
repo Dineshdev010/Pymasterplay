@@ -50,6 +50,9 @@ const PythonLearningBeginnersPage = lazy(() => import("./pages/PythonLearningBeg
 const PythonQuizPage = lazy(() => import("./pages/PythonQuizPage"));
 const PublicProfilePage = lazy(() => import("./pages/PublicProfilePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const BlogIndexPage = lazy(() => import("./pages/BlogIndexPage"));
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
+const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -69,6 +72,9 @@ type AppRoute = {
 
 const appRoutes: AppRoute[] = [
   { path: "/", element: <LandingPage />, fallback: <PageSkeleton /> },
+  { path: "/blog", element: <BlogIndexPage />, fallback: <PageSkeleton /> },
+  { path: "/blog/:slug", element: <BlogPostPage />, fallback: <PageSkeleton /> },
+  { path: "/projects", element: <ProjectsPage />, fallback: <PageSkeleton /> },
   { path: "/about", element: <AboutPage />, fallback: <PageSkeleton /> },
   { path: "/learn", element: <LearnPage />, fallback: <EditorSkeleton /> },
   { path: "/career/:trackId", element: <CareerLearnPage />, fallback: <EditorSkeleton /> },

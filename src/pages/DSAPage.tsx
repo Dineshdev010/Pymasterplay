@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // DSA PAGE — src/pages/DSAPage.tsx
 // Data Structures & Algorithms mastery page with visual
 // explanations, code examples, complexity analysis, and
@@ -601,10 +601,16 @@ def subsets_bitmask(nums):
 ];
 
 const categories = [
-  { id: "fundamentals", title: "📦 Fundamentals", desc: "Core data structures every developer must know" },
-  { id: "patterns", title: "🧩 Algorithm Patterns", desc: "Recognize these patterns to solve any problem" },
-  { id: "advanced", title: "🚀 Advanced Topics", desc: "Master-level concepts for interviews & beyond" },
+  { id: "fundamentals", title: "Beginner", desc: "Start here: build intuition with core structures and simple patterns" },
+  { id: "patterns", title: "Intermediate", desc: "Learn repeatable solving patterns that work across many problems" },
+  { id: "advanced", title: "Advanced", desc: "Prepare for harder interviews: DP, graphs, and complex reasoning" },
 ];
+
+function getLevelLabel(category: DSATopic["category"]) {
+  if (category === "fundamentals") return "Beginner";
+  if (category === "patterns") return "Intermediate";
+  return "Advanced";
+}
 
 const fadeUp = {
   hidden: { opacity: 0, y: 20 },
@@ -770,6 +776,14 @@ export default function DSAPage() {
           <p className="text-xs text-muted-foreground mt-1">
             {dsaTopics.length} topics • Pattern-based learning
           </p>
+          <div className="mt-3 rounded-xl border border-border bg-card/60 p-3">
+            <div className="text-[11px] font-semibold text-foreground">Choose your level</div>
+            <div className="mt-2 space-y-2 text-[11px] leading-5 text-muted-foreground">
+              <div><span className="font-semibold text-foreground">Beginner:</span> learn the “what” and “why” with easy examples.</div>
+              <div><span className="font-semibold text-foreground">Intermediate:</span> spot repeatable patterns across problems.</div>
+              <div><span className="font-semibold text-foreground">Advanced:</span> handle DP/graphs and explain tradeoffs clearly.</div>
+            </div>
+          </div>
         </div>
         <nav className="p-2">
           {categories.map(cat => {
@@ -822,7 +836,7 @@ export default function DSAPage() {
                   <span className={`text-xs px-2 py-0.5 rounded-full border ${difficultyColor[topic.difficulty]}`}>
                     {topic.difficulty}
                   </span>
-                  <span className="text-xs text-muted-foreground">{topic.category}</span>
+                  <span className="text-xs text-muted-foreground">{getLevelLabel(topic.category)}</span>
                 </div>
               </div>
             </div>
@@ -1180,6 +1194,47 @@ export default function DSAPage() {
 
             {/* Desktop placeholder */}
             <p className="text-muted-foreground hidden md:block">Choose a topic from the sidebar to start learning</p>
+            <div className="hidden md:block mt-6 w-full max-w-2xl text-left">
+              <div className="grid gap-4 md:grid-cols-3">
+                <section className="rounded-xl border border-border bg-card/70 p-4">
+                  <h3 className="text-sm font-semibold text-foreground">Beginner</h3>
+                  <p className="mt-2 text-xs text-muted-foreground leading-6">
+                    Best for school students, college beginners, and anyone new to coding interviews.
+                  </p>
+                  <ul className="mt-3 space-y-1 text-xs text-muted-foreground leading-6 list-disc pl-4">
+                    <li>Understand arrays, strings, stacks, queues, and hash maps</li>
+                    <li>Explain problems in simple words before writing code</li>
+                    <li>Learn Big-O like “how time grows”</li>
+                  </ul>
+                </section>
+                <section className="rounded-xl border border-border bg-card/70 p-4">
+                  <h3 className="text-sm font-semibold text-foreground">Intermediate</h3>
+                  <p className="mt-2 text-xs text-muted-foreground leading-6">
+                    Ideal when you can code, but you want a repeatable method to solve new problems.
+                  </p>
+                  <ul className="mt-3 space-y-1 text-xs text-muted-foreground leading-6 list-disc pl-4">
+                    <li>Master patterns: two pointers, sliding window, binary search</li>
+                    <li>Pick the right structure quickly (set vs dict vs heap)</li>
+                    <li>Write cleaner, testable solutions</li>
+                  </ul>
+                </section>
+                <section className="rounded-xl border border-border bg-card/70 p-4">
+                  <h3 className="text-sm font-semibold text-foreground">Advanced</h3>
+                  <p className="mt-2 text-xs text-muted-foreground leading-6">
+                    For tougher interviews and deeper reasoning: dynamic programming and graphs.
+                  </p>
+                  <ul className="mt-3 space-y-1 text-xs text-muted-foreground leading-6 list-disc pl-4">
+                    <li>Break DP into states, transitions, and base cases</li>
+                    <li>Use BFS/DFS correctly and explain why it works</li>
+                    <li>Discuss tradeoffs confidently (time vs memory)</li>
+                  </ul>
+                </section>
+              </div>
+              <p className="mt-4 text-xs text-muted-foreground leading-6">
+                Expectation: you don’t need to be “good at math” to learn DSA. You just need patience, practice, and a step-by-step plan. Start
+                with one beginner topic, write the code, then practice 2–3 problems from <Link to="/problems" className="text-primary hover:underline">Problems</Link>.
+              </p>
+            </div>
 
             {/* Mobile topic list */}
             <div className="md:hidden w-full max-w-lg space-y-5 text-left">
