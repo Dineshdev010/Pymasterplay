@@ -26,7 +26,7 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: "autoUpdate",
         injectRegister: "auto",
-        includeAssets: ["logo.png"],
+        includeAssets: ["logo.png", "icon-192.png", "icon-512.png"],
         manifestFilename: "manifest.json",
         manifest: {
           id: "/",
@@ -41,13 +41,13 @@ export default defineConfig(({ mode }) => {
           theme_color: "#0a0c10",
           icons: [
             {
-              src: "/logo.png",
+              src: "/icon-192.png",
               sizes: "192x192",
               type: "image/png",
-              purpose: "any maskable",
+              purpose: "any",
             },
             {
-              src: "/logo.png",
+              src: "/icon-512.png",
               sizes: "512x512",
               type: "image/png",
               purpose: "any maskable",

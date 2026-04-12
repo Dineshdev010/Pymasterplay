@@ -14,8 +14,8 @@ import { getRewardForDifficulty } from "@/lib/progress";
 import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
+import { toast } from "@/components/ui/use-toast";
 import { Play, Send, Eye, EyeOff, ArrowLeft, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Square, Building2, BookOpenCheck } from "lucide-react";
-import { AdViewModal } from "@/components/AdViewModal";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CompanyBadge } from "@/components/CompanyBadge";
 import { SPONSOR_DESTINATIONS } from "@/data/ads";
@@ -52,13 +52,12 @@ else:
 export default function ProblemPage() {
   const { id } = useParams<{ id: string }>();
   const problem = problems.find(p => p.id === id);
-  const { progress, solveProblem } = useProgress();
+  const { progress, solveProblem, addWallet } = useProgress();
   const isMobile = useIsMobile();
   const [code, setCode] = useState(problem?.starterCode || "");
   const [output, setOutput] = useState("");
   const [showSolution, setShowSolution] = useState(false);
-  const [showAd, setShowAd] = useState(false);
-  const [adWatchedForSolution, setAdWatchedForSolution] = useState(false);
+  const [solutionUnlocked, setSolutionUnlocked] = useState(false);
   const [testResults, setTestResults] = useState<{ passed: boolean; input: string; expected: string }[] | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [showDescription, setShowDescription] = useState(!isMobile);
@@ -70,7 +69,7 @@ export default function ProblemPage() {
       setCode(problem.starterCode || "");
       setOutput("");
       setShowSolution(false);
-      setAdWatchedForSolution(false);
+      setSolutionUnlocked(false);
       setTestResults(null);
       setSubmitted(false);
       setIsRunning(false);
@@ -323,15 +322,31 @@ export default function ProblemPage() {
               onClick={() => {
                 if (showSolution) {
                   setShowSolution(false);
-                } else if (!adWatchedForSolution) {
-                  setShowAd(true);
+                } else if (!solutionUnlocked) {
+                  if (progress.wallet >= 70) {
+                    addWallet(-70);
+                    setSolutionUnlocked(true);
+                    setShowSolution(true);
+                    if (problem.solution) setCode(problem.solution);
+                    toast({
+                      title: "Solution Unlocked!",
+                      description: "Deducted $70 from your wallet.",
+                    });
+                  } else {
+                    toast({
+                      title: "Not enough wallet cash!",
+                      description: "You need $70 to unlock the solution. Keep solving problems to earn more!",
+                      variant: "destructive",
+                    });
+                  }
                 } else {
                   setShowSolution(true);
+                  if (problem.solution) setCode(problem.solution);
                 }
               }}
             >
               {showSolution ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              {showSolution ? "Hide Solution" : "👀 Reveal Solution (Sponsor Message)"}
+              {showSolution ? "Hide Solution" : "👀 Reveal Solution ($70)"}
             </Button>
             {showSolution && (
               <div className="mt-4">
@@ -436,19 +451,6 @@ export default function ProblemPage() {
           </div>
         </div>
       </div>
-
-      {/* Ad Modal for Solution Reveal */}
-      <AdViewModal 
-        isOpen={showAd} 
-        onClose={() => setShowAd(false)} 
-        onComplete={() => {
-          setAdWatchedForSolution(true);
-          setShowSolution(true);
-        }}
-        sponsorLink={SPONSOR_DESTINATIONS.problemSolutionUnlock}
-        completionTitle="Solution unlocked"
-        completionDescription="Thanks for viewing the sponsor message."
-      />
     </div>
   );
 }

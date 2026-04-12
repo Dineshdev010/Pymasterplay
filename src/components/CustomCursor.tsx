@@ -150,8 +150,8 @@ function TrailDot({
   isPointerReady,
   trailColor,
 }: {
-  cursorX: ReturnType<typeof useMotionValue>;
-  cursorY: ReturnType<typeof useMotionValue>;
+  cursorX: ReturnType<typeof useMotionValue<number>>;
+  cursorY: ReturnType<typeof useMotionValue<number>>;
   index: number;
   isPointerReady: boolean;
   trailColor: string;
@@ -185,8 +185,8 @@ function TrailDot({
 
 export function CustomCursor() {
   const location = useLocation();
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
+  const cursorX = useMotionValue<number>(-100);
+  const cursorY = useMotionValue<number>(-100);
   const [isHovering, setIsHovering] = useState(false);
   const [isPointerReady, setIsPointerReady] = useState(false);
   const [bursts, setBursts] = useState<Burst[]>([]);

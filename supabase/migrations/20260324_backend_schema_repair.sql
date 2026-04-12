@@ -112,9 +112,19 @@ CREATE OR REPLACE FUNCTION public.increment_user_rewards(
   xp_gain integer
 ) RETURNS void AS $$
 BEGIN
+  -- SECURITY: Strictly enforce that users can only reward themselves
+  IF auth.uid() IS NULL OR auth.uid() <> user_uuid THEN
+    RAISE EXCEPTION 'Unauthorized: You can only update your own rewards.';
+  END IF;
+
+  -- SECURITY: Enforce "Sane Limits" to prevent massive inflation even if the client is compromised
+  IF wallet_gain > 500 OR xp_gain > 5000 THEN
+    RAISE EXCEPTION 'Reward exceeds maximum allowed limit per request.';
+  END IF;
+
   UPDATE public.profiles
-  SET wallet = COALESCE(wallet, 0) + wallet_gain,
-      xp = COALESCE(xp, 0) + xp_gain,
+  SET wallet = COALESCE(wallet, 0) + GREATEST(0, wallet_gain),
+      xp = COALESCE(xp, 0) + GREATEST(0, xp_gain),
       updated_at = timezone('utc'::text, now())
   WHERE id = user_uuid;
 END;
@@ -140,7 +150,7 @@ $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 GRANT EXECUTE ON FUNCTION public.verify_certificate(uuid) TO anon, authenticated;
 
-CREATE OR REPLACE FUNCTION public.issue_certificate(requested_rank text DEFAULT NULL)
+CREATE OR REPLACE FUNCTION public.issue_certificate()
 RETURNS TABLE (
   id uuid,
   user_id uuid,
@@ -154,10 +164,12 @@ DECLARE
   current_name text := 'Python Student';
   computed_rank text := 'Beginner';
 BEGIN
+  -- SECURITY: Ensure identity
   IF current_user_id IS NULL THEN
     RAISE EXCEPTION 'Authentication required';
   END IF;
 
+  -- Fetch fresh data from the source of truth (the database)
   SELECT
     COALESCE(xp, 0),
     COALESCE(NULLIF(trim(display_name), ''), split_part(COALESCE(email, ''), '@', 1), 'Python Student')
@@ -165,15 +177,17 @@ BEGIN
   FROM public.profiles
   WHERE profiles.id = current_user_id;
 
+  -- ENFORCE XP REQUIREMENTS: Don't trust any client-supplied rank
   IF current_xp < 100 THEN
     RAISE EXCEPTION 'You need at least 100 XP to unlock a certificate';
   END IF;
 
-  computed_rank := COALESCE(NULLIF(trim(requested_rank), ''), CASE
+  -- Logic-driven rank assignment (Hardcoded on server)
+  computed_rank := CASE
     WHEN current_xp >= 3000 THEN 'Advanced'
     WHEN current_xp >= 1000 THEN 'Intermediate'
     ELSE 'Beginner'
-  END);
+  END;
 
   RETURN QUERY
   INSERT INTO public.certificates (user_id, rank_level, metadata)
@@ -192,20 +206,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
-CREATE OR REPLACE FUNCTION public.issue_certificate()
-RETURNS TABLE (
-  id uuid,
-  user_id uuid,
-  rank_level text,
-  issued_at timestamptz,
-  metadata jsonb
-) AS $$
-BEGIN
-  RETURN QUERY SELECT * FROM public.issue_certificate(NULL::text);
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
-
-GRANT EXECUTE ON FUNCTION public.issue_certificate(text) TO authenticated;
 GRANT EXECUTE ON FUNCTION public.issue_certificate() TO authenticated;
 
 CREATE OR REPLACE FUNCTION public.get_leaderboard()

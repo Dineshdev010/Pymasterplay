@@ -12,7 +12,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ExerciseEditor } from "@/components/ExerciseEditor";
 import { AdViewModal } from "@/components/AdViewModal";
 import { SPONSOR_DESTINATIONS } from "@/data/ads";
-import { BookOpen, CheckCircle2, ChevronRight, Terminal, Lock, Play, ArrowLeft } from "lucide-react";
+import { BookOpen, CheckCircle2, ChevronRight, Terminal, Lock, Play, ArrowLeft, RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
@@ -922,7 +922,7 @@ function getLessonUsagePlaybook(title: string): LessonUsagePlaybook {
 
 export default function LearnPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const { progress, completeLesson, unlockLesson } = useProgress();
+  const { progress, completeLesson, unlockLesson, resetLesson } = useProgress();
   const { user } = useAuth();
   const navigate = useNavigate();
   const categories = categoryOrder.filter((category) => lessons.some((lesson) => lesson.category === category));
@@ -1281,7 +1281,25 @@ export default function LearnPage() {
                 </span>
               )}
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">{selectedLesson.title}</h1>
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{selectedLesson.title}</h1>
+              {getLessonProgress(selectedLesson.id) > 0 && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 text-[10px] sm:text-xs gap-1.5 opacity-60 hover:opacity-100 shrink-0 hover:border-destructive/30 hover:text-destructive hover:bg-destructive/10" 
+                  onClick={() => {
+                    if (window.confirm("Reset progress for this lesson? You will need to complete these exercises again.")) {
+                      resetLesson(selectedLesson.id);
+                    }
+                  }}
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span className="hidden sm:inline">Reset Lesson</span>
+                  <span className="sm:hidden">Reset</span>
+                </Button>
+              )}
+            </div>
             <p className="text-muted-foreground mb-6">{selectedLesson.description}</p>
 
             {selectedLessonClarityGuide && (

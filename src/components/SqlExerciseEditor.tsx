@@ -6,9 +6,8 @@ import { useProgress } from "@/contexts/ProgressContext";
 import { cancelActivePythonExecution, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { executeSql } from "@/lib/sqlRunner";
 import { Button } from "@/components/ui/button";
-import { AdViewModal } from "@/components/AdViewModal";
-import { SPONSOR_DESTINATIONS } from "@/data/ads";
-import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Tv, Square } from "lucide-react";
+import { toast } from "@/components/ui/use-toast";
+import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square } from "lucide-react";
 
 interface SqlExerciseEditorProps {
   exercise: Exercise;
@@ -41,9 +40,8 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
   const [isRunning, setIsRunning] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
-  const [showAdModal, setShowAdModal] = useState(false);
-  const [unlockedByAd, setUnlockedByAd] = useState(false);
-  const { progress, completeExercise } = useProgress();
+  const [solutionUnlocked, setSolutionUnlocked] = useState(false);
+  const { progress, completeExercise, addWallet } = useProgress();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   const exerciseKey = `${lessonId}:${level}`;
@@ -57,8 +55,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     setIsRunning(false);
     setShowHint(false);
     setShowSolution(false);
-    setUnlockedByAd(false);
-    setShowAdModal(false);
+    setSolutionUnlocked(false);
   }, [exerciseKey, exercise.starterCode]);
 
   const levelColors = useMemo(
@@ -93,10 +90,12 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     }
 
     if (actualOutput === expected) {
-      setOutput(`Output:\n${actualOutput}\n\nCorrect! Exercise completed!`);
+      setOutput(`Output:\n${actualOutput}\n\n✅ Correct! Exercise completed! +20 coins`);
       setPassed(true);
       if (!alreadyCompleted) {
         completeExercise(exerciseKey);
+        addWallet(20);
+        toast({ title: "SQL Exercise Passed! 🎉", description: "+20 coins added to your wallet." });
         confetti({
           particleCount: 80,
           spread: 60,
@@ -112,35 +111,15 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     setIsRunning(false);
   };
 
-  if (locked && !unlockedByAd) {
+  if (locked) {
     return (
-      <>
-        <div className="bg-surface-1 border border-border rounded-lg p-4 opacity-70">
-          <div className="flex items-center justify-between gap-2 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Lock className="w-4 h-4 text-muted-foreground" />
-              <span className={`text-xs px-2 py-0.5 rounded-full border capitalize ${levelColors[level]}`}>{level}</span>
-              <span className="text-sm text-muted-foreground">Complete the previous exercise to unlock</span>
-            </div>
-            <Button
-              size="sm"
-              variant="outline"
-              className="h-7 text-xs gap-1 border-primary/30 text-primary hover:bg-primary/10"
-              onClick={() => setShowAdModal(true)}
-            >
-              <Tv className="w-3 h-3" /> View Sponsor Message
-            </Button>
-          </div>
+      <div className="bg-surface-1 border border-border rounded-lg p-4 opacity-70">
+        <div className="flex items-center gap-2">
+          <Lock className="w-4 h-4 text-muted-foreground" />
+          <span className={`text-xs px-2 py-0.5 rounded-full border capitalize ${levelColors[level]}`}>{level}</span>
+          <span className="text-sm text-muted-foreground">Complete the previous exercise to unlock</span>
         </div>
-        <AdViewModal
-          isOpen={showAdModal}
-          onClose={() => setShowAdModal(false)}
-          onComplete={() => setUnlockedByAd(true)}
-          sponsorLink={SPONSOR_DESTINATIONS.exerciseUnlock}
-          completionTitle="Exercise unlocked"
-          completionDescription="Thanks for viewing the sponsor message."
-        />
-      </>
+      </div>
     );
   }
 
@@ -204,7 +183,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
                   <div className="space-y-1.5">
                     <div className="flex items-center gap-2 text-xs font-semibold text-primary/90 uppercase tracking-wider">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                      Solution SQL
+                      ANS CODE
                     </div>
                     <pre className="text-xs font-mono bg-background/50 border border-primary/20 rounded-md p-3 text-foreground whitespace-pre-wrap shadow-sm">
                       {solution}
@@ -249,13 +228,30 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
                   <Button
                     size="sm"
                     variant="ghost"
-                    className="h-7 text-xs gap-1 text-primary/70 hover:text-primary"
+                    className="h-7 text-xs gap-1 text-primary/70 hover:text-primary transition-colors hover:bg-surface-2"
                     onClick={() => {
-                      setShowSolution(!showSolution);
-                      setShowHint(false);
+                      if (showSolution) {
+                        setShowSolution(false);
+                        setShowHint(false);
+                      } else if (!solutionUnlocked) {
+                        if (progress.wallet >= 70) {
+                          addWallet(-70);
+                          setSolutionUnlocked(true);
+                          setShowSolution(true);
+                          setShowHint(false);
+                          if (solution) setSql(solution);
+                          toast({ title: "Solution Unlocked!", description: "Deducted $70 from your wallet." });
+                        } else {
+                          toast({ title: "Not enough wallet cash!", description: "You need $70 to unlock the solution.", variant: "destructive" });
+                        }
+                      } else {
+                        setShowSolution(true);
+                        setShowHint(false);
+                        if (solution) setSql(solution);
+                      }
                     }}
                   >
-                    <Eye className="w-3 h-3" /> {showSolution ? "Hide Solution" : "Solution"}
+                    <Eye className="w-3 h-3" /> {showSolution ? "Hide Solution" : "Solution ($70)"}
                   </Button>
                 )}
                 <Button

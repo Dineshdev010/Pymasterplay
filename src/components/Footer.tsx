@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Heart, ArrowUpRight, Github, Linkedin, Youtube, Smartphone, ShieldCheck } from "lucide-react";
+import { SUPPORT_TIP_EVENT } from "@/components/SupportTipPopup";
 import { useMemo, useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { AddToHomeScreenButton } from "@/components/AddToHomeScreenButton";
@@ -158,6 +159,9 @@ export function Footer() {
 
               <Link
                 to="/donate"
+                onClick={(e) => {
+                  window.dispatchEvent(new CustomEvent(SUPPORT_TIP_EVENT));
+                }}
                 className="group flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3 hover:bg-surface-2 transition-colors"
               >
                 <div className="min-w-0">

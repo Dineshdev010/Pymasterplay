@@ -18,6 +18,7 @@ import { useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { CustomCursor } from "@/components/CustomCursor";
+import { SupportTipPopup } from "@/components/SupportTipPopup";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -31,6 +32,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     location.pathname === "/dashboard" ||
     location.pathname === "/certificate" ||
     location.pathname.startsWith("/learn") ||
+    location.pathname.startsWith("/career") ||
     location.pathname.startsWith("/dsa") ||
     location.pathname === "/jobs";
   const hideActiveUsersBadge =
@@ -167,6 +169,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       
       {/* Global custom cursor effect */}
       <CustomCursor />
+      
+      {/* Support Tip & QR Popup */}
+      <SupportTipPopup />
     </div>
   );
 }

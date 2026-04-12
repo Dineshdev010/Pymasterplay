@@ -85,6 +85,29 @@ async function executeCode(requestId: number, code: string) {
       await pyodide.loadPackage("sqlite3");
     }
 
+    // Load pandas if the user imports it
+    if (code.includes("import pandas") || code.includes("from pandas")) {
+      await pyodide.loadPackage("pandas");
+    }
+
+    // Load numpy if the user imports it
+    if (code.includes("import numpy") || code.includes("from numpy")) {
+      await pyodide.loadPackage("numpy");
+    }
+
+    // Suppress verbose warnings that confuse learners (e.g. Pandas Pyarrow DeprecationWarning)
+    try {
+      await pyodide.runPythonAsync(`
+import warnings as __warnings
+__warnings.filterwarnings("ignore", category=DeprecationWarning)
+__warnings.filterwarnings("ignore", category=FutureWarning)
+__warnings.filterwarnings("ignore", category=UserWarning)
+del __warnings
+      `);
+    } catch (e) {
+      // ignore setup errors
+    }
+
     pyodide.setStdout({
       batched: (message: string) => {
         stdout = appendLimited(stdout, `${message}\n`);

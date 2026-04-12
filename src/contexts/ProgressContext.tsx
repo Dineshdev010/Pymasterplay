@@ -48,6 +48,7 @@ interface ProgressContextType {
   showCelebration: boolean;              // Whether to show the celebration modal
   celebrationData: { title: string; subtitle: string; emoji: string; reward?: string } | null;
   dismissCelebration: () => void;        // Close the celebration modal
+  resetLesson: (lessonId: string) => void; // Reset a specific lesson's progress
 }
 
 // Create the context (null by default — must be inside Provider)
@@ -146,6 +147,18 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     }
 
     const payload = progressToProfileUpdate(progress);
+    
+    // SECURITY: Client-side "Sane Limit" Check before syncing to cloud
+    // This prevents a corrupted or maliciously edited local state from spreading to the DB
+    if (payload.wallet !== undefined && payload.wallet < 0) {
+      console.warn("Security: Attempted to sync negative wallet. Aborting sync.");
+      return;
+    }
+    if (payload.xp !== undefined && payload.xp < 0) {
+      console.warn("Security: Attempted to sync negative XP. Aborting sync.");
+      return;
+    }
+
     const snapshot = JSON.stringify(payload);
     if (snapshot === lastCloudSnapshotRef.current) {
       return;
@@ -365,6 +378,15 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     });
   }, [triggerCelebration, handleStreakMilestone]);
 
+  // ---------- Reset Lesson Progress ----------
+  const resetLesson = useCallback((lessonId: string) => {
+    setProgress(prev => ({
+      ...prev,
+      completedLessons: prev.completedLessons.filter(id => id !== lessonId),
+      completedExercises: prev.completedExercises.filter(key => !key.startsWith(`${lessonId}:`))
+    }));
+  }, []);
+
   // ---------- Complete a lesson ----------
   // Awards 50 XP and shows a celebration
   const completeLesson = useCallback((lessonId: string) => {
@@ -502,7 +524,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   // Provide all progress state and actions to child components
   return (
-    <ProgressContext.Provider value={{ progress, solveProblem, completeLesson, completeExercise, logActivity, catchStar, addDailyStar, unlockLesson, attemptStreakRecovery, addWallet, addTimeSpent, canRecover, recoveryCost, showCelebration, celebrationData, dismissCelebration }}>
+    <ProgressContext.Provider value={{ progress, solveProblem, completeLesson, completeExercise, logActivity, catchStar, addDailyStar, unlockLesson, attemptStreakRecovery, addWallet, addTimeSpent, canRecover, recoveryCost, showCelebration, celebrationData, dismissCelebration, resetLesson }}>
       {children}
     </ProgressContext.Provider>
   );

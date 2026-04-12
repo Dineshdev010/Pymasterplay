@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import { ChevronDown, Clock, HeartHandshake, LogIn, LogOut, Menu, Moon, Settings, Sun, Trophy, User, Wallet, Volume2, VolumeX } from "lucide-react";
+import { 
+  ChevronDown, Clock, HeartHandshake, LogIn, LogOut, Menu, Moon, Settings, Sun, 
+  Trophy, User, Wallet, Volume2, VolumeX, Medal, ShieldCheck, Award, Zap, Star 
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
@@ -21,13 +24,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { navItems } from "./navItems";
+import { SUPPORT_TIP_EVENT } from "@/components/SupportTipPopup";
 
 const MENU_HINT_KEY = "pymaster_menu_hint_dismissed";
 
-function getUserLevelLabel(xp: number) {
-  if (xp >= 3000) return "Advanced";
-  if (xp >= 1000) return "Intermediate";
-  return "Beginner";
+function getLevelConfig(xp: number) {
+  if (xp >= 50000) return { label: "Legend", Icon: Star, color: "text-amber-400", bgColor: "bg-amber-400/10", border: "border-amber-400/20 shadow-[0_0_10px_rgba(251,191,36,0.2)]" };
+  if (xp >= 20000) return { label: "Grandmaster", Icon: Trophy, color: "text-reward-gold", bgColor: "bg-reward-gold/10", border: "border-reward-gold/20 shadow-[0_0_10px_rgba(212,175,55,0.2)]" };
+  if (xp >= 10000) return { label: "Master", Icon: Award, color: "text-expert-purple", bgColor: "bg-expert-purple/10", border: "border-expert-purple/20" };
+  if (xp >= 5000) return { label: "Expert", Icon: Award, color: "text-blue-500", bgColor: "bg-blue-500/10", border: "border-blue-500/20" };
+  if (xp >= 2500) return { label: "Advanced", Icon: ShieldCheck, color: "text-streak-green", bgColor: "bg-streak-green/10", border: "border-streak-green/20" };
+  if (xp >= 1000) return { label: "Intermediate", Icon: Medal, color: "text-python-yellow", bgColor: "bg-python-yellow/10", border: "border-python-yellow/20" };
+  return { label: "Beginner", Icon: Zap, color: "text-muted-foreground", bgColor: "bg-secondary", border: "border-border" };
 }
 
 function TimeTracker() {
@@ -84,7 +92,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const { muted, toggleMuted } = useSound();
   const { toast } = useToast();
   const levelNumber = Math.floor(progress.xp / 500) + 1;
-  const levelLabel = getUserLevelLabel(progress.xp);
+  const level = getLevelConfig(progress.xp);
   const primaryNavRoutes = ["/", "/learn", "/problems", "/dsa", "/dashboard"];
   const primaryNavItems = navItems.filter((item) => primaryNavRoutes.includes(item.to));
   const secondaryNavItems = navItems.filter((item) => !primaryNavRoutes.includes(item.to));
@@ -276,14 +284,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
       <div className="ml-2 flex shrink-0 items-center gap-2 sm:gap-3">
         {/* Smooth Real-Time Study Clock */}
         <TimeTracker />
-        <button
-          onClick={() => setShowAd(true)}
+        <Link
+          to="/contact"
           className="hidden xl:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
-          title="Support PyMaster"
+          title="Contact Support"
         >
           <HeartHandshake className="w-3.5 h-3.5" />
           <span className="hidden sm:inline">Support</span>
-        </button>
+        </Link>
         {!user && (
           <button
             onClick={toggleTheme}
@@ -308,9 +316,9 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           <Wallet className="w-4 h-4 text-reward-gold" />
           <span className="text-foreground font-medium">${progress.wallet}</span>
         </div>
-        <div className="hidden xl:flex items-center gap-1.5 text-xs px-2 py-1 rounded-full bg-secondary">
-          <Trophy className="w-3 h-3 text-python-yellow" />
-          <span className="text-muted-foreground">{levelLabel} • Lv {levelNumber}</span>
+        <div className={`hidden xl:flex items-center gap-1.5 text-[10px] sm:text-xs px-2.5 py-1 rounded-full border ${level.border} ${level.bgColor} transition-all duration-500`}>
+          <level.Icon className={`w-3 h-3 ${level.color}`} />
+          <span className={`${level.color} font-bold tracking-tight`}>{level.label} • Lv {levelNumber}</span>
         </div>
         {user ? (
           <DropdownMenu open={profileMenuOpen} onOpenChange={setProfileMenuOpen}>

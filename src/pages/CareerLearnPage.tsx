@@ -9,11 +9,12 @@ import { careerTracks } from "@/data/careerLessons";
 import { useProgress } from "@/contexts/ProgressContext";
 import { ExerciseEditor } from "@/components/ExerciseEditor";
 import { SqlExerciseEditor } from "@/components/SqlExerciseEditor";
+import { GitTerminalEditor } from "@/components/GitTerminalEditor";
 import Editor from "@monaco-editor/react";
 import { SQL_PRACTICE_DB_NAME, SQL_PRACTICE_DB_SETUP_SQL, SQL_PRACTICE_DB_TABLES } from "@/data/sqlSampleData";
 import { executeSql } from "@/lib/sqlRunner";
 import { cancelActivePythonExecution, getPythonExecutionTimeoutMs } from "@/lib/piston";
-import { BookOpen, CheckCircle2, ChevronRight, Lock, ArrowLeft, Terminal, Database, Play, RotateCcw, Square } from "lucide-react";
+import { BookOpen, CheckCircle2, ChevronRight, Lock, ArrowLeft, Terminal as TerminalIcon, Database, Play, RotateCcw, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
@@ -25,7 +26,7 @@ export default function CareerLearnPage() {
   const [sqlOutput, setSqlOutput] = useState("");
   const [isSqlRunning, setIsSqlRunning] = useState(false);
   const [showDataset, setShowDataset] = useState(false);
-  const { progress } = useProgress();
+  const { progress, resetLesson } = useProgress();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   // Auto-open the first lesson so the page never feels empty on first visit.
@@ -50,6 +51,7 @@ export default function CareerLearnPage() {
 
   const selectedLesson = track.lessons.find(l => l.id === selectedId);
   const isSqlTrack = (track.language ?? "python") === "sql" || track.id === "sql";
+  const isBashTrack = (track.language ?? "python") === "bash" || track.id === "git";
 
   const sqlCategories = useMemo(() => {
     if (!isSqlTrack) return [];
@@ -167,7 +169,25 @@ export default function CareerLearnPage() {
                 </span>
               )}
             </div>
-            <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-4">{selectedLesson.title}</h1>
+            <div className="flex items-start justify-between gap-4 mb-4">
+              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{selectedLesson.title}</h1>
+              {getLessonProgress(selectedLesson.id) > 0 && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="h-8 text-[10px] sm:text-xs gap-1.5 opacity-60 hover:opacity-100 shrink-0 hover:border-destructive/30 hover:text-destructive hover:bg-destructive/10" 
+                  onClick={() => {
+                    if (window.confirm("Reset progress for this lesson? You will need to complete these exercises again.")) {
+                      resetLesson(selectedLesson.id);
+                    }
+                  }}
+                >
+                  <RotateCcw className="w-3 h-3" />
+                  <span className="hidden sm:inline">Reset Lesson</span>
+                  <span className="sm:hidden">Reset</span>
+                </Button>
+              )}
+            </div>
             <p className="text-muted-foreground mb-6">{selectedLesson.description}</p>
 
             {isSqlTrack && sqlCategories.length > 0 && (
@@ -210,7 +230,7 @@ export default function CareerLearnPage() {
             {/* Code Example */}
             <div className="code-block mb-8">
               <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-                <span className="text-xs text-muted-foreground font-mono">{isSqlTrack ? "example.sql" : "example.py"}</span>
+                <span className="text-xs text-muted-foreground font-mono">{isBashTrack ? "terminal" : isSqlTrack ? "example.sql" : "example.py"}</span>
                 {isSqlTrack ? (
                   <Button
                     size="sm"
@@ -221,12 +241,12 @@ export default function CareerLearnPage() {
                       setSqlOutput("");
                     }}
                   >
-                    <Terminal className="w-3 h-3" /> Load into SQL Editor
+                    <TerminalIcon className="w-3 h-3" /> Load into SQL Editor
                   </Button>
-                ) : (
+                ) : isBashTrack ? null : (
                   <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
                     <Link to={`/compiler?code=${encodeURIComponent(selectedLesson.codeExample)}`}>
-                      <Terminal className="w-3 h-3" /> Try in Compiler
+                      <TerminalIcon className="w-3 h-3" /> Try in Compiler
                     </Link>
                   </Button>
                 )}
@@ -324,7 +344,15 @@ export default function CareerLearnPage() {
               </h3>
               <div className="space-y-3">
                 {(["beginner", "intermediate", "advanced"] as const).map(level => (
-                  isSqlTrack ? (
+                  isBashTrack ? (
+                    <GitTerminalEditor
+                      key={level}
+                      exercise={selectedLesson.exercises[level]}
+                      level={level}
+                      lessonId={selectedLesson.id}
+                      locked={!isExerciseUnlocked(selectedLesson.id, level)}
+                    />
+                  ) : isSqlTrack ? (
                     <SqlExerciseEditor
                       key={level}
                       exercise={selectedLesson.exercises[level]}
@@ -403,3 +431,5 @@ export default function CareerLearnPage() {
     </div>
   );
 }
+
+

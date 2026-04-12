@@ -33,23 +33,24 @@ export default function CertificateVerificationPage() {
     let active = true;
     setLoading(true);
 
-    supabase
-      .rpc("verify_certificate", { certificate_uuid: certificateId })
-      .then(({ data, error }) => {
+    const fetchCertificate = async () => {
+      try {
+        const { data, error } = await supabase.rpc('verify_certificate', { certificate_uuid: certificateId });
         if (!active) return;
 
         if (error) {
-          console.error("Certificate verification failed", error);
+          console.error('Certificate verification failed', error);
           setCertificate(null);
           return;
         }
 
         const nextCertificate = Array.isArray(data) ? data[0] : data;
         setCertificate(nextCertificate || null);
-      })
-      .finally(() => {
+      } finally {
         if (active) setLoading(false);
-      });
+      }
+    };
+    fetchCertificate();
 
     return () => {
       active = false;

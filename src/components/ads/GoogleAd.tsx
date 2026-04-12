@@ -74,7 +74,7 @@ export function GoogleAd({
   className = "",
   minHeight = 160,
 }: GoogleAdProps) {
-  const adRef = useRef<HTMLElement | null>(null);
+  const adRef = useRef<HTMLModElement | null>(null);
   const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {

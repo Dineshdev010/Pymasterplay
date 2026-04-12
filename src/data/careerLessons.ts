@@ -19,7 +19,7 @@ export interface CareerTrack {
   title: string;
   description: string;
   color: string;
-  language?: "python" | "sql";
+  language?: "python" | "sql" | "bash";
   lessons: CareerLesson[];
 }
 
@@ -568,125 +568,127 @@ function githubMastery(): CareerLesson[] {
     {
       id: "git-intro", title: "Git: The Starting Line", description: "Introduction to tracking changes and collaboration",
       content: "## Why Version Control?\n\nAs a developer, you need to track changes, undo mistakes, and collaborate with others. Git is the world's most popular tool for this.\n\n### Key Concepts\n- **History** — Going back in time to any version of your project\n- **Branching** — Working on new features without breaking the main app\n- **Staging** — Preparing files for a commit\n- **Collaboration** — Sharing code via GitHub\n\n### Git's Areas\n1. **Working Directory** — Files you are editing now\n2. **Staging Area** — Files marked to be saved in the next snapshot\n3. **Local Repo** — Your local snapshots (commits)",
-      codeExample: "# Git state simulation\nrepo_state = {\"staged\": [], \"committed\": [\"init\"]}\n\ndef add(file):\n    repo_state[\"staged\"].append(file)\n\nprint(f\"Initial state: {repo_state}\")\nadd(\"main.py\")\nprint(f\"After staging: {repo_state}\")",
+      codeExample: "$ mkdir my-project\n$ cd my-project\n$ git init\nInitialized empty Git repository in /my-project/.git/",
       exercises: {
-        beginner: { prompt: "Create a list representing git states: ['modified', 'staged', 'committed']. Print the last state.", starterCode: "states = [\"modified\", \"staged\", \"committed\"]\n# Print the terminal committed state\n", expectedOutput: "committed" },
-        intermediate: { prompt: "Write add(files, file) that appends to list only if not already present. Test with ['a.py'], 'b.py'. Print list.", starterCode: "def add(staged, f):\n    if f not in staged:\n        staged.append(f)\n    return staged\n\nprint(add([\"a.py\"], \"b.py\"))\n", expectedOutput: "['a.py', 'b.py']" },
-        advanced: { prompt: "Implement commit(): move items from staged list to history list. Print length of history.", starterCode: "staged = [\"a.py\", \"b.py\"]\nhistory = []\n# Move staged items to history as a single commit\nhistory.append(list(staged))\nstaged.clear()\nprint(len(history))\n", expectedOutput: "1" },
+        beginner: { prompt: "Initialize a new git repository in the current directory.", starterCode: "", expectedOutput: "git init" },
+        intermediate: { prompt: "Check the status of your git repository.", starterCode: "", expectedOutput: "git status" },
+        advanced: { prompt: "Create a new file called 'notes.txt' using the touch command.", starterCode: "", expectedOutput: "touch notes.txt" },
       },
     },
     {
       id: "git-staging", title: "Staging: The Waiting Room", description: "Learn to prepare files for commit",
       content: "## The Staging Area\n\nIn Git, you don't save every change immediately. You move them to a **Staging Area** first.\n\n### Commands\n- `git status`: See what is changed and staged\n- `git add <file>`: Stage a specific file\n- `git add .`: Stage ALL changes in the directory\n\nThink of staging as picking products for a shipping box before you seal it (commit it).",
-      codeExample: "files = [\"auth.py\", \"tests.py\", \"README.md\"]\nstaged = []\n\n# Pro-tip: Check status first\nprint(f\"Changes to stage: {files}\")\nstaged.append(files[0])\nprint(f\"Staged: {staged}\")",
+      codeExample: "$ touch app.py\n$ git status\nUntracked files:\n  app.py\n\n$ git add app.py\n$ git status\nChanges to be committed:\n  new file:   app.py",
       exercises: {
-        beginner: { prompt: "Format the command to stage all files (use dot). Print it.", starterCode: "command = \"git add .\"\nprint(command)\n", expectedOutput: "git add ." },
-        intermediate: { prompt: "Write a loop to stage all files from a list 'modified'. Print the 'staged' list.", starterCode: "modified = [\"a.py\", \"b.py\"]\nstaged = []\nfor f in modified:\n    staged.append(f)\nprint(staged)\n", expectedOutput: "['a.py', 'b.py']" },
-        advanced: { prompt: "Filter a list of files to only stage '.py' files. Print the resulting list.", starterCode: "files = [\"notes.txt\", \"app.py\", \"util.py\", \"logo.png\"]\nstaged = [f for f in files if f.endswith(\".py\")]\nprint(staged)\n", expectedOutput: "['app.py', 'util.py']" },
+        beginner: { prompt: "Stage all files in the current directory.", starterCode: "", expectedOutput: "git add ." },
+        intermediate: { prompt: "Stage a specific file named 'main.py'.", starterCode: "", expectedOutput: "git add main.py" },
+        advanced: { prompt: "Remove 'main.py' from the staging area (unstage it).", starterCode: "", expectedOutput: "git restore --staged main.py" },
       },
     },
     {
       id: "git-commits", title: "Committing: Taking Snapshots", description: "Save your progress permanently",
       content: "## The Commit\n\nA commit is a permanent snapshot of your staged changes. It includes a message and a unique ID (hash).\n\n### Rules for Messages\n1. **Be Concise** — Keep it under 50 chars if possible\n2. **Imperative Mood** — Use 'Add login' NOT 'Added login'\n3. **Context** — Mention what changed and why\n\n### Command\n`git commit -m \"Your message here\"`",
-      codeExample: "commits = []\ndef commit(msg, files):\n    commits.append({\"id\": \"a1b2c3d\", \"msg\": msg, \"files\": files})\n\ncommit(\"Add payment gateway\", [\"stripe.py\"])\nprint(f\"Total Commits: {len(commits)}\")",
+      codeExample: "$ git commit -m \"Initial commit\"\n[main (root-commit) 1a2b3c4] Initial commit\n 1 file changed, 0 insertions(+), 0 deletions(-)\n create mode 100644 app.py",
       exercises: {
-        beginner: { prompt: "Format a commit command string with message 'Fix bug'. Print it.", starterCode: "m = \"Fix bug\"\nprint(f'git commit -m \"{m}\"')\n", expectedOutput: "git commit -m \"Fix bug\"" },
-        intermediate: { prompt: "Simulate a commit hash by taking the first 7 chars of 'f3e2d1c0b9a8'. Print it.", starterCode: "h = \"f3e2d1c0b9a8\"\nprint(h[:7])\n", expectedOutput: "f3e2d1c" },
-        advanced: { prompt: "Validate a commit message: Must be >= 5 chars and end with a letter. Test 'Fix'. Print False.", starterCode: "m = \"Fix\"\nis_valid = len(m) >= 5 and m[-1].isalpha()\nprint(is_valid)\n", expectedOutput: "False" },
+        beginner: { prompt: "Commit your staged changes with the message 'Initial commit'.", starterCode: "", expectedOutput: "git commit -m \"Initial commit\"" },
+        intermediate: { prompt: "Commit changes with the message 'Add login feature'.", starterCode: "", expectedOutput: "git commit -m \"Add login feature\"" },
+        advanced: { prompt: "View the commit history.", starterCode: "", expectedOutput: "git log" },
       },
     },
     {
       id: "github-remotes", title: "Connecting to GitHub", description: "The Cloud: Remotes and SSH",
       content: "## GitHub & Remotes\n\nGitHub is a host for your Git repositories. To connect your local computer to GitHub, you use **Remotes**.\n\n### Connection Types\n- **HTTPS**: Uses a Personal Access Token (PAT). Good for beginners.\n- **SSH**: Uses digital keys for passwordless security. Recommended for Pros.\n\n### Commands\n- `git remote add origin <url>`: Connect local repo to remote URL\n- `git remote -v`: Verify the connection",
-      codeExample: "config = {\"remote\": \"origin\", \"url\": \"https://github.com/user/py-pro.git\"}\nprint(f\"Connected to: {config['url']}\")",
+      codeExample: "$ git remote add origin https://github.com/user/repo.git\n$ git remote -v\norigin  https://github.com/user/repo.git (fetch)\norigin  https://github.com/user/repo.git (push)",
       exercises: {
-        beginner: { prompt: "Print the command to verify remote URLs.", starterCode: "print(\"git remote -v\")\n", expectedOutput: "git remote -v" },
-        intermediate: { prompt: "Check if a URL uses SSH (starts with 'git@'). Test 'git@github.com:user/repo.git'. Print True.", starterCode: "url = \"git@github.com:user/repo.git\"\nprint(url.startswith(\"git@\"))\n", expectedOutput: "True" },
-        advanced: { prompt: "Extract the owner from 'https://github.com/dinesh/app'. (Between github.com/ and /app). Print 'dinesh'.", starterCode: "url = \"https://github.com/dinesh/app\"\n# Use string split or slice\nprint(url.split(\"/\")[3])\n", expectedOutput: "dinesh" },
+        beginner: { prompt: "Verify your remote URLs.", starterCode: "", expectedOutput: "git remote -v" },
+        intermediate: { prompt: "Add a remote named 'origin' with URL 'https://github.com/user/repo.git'.", starterCode: "", expectedOutput: "git remote add origin https://github.com/user/repo.git" },
+        advanced: { prompt: "Remove a remote named 'origin'.", starterCode: "", expectedOutput: "git remote remove origin" },
       },
     },
     {
       id: "git-push-pull", title: "Push & Pull: Syncing", description: "Sharing and receiving code",
       content: "## Syncing Changes\n\n- `git push origin main`: Send your local commits to GitHub\n- `git pull origin main`: Get latest changes from teammates onto your machine\n- `git clone <url>`: Copy an entire repository from GitHub for the first time\n\n### Conflict Warning\nIf someone else pushed changes to the same lines you edited, `git pull` will ask you to resolve a **Merge Conflict**.",
-      codeExample: "local = 5\nremote = 7\nif local < remote:\n    print(f\"You are {remote - local} commits behind! Time to pull.\")",
+      codeExample: "$ git push origin main\nCounting objects: 3, done.\nWriting objects: 100% (3/3), done.\nTo https://github.com/user/repo.git\n * [new branch]      main -> main",
       exercises: {
-        beginner: { prompt: "Print the command to pull from origin branch 'main'.", starterCode: "print(\"git pull origin main\")\n", expectedOutput: "git pull origin main" },
-        intermediate: { prompt: "A repo has 10 commits. You pull 2 new ones. What is the total? Print it.", starterCode: "initial = 10\nnew = 2\nprint(initial + new)\n", expectedOutput: "12" },
-        advanced: { prompt: "Check if local and remote hashes match. Local 'abc', Remote '123'. Print 'Sync Error' if they differ.", starterCode: "l = \"abc\"\nr = \"123\"\nprint(\"Sync Error\" if l != r else \"OK\")\n", expectedOutput: "Sync Error" },
+        beginner: { prompt: "Push your local 'main' branch commits to the 'origin' remote.", starterCode: "", expectedOutput: "git push origin main" },
+        intermediate: { prompt: "Pull the latest commits from the 'main' branch on 'origin'.", starterCode: "", expectedOutput: "git pull origin main" },
+        advanced: { prompt: "Clone a repository from 'https://github.com/user/repo.git'.", starterCode: "", expectedOutput: "git clone https://github.com/user/repo.git" },
       },
     },
     {
       id: "git-branches", title: "Branches: Parallel Worlds", description: "Developing features in isolation",
-      content: "## Why Bench?\n\nBranches let you work on a New Feature or Bug Fix without breaking the Main code. This is called **Isolation**.\n\n### Commands\n- `git checkout -b <name>`: Create and switch to a new branch\n- `git branch`: List all branches\n- `git merge <name>`: Combine branch back into main\n- `git checkout <name>`: Switch between existing branches",
-      codeExample: "branches = [\"main\", \"feature-login\", \"fix-bug\"]\ncurrent = \"feature-login\"\nprint(f\"Working on: {current}\")",
+      content: "## Why Branches?\n\nBranches let you work on a New Feature or Bug Fix without breaking the Main code. This is called **Isolation**.\n\n### Commands\n- `git checkout -b <name>`: Create and switch to a new branch\n- `git branch`: List all branches\n- `git merge <name>`: Combine branch back into main\n- `git checkout <name>`: Switch between existing branches",
+      codeExample: "$ git checkout -b feature-login\nSwitched to a new branch 'feature-login'\n\n$ git branch\n* feature-login\n  main",
       exercises: {
-        beginner: { prompt: "Print the command to create and switch to 'dev' branch.", starterCode: "print(\"git checkout -b dev\")\n", expectedOutput: "git checkout -b dev" },
-        intermediate: { prompt: "Check if 'main' is in a list of branches. Print True.", starterCode: "b = [\"v1\", \"main\", \"qa\"]\nprint(\"main\" in b)\n", expectedOutput: "True" },
-        advanced: { prompt: "Given current='main', return command to switch to 'test'. Print it.", starterCode: "target = \"test\"\nprint(f\"git checkout {target}\")\n", expectedOutput: "git checkout test" },
+        beginner: { prompt: "Create and switch to a new branch called 'dev'.", starterCode: "", expectedOutput: "git checkout -b dev" },
+        intermediate: { prompt: "List all local branches.", starterCode: "", expectedOutput: "git branch" },
+        advanced: { prompt: "Switch back to the 'main' branch.", starterCode: "", expectedOutput: "git checkout main" },
       },
     },
     {
       id: "github-prs", title: "Pull Requests & Reviews", description: "How teams collaborate on GitHub",
       content: "## The Pull Request (PR)\n\nA Pull Request is how you tell your team: \"I've finished a feature, please review it and merge it into the main project.\"\n\n### PR Lifecycle\n1. **Open PR**: Describe your changes\n2. **Review**: Teammates comment on your code\n3. **Approve**: Senior devs approve the logic\n4. **Merge**: code joins the project",
-      codeExample: "pr = {\"status\": \"open\", \"approvals\": 0}\ndef approve(): pr[\"approvals\"] += 1\n\napprove()\nif pr[\"approvals\"] >= 1:\n    print(\"Ready to merge!\")",
+      codeExample: "# Pull Requests are usually managed in the GitHub web interface\n# But you can push a branch to start the process:\n$ git push origin feature-login\n# Then open GitHub to create the PR",
       exercises: {
-        beginner: { prompt: "Print the status of a PR that requires 1 more approval (approvals=1, required=2). Print 'Pending'.", starterCode: "app = 1\nreq = 2\nprint(\"Pending\" if app < req else \"Verified\")\n", expectedOutput: "Pending" },
-        intermediate: { prompt: "Format a PR title: '[TASK-123] Fix Login'. Print it.", starterCode: "id = 123\nname = \"Fix Login\"\nprint(f\"[TASK-{id}] {name}\")\n", expectedOutput: "[TASK-123] Fix Login" },
-        advanced: { prompt: "Filter comments starting with 'FIX:' from a list. Print the list.", starterCode: "msgs = [\"Nice code\", \"FIX: Line 10\", \"Style fix\", \"FIX: Logic error\"]\nfixes = [m for m in msgs if m.startswith(\"FIX:\")]\nprint(fixes)\n", expectedOutput: "['FIX: Line 10', 'FIX: Logic error']" },
+        beginner: { prompt: "Push a branch named 'feature-auth' to 'origin'.", starterCode: "", expectedOutput: "git push origin feature-auth" },
+        intermediate: { prompt: "Merge 'feature-auth' branch into your current branch.", starterCode: "", expectedOutput: "git merge feature-auth" },
+        advanced: { prompt: "Delete the local branch named 'feature-auth'.", starterCode: "", expectedOutput: "git branch -d feature-auth" },
       },
     },
     {
       id: "github-forking", title: "Forking: Open Source Mastery", description: "Contributing to any project in the world",
       content: "## Forking vs Branching\n\n- **Branch**: Internal development within one repo.\n- **Fork**: A copy of someone else's repo in YOUR GitHub account. You use this to contribute to Open Source.\n\n### Workflow\n1. **Fork** the Repo\n2. **Clone** your fork\n3. **Branch** & Update\n4. Push to your fork\n5. Open a **PR** to the original owner",
-      codeExample: "owner = \"google\"\nrepo = \"tensorflow\"\nprint(f\"Forking {owner}/{repo} to my-account/{repo}...\")",
+      codeExample: "$ git clone https://github.com/my-username/forked-repo.git\n$ cd forked-repo\n$ git remote add upstream https://github.com/original-owner/repo.git\n$ git fetch upstream",
       exercises: {
-        beginner: { prompt: "Print the first step to contribute to a public repo.", starterCode: "print(\"Fork\")\n", expectedOutput: "Fork" },
-        intermediate: { prompt: "Map owner to repo: {'owner': 'py', 'repo': 'core'}. Print formatted 'py/core'.", starterCode: "d = {\"owner\": \"py\", \"repo\": \"core\"}\nprint(f\"{d['owner']}/{d['repo']}\")\n", expectedOutput: "py/core" },
-        advanced: { prompt: "Check if 'fork' is in a list of Git actions. Print True.", starterCode: "actions = [\"clone\", \"push\", \"fork\", \"pull\"]\nprint(\"fork\" in actions)\n", expectedOutput: "True" },
+        beginner: { prompt: "Clone your fork: 'https://github.com/you/repo.git'", starterCode: "", expectedOutput: "git clone https://github.com/you/repo.git" },
+        intermediate: { prompt: "Add an 'upstream' remote pointing to 'https://github.com/owner/repo.git'", starterCode: "", expectedOutput: "git remote add upstream https://github.com/owner/repo.git" },
+        advanced: { prompt: "Fetch all changes from the 'upstream' remote.", starterCode: "", expectedOutput: "git fetch upstream" },
       },
     },
     {
       id: "git-conflicts", title: "Resolving Conflicts", description: "Handling overlapping changes (Simulated)",
       content: "## What is a Conflict?\n\nA conflict happens when Git can't automatically merge two branches because they both changed the SAME line of the SAME file.\n\n### How to Fix\n1. Open the file\n2. Find the markers: `<<<<<<< HEAD` and `>>>>>>>`\n3. Choose which code to keep\n4. Remove markers, `git add`, and `git commit`",
-      codeExample: "file_content = \"\"\"\n<<<<<<< HEAD\nprint('Hello World')\n=======\nprint('Hello Universe')\n>>>>>>> feature-branch\n\"\"\"\nprint(\"Conflict detected! Choose one and delete markers.\")",
+      codeExample: "$ git merge featurex\nAuto-merging index.html\nCONFLICT (content): Merge conflict in index.html\nAutomatic merge failed; fix conflicts and then commit the result.",
       exercises: {
-        beginner: { prompt: "Check if '<<<<<<< HEAD' is in a string. Print True.", starterCode: "s = \"Line 1\\n<<<<<<< HEAD\\nLine 2\"\nprint(\"<<<<<<< HEAD\" in s)\n", expectedOutput: "True" },
-        intermediate: { prompt: "Write a function solve() that returns the second line of a conflict (the incoming change).", starterCode: "c = [\"<<<<\", \"Mine\", \"====\", \"Theirs\", \">>>>\"]\nprint(c[3])\n", expectedOutput: "Theirs" },
-        advanced: { prompt: "Simulate marker removal: Remove all lines starting with '<<' or '==' or '>>' from a list. Print list.", starterCode: "lines = [\"<<<<\", \"logic = 5\", \"====\", \"logic = 10\", \">>>>\"]\nclean = [l for l in lines if not any(x in l for x in [\"<\", \"=\", \">\"])]\n# Print the cleaned logic lines\nprint(clean)\n", expectedOutput: "['logic = 5', 'logic = 10']" },
+        beginner: { prompt: "View the current conflict status.", starterCode: "", expectedOutput: "git status" },
+        intermediate: { prompt: "After fixing a conflict in 'index.html', stage the resolved file.", starterCode: "", expectedOutput: "git add index.html" },
+        advanced: { prompt: "Finalize the merge by committing the resolved changes.", starterCode: "", expectedOutput: "git commit -m \"Fix merge conflict\"" },
       },
     },
     {
       id: "github-actions", title: "GitHub Actions: CI/CD Basics", description: "Automating your development with Workflows",
       content: "## Automation with Actions\n\nGitHub Actions lets you run code every time you push to GitHub. This is used for **Automated Testing** and **Deployment**.\n\n### Key Terms\n- **Workflow**: The automation file (.yaml)\n- **Event**: What triggers the run (e.g., Push, PR)\n- **Job**: A set of steps (e.g., Run Tests, Deploy)\n- **Runner**: The cloud computer running your actions",
-      codeExample: "# Example Workflow simulation in Python (YAML representation)\nworkflow = {\n    \"name\": \"Test Suite\",\n    \"on\": [\"push\"],\n    \"jobs\": {\n        \"test\": {\"runs-on\": \"ubuntu-latest\", \"steps\": [\"pip install\", \"pytest\"]}\n    }\n}\nprint(f\"Triggered by: {workflow['on']}\")",
+      codeExample: "$ mkdir -p .github/workflows\n$ touch .github/workflows/main.yml\n$ git add .github/workflows/main.yml\n$ git commit -m \"Create CI/CD workflow\"",
       exercises: {
-        beginner: { prompt: "Print the directory where GitHub Actions workflows are stored.", starterCode: "print(\".github/workflows\")\n", expectedOutput: ".github/workflows" },
-        intermediate: { prompt: "Check if a workflow 'on' list contains 'push'. Print True.", starterCode: "on = [\"pull_request\", \"push\"]\nprint(\"push\" in on)\n", expectedOutput: "True" },
-        advanced: { prompt: "Validate if a job has 'runs-on' key. Job: {'steps': []}. Print False.", starterCode: "job = {\"steps\": []}\nprint(\"runs-on\" in job)\n", expectedOutput: "False" },
+        beginner: { prompt: "Create the workflows directory: 'mkdir -p .github/workflows'", starterCode: "", expectedOutput: "mkdir -p .github/workflows" },
+        intermediate: { prompt: "Create a new workflow file: 'touch .github/workflows/test.yml'", starterCode: "", expectedOutput: "touch .github/workflows/test.yml" },
+        advanced: { prompt: "Stage the new workflows directory.", starterCode: "", expectedOutput: "git add .github/workflows" },
       },
     },
     {
       id: "github-pages", title: "GitHub Pages & Portfolios", description: "Hosting your portfolio with one click",
       content: "## GitHub Pages\n\nGitHub Pages is a hosting service that turns your repository into a live website—for free!\n\n### How to enable\n1. Go to **Settings** > **Pages**\n2. Select your `main` branch\n3. Click Save\n\nYour site will be live at `https://username.github.io/repo-name`",
-      codeExample: "user = \"jane_doe\"\nrepo = \"portfolio\"\nurl = f\"https://{user}.github.io/{repo}\"\nprint(f\"Visit my site: {url}\")",
+      codeExample: "# GitHub Pages primarily requires pushing a specific branch or repo\n$ git checkout -b gh-pages\n$ git push origin gh-pages",
       exercises: {
-        beginner: { prompt: "Construct the URL for user 'alex' and repo 'blog'. Print it.", starterCode: "u = \"alex\"\nr = \"blog\"\nprint(f\"https://{u}.github.io/{r}\")\n", expectedOutput: "https://alex.github.io/blog" },
-        intermediate: { prompt: "Check if 'index.html' is in a list of files (required for Pages). Print 'Ready' if present.", starterCode: "f = [\"style.css\", \"index.html\", \"script.js\"]\nprint(\"Ready\" if \"index.html\" in f else \"Missing\")\n", expectedOutput: "Ready" },
-        advanced: { prompt: "Check if branch is 'main' or 'gh-pages' for hosting. Test 'main'. Print True.", starterCode: "b = \"main\"\nprint(b in [\"main\", \"gh-pages\"])\n", expectedOutput: "True" },
+        beginner: { prompt: "Create and switch to a branch named 'gh-pages'.", starterCode: "", expectedOutput: "git checkout -b gh-pages" },
+        intermediate: { prompt: "Push the 'gh-pages' branch to 'origin'.", starterCode: "", expectedOutput: "git push origin gh-pages" },
+        advanced: { prompt: "List branches to visually confirm you are on 'gh-pages'.", starterCode: "", expectedOutput: "git branch" },
       },
     },
     {
       id: "github-master-pro", title: "Master Profile & Portfolio", description: "Building the ultimate dev presence",
       content: "## The Master Profile\n\nGitHub is your **Developer Resume**. \n\n### Essential Checklist\n- **Profile README**: Use a special repo named after your username to show a bio.\n- **Green Grass**: Keep a consistent commit streak.\n- **Pinned Repos**: Show your best work.\n- **Organizations**: Join teams to show professional experience.\n\nCongratulations! You have mastered the GitHub journey from Start to Finish.",
-      codeExample: "profile = {\n    \"username\": \"py_master\",\n    \"readme\": \"Hi, I build cool stuff!\",\n    \"pinned\": [\"AI-Bot\", \"Web-Scraper\"]\n}\nprint(f\"Welcome to {profile['username']}'s world!\")",
+      codeExample: "$ mkdir my-username\n$ cd my-username\n$ echo \"# Hi, I'm a Developer!\" > README.md\n$ git init\n$ git add README.md\n$ git commit -m \"Add profile bio\"",
       exercises: {
-        beginner: { prompt: "Print the name of the special repository for your profile README.", starterCode: "# It must be your username exactly\nprint(\"username/username\")\n", expectedOutput: "username/username" },
-        intermediate: { prompt: "Verify if at least 1 repo is pinned. Pinned: []. Print 'Empty'.", starterCode: "p = []\nprint(\"Empty\" if not p else \"Active\")\n", expectedOutput: "Empty" },
-        advanced: { prompt: "Format a bio: 'Bio: [txt]'. Test 'Python Dev'. Print it.", starterCode: "txt = \"Python Dev\"\nprint(f\"Bio: {txt}\")\n", expectedOutput: "Bio: Python Dev" },
+        beginner: { prompt: "Create a user profile repo directory (e.g. 'mkdir username')", starterCode: "", expectedOutput: "mkdir username" },
+        intermediate: { prompt: "Print a bio string to the terminal: 'echo \"I am a dev\"'", starterCode: "", expectedOutput: "echo \"I am a dev\"" },
+        advanced: { prompt: "View your terminal command history.", starterCode: "", expectedOutput: "history" },
       },
     },
   ];
 }
+
+
 
 function sqlLessons(): CareerLesson[] {
   return [
@@ -702,17 +704,17 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Select all customers (id, name) ordered by id.",
-          starterCode: "-- Write your SQL here\nSELECT id, name\nFROM customers\nORDER BY id;\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "id,name\n1,Alice\n2,Bob\n3,Charlie\n4,Diana\n5,Ethan",
         },
         intermediate: {
           prompt: "List Electronics products (name, price) ordered by price DESC.",
-          starterCode: "-- Write your SQL here\nSELECT name, price\nFROM products\nWHERE category = 'Electronics'\nORDER BY price DESC;\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,price\nKeyboard,2500\nHeadphones,1500\nMouse,800",
         },
         advanced: {
           prompt: "Show the top 3 most expensive products (name, price).",
-          starterCode: "-- Write your SQL here\nSELECT name, price\nFROM products\nORDER BY price DESC\nLIMIT 3;\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,price\nKeyboard,2500\nHeadphones,1500\nMouse,800",
         },
       },
@@ -729,19 +731,19 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "List customers from Mumbai (name, city) ordered by name.",
-          starterCode: "-- Write your SQL here\nSELECT name, city\nFROM customers\nWHERE city = 'Mumbai'\nORDER BY name;\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,city\nAlice,Mumbai\nDiana,Mumbai",
         },
         intermediate: {
           prompt: "Show March 2026 orders (id, order_date, status) ordered by order_date.",
           starterCode:
-            "-- Write your SQL here\nSELECT id, order_date, status\nFROM orders\nWHERE order_date >= '2026-03-01' AND order_date < '2026-04-01'\nORDER BY order_date;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "id,order_date,status\n4,2026-03-12,completed\n5,2026-03-15,completed",
         },
         advanced: {
           prompt: "List products priced between 100 and 2000 (name, price) ordered by price.",
           starterCode:
-            "-- Write your SQL here\nSELECT name, price\nFROM products\nWHERE price BETWEEN 100 AND 2000\nORDER BY price;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,price\nCoffee,120\nMouse,800\nHeadphones,1500",
         },
       },
@@ -759,19 +761,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Count orders by status (status, count) ordered by status.",
           starterCode:
-            "-- Write your SQL here\nSELECT status, COUNT(*) AS count\nFROM orders\nGROUP BY status\nORDER BY status;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "status,count\ncancelled,1\ncompleted,4",
         },
         intermediate: {
           prompt: "For completed orders only, compute total quantity sold per product (name, total_qty) ordered by total_qty DESC then name.",
           starterCode:
-            "-- Write your SQL here\nSELECT p.name, SUM(oi.quantity) AS total_qty\nFROM orders o\nJOIN order_items oi ON oi.order_id = o.id\nJOIN products p ON p.id = oi.product_id\nWHERE o.status = 'completed'\nGROUP BY p.id, p.name\nORDER BY total_qty DESC, p.name;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,total_qty\nPen,5\nCoffee,4\nHeadphones,3\nNotebook,3\nKeyboard,1",
         },
         advanced: {
           prompt: "Compute revenue per completed order (order_id, revenue) ordered by order_id.",
           starterCode:
-            "-- Write your SQL here\nSELECT o.id AS order_id, SUM(p.price * oi.quantity) AS revenue\nFROM orders o\nJOIN order_items oi ON oi.order_id = o.id\nJOIN products p ON p.id = oi.product_id\nWHERE o.status = 'completed'\nGROUP BY o.id\nORDER BY o.id;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "order_id,revenue\n1,270\n2,1500\n4,2860\n5,3050",
         },
       },
@@ -789,19 +791,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "List all orders with customer name (order_id, name, status) ordered by order_id.",
           starterCode:
-            "-- Write your SQL here\nSELECT o.id AS order_id, c.name, o.status\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nORDER BY o.id;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "order_id,name,status\n1,Alice,completed\n2,Bob,completed\n3,Alice,cancelled\n4,Charlie,completed\n5,Diana,completed",
         },
         intermediate: {
           prompt: "For order_id=1, list items (order_id, product, quantity) ordered by product.",
           starterCode:
-            "-- Write your SQL here\nSELECT oi.order_id, p.name AS product, oi.quantity\nFROM order_items oi\nJOIN products p ON p.id = oi.product_id\nWHERE oi.order_id = 1\nORDER BY p.name;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "order_id,product,quantity\n1,Coffee,1\n1,Notebook,2\n1,Pen,5",
         },
         advanced: {
           prompt: "Total spent per customer on completed orders (include customers with 0). Output (name, total_spent) ordered by total_spent DESC.",
           starterCode:
-            "-- Write your SQL here\nWITH order_revenue AS (\n  SELECT o.id AS order_id, o.customer_id, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, o.customer_id\n)\nSELECT c.name, COALESCE(SUM(orv.revenue), 0) AS total_spent\nFROM customers c\nLEFT JOIN order_revenue orv ON orv.customer_id = c.id\nGROUP BY c.id, c.name\nORDER BY total_spent DESC;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nDiana,3050\nCharlie,2860\nBob,1500\nAlice,270\nEthan,0",
         },
       },
@@ -819,19 +821,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Find customers who have a cancelled order (name).",
           starterCode:
-            "-- Write your SQL here\nSELECT name\nFROM customers\nWHERE id IN (SELECT customer_id FROM orders WHERE status = 'cancelled')\nORDER BY name;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name\nAlice",
         },
         intermediate: {
           prompt: "Find products that were never ordered (name) ordered by name.",
           starterCode:
-            "-- Write your SQL here\nSELECT p.name\nFROM products p\nWHERE NOT EXISTS (\n  SELECT 1 FROM order_items oi WHERE oi.product_id = p.id\n)\nORDER BY p.name;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name\nMouse",
         },
         advanced: {
           prompt: "Find customers whose completed total_spent is greater than the average total_spent across all customers (include 0). Output (name, total_spent) ordered by total_spent DESC.",
           starterCode:
-            "-- Write your SQL here\nWITH order_revenue AS (\n  SELECT o.id AS order_id, o.customer_id, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, o.customer_id\n),\ncustomer_spend AS (\n  SELECT c.id, c.name, COALESCE(SUM(orv.revenue), 0) AS total_spent\n  FROM customers c\n  LEFT JOIN order_revenue orv ON orv.customer_id = c.id\n  GROUP BY c.id, c.name\n),\navg_spend AS (\n  SELECT AVG(total_spent) AS avg_total FROM customer_spend\n)\nSELECT cs.name, cs.total_spent\nFROM customer_spend cs\nCROSS JOIN avg_spend a\nWHERE cs.total_spent > a.avg_total\nORDER BY cs.total_spent DESC;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nDiana,3050\nCharlie,2860",
         },
       },
@@ -849,19 +851,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Using a CTE, compute completed order revenue (order_id, revenue) ordered by order_id.",
           starterCode:
-            "-- Write your SQL here\nWITH order_revenue AS (\n  SELECT o.id AS order_id, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id\n)\nSELECT order_id, revenue\nFROM order_revenue\nORDER BY order_id;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "order_id,revenue\n1,270\n2,1500\n4,2860\n5,3050",
         },
         intermediate: {
           prompt: "Compute monthly completed revenue (month, revenue) ordered by month.",
           starterCode:
-            "-- Write your SQL here\nWITH order_revenue AS (\n  SELECT o.id, substr(o.order_date, 1, 7) AS month, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, month\n)\nSELECT month, SUM(revenue) AS revenue\nFROM order_revenue\nGROUP BY month\nORDER BY month;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "month,revenue\n2026-01,1770\n2026-03,5910",
         },
         advanced: {
           prompt: "Find the top customer by completed total_spent (name, total_spent).",
           starterCode:
-            "-- Write your SQL here\nWITH order_revenue AS (\n  SELECT o.customer_id, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, o.customer_id\n),\ncustomer_spend AS (\n  SELECT c.name, COALESCE(SUM(orv.revenue), 0) AS total_spent\n  FROM customers c\n  LEFT JOIN order_revenue orv ON orv.customer_id = c.id\n  GROUP BY c.id, c.name\n)\nSELECT name, total_spent\nFROM customer_spend\nORDER BY total_spent DESC\nLIMIT 1;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nDiana,3050",
         },
       },
@@ -879,20 +881,20 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Rank products by price within each category (category, name, price, price_rank) ordered by category, name.",
           starterCode:
-            "-- Write your SQL here\nSELECT category, name, price,\n       RANK() OVER (PARTITION BY category ORDER BY price DESC) AS price_rank\nFROM products\nORDER BY category, name;\n",
+            "-- Write your SQL here\n",
           expectedOutput:
             "category,name,price,price_rank\nElectronics,Headphones,1500,2\nElectronics,Keyboard,2500,1\nElectronics,Mouse,800,3\nGrocery,Coffee,120,1\nStationery,Notebook,50,1\nStationery,Pen,10,2",
         },
         intermediate: {
           prompt: "Show completed daily revenue and running_total (order_date, revenue, running_total) ordered by order_date.",
           starterCode:
-            "-- Write your SQL here\nWITH daily AS (\n  SELECT o.order_date, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.order_date\n)\nSELECT order_date, revenue,\n       SUM(revenue) OVER (ORDER BY order_date) AS running_total\nFROM daily\nORDER BY order_date;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "order_date,revenue,running_total\n2026-01-05,270,270\n2026-01-06,1500,1770\n2026-03-12,2860,4630\n2026-03-15,3050,7680",
         },
         advanced: {
           prompt: "Top 2 customers by completed total_spent with rank (name, total_spent, spend_rank) ordered by spend_rank.",
           starterCode:
-            "-- Write your SQL here\nWITH order_revenue AS (\n  SELECT o.id AS order_id, o.customer_id, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, o.customer_id\n),\ncustomer_spend AS (\n  SELECT c.name, COALESCE(SUM(orv.revenue), 0) AS total_spent\n  FROM customers c\n  LEFT JOIN order_revenue orv ON orv.customer_id = c.id\n  GROUP BY c.id, c.name\n)\nSELECT name, total_spent,\n       DENSE_RANK() OVER (ORDER BY total_spent DESC) AS spend_rank\nFROM customer_spend\nORDER BY spend_rank\nLIMIT 2;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,total_spent,spend_rank\nDiana,3050,1\nCharlie,2860,2",
         },
       },
@@ -910,19 +912,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Create table temp_notes(id INTEGER, note TEXT) then select its name from sqlite_master.",
           starterCode:
-            "-- Write your SQL here\nCREATE TABLE temp_notes(\n  id INTEGER,\n  note TEXT\n);\n\nSELECT name\nFROM sqlite_master\nWHERE type='table' AND name='temp_notes';\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name\ntemp_notes",
         },
         intermediate: {
           prompt: "Create table projects(id INTEGER PRIMARY KEY, name TEXT NOT NULL), insert 1 row, then select count.",
           starterCode:
-            "-- Write your SQL here\nCREATE TABLE projects(\n  id INTEGER PRIMARY KEY,\n  name TEXT NOT NULL\n);\nINSERT INTO projects(id, name) VALUES (1, 'Roadmap');\nSELECT COUNT(*) AS count FROM projects;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "count\n1",
         },
         advanced: {
           prompt: "Create table emails(email TEXT UNIQUE), insert 2 distinct emails, then select count.",
           starterCode:
-            "-- Write your SQL here\nCREATE TABLE emails(\n  email TEXT UNIQUE\n);\nINSERT INTO emails(email) VALUES ('a@example.com');\nINSERT INTO emails(email) VALUES ('b@example.com');\nSELECT COUNT(*) AS count FROM emails;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "count\n2",
         },
       },
@@ -940,19 +942,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Insert a customer (id=6, Farah, Delhi) then select (name, city) for id=6.",
           starterCode:
-            "-- Write your SQL here\nINSERT INTO customers(id, name, city, signup_date)\nVALUES (6, 'Farah', 'Delhi', '2026-04-01');\n\nSELECT name, city\nFROM customers\nWHERE id = 6;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,city\nFarah,Delhi",
         },
         intermediate: {
           prompt: "Update order 3 from cancelled to completed, then count completed orders (count).",
           starterCode:
-            "-- Write your SQL here\nUPDATE orders\nSET status = 'completed'\nWHERE id = 3;\n\nSELECT COUNT(*) AS count\nFROM orders\nWHERE status = 'completed';\n",
+            "-- Write your SQL here\n",
           expectedOutput: "count\n5",
         },
         advanced: {
           prompt: "Delete order_items for order_id=3, then show total_qty for order 3 as 0 (use COALESCE).",
           starterCode:
-            "-- Write your SQL here\nDELETE FROM order_items WHERE order_id = 3;\n\nSELECT COALESCE(SUM(quantity), 0) AS total_qty\nFROM order_items\nWHERE order_id = 3;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "total_qty\n0",
         },
       },
@@ -970,19 +972,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "BEGIN; insert a customer (id=6); ROLLBACK; then count customers (count).",
           starterCode:
-            "-- Write your SQL here\nBEGIN;\nINSERT INTO customers(id, name, city, signup_date) VALUES (6, 'Farah', 'Delhi', '2026-04-01');\nROLLBACK;\nSELECT COUNT(*) AS count FROM customers;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "count\n5",
         },
         intermediate: {
           prompt: "BEGIN; update Pen price to 9999; ROLLBACK; then select Pen price (price).",
           starterCode:
-            "-- Write your SQL here\nBEGIN;\nUPDATE products SET price = 9999 WHERE name = 'Pen';\nROLLBACK;\nSELECT price FROM products WHERE name = 'Pen';\n",
+            "-- Write your SQL here\n",
           expectedOutput: "price\n10",
         },
         advanced: {
           prompt: "BEGIN; update Pen price to 15; COMMIT; then select Pen price (price).",
           starterCode:
-            "-- Write your SQL here\nBEGIN;\nUPDATE products SET price = 15 WHERE name = 'Pen';\nCOMMIT;\nSELECT price FROM products WHERE name = 'Pen';\n",
+            "-- Write your SQL here\n",
           expectedOutput: "price\n15",
         },
       },
@@ -1000,19 +1002,19 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Create index idx_orders_customer on orders(customer_id) then list index names for orders (name).",
           starterCode:
-            "-- Write your SQL here\nCREATE INDEX idx_orders_customer ON orders(customer_id);\n\nSELECT name\nFROM sqlite_master\nWHERE type='index' AND tbl_name='orders'\nORDER BY name;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name\nidx_orders_customer",
         },
         intermediate: {
           prompt: "Create two indexes on orders: idx_orders_customer and idx_orders_status, then list them ordered by name.",
           starterCode:
-            "-- Write your SQL here\nCREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\n\nSELECT name\nFROM sqlite_master\nWHERE type='index' AND tbl_name='orders'\nORDER BY name;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name\nidx_orders_customer\nidx_orders_status",
         },
         advanced: {
           prompt: "After creating the two indexes, count how many indexes exist on orders (count).",
           starterCode:
-            "-- Write your SQL here\nCREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\n\nSELECT COUNT(*) AS count\nFROM sqlite_master\nWHERE type='index' AND tbl_name='orders';\n",
+            "-- Write your SQL here\n",
           expectedOutput: "count\n2",
         },
       },
@@ -1030,25 +1032,841 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Create view v_completed_orders (orders + customers for completed) then select first 2 rows (order_id, name) ordered by order_id.",
           starterCode:
-            "-- Write your SQL here\nCREATE VIEW v_completed_orders AS\nSELECT o.id AS order_id, c.name, o.order_date\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'completed';\n\nSELECT order_id, name\nFROM v_completed_orders\nORDER BY order_id\nLIMIT 2;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "order_id,name\n1,Alice\n2,Bob",
         },
         intermediate: {
           prompt: "Create view v_customer_spend (name,total_spent for completed) then list customers with total_spent > 2000 ordered by total_spent DESC.",
           starterCode:
-            "-- Write your SQL here\nCREATE VIEW v_customer_spend AS\nWITH order_revenue AS (\n  SELECT o.id AS order_id, o.customer_id, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, o.customer_id\n)\nSELECT c.name, COALESCE(SUM(orv.revenue), 0) AS total_spent\nFROM customers c\nLEFT JOIN order_revenue orv ON orv.customer_id = c.id\nGROUP BY c.id, c.name;\n\nSELECT name, total_spent\nFROM v_customer_spend\nWHERE total_spent > 2000\nORDER BY total_spent DESC;\n",
+            "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nDiana,3050\nCharlie,2860",
         },
         advanced: {
           prompt: "Create then DROP view v_customer_spend, then verify it no longer exists (count).",
           starterCode:
-            "-- Write your SQL here\nCREATE VIEW v_customer_spend AS\nSELECT 1 AS x;\n\nDROP VIEW v_customer_spend;\n\nSELECT COUNT(*) AS count\nFROM sqlite_master\nWHERE type='view' AND name='v_customer_spend';\n",
+            "-- Write your SQL here\n",
           expectedOutput: "count\n0",
         },
       },
     },
   ];
 }
+
+function linuxMastery(): CareerLesson[] {
+  return [
+    {
+      id: "linux-01-intro",
+      title: "1. Intro to Linux",
+      description: "Kernel vs OS, Distros, and Open Source",
+      content: `## Welcome to Linux
+
+Linux is the backbone of modern computing. It powers everything from Android phones to the world's most powerful supercomputers and AWS servers.
+
+### Key Concepts
+- **The Kernel**: The core of the OS that talks to hardware.
+- **Distributions (Distros)**: Versions of Linux like Ubuntu, Debian, CentOS, or Fedora.
+- **Open Source**: The source code is free to study, modify, and distribute.
+
+### Why Learn It?
+In most dev jobs, your code will run on a Linux server. Understanding Linux is non-negotiable for professional developers.`,
+      codeExample: `$ uname -a
+Linux pymaster-vm 5.15.0-91-generic`,
+      exercises: {
+        beginner: { prompt: "Check your Linux kernel version using uname.", starterCode: "", expectedOutput: "uname -a" },
+        intermediate: { prompt: "Display the short OS name.", starterCode: "", expectedOutput: "uname" },
+        advanced: { prompt: "Identify who is currently logged in.", starterCode: "", expectedOutput: "whoami" },
+      },
+    },
+    {
+      id: "linux-02-install",
+      title: "2. Installation & Setup",
+      description: "VM, Dual Boot, and WSL",
+      content: `## Getting Linux
+
+You don't need to delete Windows to use Linux. Here are the 3 best ways to start:
+
+1. **WSL (Windows Subsystem for Linux)**: Install a Linux terminal right inside Windows. Run \`wsl --install\` in PowerShell.
+2. **Virtual Machine (VM)**: Use 'VirtualBox' to run Linux in a window like a regular app.
+3. **Dual Boot**: Install Linux on a separate partition next to Windows.
+
+### First Command: Updating
+Once installed, your first step is always to update the software list.`,
+      codeExample: "$ sudo apt update",
+      exercises: {
+        beginner: { prompt: "Update your package list using sudo and apt.", starterCode: "", expectedOutput: "sudo apt update" },
+        intermediate: { prompt: "Upgrade all your installed software packages.", starterCode: "", expectedOutput: "sudo apt upgrade" },
+        advanced: { prompt: "Check if the system needs a reboot after update.", starterCode: "", expectedOutput: "ls /var/run/reboot-required" },
+      },
+    },
+    {
+      id: "linux-03-shell",
+      title: "3. The Shell & Terminal",
+      description: "Bash, Keyboard hacks, and History",
+      content: `## The Command Line
+
+The **Shell** (usually \`bash\`) is the program that interprets your commands. The **Terminal** is the window where you type them.
+
+### Pro Shortcuts
+- \`Tab\`: Auto-completes filenames and commands.
+- \`Ctrl + C\`: Stops a hanging process.
+- \`Ctrl + L\`: Clears the screen.
+- \`Up/Down Arrows\`: Cycles through your command history.
+
+### History
+Linux remembers everything you type.`,
+      codeExample: `$ history
+  1  ls
+  2  cd Documents
+  3  python3 app.py`,
+      exercises: {
+        beginner: { prompt: "Clear the terminal screen using a command.", starterCode: "", expectedOutput: "clear" },
+        intermediate: { prompt: "Show your command history.", starterCode: "", expectedOutput: "history" },
+        advanced: { prompt: "Print 'Linux is Power' to the terminal.", starterCode: "", expectedOutput: "echo \"Linux is Power\"" },
+      },
+    },
+    {
+      id: "linux-04-hierarchy",
+      title: "4. Filesystem Hierarchy",
+      description: "The tree: / vs C:\\",
+      content: `## The Linux Tree
+
+Unlike Windows, Linux has no 'C:' drive. Everything starts at the **Root** (\`/\`).
+
+### Key Folders
+- \`/bin\`: Core binaries (commands like \`ls\`, \`cp\`).
+- \`/etc\`: Configuration files (the 'Brain' of the system).
+- \`/home\`: Personal files for all users.
+- \`/var/log\`: Where the system stores logs.
+- \`/tmp\`: Temporary files (wiped on reboot).`,
+      codeExample: `$ ls /etc`,
+      exercises: {
+        beginner: { prompt: "List the contents of the root directory /", starterCode: "", expectedOutput: "ls /" },
+        intermediate: { prompt: "List content of the configuration folder etc.", starterCode: "", expectedOutput: "ls /etc" },
+        advanced: { prompt: "Navigate to the bin directory.", starterCode: "", expectedOutput: "cd /bin" },
+      },
+    },
+    {
+      id: "linux-05-nav",
+      title: "5. Navigation Mastery",
+      description: "Absolute vs Relative paths",
+      content: `## Moving Around
+
+- \`pwd\`: Print Working Directory (Where am I?).
+- \`cd\`: Change Directory.
+- \`~\`: Shortcut for your HOME folder.
+- \`..\`: Move up one level.
+
+### Absolute vs Relative
+- **Absolute**: Starts from root (\`/\`). Works anywhere.
+- **Relative**: Starts from where you are (\`notes\`).`,
+      codeExample: `$ pwd
+/home/learner
+$ cd Documents
+$ cd ..`,
+      exercises: {
+        beginner: { prompt: "Check which directory you are currently in.", starterCode: "", expectedOutput: "pwd" },
+        intermediate: { prompt: "Go to your home directory using the ~ shortcut.", starterCode: "", expectedOutput: "cd ~" },
+        advanced: { prompt: "Go up two levels in the directory tree.", starterCode: "", expectedOutput: "cd ../.." },
+      },
+    },
+    {
+      id: "linux-06-filemgmt",
+      title: "6. File Management",
+      description: "Create, Copy, Move, and Delete",
+      content: `## Managing Data
+
+- \`touch\`: Create a new empty file.
+- \`mkdir\`: Create a new folder.
+- \`cp\`: Copy a file.
+- \`mv\`: Move or Rename a file.
+- \`rm\`: Remove (Delete) a file.
+
+### Pro Tip
+To delete a folder and everything inside it, use \`rm -rf\` (Be careful!).`,
+      codeExample: `$ mkdir project
+$ touch project/main.py
+$ cp project/main.py backup.py`,
+      exercises: {
+        beginner: { prompt: "Create a new file called README.md", starterCode: "", expectedOutput: "touch README.md" },
+        intermediate: { prompt: "Create a directory called 'assets'.", starterCode: "", expectedOutput: "mkdir assets" },
+        advanced: { prompt: "Forcefully remove a directory called 'tmp' and its contents.", starterCode: "", expectedOutput: "rm -rf tmp" },
+      },
+    },
+    {
+      id: "linux-07-viewing",
+      title: "7. Viewing & Reading",
+      description: "cat, less, head, and tail",
+      content: `## Reading Files
+
+You don't always need to open an editor to see what's in a file.
+
+- \`cat\`: Print the whole file to terminal (Good for small files).
+- \`less\`: Open the file in a scrollable view (Press 'q' to quit).
+- \`head\`: See the first 10 lines.
+- \`tail\`: See the last 10 lines (Great for checking logs!).`,
+      codeExample: `$ cat .bashrc
+$ tail -n 20 /var/log/syslog`,
+      exercises: {
+        beginner: { prompt: "Print the contents of README.md to the terminal.", starterCode: "", expectedOutput: "cat README.md" },
+        intermediate: { prompt: "View the first 5 lines of a file named 'data.txt'.", starterCode: "", expectedOutput: "head -n 5 data.txt" },
+        advanced: { prompt: "Follow a log file in real-time as it updates (stream logs).", starterCode: "", expectedOutput: "tail -f syslog" },
+      },
+    },
+    {
+      id: "linux-08-editors",
+      title: "8. Nano & Vim basics",
+      description: "Editing files in the terminal",
+      content: `## Terminal Editors
+
+If you are on a remote server, you won't have VS Code. You must know these:
+
+1. **Nano**: The easy one. Text stays at the bottom identifying shortcuts like \`^O\` (Save) and \`^X\` (Exit).
+2. **Vim**: The pro choice. It has modes. Press \`i\` to type, \`Esc\` to stop, and \`:wq\` to save and quit.
+
+### Escape from Vim
+If you get stuck, hit \`Esc\` then type \`:q!\` to quit without saving.`,
+      codeExample: `$ nano config.txt
+$ vim app.py`,
+      exercises: {
+        beginner: { prompt: "Open a file named 'app.py' with the nano editor.", starterCode: "", expectedOutput: "nano app.py" },
+        intermediate: { prompt: "Open the same file with vim.", starterCode: "", expectedOutput: "vim app.py" },
+        advanced: { prompt: "Exit vim saving your changes (command).", starterCode: "", expectedOutput: ":wq" },
+      },
+    },
+    {
+      id: "linux-09-users",
+      title: "9. Users & Groups",
+      description: "/etc/passwd and management",
+      content: `## Multi-user System
+
+Linux is built to handle many users at once. 
+
+- \`whoami\`: Who am I?
+- \`id\`: Detailed info about your user and groups.
+- \`/etc/passwd\`: The file where all user accounts are listed.
+- \`adduser\`: Add a new human user.
+- \`groupadd\`: Create a team (group).`,
+      codeExample: `$ id
+uid=1000(learner) gid=1000(learner)`,
+      exercises: {
+        beginner: { prompt: "Display your user ID and groups.", starterCode: "", expectedOutput: "id" },
+        intermediate: { prompt: "Add a new user named 'guest'.", starterCode: "", expectedOutput: "sudo adduser guest" },
+        advanced: { prompt: "Show the last 5 lines of the user password file.", starterCode: "", expectedOutput: "tail -n 5 /etc/passwd" },
+      },
+    },
+    {
+      id: "linux-10-permissions",
+      title: "10. Permissions Deep Dive",
+      description: "rwx and Octal values",
+      content: `## Secure by Default
+
+Every file has permissions for 3 entities:
+1. **User (Owner)**
+2. **Group**
+3. **Others**
+
+### Permission Types
+- \`r\` (Read): 4
+- \`w\` (Write): 2
+- \`x\` (Execute): 1
+
+### Examples
+- \`755\`: Owner can do everything (7), others can just read and run (5).
+- \`644\`: Owner can edit (6), others only read (4).
+- \`chmod +x\`: Make a script runnable.`,
+      codeExample: `$ chmod 777 bad_permission.sh
+$ chmod +x startup.sh`,
+      exercises: {
+        beginner: { prompt: "Make a file named 'run.sh' executable.", starterCode: "", expectedOutput: "chmod +x run.sh" },
+        intermediate: { prompt: "Change file owner to 'root' for 'secret.txt'.", starterCode: "", expectedOutput: "sudo chown root secret.txt" },
+        advanced: { prompt: "Set permissions to read/write for owner, but nothing for anyone else (Octal).", starterCode: "", expectedOutput: "chmod 600 private.txt" },
+      },
+    },
+    {
+      id: "linux-11-sudo",
+      title: "11. Superuser Power",
+      description: "root, sudo, and visudo",
+      content: `## The God Mode
+
+The **Root** user can do anything, including deleting the entire system. Because of this, we use \`sudo\` (SuperUser DO).
+
+### Rules
+- Never log in as root directly.
+- Use \`sudo\` only for system-wide changes (installing apps, changing configs).
+- \`visudo\`: The safe way to edit who has sudo power.`,
+      codeExample: "$ sudo rm -rf /  # NEVER EVER DO THIS",
+      exercises: {
+        beginner: { prompt: "Switch to the root user identity (interactive).", starterCode: "", expectedOutput: "sudo su" },
+        intermediate: { prompt: "Run 'ls /root' with administrative privileges.", starterCode: "", expectedOutput: "sudo ls /root" },
+        advanced: { prompt: "Edit the sudoers file safely.", starterCode: "", expectedOutput: "sudo visudo" },
+      },
+    },
+    {
+      id: "linux-12-apt",
+      title: "12. Apt Package Manager",
+      description: "Installing and Purging software",
+      content: `## App Store for Terminal
+
+On Ubuntu/Debian, we use \`apt\` to manage software.
+
+- \`apt search\`: Find an app.
+- \`apt install\`: Download and install.
+- \`apt remove\`: Uninstall but keep configs.
+- \`apt purge\`: Uninstall everything including configs.
+- \`apt autoremove\`: Clean up leftover junk.`,
+      codeExample: "$ sudo apt install git python3-pip",
+      exercises: {
+        beginner: { prompt: "Install the 'neofetch' package.", starterCode: "", expectedOutput: "sudo apt install neofetch" },
+        intermediate: { prompt: "Search for all packages related to 'nginx'.", starterCode: "", expectedOutput: "apt search nginx" },
+        advanced: { prompt: "Completely remove 'git' including configuration.", starterCode: "", expectedOutput: "sudo apt purge git" },
+      },
+    },
+    {
+      id: "linux-13-processes",
+      title: "13. Processes & Signals",
+      description: "ps, top, and kill",
+      content: `## Monitor your System
+
+Everything running on Linux is a **Process** with a unique **PID** (Process ID).
+
+- \`ps aux\`: List every process running right now.
+- \`top\` / \`htop\`: A live manager (like Task Manager).
+- \`kill <PID>\`: Ask a process to stop.
+- \`kill -9 <PID>\`: Force a process to stop immediately.`,
+      codeExample: `$ ps aux | grep python
+$ kill 420`,
+      exercises: {
+        beginner: { prompt: "Open the live process monitor.", starterCode: "", expectedOutput: "top" },
+        intermediate: { prompt: "List all running processes with user details.", starterCode: "", expectedOutput: "ps aux" },
+        advanced: { prompt: "Force kill process with ID 999.", starterCode: "", expectedOutput: "kill -9 999" },
+      },
+    },
+    {
+      id: "linux-14-resources",
+      title: "14. System Resources",
+      description: "df, du, and free",
+      content: `## Hardware Health
+
+Is your disk full? Is your RAM exhausted? 
+
+- \`df -h\`: Disk Free (How much space is left?).
+- \`du -sh\`: Disk Usage (How big is this folder?).
+- \`free -h\`: How much RAM is being used?
+- \`uptime\`: How long has the server been running?`,
+      codeExample: `$ df -h
+$ free -m`,
+      exercises: {
+        beginner: { prompt: "Show disk space in human-readable format.", starterCode: "", expectedOutput: "df -h" },
+        intermediate: { prompt: "Check current RAM usage in megabytes.", starterCode: "", expectedOutput: "free -m" },
+        advanced: { prompt: "See the size of your current directory summaries.", starterCode: "", expectedOutput: "du -sh" },
+      },
+    },
+    {
+      id: "linux-15-grep",
+      title: "15. Text Processing I (grep)",
+      description: "Pipes and Searching",
+      content: `## The Power of the Pipe
+
+Piping (\`|\`) lets you take the output of one command and 'pipe' it as input to another. It's the most powerful feature of Linux.
+
+- \`grep\`: Search for text.
+- \`>\` : Save output to a file (Overwrites).
+- \`>>\`: Save output to a file (Appends).`,
+      codeExample: `$ ps aux | grep python
+$ cat log.txt | grep 'error' > errors.txt`,
+      exercises: {
+        beginner: { prompt: "List all files and find which ones contain 'config'.", starterCode: "", expectedOutput: "ls | grep config" },
+        intermediate: { prompt: "Save the word 'Master' into a new file named 'status.txt'.", starterCode: "", expectedOutput: "echo \"Master\" > status.txt" },
+        advanced: { prompt: "Search for 'Failed' in 'auth.log' but ignore case.", starterCode: "", expectedOutput: "grep -i 'Failed' auth.log" },
+      },
+    },
+    {
+      id: "linux-16-sedawk",
+      title: "16. Text Processing II (sed/awk)",
+      description: "Master level stream editing",
+      content: `## Editing Streams
+
+- \`sed\`: The Stream Editor. Great for replacing text in files without opening them.
+- \`awk\`: A full programming language for processing spreadsheets (columns and rows) in the terminal.
+
+Example: \`sed 's/apple/orange/g' file.txt\` (Replace all apples with oranges).`,
+      codeExample: "$ awk '{print $1}' config.csv",
+      exercises: {
+        beginner: { prompt: "Use sed to replace 'old' with 'new' in 'script.sh' (preview only).", starterCode: "", expectedOutput: "sed 's/old/new/g' script.sh" },
+        intermediate: { prompt: "Print the first column of a file using awk.", starterCode: "", expectedOutput: "awk '{print $1}' data.txt" },
+        advanced: { prompt: "Use sed to delete the first line of a file.", starterCode: "", expectedOutput: "sed '1d' file.txt" },
+      },
+    },
+    {
+      id: "linux-17-networking",
+      title: "17. Networking & Connections",
+      description: "ip, ping, and traceroute",
+      content: `## The Web in Terminal
+
+- \`ip addr\`: Show your IP address.
+- \`ping\`: Check if a website is up.
+- \`curl\`: Download content from a URL (used 99% of the time by devs).
+- \`netstat -tlnp\`: See what ports are open on your machine.`,
+      codeExample: `$ curl ifconfig.me
+$ ip addr show eth0`,
+      exercises: {
+        beginner: { prompt: "Check your local IP address.", starterCode: "", expectedOutput: "ip addr" },
+        intermediate: { prompt: "Ping google.com to check connectivity.", starterCode: "", expectedOutput: "ping google.com" },
+        advanced: { prompt: "Download the content of 'example.com' to the terminal.", starterCode: "", expectedOutput: "curl example.com" },
+      },
+    },
+    {
+      id: "linux-18-ssh",
+      title: "18. SSH Mastery",
+      description: "Remote access and Keys",
+      content: `## Remote Control
+
+**SSH** (Secure Shell) lets you log into a Linux server across the world securely.
+
+- \`ssh user@server\`: Log in with a password.
+- \`ssh-keygen\`: Create digital keys so you never need a password.
+- \`scp\`: Secure Copy (Send files to a server).`,
+      codeExample: `$ ssh-keygen -t rsa
+$ scp app.py user@192.168.1.100:/home/user/`,
+      exercises: {
+        beginner: { prompt: "Generate a new pair of SSH keys.", starterCode: "", expectedOutput: "ssh-keygen" },
+        intermediate: { prompt: "Attempt to connect to a server at 10.0.0.5 as user 'dev'.", starterCode: "", expectedOutput: "ssh dev@10.0.0.5" },
+        advanced: { prompt: "Check your public key content in the .ssh folder.", starterCode: "", expectedOutput: "cat ~/.ssh/id_rsa.pub" },
+      },
+    },
+    {
+      id: "linux-19-systemd",
+      title: "19. Services with Systemd",
+      description: "Managing background apps",
+      content: `## Controlling Services
+
+Most Linux apps (like Nginx, MySQL, SSH) run in the background as **Services**.
+
+- \`systemctl start\`: Start a service.
+- \`systemctl stop\`: Stop it.
+- \`systemctl enable\`: Make it start automatically when the PC turns on.
+- \`journalctl -u\`: View the logs for that specific service.`,
+      codeExample: "$ sudo systemctl restart nginx",
+      exercises: {
+        beginner: { prompt: "Check the status of the 'ssh' service.", starterCode: "", expectedOutput: "systemctl status ssh" },
+        intermediate: { prompt: "Restart the web server 'nginx'.", starterCode: "", expectedOutput: "sudo systemctl restart nginx" },
+        advanced: { prompt: "View logs for the 'docker' service.", starterCode: "", expectedOutput: "journalctl -u docker" },
+      },
+    },
+    {
+      id: "linux-20-cron",
+      title: "20. Automation (Cron)",
+      description: "Scheduling tasks",
+      content: `## Set it and Forget it
+
+**Cron** is the Linux job scheduler. You can tell Linux to 'run this script every night at 3 AM'.
+
+- \`crontab -e\`: Edit your schedule.
+- \`crontab -l\`: List your schedule.
+
+### Format
+\`Minute Hour Day Month Weekday Command\``,
+      codeExample: "0 3 * * * /home/user/backup.sh",
+      exercises: {
+        beginner: { prompt: "List your active cron tasks.", starterCode: "", expectedOutput: "crontab -l" },
+        intermediate: { prompt: "Open the cron editor.", starterCode: "", expectedOutput: "crontab -e" },
+        advanced: { prompt: "Check system-wide cron jobs in /etc.", starterCode: "", expectedOutput: "ls /etc/cron.daily" },
+      },
+    },
+    {
+      id: "linux-21-scripting1",
+      title: "21. Shell Scripting I",
+      description: "Variables and Loops",
+      content: `## The Dev Power
+
+A shell script is just a text file starting with \`#!/bin/bash\`. It lets you automate anything.
+
+\`\`\`bash
+#!/bin/bash
+NAME="PyMaster"
+echo "Hello $NAME"
+\`\`\``,
+      codeExample: `$ nano script.sh
+$ chmod +x script.sh
+$ ./script.sh`,
+      exercises: {
+        beginner: { prompt: "Create a script file named 'hello.sh'.", starterCode: "", expectedOutput: "touch hello.sh" },
+        intermediate: { prompt: "Set a variable 'ENV' to 'prod' in the terminal.", starterCode: "", expectedOutput: "export ENV=prod" },
+        advanced: { prompt: "Run a local script named 'setup.sh'.", starterCode: "", expectedOutput: "./setup.sh" },
+      },
+    },
+    {
+      id: "linux-22-scripting2",
+      title: "22. Shell Scripting II",
+      description: "Advanced logic",
+      content: `## Conditionals & Logic
+
+Professional scripts check if things work before continuing.
+
+\`\`\`bash
+if [ -f "file.txt" ]; then
+  echo "File exists!"
+else
+  echo "File missing!"
+fi
+\`\`\``,
+      codeExample: "for i in {1..5}; do echo $i; done",
+      exercises: {
+        beginner: { prompt: "Write a loop to print numbers 1 to 5 (command line).", starterCode: "", expectedOutput: "for i in {1..5}; do echo $i; done" },
+        intermediate: { prompt: "Check if 'notes.txt' exists using [ -f... ].", starterCode: "", expectedOutput: "[ -f notes.txt ]" },
+        advanced: { prompt: "Print all environment variables.", starterCode: "", expectedOutput: "env" },
+      },
+    },
+    {
+      id: "linux-23-ufw",
+      title: "23. Security & Firewalls (UFW)",
+      description: "Protecting your server",
+      content: `## Locking the Door
+
+**UFW** (Uncomplicated Firewall) is the standard for Ubuntu security.
+
+- \`ufw enable\`: Turn it on.
+- \`ufw allow 22\`: Let SSH traffic in.
+- \`ufw deny 80\`: Block web traffic.
+- \`ufw status\`: See what's blocked.`,
+      codeExample: `$ sudo ufw status
+$ sudo ufw allow 443`,
+      exercises: {
+        beginner: { prompt: "Check the status of your firewall.", starterCode: "", expectedOutput: "sudo ufw status" },
+        intermediate: { prompt: "Allow traffic on port 80 (HTTP).", starterCode: "", expectedOutput: "sudo ufw allow 80" },
+        advanced: { prompt: "Enable the firewall completely.", starterCode: "", expectedOutput: "sudo ufw enable" },
+      },
+    },
+    {
+      id: "linux-24-storage",
+      title: "24. Storage & LVM",
+      description: "Mounting and Partitions",
+      content: `## Disks as Files
+
+In Linux, disks are located in \`/dev/\`. To use a disk, you must **Mount** it to a folder.
+
+- \`lsblk\`: List block devices (Disks).
+- \`mount\`: Connect a disk to a folder.
+- \`LVM\`: Logical Volume Management -lets you grow disks like they are virtual.`,
+      codeExample: `$ lsblk
+$ sudo mount /dev/sdb1 /mnt/data`,
+      exercises: {
+        beginner: { prompt: "List all disks and partitions.", starterCode: "", expectedOutput: "lsblk" },
+        intermediate: { prompt: "Mount /dev/sdb1 to /mnt.", starterCode: "", expectedOutput: "sudo mount /dev/sdb1 /mnt" },
+        advanced: { prompt: "Unmount the device from /mnt.", starterCode: "", expectedOutput: "sudo umount /mnt" },
+      },
+    },
+    {
+      id: "linux-25-final",
+      title: "25. Final Project",
+      description: "Build a Pro Web Server",
+      content: `## The Graduation
+
+You've made it! For your final task, you will simulate setting up a production web server.
+
+### The Workflow
+1. Install Nginx.
+2. Allow port 80 in Firewall.
+3. Enable the service.
+4. Check the logs.
+
+Congratulations, Master!`,
+      codeExample: `$ sudo apt install nginx
+$ sudo ufw allow 80
+$ sudo systemctl status nginx`,
+      exercises: {
+        beginner: { prompt: "Install the nginx web server.", starterCode: "", expectedOutput: "sudo apt install nginx" },
+        intermediate: { prompt: "Enable nginx to start on boot.", starterCode: "", expectedOutput: "sudo systemctl enable nginx" },
+        advanced: { prompt: "Allow web traffic (HTTP) through the firewall.", starterCode: "", expectedOutput: "sudo ufw allow 80" },
+      },
+    },
+  ];
+}
+function cloudMlops(): CareerLesson[] {
+  return [
+    {
+      id: "cloud-intro", title: "Introduction to Cloud Computing", description: "Learn about AWS, GCP, and the serverless revolution",
+      content: "## Cloud Basics\n\nThe cloud is just someone else's computer, but with specialized tools for scaling and reliability.\n\n### Major Providers\n- **AWS** — The industry leader\n- **Google Cloud (GCP)** — Best for ML and data\n- **Azure** — Enterprise standard\n\n### Core Services\n- **Compute** — EC2, Lambda, Cloud Run\n- **Storage** — S3, Cloud storage\n- **Networking** — VPCs, Load Balancers",
+      codeExample: "# Check if running in a cloud environment\nimport os\n\ndef check_cloud():\n    if os.environ.get(\"AWS_EXECUTION_ENV\"):\n        return \"AWS Lambda\"\n    if os.environ.get(\"K_SERVICE\"):\n        return \"Google Cloud Run\"\n    return \"Local Environment\"\n\nprint(\"Environment:\", check_cloud())",
+      exercises: {
+        beginner: { prompt: "Return 'Cloud' if env_var exists, else 'Local'. Print for True.", starterCode: "env_exists = True\nprint(\"Cloud\" if env_exists else \"Local\")\n", expectedOutput: "Cloud" },
+        intermediate: { prompt: "Calculate cost: 0.05 per hour. Print for 24 hours.", starterCode: "hours = 24\nrate = 0.05\nprint(hours * rate)\n", expectedOutput: "1.2" },
+        advanced: { prompt: "Filter list of regions to only those starting with 'us-'. Print count.", starterCode: "regions = [\"us-east-1\", \"eu-west-1\", \"us-west-2\", \"ap-south-1\"]\nus_regions = [r for r in regions if r.startswith(\"us-\")]\nprint(len(us_regions))\n", expectedOutput: "2" },
+      },
+    },
+    {
+      id: "cloud-linux", title: "Linux for Cloud", description: "Masters the terminal for server administration",
+      content: "## The Server OS\n\nMost cloud servers run Linux. You must be comfortable with the command line to manage them.\n\n### Key Skills\n- **SSH** — Secure Shell for remote access\n- **Permissions** — chmod and chown\n- **Processes** — top, ps, and kill\n- **Logs** — journalctl and tail -f",
+      codeExample: "# Simulating a shell command in Python\ndef list_files(path):\n    import os\n    return os.listdir(path)\n\nprint(\"Directory contents:\", list_files(\".\")[:3])",
+      exercises: {
+        beginner: { prompt: "Return the command to list all files: 'ls -la'.", starterCode: "print(\"ls -la\")\n", expectedOutput: "ls -la" },
+        intermediate: { prompt: "Check if path='/var/log' exists. Print True/False.", starterCode: "import os\npath = \"/var/log\"\nprint(os.path.exists(path))\n", expectedOutput: "True" },
+        advanced: { prompt: "Convert 1024 bytes to KB. Print '1 KB'.", starterCode: "bytes = 1024\nprint(f\"{bytes // 1024} KB\")\n", expectedOutput: "1 KB" },
+      },
+    },
+    {
+      id: "cloud-venv", title: "Virtual Environments", description: "Isolate dependencies for different projects",
+      content: "## Dependency Isolation\n\nAvoid global package conflicts by using virtual environments.\n\n### Tools\n- **venv** — Built-in Python library\n- **pip** — The package manager\n- **requirements.txt** — Listing your needs",
+      codeExample: "# Building a requirements string\nlibs = [\"flask==2.0\", \"requests>=2.25\", \"pandas\"]\nreq_text = \"\\n\".join(libs)\nprint(req_text)",
+      exercises: {
+        beginner: { prompt: "Print the command to create a venv: 'python -m venv venv'.", starterCode: "print(\"python -m venv venv\")\n", expectedOutput: "python -m venv venv" },
+        intermediate: { prompt: "Filter libraries that have a specific version '=='. Print them.", starterCode: "libs = [\"flask==2.0\", \"numpy\", \"scipy==1.6\"]\npinned = [l for l in libs if \"==\" in l]\nprint(pinned)\n", expectedOutput: "['flask==2.0', 'scipy==1.6']" },
+        advanced: { prompt: "Parse 'requests>=2.25' to get just the name 'requests'. Print it.", starterCode: "lib = \"requests>=2.25\"\nname = lib.split(\">=\")[0]\nprint(name)\n", expectedOutput: "requests" },
+      },
+    },
+    {
+      id: "cloud-docker", title: "Docker & Containerization", description: "Package your Python apps to run anywhere",
+      content: "## Why Containers?\n\n\"It works on my machine\" is a nightmare in production. Docker solves this by packaging the code, OS, and dependencies together.\n\n### Key Terms\n- **Dockerfile** — The recipe for your image\n- **Image** — The packaged executable\n- **Container** — A running instance of an image\n- **Registry** — Where you store images (Docker Hub, ECR)",
+      codeExample: "# Example Dockerfile-like concept\nconfig = {\n    \"FROM\": \"python:3.9-slim\",\n    \"WORKDIR\": \"/app\",\n    \"COPY\": \". .\",\n    \"RUN\": \"pip install -r requirements.txt\",\n    \"CMD\": [\"python\", \"app.py\"]\n}\n\nfor key, val in config.items():\n    print(f\"{key}: {val}\")",
+      exercises: {
+        beginner: { prompt: "Print the standard Python Docker image name 'python:3.9-slim'.", starterCode: "print(\"python:3.9-slim\")\n", expectedOutput: "python:3.9-slim" },
+        intermediate: { prompt: "Extract the tag '3.9' from 'python:3.9'. Print it.", starterCode: "image = \"python:3.9\"\ntag = image.split(\":\")[1]\nprint(tag)\n", expectedOutput: "3.9" },
+        advanced: { prompt: "Build a 'docker run' command with -p 80:80. Print it.", starterCode: "port = 80\nimage = \"myapp\"\nprint(f\"docker run -p {port}:{port} {image}\")\n", expectedOutput: "docker run -p 80:80 myapp" },
+      },
+    },
+    {
+      id: "cloud-cicd", title: "CI/CD for Python", description: "Automate testing and deployment",
+      content: "## Continuous Everything\n\n- **CI (Continuous Integration)**: Auto-test code on every push.\n- **CD (Continuous Deployment)**: Auto-deploy to production.\n\n### Tools\n- **GitHub Actions** — Native to GitHub\n- **GitLab CI** — Built-in to GitLab\n- **Jenkins** — The self-hosted veteran",
+      codeExample: "# Simulating a YAML workflow check\ndef check_workflow(yaml_dict):\n    return \"jobs\" in yaml_dict and \"steps\" in yaml_dict[\"jobs\"]\n\nworkflow = {\"jobs\": {\"steps\": [\"test\", \"deploy\"]}}\nprint(\"Valid Workflow:\", check_workflow(workflow))",
+      exercises: {
+        beginner: { prompt: "Check if 'deploy' stage is in stages=['test', 'build', 'deploy']. Print True/False.", starterCode: "stages = [\"test\", \"build\", \"deploy\"]\nprint(\"deploy\" in stages)\n", expectedOutput: "True" },
+        intermediate: { prompt: "Filter failed builds from [{'id': 1, 'status': 'success'}, {'id': 2, 'status': 'failed'}]. Print IDs.", starterCode: "builds = [{\"id\": 1, \"status\": \"success\"}, {\"id\": 2, \"status\": \"failed\"}]\nfailed = [b[\"id\"] for b in builds if b[\"status\"] == \"failed\"]\nprint(failed)\n", expectedOutput: "[2]" },
+        advanced: { prompt: "Combine 3 test commands into one string with ' && '. commands=['lint', 'unit', 'e2e']. Print result.", starterCode: "commands = [\"lint\", \"unit\", \"e2e\"]\nprint(\" && \".join(commands))\n", expectedOutput: "lint && unit && e2e" },
+      },
+    },
+    {
+      id: "cloud-monitoring", title: "Monitoring & Observability", description: "Keep an eye on your production systems",
+      content: "## Is it Up?\n\nMonitoring tells you if your app is running; Observability tells you *why* it's failing.\n\n### The 3 Pillars\n1. **Metrics** — Latency, Error rates, CPU usage\n2. **Logs** — Application events\n3. **Traces** — Request lifecycle across services",
+      codeExample: "# Simple health check logic\ndef health_check(status_code):\n    if status_code == 200: return \"HEALTHY\"\n    if status_code >= 500: return \"CRITICAL\"\n    return \"WARNING\"\n\nprint(\"Status:\", health_check(503))",
+      exercises: {
+        beginner: { prompt: "If CPU > 80, print 'Alert'. Else 'OK'. Test with 90.", starterCode: "cpu = 90\nprint(\"Alert\" if cpu > 80 else \"OK\")\n", expectedOutput: "Alert" },
+        intermediate: { prompt: "Calculate average response time: total=1500ms, count=50. Print result.", starterCode: "total = 1500\ncount = 50\nprint(total / count)\n", expectedOutput: "30.0" },
+        advanced: { prompt: "Filter timestamps to those in the last 1 minute (current=100, list=[50, 95, 98]). Print count.", starterCode: "now = 100\ntimes = [50, 95, 98]\nrecent = [t for t in times if now - t <= 10]\nprint(len(recent))\n", expectedOutput: "2" },
+      },
+    },
+    {
+      id: "cloud-k8s", title: "Kubernetes Orchestration", description: "Manage thousands of containers at scale",
+      content: "## The OS of the Cloud\n\nKubernetes (K8s) automates deployment, scaling, and management of containerized apps.\n\n### Concepts\n- **Pod** — Smallest unit (holds containers)\n- **Service** — Network endpoint\n- **Deployment** — Defines the desired state\n- **Namespace** — Virtual clusters",
+      codeExample: "# Replica scaling logic\ndef calculate_replicas(load):\n    import math\n    return math.ceil(load / 100) # 1 replica per 100 users\n\nprint(\"Required Replicas for 450 users:\", calculate_replicas(450))",
+      exercises: {
+        beginner: { prompt: "Print the K8s CLI tool name: 'kubectl'.", starterCode: "print(\"kubectl\")\n", expectedOutput: "kubectl" },
+        intermediate: { prompt: "Check if pod status is 'Running'. status='Pending'. Print False.", starterCode: "status = \"Pending\"\nprint(status == \"Running\")\n", expectedOutput: "False" },
+        advanced: { prompt: "Given nodes=[True, True, False], calculate health percentage. Print 66.7.", starterCode: "nodes = [True, True, False]\nhealth = (sum(nodes) / len(nodes)) * 100\nprint(round(health, 1))\n", expectedOutput: "66.7" },
+      },
+    },
+    {
+      id: "cloud-serverless", title: "Serverless Scaling", description: "Run code without managing servers",
+      content: "## Function as a Service (FaaS)\n\nServerless lets you run code in response to events (HTTP, file uploads) without managing any infrastructure.\n\n### Benefits\n- **Auto-scaling** — Zero to thousands in seconds\n- **Pay-per-use** — Only pay for execution time\n- **Reduced Ops** — No patching servers",
+      codeExample: "# Cold start vs Warm start simulation\ndef lambda_handler(event, context):\n    return f\"Hello from Serverless! Event: {event}\"\n\nprint(lambda_handler(\"signup\", {}))",
+      exercises: {
+        beginner: { prompt: "Print the name of AWS's serverless offering: 'Lambda'.", starterCode: "print(\"Lambda\")\n", expectedOutput: "Lambda" },
+        intermediate: { prompt: "Calculate cost for 1,000,000 requests at $0.20 per million. Print result.", starterCode: "reqs = 1000000\nrate = 0.20\nprint(reqs / 1000000 * rate)\n", expectedOutput: "0.2" },
+        advanced: { prompt: "Filter cold start logs (init_time > 100ms). list=[50, 450, 20]. Print IDs of cold starts.", starterCode: "logs = [{\"id\": 1, \"time\": 50}, {\"id\": 2, \"time\": 450}]\ncold = [l[\"id\"] for l in logs if l[\"time\"] > 100]\nprint(cold)\n", expectedOutput: "[2]" },
+      },
+    },
+    {
+      id: "cloud-security", title: "FinOps & Security", description: "Manage costs and harden your cloud infrastructure",
+      content: "## Harden the Cloud\n\nSecurity and Costs are the biggest risks in the cloud.\n\n### Best Practices\n- **IAM** — Identity and Access Management (Least Privilege)\n- **Encryption** — At rest and in transit\n- **Budget Alerts** — Stop runaway costs\n- **VPC Peering** — Secure network boundaries",
+      codeExample: "# Budget alert logic\nbudget = 100\nspent = 85\ndef check_budget(b, s):\n    return \"WARN\" if s > b * 0.8 else \"OK\"\n\nprint(\"Budget status:\", check_budget(budget, spent))",
+      exercises: {
+        beginner: { prompt: "Print the security principle acronym for 'Least Privilege': 'POLP'.", starterCode: "print(\"POLP\")\n", expectedOutput: "POLP" },
+        intermediate: { prompt: "Check if spent $120 exceeds budget $100. Print True/False.", starterCode: "spent = 120\nbudget = 100\nprint(spent > budget)\n", expectedOutput: "True" },
+        advanced: { prompt: "Filter unencrypted buckets from [{'id': 'b1', 'enc': True}, {'id': 'b2', 'enc': False}]. Print ID.", starterCode: "buckets = [{\"id\": \"b1\", \"enc\": True}, {\"id\": \"b2\", \"enc\": False}]\nrisky = [b[\"id\"] for b in buckets if not b[\"enc\"]]\nprint(risky[0])\n", expectedOutput: "b2" },
+      },
+    },
+  ];
+}
+
+function gameDev(): CareerLesson[] {
+  return [
+    {
+      id: "game-loop", title: "The Game Loop", description: "Understand how games update and render in real-time",
+      content: "## The Heart of Every Game\n\nA game is just a loop that runs 60 times per second.\n\n### 3 Steps per Frame\n1. **Process Input** — Did the player press 'Space'?\n2. **Update** — Move the player, check for gravity\n3. **Render** — Draw everything to the screen\n\n### Frame Rate (FPS)\nIf your loop takes too long, your game lags. The goal is ~16ms per frame.",
+      codeExample: "# A simplified game loop concept\nimport time\n\nrunning = True\nframe = 0\n\ndef update():\n    global frame\n    frame += 1\n\n# Run for 3 'frames'\nfor _ in range(3):\n    update()\n    print(f\"Frame {frame}: Updated state\")\n    time.sleep(0.01) # Simulate logic time",
+      exercises: {
+        beginner: { prompt: "Calculate time for 60 FPS in milliseconds. Print rounded to 1 decimal.", starterCode: "fps = 60\nms_per_frame = 1000 / fps\nprint(round(ms_per_frame, 1))\n", expectedOutput: "16.7" },
+        intermediate: { prompt: "Write a loop that updates 'pos' by 'vel' 10 times. pos=0, vel=5. Print final pos.", starterCode: "pos = 0\nvel = 5\nfor _ in range(10):\n    pos += vel\nprint(pos)\n", expectedOutput: "50" },
+        advanced: { prompt: "Calculate distance between (0,0) and (x,y) if x=10, y=24. Print it.", starterCode: "import math\nx, y = 10, 24\ndist = math.sqrt(x**2 + y**2)\nprint(dist)\n", expectedOutput: "26.0" },
+      },
+    },
+    {
+      id: "game-input", title: "Input & Movement", description: "Control sprites with your keyboard and mouse",
+      content: "## Moving the Player\n\nInputs are handled by polling events.\n\n### Common Controls\n- **WASD** / Arrow Keys for movement\n- **Space** for jump / primary action\n- **Mouse Pos** for aiming\n\n### Vector Movement\nUse X and Y coordinates to represent position. `pos.x += speed * direction`",
+      codeExample: "# Simple movement logic\npos = {\"x\": 100, \"y\": 100}\nspeed = 5\n\ndef move(direction):\n    if direction == \"LEFT\": pos[\"x\"] -= speed\n    if direction == \"RIGHT\": pos[\"x\"] += speed\n\nmove(\"RIGHT\")\nprint(\"New Pos:\", pos)",
+      exercises: {
+        beginner: { prompt: "If 'KEY_UP' is pressed, decrease 'y' by 10. Given y=50, print result.", starterCode: "y = 50\nkey = \"KEY_UP\"\nif key == \"KEY_UP\":\n    y -= 10\nprint(y)\n", expectedOutput: "40" },
+        intermediate: { prompt: "Clamp value between 0 and 100. Test with 150. Print result.", starterCode: "val = 150\nclamped = max(0, min(100, val))\nprint(clamped)\n", expectedOutput: "100" },
+        advanced: { prompt: "Calculate rotation angle in degrees for vector (1,1). Print 45.0.", starterCode: "import math\nx, y = 1, 1\nangle = math.degrees(math.atan2(y, x))\nprint(angle)\n", expectedOutput: "45.0" },
+      },
+    },
+    {
+      id: "game-sprites", title: "Sprites & Animations", description: "Loading and animating game assets",
+      content: "## Visualizing the Game\n\nSprites are 2D images representing characters or objects.\n\n### Animations\nAnimations are achieved by switching between a sequence of images (frames) over time.\n\n### Sprite Sheets\nA single large image containing multiple frames. You 'clip' the parts you need.",
+      codeExample: "# Animating a sprite index\ndef next_frame(current, total):\n    return (current + 1) % total\n\nframe = 0\nfor _ in range(5):\n    frame = next_frame(frame, 4)\n    print(\"Drawing frame:\", frame)",
+      exercises: {
+        beginner: { prompt: "Print the next frame index (0-7) if current=7.", starterCode: "current = 7\nprint((current + 1) % 8)\n", expectedOutput: "0" },
+        intermediate: { prompt: "Scale a sprite: width=32, scale=2.5. Print new width.", starterCode: "w = 32\ns = 2.5\nprint(w * s)\n", expectedOutput: "80.0" },
+        advanced: { prompt: "Calculate UV offset for frame 3 in a 4-frame sheet (width=1.0). Print 0.75.", starterCode: "f = 3\ntotal = 4\nprint(f / total)\n", expectedOutput: "0.75" },
+      },
+    },
+    {
+      id: "game-collision", title: "Collision Detection", description: "Making objects react to each other",
+      content: "## Physical Logic\n\nCollision detection determines if two objects are overlapping.\n\n### AABB (Axis-Aligned Bounding Box)\nThe simplest collision: checking if two rectangles intersect.\n\n### Circle Collision\nChecking if the distance between two centers is less than the sum of their radii.",
+      codeExample: "# AABB collision check\ndef check_collision(rect1, rect2):\n    return (rect1['x'] < rect2['x'] + rect2['w'] and\n            rect1['x'] + rect1['w'] > rect2['x'] and\n            rect1['y'] < rect2['y'] + rect2['h'] and\n            rect1['y'] + rect1['h'] > rect2['y'])\n\nr1 = {'x': 0, 'y': 0, 'w': 10, 'h': 10}\nr2 = {'x': 5, 'y': 5, 'w': 10, 'h': 10}\nprint(\"Collision:\", check_collision(r1, r2))",
+      exercises: {
+        beginner: { prompt: "If distance is 5 and radii sum is 10, is there a collision? Print True/False.", starterCode: "dist = 5\nradii = 10\nprint(dist < radii)\n", expectedOutput: "True" },
+        intermediate: { prompt: "Check if point (5,5) is inside rect x=0, y=0, w=10, h=10. Print True/False.", starterCode: "px, py = 5, 5\nrx, ry, rw, rh = 0, 0, 10, 10\nprint(rx < px < rx + rw and ry < py < ry + rh)\n", expectedOutput: "True" },
+        advanced: { prompt: "Reflect velocity (v=-5) on impact. Flip sign. Print result.", starterCode: "v = -5\nprint(v * -1)\n", expectedOutput: "5" },
+      },
+    },
+    {
+      id: "game-states", title: "Game State Management", description: "Menu, Play, Pause, and Game Over logic",
+      content: "## The Flow of the Game\n\nStates control what logic and visuals are active.\n\n### Common States\n- **MENU**: Logo and Start button\n- **PLAYING**: The actual game loop\n- **PAUSED**: Static screen with 'Resume'\n- **GAMEOVER**: Final score and 'Retry'",
+      codeExample: "# Simple state machine\nstate = \"MENU\"\n\ndef change_state(new_state):\n    global state\n    state = new_state\n    print(f\"Switching to {state} state\")\n\nchange_state(\"PLAYING\")\nchange_state(\"GAMEOVER\")",
+      exercises: {
+        beginner: { prompt: "If score > 100, set state to 'WON'. Given score=150, print current state.", starterCode: "score = 150\nstate = \"PLAY\"\nif score > 100: state = \"WON\"\nprint(state)\n", expectedOutput: "WON" },
+        intermediate: { prompt: "Toggle 'PAUSE' state. If active, set False, else True. Given active=True, print result.", starterCode: "active = True\nactive = not active\nprint(active)\n", expectedOutput: "False" },
+        advanced: { prompt: "Filter high scores > 500 from [100, 550, 400, 900]. Print count.", starterCode: "scores = [100, 550, 400, 900]\nhigh = [s for s in scores if s > 500]\nprint(len(high))\n", expectedOutput: "2" },
+      },
+    },
+    {
+      id: "game-audio", title: "Sound & Animations", description: "Bringing the game to life with audio",
+      content: "## Audio Feedback\n\nSound effects (SFX) and background music (BGM) provide emotional feedback.\n\n### Important Concepts\n- **Channels**: Playing multiple sounds at once\n- **Volume**: 0.0 to 1.0\n- **Pan**: Left/Right balance (Stereo)",
+      codeExample: "# Simulated audio mixer\ndef play_sound(name, volume=1.0):\n    print(f\"Playing {name} at volume {volume}\")\n\nplay_sound(\"laser_shot\", 0.5)\nplay_sound(\"explosion\", 0.8)",
+      exercises: {
+        beginner: { prompt: "Scale volume by 0.5 if 'MUTE' is False. Given vol=1.0, print result.", starterCode: "vol = 1.0\nmute = False\nif not mute: vol *= 0.5\nprint(vol)\n", expectedOutput: "0.5" },
+        intermediate: { prompt: "Limit volume between 0.0 and 1.0. Given vol=1.5, print 1.0.", starterCode: "vol = 1.5\nprint(max(0.0, min(1.0, vol)))\n", expectedOutput: "1.0" },
+        advanced: { prompt: "Calculate stereo pan for listener at x=0. Sound at x=100. Print 'RIGHT'.", starterCode: "sx = 100\nlx = 0\nprint(\"RIGHT\" if sx > lx else \"LEFT\")\n", expectedOutput: "RIGHT" },
+      },
+    },
+    {
+      id: "game-ai", title: "AI Pathfinding", description: "Making enemies smart",
+      content: "## Basic AI Logic\n\nHow do enemies know where to go?\n\n### Chasing\nMove towards the player's (x, y) coordinates.\n\n### Waypoints\nFollowing a predefined list of points.\n\n### A* Pathfinding\nCalculating the most efficient path around obstacles (Advanced).",
+      codeExample: "# Simple chase logic\ndef chase(enemy_pos, player_pos, speed):\n    if enemy_pos < player_pos: return enemy_pos + speed\n    return enemy_pos - speed\n\nnew_x = chase(10, 100, 5)\nprint(\"Enemy moved to:\", new_x)",
+      exercises: {
+        beginner: { prompt: "If enemy_y > player_y, move enemy UP (y -= 5). Given ey=100, py=50, print new ey.", starterCode: "ey, py = 100, 50\nif ey > py: ey -= 5\nprint(ey)\n", expectedOutput: "95" },
+        intermediate: { prompt: "Calculate angle to target at (x=10, y=10) from (0,0). Print 45.0.", starterCode: "import math\nx, y = 10, 10\nprint(math.degrees(math.atan2(y, x)))\n", expectedOutput: "45.0" },
+        advanced: { prompt: "Check if player is in range (10). Distance=8. Print True/False.", starterCode: "dist = 8\nprint(dist <= 10)\n", expectedOutput: "True" },
+      },
+    },
+    {
+      id: "game-shaders", title: "Shaders in Ursina", description: "Mastering visual effects and lighting",
+      content: "## The Visual Engine\n\nShaders are small programs that run on the GPU to calculate light, shadow, and color.\n\n### Ursina Shaders\nUrsina (a 3D engine for Python) uses GLSL-style shaders for post-processing and materials.\n\n- **Vertex Shaders**: Move the points (geometry)\n- **Fragment Shaders**: Color the pixels",
+      codeExample: "# Pseudo-shader configuration\ndef apply_shader(entity, shader_type):\n    print(f\"Applying {shader_type} to {entity.name}\")\n\n# Simulating a light intensity calculation\ndef calc_light(distance, intensity):\n    return intensity / (distance ** 2)\n\nprint(\"Light at 10 units:\", calc_light(10, 100))",
+      exercises: {
+        beginner: { prompt: "Calculate light intensity at dist=2 for intensity=8. Print 2.0.", starterCode: "d, i = 2, 8\nprint(i / (d ** 2))\n", expectedOutput: "2.0" },
+        intermediate: { prompt: "Scale RGB color (255, 0, 0) by 0.5 for a dark red. Print result.", starterCode: "c = (255, 0, 0)\ndark = tuple(int(x * 0.5) for x in c)\nprint(dark)\n", expectedOutput: "(127, 0, 0)" },
+        advanced: { prompt: "Calculate dot product of (1,0) and (0,1). Print 0.", starterCode: "v1 = (1, 0)\nv2 = (0, 1)\ndot = v1[0]*v2[0] + v1[1]*v2[1]\nprint(dot)\n", expectedOutput: "0" },
+      },
+    },
+    {
+      id: "game-network", title: "Multiplayer Engine", description: "Connecting players over the internet",
+      content: "## Online Worlds\n\nSyncing position and state between multiple clients.\n\n### Architecture\n- **Server**: The authority on state\n- **Client**: Sends input, receives state\n- **Latency (Ping)**: The delay between players\n\n### Optimization\n**Prediction**: Guessing where a player will be to hide lag.",
+      codeExample: "# Simulating a packet sync\ndef send_packet(player_id, pos):\n    import json\n    return json.dumps({\"id\": player_id, \"x\": pos[0], \"y\": pos[1]})\n\nprint(\"Sync Packet:\", send_packet(\"PRO_Gamer\", (250, 420)))",
+      exercises: {
+        beginner: { prompt: "Filter packets from list for player_id=1. Print matching packet.", starterCode: "packets = [{\"id\": 1, \"x\": 10}, {\"id\": 2, \"x\": 50}]\np = [pk for pk in packets if pk[\"id\"] == 1]\nprint(p[0])\n", expectedOutput: "{'id': 1, 'x': 10}" },
+        intermediate: { prompt: "Calculate latency: send=100ms, recv=250ms. Print total 150ms.", starterCode: "s, r = 100, 250\nprint(r - s)\n", expectedOutput: "150" },
+        advanced: { prompt: "Generate a player ping ID string 'PING_101'.", starterCode: "id = 101\nprint(f\"PING_{id}\")\n", expectedOutput: "PING_101" },
+      },
+    },
+  ];
+}
+
+function iotRobotics(): CareerLesson[] {
+  return [
+    {
+      id: "iot-intro", title: "Hardware Basics", description: "Pixels to Pins: Introduction to MicroPython",
+      content: "## Coding the Physical World\n\nWith Python, you can control LEDs, read temperature sensors, and move robotic arms.\n\n### MicroPython & CircuitPython\nThese are lightweight versions of Python designed to run on tiny computers (microcontrollers) like the ESP32 or Raspberry Pi Pico.\n\n### GPIO (General Purpose Input/Output)\nThese pins on the board are your connection to the world.\n- **Output**: Sending power to an LED\n- **Input**: Reading if a button is pushed",
+      codeExample: "# Pseudo-code micro-controller logic\n# import machine\n# led = machine.Pin(2, machine.Pin.OUT)\n\ndef set_led(state):\n    print(\"LED is now\", \"ON\" if state else \"OFF\")\n\nset_led(True)\nset_led(False)",
+      exercises: {
+        beginner: { prompt: "Print 'HIGH' if pin value is 1, else 'LOW'.", starterCode: "val = 1\nprint(\"HIGH\" if val == 1 else \"LOW\")\n", expectedOutput: "HIGH" },
+        intermediate: { prompt: "Convert 1023 (10-bit max) to a percentage (0-100). Print it.", starterCode: "val = 1023\npercent = (val / 1023) * 100\nprint(percent)\n", expectedOutput: "100.0" },
+        advanced: { prompt: "Calculate ohms: R = V/I. Given V=3.3, I=0.02. Print result.", starterCode: "v = 3.3\ni = 0.02\nr = v / i\nprint(r)\n", expectedOutput: "165.0" },
+      },
+    },
+    {
+      id: "iot-setup", title: "MicroPython Intro", description: "Flashing firmware and the REPL",
+      content: "## The MicroPython REPL\n\nREPL stands for **Read-Eval-Print Loop**. It allows you to run Python code live on your hardware via a serial connection.\n\n### Workflow\n1. Flash the MicroPython firmware (.bin file)\n2. Connect via USB\n3. Write `main.py` - this runs automatically on boot",
+      codeExample: "# Typical boot sequence\ndef boot():\n    print(\"System Initializing...\")\n    import gc\n    gc.collect()\n    print(\"Memory Free:\", gc.mem_free())\n\nboot()",
+      exercises: {
+        beginner: { prompt: "Print the name of the file that runs automatically on boot: 'main.py'.", starterCode: "print(\"main.py\")\n", expectedOutput: "main.py" },
+        intermediate: { prompt: "Calculate 2^10 (1024) to see addressable memory space. Print it.", starterCode: "print(2**10)\n", expectedOutput: "1024" },
+        advanced: { prompt: "Return 'OK' if mem_free > 5000, else 'LOW'. Given 6000, print result.", starterCode: "free = 6000\nprint(\"OK\" if free > 5000 else \"LOW\")\n", expectedOutput: "OK" },
+      },
+    },
+    {
+      id: "iot-gpio", title: "LED / Switch Logic", description: "Controlling digital Input and Output",
+      content: "## Digital Logic\n\n- **Digital Output**: High (3.3V) or Low (0V). Perfect for LEDs.\n- **Digital Input**: Reading a button. Use **Pull-up** or **Pull-down** resistors to avoid 'floating' values.",
+      codeExample: "# Simulating a button press toggle\nled_state = False\ndef on_button_press():\n    global led_state\n    led_state = not led_state\n    print(\"LED is now\", \"ON\" if led_state else \"OFF\")\n\non_button_press()\non_button_press()",
+      exercises: {
+        beginner: { prompt: "Toggle the bit 0 to 1. Given bit=0, print (bit + 1).", starterCode: "bit = 0\nprint(bit + 1)\n", expectedOutput: "1" },
+        intermediate: { prompt: "If button is pressed (1) and door is open (1), trigger alarm. Print 'ALARM'.", starterCode: "btn, door = 1, 1\nif btn and door: print(\"ALARM\")\n", expectedOutput: "ALARM" },
+        advanced: { prompt: "Calculate debounce delay: total=50ms, samples=5. Print average 10.0.", starterCode: "t, s = 50, 5\nprint(t / s)\n", expectedOutput: "10.0" },
+      },
+    },
+    {
+      id: "iot-sensors", title: "Sensor Readings", description: "Reading analog signals (ADC)",
+      content: "## Analog to Digital\n\nSensors like LDRs (light) or Potentiometers provide a continuous voltage. The **ADC** (Analog-to-Digital Converter) converts this voltage into a number (usually 0 to 1023 or 4095).",
+      codeExample: "# Map 0-1023 to 0-100%\ndef map_sensor(val):\n    return round((val / 1023) * 100, 1)\n\nprint(\"Light Level:\", map_sensor(512), \"%\")",
+      exercises: {
+        beginner: { prompt: "If value is 0, print 'DARK'. Else if > 800, print 'BRIGHT'. Test with 900.", starterCode: "v = 900\nif v == 0: print(\"DARK\")\nelif v > 800: print(\"BRIGHT\")\n", expectedOutput: "BRIGHT" },
+        intermediate: { prompt: "Convert Celsius to Fahrenheit: (C * 9/5) + 32. Given C=25, print result.", starterCode: "c = 25\nf = (c * 9/5) + 32\nprint(f)\n", expectedOutput: "77.0" },
+        advanced: { prompt: "Calculate rolling average of [100, 105, 95]. Print it.", starterCode: "vals = [100, 105, 95]\nprint(sum(vals) / len(vals))\n", expectedOutput: "100.0" },
+      },
+    },
+    {
+      id: "iot-comms", title: "Serial Communication", description: "Masters I2C and SPI protocols",
+      content: "## Talking to Chips\n\nMost advanced sensors use protocols like **I2C** or **SPI** to send complex data (like GPS coordinates or 3D acceleration).\n\n- **I2C**: Uses only 2 wires (SDA, SCL). Great for simple sensors.\n- **SPI**: Uses 4 wires. Much faster, used for screens and SD cards.",
+      codeExample: "# Simulating an I2C scan\ndef scan_i2c():\n    devices = [0x27, 0x3C, 0x68]\n    return [hex(d) for d in devices]\n\nprint(\"Found I2C devices:\", scan_i2c())",
+      exercises: {
+        beginner: { prompt: "Convert decimal 60 to hex. Print result.", starterCode: "print(hex(60))\n", expectedOutput: "0x3c" },
+        intermediate: { prompt: "Check if address 0x27 is in [0x20, 0x27, 0x30]. Print True/False.", starterCode: "addrs = [0x20, 0x27, 0x30]\nprint(0x27 in addrs)\n", expectedOutput: "True" },
+        advanced: { prompt: "Calculate I2C bitrate: 100kHz is how many bits per second? Print 100000.", starterCode: "print(100 * 1000)\n", expectedOutput: "100000" },
+      },
+    },
+    {
+      id: "iot-display", title: "OLED Displays", description: "Drawing text and shapes on tiny screens",
+      content: "## Visual Output\n\nSmall 0.96\" OLED screens are common in IoT projects. They usually use the SSD1306 driver.\n\n### Drawing Steps\n1. Clear the buffer\n2. Draw text or pixels\n3. Call `show()` to push the buffer to the screen hardware.",
+      codeExample: "# Pseudo-code for OLED\ndef draw_text(oled, x, y, text):\n    print(f\"Drawing '{text}' at ({x}, {y})\")\n\ndraw_text(None, 0, 0, \"PyMaster IoT\")\ndraw_text(None, 0, 16, \"Temp: 24C\")",
+      exercises: {
+        beginner: { prompt: "Calculate pixels in a 128x64 display. Print result.", starterCode: "print(128 * 64)\n", expectedOutput: "8192" },
+        intermediate: { prompt: "Centered text: screen=128, text_w=40. Calculate starting x. Print 44.", starterCode: "sw, tw = 128, 40\nprint((sw - tw) // 2)\n", expectedOutput: "44" },
+        advanced: { prompt: "Generate coordinate list for a line from (0,0) to (2,2): [(0,0), (1,1), (2,2)].", starterCode: "print([(i, i) for i in range(3)])\n", expectedOutput: "[(0, 0), (1, 1), (2, 2)]" },
+      },
+    },
+    {
+      id: "iot-robotics", title: "Robotic Arm Control", description: "Servos and PWM (Pulse Width Modulation)",
+      content: "## Motion Control\n\nServos are controlled using **PWM**. By changing the 'Duty Cycle' (the percentage of time the signal is ON), you can set the exact angle of the motor.\n\n- **0% Duty**: 0 degrees\n- **100% Duty**: 180 degrees (usually)",
+      codeExample: "# Mapping angle (0-180) to Duty (0-1023)\ndef angle_to_duty(angle):\n    return int((angle / 180) * 1023)\n\nprint(\"Duty for 90 degrees:\", angle_to_duty(90))",
+      exercises: {
+        beginner: { prompt: "If angle > 180, cap it at 180. Test with 200. Print 180.", starterCode: "a = 200\nprint(min(180, a))\n", expectedOutput: "180" },
+        intermediate: { prompt: "Calculate angle for duty=511 (half of 1023). Print 90.", starterCode: "d = 511\nprint(int((d / 1023) * 180))\n", expectedOutput: "89" },
+        advanced: { prompt: "Generate movement steps: start=0, end=90, step=30. Print list.", starterCode: "print(list(range(0, 91, 30)))\n", expectedOutput: "[0, 30, 60, 90]" },
+      },
+    },
+    {
+      id: "iot-optimize", title: "Firmware Optimization", description: "Writing efficient code for 32KB of RAM",
+      content: "## Every Byte Counts\n\nMicrocontrollers are powerful but have very little memory.\n\n### Optimization Tips\n- **Avoid large imports**: Only import what you need.\n- **Use frozen modules**: Pre-compiled Python scripts.\n- **Manual Garbage Collection**: Run `gc.collect()` after heavy tasks.",
+      codeExample: "# Measuring memory before/after\nimport gc\ndef check_mem():\n    gc.collect()\n    return gc.mem_free()\n\nprint(\"Free RAM:\", check_mem(), \"bytes\")",
+      exercises: {
+        beginner: { prompt: "Calculate KB from 32768 bytes. Print 32.0.", starterCode: "b = 32768\nprint(b / 1024)\n", expectedOutput: "32.0" },
+        intermediate: { prompt: "String vs Bytes: Check size of b'hello'. Print 5.", starterCode: "print(len(b'hello'))\n", expectedOutput: "5" },
+        advanced: { prompt: "Calculate % free if total=32000, free=8000. Print 25.0.", starterCode: "t, f = 32000, 8000\nprint((f / t) * 100)\n", expectedOutput: "25.0" },
+      },
+    },
+    {
+      id: "iot-cloud", title: "Remote Monitoring", description: "Connecting your device to the Cloud (MQTT)",
+      content: "## The Internet of Things\n\n**MQTT** is the standard protocol for IoT. It's lightweight and works by 'Publishing' data to a 'Topic' and 'Subscribing' to receive commands.\n\n### Workflow\n1. Device connects to Wi-Fi\n2. Device connects to an MQTT Broker\n3. Device publishes sensor data every 10 seconds",
+      codeExample: "# Pseudo-code MQTT Publish\ndef mqtt_pub(topic, msg):\n    print(f\"MQTT -> [{topic}]: {msg}\")\n\nmqtt_pub(\"home/livingroom/temp\", \"24.5\")",
+      exercises: {
+        beginner: { prompt: "Check if 'temp' is in topic 'livingroom/temp'. Print True/False.", starterCode: "t = \"livingroom/temp\"\nprint(\"temp\" in t)\n", expectedOutput: "True" },
+        intermediate: { prompt: "Join list ['iot', 'sensor', '1'] with '/' for a topic. Print result.", starterCode: "parts = [\"iot\", \"sensor\", \"1\"]\nprint(\"/\".join(parts))\n", expectedOutput: "iot/sensor/1" },
+        advanced: { prompt: "Filter packets where topic='cmd'. list=[{'t':'data'}, {'t':'cmd'}]. Print count.", starterCode: "ps = [{\"t\": \"data\"}, {\"t\": \"cmd\"}]\nprint(sum(1 for p in ps if p[\"t\"] == \"cmd\"))\n", expectedOutput: "1" },
+      },
+    },
+  ];
+}
+
 
 export const careerTracks: CareerTrack[] = [
   {
@@ -1065,5 +1883,9 @@ export const careerTracks: CareerTrack[] = [
   { id: "automation", title: "Automation & Scripting", description: "Automate tasks with Python", color: "python-yellow", lessons: auto() },
   { id: "data-engineering", title: "Data Engineering", description: "Build data pipelines", color: "reward-gold", lessons: de() },
   { id: "cybersecurity", title: "Cybersecurity", description: "Security with Python", color: "destructive", lessons: cs() },
-  { id: "git", title: "GitHub Mastery (Start to Master)", description: "Master Git and GitHub for teams", color: "expert-purple", lessons: githubMastery() },
+  { id: "git", title: "GitHub Mastery (Start to Master)", description: "Master Git and GitHub for teams", color: "expert-purple", language: "bash", lessons: githubMastery() },
+  { id: "linux", title: "Linux Mastery (Install to Master)", description: "Master Linux from installation to professional system administration", color: "streak-green", language: "bash", lessons: linuxMastery() },
+  { id: "cloud-mlops", title: "Cloud & MLOps", description: "Deploy and scale Python in the cloud", color: "primary", lessons: cloudMlops() },
+  { id: "game-dev", title: "Game Development", description: "Build 2D and 3D games with Python", color: "destructive", lessons: gameDev() },
+  { id: "iot-robotics", title: "IoT & Robotics", description: "Hardware and embedded Python", color: "reward-gold", lessons: iotRobotics() },
 ];

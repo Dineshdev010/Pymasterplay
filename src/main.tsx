@@ -21,15 +21,34 @@ function hideLoaderSafely() {
 function showBootError(message: string) {
   const root = document.getElementById("root");
   if (!root) return;
-  root.innerHTML = `
-    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0b1020;color:#e5e7eb;font-family:Inter,system-ui,sans-serif;">
-      <div style="max-width:560px;text-align:center;border:1px solid rgba(148,163,184,0.35);border-radius:16px;padding:24px;background:rgba(15,23,42,0.72);">
-        <h1 style="margin:0 0 8px 0;font-size:22px;">PyMaster Could Not Start</h1>
-        <p style="margin:0 0 16px 0;line-height:1.5;color:#cbd5e1;">${message}</p>
-        <button onclick="window.location.reload()" style="border:none;border-radius:10px;padding:10px 14px;background:#2563eb;color:white;font-weight:700;cursor:pointer;">Reload</button>
-      </div>
-    </div>
-  `;
+
+  // Clear existing content safely
+  root.textContent = "";
+
+  const container = document.createElement("div");
+  container.style.cssText = "min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:#0b1020;color:#e5e7eb;font-family:Inter,system-ui,sans-serif;";
+
+  const box = document.createElement("div");
+  box.style.cssText = "max-width:560px;text-align:center;border:1px solid rgba(148,163,184,0.35);border-radius:16px;padding:24px;background:rgba(15,23,42,0.72);";
+
+  const h1 = document.createElement("h1");
+  h1.style.cssText = "margin:0 0 8px 0;font-size:22px;";
+  h1.textContent = "PyMaster Could Not Start";
+
+  const p = document.createElement("p");
+  p.style.cssText = "margin:0 0 16px 0;line-height:1.5;color:#cbd5e1;";
+  p.textContent = message;
+
+  const btn = document.createElement("button");
+  btn.style.cssText = "border:none;border-radius:10px;padding:10px 14px;background:#2563eb;color:white;font-weight:700;cursor:pointer;";
+  btn.textContent = "Reload";
+  btn.onclick = () => window.location.reload();
+
+  box.appendChild(h1);
+  box.appendChild(p);
+  box.appendChild(btn);
+  container.appendChild(box);
+  root.appendChild(container);
 }
 
 function isDynamicImportError(reason: unknown) {

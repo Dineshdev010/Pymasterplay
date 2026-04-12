@@ -35,8 +35,8 @@ interface ExecutionOptions {
 
 export type PythonRuntimeStatus = "idle" | "loading" | "ready" | "error";
 
-const DEFAULT_TIMEOUT_MS = 5000;
-const INIT_TIMEOUT_MS = 60000;
+const DEFAULT_TIMEOUT_MS = 60000;
+const INIT_TIMEOUT_MS = 120000;
 
 let worker: Worker | null = null;
 let workerReadyPromise: Promise<void> | null = null;
