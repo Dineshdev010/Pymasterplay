@@ -56,6 +56,196 @@ interface CheatsheetSection { title: string; cards: CheatsheetCard[]; }
 interface TechEntry { icon: React.ElementType; color: string; sections: CheatsheetSection[]; }
 type TechType = 'python' | 'sql' | 'pandas' | 'linux' | 'git';
 
+const CARD_EXPLANATIONS: Partial<Record<TechType, Record<string, string>>> = {
+  python: {
+    "Variables": "Store input and values in named variables.",
+    "Conditionals": "Run different logic based on conditions.",
+    "Loops": "Repeat code using for and while.",
+    "Functions": "Reuse logic with parameters and return values.",
+    "Lists": "Mutable ordered collection with common edit methods.",
+    "Tuples": "Immutable sequence useful for fixed data.",
+    "Sets": "Unique values with fast union/intersection operations.",
+    "Dictionaries": "Key-value storage for structured data.",
+    "Comprehensions": "Build lists/dicts quickly in one expression.",
+    "String Methods": "Clean and transform text efficiently.",
+    "f-Strings": "Format strings with inline variables cleanly.",
+    "File Operations": "Read/write files using safe context manager.",
+    "JSON": "Convert between Python objects and JSON text.",
+    "Try/Except": "Handle runtime errors without crashing.",
+    "Classes": "Create objects with attributes and methods.",
+    "Inheritance": "Reuse behavior from a parent class.",
+    "Enumerate": "Access index and item while iterating.",
+    "Zip": "Iterate over multiple lists together.",
+    "Sorting/Lambda": "Sort complex data with custom keys.",
+    "Counter/Deque": "Fast counting and queue-like operations.",
+    "Two-Pointer": "Optimize array scans from both ends.",
+    "Core Helpers": "Most-used built-ins for type and math checks.",
+    "Convert & Create": "Convert values into core Python types.",
+    "Inspect & Debug": "Inspect object capabilities and environment.",
+    "Iterators": "Transform/scan collections functionally.",
+    "Ordering & Slicing": "Sort, reverse, and slice sequences cleanly.",
+    "Import Styles": "Common ways to import modules and symbols.",
+    "Math & Random": "Numeric helpers and random sampling.",
+    "Collections": "Specialized containers from standard library.",
+    "Itertools": "Combinatorics and iterator utilities.",
+    "Datetime": "Work with timestamps and date arithmetic.",
+    "Pathlib & OS": "Handle paths and OS-level utilities.",
+    "JSON & CSV": "Parse and export common data formats.",
+    "Ternary": "Inline if-else assignment in one line.",
+    "Swap": "Swap variable values without temp variable.",
+    "Any/All": "Quickly test boolean conditions across iterables.",
+    "Flatten": "Flatten nested lists using comprehension.",
+  },
+  pandas: {
+    "Read/Write": "Load datasets and export processed results.",
+    "Inspection": "Quickly inspect shape, columns, and summary stats.",
+    "Memory": "Check memory usage for large DataFrames.",
+    "Loc / ILOC": "Select data by labels or integer position.",
+    "Conditionals": "Filter rows with boolean conditions.",
+    "IsIn / Query": "Readable filtering for lists and expressions.",
+    "Nulls": "Handle missing values safely.",
+    "Duplicates": "Detect and remove duplicate rows.",
+    "Rename / Cast": "Standardize column names and dtypes.",
+    "GroupBy": "Aggregate metrics by category.",
+    "Value Counts": "Count category frequencies fast.",
+    "Rolling Window": "Compute moving averages over time.",
+    "Pivot": "Reshape data into matrix-style summaries.",
+    "Merge (Join)": "Combine DataFrames using key columns.",
+    "Concat (Union)": "Stack DataFrames by rows or columns.",
+    "Apply": "Run custom transformations on a Series.",
+    "Melt / Unstack": "Switch between wide and long formats.",
+  },
+  linux: {
+    "Ls Details": "List files with permissions and sizes.",
+    "Pwd & Cd": "Check current path and navigate directories.",
+    "Relative Cd": "Move quickly with relative shortcuts.",
+    "Cat / Tail": "Print files and live-follow logs.",
+    "Head / Less": "Preview large files efficiently.",
+    "Copy/Move": "Copy files or rename/move paths.",
+    "Mkdir/Touch": "Create folders and empty files quickly.",
+    "Find Files": "Search files by name, type, or time.",
+    "Tar Archive": "Compress and extract archives.",
+    "Grep Search": "Search text patterns in files.",
+    "Sed Replace": "Batch replace text from command line.",
+    "Awk Column": "Extract and process column-based text.",
+    "Sort / Uniq": "Sort lines and count duplicates.",
+    "Chmod": "Change permission bits for scripts/files.",
+    "Chown": "Change file owner and group.",
+    "Sudo / Root": "Run privileged commands safely.",
+    "User Info": "Show current user and group context.",
+    "Processes": "Inspect running processes and usage.",
+    "Kill": "Stop processes by PID or name.",
+    "Disk Space": "Check filesystem and directory sizes.",
+    "Free RAM": "View current memory usage.",
+    "Curl / Wget": "Fetch URLs and download files.",
+    "Ping / Trace": "Test connectivity and network route.",
+    "Netstat": "Inspect open ports and listeners.",
+    "SSH": "Secure remote login and file transfer.",
+    "Pipes": "Chain commands for data processing.",
+    "Redirect": "Write or append command output to files.",
+    "Aliases": "Create shortcuts for frequent commands.",
+    "History": "Reuse and search previous commands.",
+  },
+};
+
+const getCardExplanation = (type: TechType, title: string) => {
+  const mapped = CARD_EXPLANATIONS[type]?.[title];
+  if (mapped) return mapped;
+  if (type === "python" || type === "pandas" || type === "linux") {
+    return `Quick reference for ${title.toLowerCase()}.`;
+  }
+  return "";
+};
+
+const LANGUAGE_KEYWORDS: Record<TechType, string[]> = {
+  python: ["def", "class", "return", "if", "elif", "else", "for", "while", "in", "try", "except", "finally", "with", "as", "import", "from", "lambda", "pass", "break", "continue", "and", "or", "not", "is", "None", "True", "False"],
+  sql: ["SELECT", "FROM", "WHERE", "JOIN", "LEFT", "RIGHT", "INNER", "OUTER", "ON", "GROUP", "BY", "HAVING", "ORDER", "LIMIT", "WITH", "AS", "CASE", "WHEN", "THEN", "ELSE", "END", "COUNT", "SUM", "AVG", "MIN", "MAX", "DISTINCT", "INSERT", "UPDATE", "DELETE", "CREATE", "ALTER", "DROP"],
+  pandas: ["import", "from", "as", "lambda", "for", "in", "if", "else", "and", "or", "not", "True", "False", "None"],
+  linux: ["sudo", "cd", "ls", "pwd", "cat", "tail", "head", "grep", "awk", "sed", "find", "cp", "mv", "mkdir", "touch", "chmod", "chown", "kill", "top", "ssh", "scp", "curl", "wget", "echo", "alias", "history"],
+  git: ["git", "add", "commit", "status", "diff", "push", "pull", "fetch", "merge", "rebase", "checkout", "branch", "log", "stash", "reset", "revert", "config", "blame", "cherry-pick", "origin", "main"],
+};
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+const highlightSnippet = (snippet: string, type: TechType) => {
+  const keywordSet = new Set(LANGUAGE_KEYWORDS[type]);
+  const sqlKeywordSet = new Set(LANGUAGE_KEYWORDS.sql.map((word) => word.toUpperCase()));
+  const isSql = type === "sql";
+
+  const colorWord = (word: string, nextChunk: string) => {
+    const isKeyword = isSql ? sqlKeywordSet.has(word.toUpperCase()) : keywordSet.has(word);
+    if (isKeyword) {
+      return `<span class="text-violet-300">${escapeHtml(word)}</span>`;
+    }
+
+    if (/^\s*\(/.test(nextChunk)) {
+      return `<span class="text-cyan-300">${escapeHtml(word)}</span>`;
+    }
+
+    return escapeHtml(word);
+  };
+
+  const colorLine = (line: string) => {
+    let i = 0;
+    let out = "";
+
+    while (i < line.length) {
+      const ch = line[i];
+
+      if (ch === "#") {
+        out += `<span class="text-emerald-400/90">${escapeHtml(line.slice(i))}</span>`;
+        break;
+      }
+
+      if (ch === "'" || ch === '"') {
+        const quote = ch;
+        let j = i + 1;
+        while (j < line.length) {
+          if (line[j] === "\\" && j + 1 < line.length) {
+            j += 2;
+            continue;
+          }
+          if (line[j] === quote) {
+            j += 1;
+            break;
+          }
+          j += 1;
+        }
+        out += `<span class="text-yellow-300">${escapeHtml(line.slice(i, j))}</span>`;
+        i = j;
+        continue;
+      }
+
+      const numMatch = line.slice(i).match(/^\d+(\.\d+)?\b/);
+      if (numMatch) {
+        out += `<span class="text-fuchsia-300">${numMatch[0]}</span>`;
+        i += numMatch[0].length;
+        continue;
+      }
+
+      const idMatch = line.slice(i).match(/^[A-Za-z_]\w*/);
+      if (idMatch) {
+        const word = idMatch[0];
+        const rest = line.slice(i + word.length);
+        out += colorWord(word, rest);
+        i += word.length;
+        continue;
+      }
+
+      out += escapeHtml(ch);
+      i += 1;
+    }
+
+    return out;
+  };
+
+  return snippet.split("\n").map(colorLine).join("\n");
+};
+
 const TECH_COLOR_CLASSES: Record<TechType, { tabActive: string; iconActive: string; badge: string }> = {
   python: {
     tabActive: "bg-blue-500/20 text-blue-300 ring-2 ring-blue-500/40 shadow-xl",
@@ -138,10 +328,23 @@ const TECH_DATA: Record<TechType, TechEntry> = {
       {
         title: "Built-in Functions",
         cards: [
-          { title: "Essential Utils", snippet: "nums = [1, 2, 3]\nprint(len(nums))      # Length\nprint(type(nums))     # Object type\nprint(id(nums))       # Memory address" },
-          { title: "Discovery", snippet: "print(dir(nums))      # All methods\nprint(help(list))     # Documentation\nprint(vars())         # Local symbol table" },
-          { title: "Math/Logic", snippet: "print(sum(nums))\nprint(min(nums), max(nums))\nprint(abs(-42))\nprint(any([0, 1]), all([1, 1]))" },
-          { title: "Iteration", snippet: "for i in range(5): ...\nitems = list(reversed([3, 1, 2]))\nscored = sorted([4, 2, 8])" },
+          { title: "Core Helpers", snippet: "nums = [1, 2, 3]\nprint(len(nums), sum(nums))\nprint(min(nums), max(nums))\nprint(abs(-42), round(3.14159, 2))\nprint(type(nums), isinstance(nums, list))" },
+          { title: "Convert & Create", snippet: "print(int('10'), float('2.5'))\nprint(str(99), bool(1))\nprint(list('abc'))\nprint(tuple([1, 2]))\nprint(set([1, 1, 2]))\nprint(dict([('a', 1), ('b', 2)]))" },
+          { title: "Inspect & Debug", snippet: "print(dir(nums))\nprint(help(list))\nprint(callable(len))\nprint(vars())\nprint(hasattr(nums, 'append'))" },
+          { title: "Iterators", snippet: "pairs = list(enumerate(['a', 'b']))\nprint(pairs)\nprint(list(zip([1, 2], ['x', 'y'])))\nprint(list(map(str, [1, 2, 3])))\nprint(list(filter(lambda n: n % 2 == 0, [1, 2, 3, 4])))" },
+          { title: "Ordering & Slicing", snippet: "nums = [4, 2, 8, 1]\nprint(sorted(nums))\nprint(list(reversed(nums)))\nprint(slice(1, 3))\nprint(nums[slice(1, 3)])" },
+        ]
+      },
+      {
+        title: "Imports & Standard Library",
+        cards: [
+          { title: "Import Styles", snippet: "import math\nimport math as m\nfrom math import sqrt, pi\nfrom collections import Counter as C\nimport os, sys" },
+          { title: "Math & Random", snippet: "import math, random\nprint(math.sqrt(49), math.ceil(2.1))\nprint(math.factorial(5), math.pi)\nprint(random.randint(1, 6))\nprint(random.choice(['A', 'B', 'C']))" },
+          { title: "Collections", snippet: "from collections import Counter, defaultdict, deque\nprint(Counter('banana'))\nd = defaultdict(int); d['x'] += 1\nq = deque([1, 2]); q.appendleft(0)" },
+          { title: "Itertools", snippet: "from itertools import combinations, permutations\nprint(list(combinations([1, 2, 3], 2)))\nprint(list(permutations([1, 2, 3], 2)))" },
+          { title: "Datetime", snippet: "from datetime import datetime, timedelta\nnow = datetime.now()\nprint(now.strftime('%Y-%m-%d %H:%M'))\nprint(now + timedelta(days=7))" },
+          { title: "Pathlib & OS", snippet: "from pathlib import Path\nimport os\np = Path('data') / 'file.txt'\nprint(p.exists())\nprint(os.getcwd(), os.listdir('.'))" },
+          { title: "JSON & CSV", snippet: "import json, csv\ntext = json.dumps({'a': 1})\nobj = json.loads(text)\nwith open('x.csv', newline='') as f:\n    rows = list(csv.reader(f))" },
         ]
       },
       {
@@ -162,45 +365,45 @@ const TECH_DATA: Record<TechType, TechEntry> = {
       {
         title: "Joins & Filtering",
         cards: [
-          { title: "Inner Join", snippet: "SELECT * FROM orders O\nJOIN customers C ON O.cid = C.id" },
-          { title: "Left Join", snippet: "SELECT * FROM users U\nLEFT JOIN profiles P ON U.id = P.uid" },
-          { title: "Self Join", snippet: "SELECT e.name, m.name as mgr\nFROM emp e JOIN emp m\nON e.mid = m.id" },
-          { title: "In / Between", snippet: "WHERE id IN (1, 2, 3)\nOR price BETWEEN 10 AND 50" },
+          { title: "Inner Join", snippet: "-- Keep only matching rows in both tables\nSELECT o.id, c.name\nFROM orders o\nJOIN customers c ON o.cid = c.id;" },
+          { title: "Left Join", snippet: "-- Keep all users, profile may be NULL\nSELECT u.id, p.bio\nFROM users u\nLEFT JOIN profiles p ON u.id = p.uid;" },
+          { title: "Self Join", snippet: "-- Join a table to itself (employee -> manager)\nSELECT e.name, m.name AS manager\nFROM emp e\nJOIN emp m ON e.mid = m.id;" },
+          { title: "In / Between", snippet: "-- IN for list match, BETWEEN for range\nSELECT *\nFROM products\nWHERE id IN (1, 2, 3)\n   OR price BETWEEN 10 AND 50;" },
         ]
       },
       {
         title: "Strings & Dates",
         cards: [
-          { title: "Coalesce", snippet: "SELECT COALESCE(phone, 'N/A')\nFROM users" },
-          { title: "String Ops", snippet: "UPPER(name), LENGTH(email),\nSUBSTR(code, 1, 3)" },
-          { title: "Date Trunc", snippet: "DATE_TRUNC('month', created_at)\nAS month_start" },
-          { title: "Intervals", snippet: "created_at > NOW() - INTERVAL '30 days'" },
+          { title: "Coalesce", snippet: "-- Replace NULL with fallback value\nSELECT COALESCE(phone, 'N/A') AS phone\nFROM users;" },
+          { title: "String Ops", snippet: "-- Clean and inspect text fields\nSELECT UPPER(name) AS name_up,\n       LENGTH(email) AS email_len,\n       SUBSTR(code, 1, 3) AS prefix\nFROM users;" },
+          { title: "Date Trunc", snippet: "-- Bucket timestamps by month\nSELECT DATE_TRUNC('month', created_at) AS month_start,\n       COUNT(*)\nFROM orders\nGROUP BY 1;" },
+          { title: "Intervals", snippet: "-- Last 30 days records\nSELECT *\nFROM events\nWHERE created_at > NOW() - INTERVAL '30 days';" },
         ]
       },
       {
         title: "Advanced Patterns",
         cards: [
-          { title: "CTE (With)", snippet: "WITH top_users AS (\n  SELECT * FROM users WHERE xp > 500\n)\nSELECT * FROM top_users" },
-          { title: "Window Sum", snippet: "SUM(val) OVER(PARTITION BY cat\nORDER BY date)" },
-          { title: "Rank / RowNum", snippet: "RANK() OVER(ORDER BY score DESC)\nROW_NUMBER() OVER(PARTITION BY grp ORDER BY date)" },
-          { title: "Lead / Lag", snippet: "LAG(price) OVER(ORDER BY date),\nLEAD(price) OVER(ORDER BY date)" },
+          { title: "CTE (With)", snippet: "-- Break complex query into named step\nWITH top_users AS (\n  SELECT * FROM users WHERE xp > 500\n)\nSELECT * FROM top_users;" },
+          { title: "Window Sum", snippet: "-- Running total inside each category\nSELECT cat, date,\n       SUM(val) OVER (PARTITION BY cat ORDER BY date) AS running_sum\nFROM sales;" },
+          { title: "Rank / RowNum", snippet: "-- Rank ties together, row_number is always unique\nSELECT grp, score,\n       RANK() OVER (ORDER BY score DESC) AS rank_global,\n       ROW_NUMBER() OVER (PARTITION BY grp ORDER BY date) AS row_in_grp\nFROM scores;" },
+          { title: "Lead / Lag", snippet: "-- Compare current row with previous/next row\nSELECT date, price,\n       LAG(price) OVER (ORDER BY date) AS prev_price,\n       LEAD(price) OVER (ORDER BY date) AS next_price\nFROM prices;" },
         ]
       },
       {
         title: "Aggregates",
         cards: [
-          { title: "GroupBy", snippet: "SELECT city, COUNT(*) \nFROM users\nGROUP BY city HAVING COUNT(*) > 5" },
-          { title: "Case Agg", snippet: "SUM(CASE WHEN status='paid' THEN val ELSE 0 END)" },
-          { title: "Distinct Count", snippet: "COUNT(DISTINCT user_id)" },
+          { title: "GroupBy", snippet: "-- Aggregate per city, then filter groups\nSELECT city, COUNT(*) AS users_count\nFROM users\nGROUP BY city\nHAVING COUNT(*) > 5;" },
+          { title: "Case Agg", snippet: "-- Conditional sum in one query\nSELECT SUM(CASE WHEN status = 'paid' THEN val ELSE 0 END) AS paid_total\nFROM payments;" },
+          { title: "Distinct Count", snippet: "-- Count unique users only\nSELECT COUNT(DISTINCT user_id) AS unique_users\nFROM sessions;" },
         ]
       },
       {
         title: "Performance & Schema",
         cards: [
-          { title: "Explain", snippet: "EXPLAIN ANALYZE\nSELECT * FROM users WHERE id = 1" },
-          { title: "Create Table", snippet: "CREATE TABLE u (\n  id SERIAL PRIMARY KEY,\n  email TEXT UNIQUE NOT NULL,\n  bio TEXT DEFAULT 'User'\n)" },
-          { title: "Indices", snippet: "CREATE INDEX idx_email ON users(email)" },
-          { title: "Alter Table", snippet: "ALTER TABLE users ADD COLUMN age INT;\nDROP TABLE temp_results;" },
+          { title: "Explain", snippet: "-- View execution plan + runtime details\nEXPLAIN ANALYZE\nSELECT * FROM users WHERE id = 1;" },
+          { title: "Create Table", snippet: "-- Basic table with constraints\nCREATE TABLE users (\n  id SERIAL PRIMARY KEY,\n  email TEXT UNIQUE NOT NULL,\n  bio TEXT DEFAULT 'User'\n);" },
+          { title: "Indices", snippet: "-- Speed up lookups on filtered columns\nCREATE INDEX idx_users_email ON users(email);" },
+          { title: "Alter Table", snippet: "-- Evolve schema safely over time\nALTER TABLE users ADD COLUMN age INT;\n-- DROP TABLE temp_results;  -- use with caution" },
         ]
       }
     ]
@@ -434,7 +637,7 @@ export default function QuickPrepPage() {
           <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-primary/20 to-indigo-500/10 opacity-30 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]" />
         </div>
 
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
             <div className="max-w-4xl flex-1 space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
@@ -452,7 +655,7 @@ export default function QuickPrepPage() {
         </div>
       </section>
 
-      <main className="mx-auto max-w-6xl px-4 py-12 sm:px-6 lg:px-8">
+      <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         
         {/* --- STATS OVERVIEW --- */}
         <div className="mb-10 flex flex-wrap gap-4 items-center justify-center sm:justify-start">
@@ -473,7 +676,7 @@ export default function QuickPrepPage() {
         </div>
 
         {/* --- PREP TRACKS --- */}
-        <div className="mb-16 grid gap-6 md:grid-cols-3">
+        <div className="mb-16 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {prepTracks.map((track, idx) => (
             <motion.div
               key={track.title}
@@ -491,7 +694,7 @@ export default function QuickPrepPage() {
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-white mb-2">{track.title}</h2>
-                  <p className="text-base text-slate-400 leading-relaxed line-clamp-2">{track.description}</p>
+                  <p className="text-lg text-slate-400 leading-relaxed">{track.description}</p>
                 </div>
                 
                 <div className="space-y-2">
@@ -504,7 +707,7 @@ export default function QuickPrepPage() {
                           className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.03] hover:bg-white/[0.08] transition-all group/step"
                         >
                           <StepIcon className="h-4 w-4 text-slate-500 group-hover/step:text-primary" />
-                          <span className="text-sm font-bold text-slate-300">{step.label}</span>
+                          <span className="text-base font-bold text-slate-300">{step.label}</span>
                         </Link>
                      );
                    })}
@@ -544,28 +747,28 @@ export default function QuickPrepPage() {
         </div>
 
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wider ${TECH_COLOR_CLASSES[activeTab].badge}`}>
+          <span className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold uppercase tracking-wider ${TECH_COLOR_CLASSES[activeTab].badge}`}>
             {activeKey} focus
           </span>
-          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-300">
+          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm font-medium text-slate-300">
             {activeTechSummary.sections} sections
           </span>
-          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-300">
+          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm font-medium text-slate-300">
             {activeTechSummary.snippets} snippets
           </span>
-          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-xs font-medium text-slate-300">
+          <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-sm font-medium text-slate-300">
             {totalFavorites} favorites
           </span>
         </div>
 
         <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
-          <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-sm text-slate-300">
+          <label className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-slate-300">
             <Search className="h-4 w-4 text-slate-400" />
             <input
               value={query}
               onChange={(event) => setQuery(event.target.value)}
               placeholder={`Search ${activeKey} snippets...`}
-              className="w-full bg-transparent text-sm text-slate-200 outline-none placeholder:text-slate-500"
+              className="w-full bg-transparent text-base text-slate-200 outline-none placeholder:text-slate-500"
             />
           </label>
           <Button
@@ -594,11 +797,11 @@ export default function QuickPrepPage() {
             {filteredSections.map((section: CheatsheetSection) => (
               <div key={section.title} className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <h3 className="text-sm font-black tracking-widest text-slate-500 uppercase">{section.title}</h3>
+                  <h3 className="text-base font-black tracking-widest text-slate-400 uppercase">{section.title}</h3>
                   <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
                 </div>
 
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid gap-4 grid-cols-1">
                   {section.cards.map((card: CheatsheetCard) => (
                     (() => {
                       const favoriteKey = `${activeTab}:${section.title}:${card.title}`;
@@ -609,7 +812,7 @@ export default function QuickPrepPage() {
                       className="group relative rounded-[1.5rem] border border-white/5 bg-slate-900/40 p-5 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:bg-slate-900/60 hover:shadow-2xl hover:shadow-primary/10"
                     >
                       <div className="mb-4 flex items-center justify-between">
-                         <h4 className="text-sm font-bold text-slate-100">{card.title}</h4>
+                         <h4 className="text-base font-bold text-slate-100">{card.title}</h4>
                          <div className="flex items-center gap-1.5">
                            <button
                             onClick={() => toggleFavorite(favoriteKey)}
@@ -625,6 +828,11 @@ export default function QuickPrepPage() {
                            </button>
                          </div>
                       </div>
+                      {getCardExplanation(activeTab, card.title) && (
+                        <p className="mb-4 text-sm text-slate-400 leading-relaxed">
+                          {getCardExplanation(activeTab, card.title)}
+                        </p>
+                      )}
                       
                       {/* --- TERMINAL WRAPPER FOR LINUX --- */}
                       <div className={`rounded-xl overflow-hidden shadow-xl ${activeTab === 'linux' ? 'ring-1 ring-white/10' : ''}`}>
@@ -635,21 +843,20 @@ export default function QuickPrepPage() {
                             <div className="w-2 h-2 rounded-full bg-emerald-500" />
                           </div>
                         )}
-                        <div className="bg-black/40 p-4 ring-1 ring-inset ring-white/[0.03]">
-                          <pre className="text-[14px] font-mono text-emerald-400/90 whitespace-pre-wrap break-words selection:bg-primary/30 leading-snug italic">
-                            <code>
-                              {activeTab === 'linux' ? (
-                                <span className="text-primary font-bold mr-1.5">user@arena:~$ </span>
-                              ) : null}
-                              {card.snippet}
-                            </code>
+                        <div className="bg-[#060b16] p-4 ring-1 ring-inset ring-indigo-400/30">
+                          <pre className="overflow-x-auto text-[15px] sm:text-base font-mono text-blue-100 whitespace-pre selection:bg-fuchsia-500/30 leading-7 not-italic">
+                            <code
+                              dangerouslySetInnerHTML={{
+                                __html: `${activeTab === 'linux' ? '<span class="text-emerald-300 font-semibold mr-1.5">$</span>' : ''}${highlightSnippet(card.snippet, activeTab)}`
+                              }}
+                            />
                           </pre>
                         </div>
                       </div>
 
                       <div className="mt-4 flex items-center gap-2">
                         <span className="h-1.5 w-1.5 rounded-full bg-slate-700" />
-                        <span className="text-[9px] font-bold text-slate-600 uppercase tracking-widest">High Yield Pattern</span>
+                        <span className="text-sm font-semibold text-slate-400 tracking-wide">High Yield Pattern</span>
                       </div>
                     </div>
                       );
@@ -661,7 +868,7 @@ export default function QuickPrepPage() {
             {filteredSections.length === 0 && (
               <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-8 text-center">
                 <p className="text-slate-300">No snippets match your current filters.</p>
-                <p className="mt-1 text-sm text-slate-500">Try a broader search or turn off favorites-only mode.</p>
+                <p className="mt-1 text-base text-slate-500">Try a broader search or turn off favorites-only mode.</p>
               </div>
             )}
           </motion.div>
@@ -678,13 +885,13 @@ export default function QuickPrepPage() {
                     <p className="max-w-xl text-lg text-slate-400 leading-relaxed">Apply these simple principles to your daily prep to level up fast.</p>
                  </div>
                  
-                 <div className="grid gap-6 md:grid-cols-3">
+                 <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     {QUICK_TIPS.map((tip, i) => (
                        <div key={i} className="flex gap-4 p-5 rounded-2xl bg-white/[0.02] border border-white/5 ring-1 ring-inset ring-white/[0.01]">
                           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary/20 text-primary font-bold text-lg border border-primary/20">
                              {i + 1}
                           </div>
-                          <p className="text-sm font-medium text-slate-300 leading-relaxed">{tip}</p>
+                          <p className="text-base font-medium text-slate-300 leading-relaxed">{tip}</p>
                        </div>
                     ))}
                  </div>
