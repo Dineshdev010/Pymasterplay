@@ -108,7 +108,11 @@ const appRoutes: AppRoute[] = [
 ];
 
 function renderRouteElement(route: AppRoute) {
-  const content = <Suspense fallback={route.fallback ?? <PageSkeleton />}>{route.element}</Suspense>;
+  const content = (
+    <ErrorBoundary fallback={route.fallback ?? <PageSkeleton />}>
+      <Suspense fallback={route.fallback ?? <PageSkeleton />}>{route.element}</Suspense>
+    </ErrorBoundary>
+  );
   return route.protected ? <ProtectedRoute>{content}</ProtectedRoute> : content;
 }
 

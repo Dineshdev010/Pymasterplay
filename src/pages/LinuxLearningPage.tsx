@@ -124,11 +124,13 @@ export default function LinuxLearningPage() {
   const track = useMemo(() => careerTracks.find(t => t.id === "linux"), []);
   const [selectedId, setSelectedId] = useState<string | null>(track?.lessons[0]?.id || null);
   const [searchQuery, setSearchQuery] = useState("");
+  const safeLessons = track?.lessons ?? [];
 
   const isLessonUnlocked = (index: number): boolean => {
     if (!track) return false;
     if (index === 0) return true;
-    const prevLesson = track.lessons[index - 1];
+    const prevLesson = safeLessons[index - 1];
+    if (!prevLesson?.id) return false;
     return progress.completedExercises.includes(`${prevLesson.id}:beginner`);
   };
 
@@ -143,23 +145,22 @@ export default function LinuxLearningPage() {
   };
 
   const unlockedLessons = useMemo(() => {
-    if (!track) return [];
-    return track.lessons.filter((_, index) => isLessonUnlocked(index));
-  }, [track, progress.completedExercises]);
+    return safeLessons.filter((_, index) => isLessonUnlocked(index));
+  }, [safeLessons, progress.completedExercises]);
 
   useEffect(() => {
     if (!track) return;
-    const selectedIndex = track.lessons.findIndex((lesson) => lesson.id === selectedId);
+    const selectedIndex = safeLessons.findIndex((lesson) => lesson.id === selectedId);
     const selectedValid = selectedIndex >= 0 && isLessonUnlocked(selectedIndex);
     if (!selectedValid) {
-      setSelectedId(unlockedLessons[unlockedLessons.length - 1]?.id ?? track.lessons[0]?.id ?? null);
+      setSelectedId(unlockedLessons[unlockedLessons.length - 1]?.id ?? safeLessons[0]?.id ?? null);
     }
-  }, [selectedId, track, unlockedLessons]);
+  }, [selectedId, track, safeLessons, unlockedLessons]);
 
   const selectedLesson = useMemo(() => {
     if (!track) return null;
-    return track.lessons.find((l: { id: string }) => l.id === selectedId) || track.lessons[0] || null;
-  }, [track, selectedId]);
+    return safeLessons.find((l: { id: string }) => l.id === selectedId) || safeLessons[0] || null;
+  }, [track, safeLessons, selectedId]);
 
   if (!track || !selectedLesson) {
     return (
@@ -178,17 +179,17 @@ export default function LinuxLearningPage() {
     );
   }
 
-  const currentIndex = track.lessons.findIndex((l: { id: string }) => l.id === selectedLesson.id);
-  const completedExerciseCount = track.lessons.reduce((acc, lesson) => acc + getLessonProgress(lesson.id), 0);
-  const totalExerciseCount = track.lessons.length * exerciseLevels.length;
-  const filteredLessons = track.lessons.filter((lesson) => {
+  const currentIndex = safeLessons.findIndex((l: { id: string }) => l.id === selectedLesson.id);
+  const completedExerciseCount = safeLessons.reduce((acc, lesson) => acc + getLessonProgress(lesson.id), 0);
+  const totalExerciseCount = safeLessons.length * exerciseLevels.length;
+  const filteredLessons = safeLessons.filter((lesson) => {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
-    return lesson.title.toLowerCase().includes(query) || lesson.description.toLowerCase().includes(query);
+    return (lesson.title ?? "").toLowerCase().includes(query) || (lesson.description ?? "").toLowerCase().includes(query);
   });
-  const selectedLessonContent = useMemo(() => getRenderedContent(selectedLesson.content), [selectedLesson.content]);
-  const prevLesson = currentIndex > 0 ? track.lessons[currentIndex - 1] : null;
-  const nextLesson = track.lessons[currentIndex + 1];
+  const selectedLessonContent = useMemo(() => getRenderedContent(selectedLesson.content ?? ""), [selectedLesson.content]);
+  const prevLesson = currentIndex > 0 ? safeLessons[currentIndex - 1] : null;
+  const nextLesson = safeLessons[currentIndex + 1];
   const canGoPrev = Boolean(prevLesson);
   const canGoNext = Boolean(nextLesson && isLessonUnlocked(currentIndex + 1));
 
@@ -213,7 +214,7 @@ export default function LinuxLearningPage() {
                 <div className="text-white/50 mb-1 flex items-center gap-1">
                   <BookOpen className="w-3.5 h-3.5" /> Unlocked
                 </div>
-                <div className="font-semibold text-white">{unlockedLessons.length}/{track.lessons.length}</div>
+                <div className="font-semibold text-white">{unlockedLessons.length}/{safeLessons.length}</div>
               </div>
               <div className="rounded-lg border border-white/10 bg-white/5 p-2">
                 <div className="text-white/50 mb-1 flex items-center gap-1">
@@ -235,7 +236,7 @@ export default function LinuxLearningPage() {
 
           <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin scrollbar-thumb-white/5 scrollbar-track-transparent">
             {filteredLessons.map((lesson) => {
-              const i = track.lessons.findIndex((item) => item.id === lesson.id);
+              const i = safeLessons.findIndex((item) => item.id === lesson.id);
               const unlocked = isLessonUnlocked(i);
               const progressCount = getLessonProgress(lesson.id);
               const isSelected = selectedId === lesson.id;
@@ -407,15 +408,30 @@ export default function LinuxLearningPage() {
                   </div>
 
                   <div className="space-y-6">
-                    {exerciseLevels.map(level => (
-                      <LinuxTerminalEditor
-                        key={level}
-                        exercise={selectedLesson.exercises[level]}
-                        level={level}
-                        lessonId={selectedLesson.id}
-                        locked={!isExerciseUnlocked(selectedLesson.id, level)}
-                      />
-                    ))}
+                    {exerciseLevels.map(level => {
+                      const exercise = selectedLesson.exercises?.[level];
+
+                      if (!exercise) {
+                        return (
+                          <div
+                            key={level}
+                            className="rounded-xl border border-white/10 bg-black/40 p-6 text-sm text-white/60"
+                          >
+                            {level} exercise data is unavailable for this lesson.
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <LinuxTerminalEditor
+                          key={level}
+                          exercise={exercise}
+                          level={level}
+                          lessonId={selectedLesson.id}
+                          locked={!isExerciseUnlocked(selectedLesson.id, level)}
+                        />
+                      );
+                    })}
                   </div>
 
                   {/* Next Lesson Foot-navigation */}
