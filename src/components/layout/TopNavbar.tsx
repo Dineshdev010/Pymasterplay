@@ -222,32 +222,39 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             ))}
           </span>
         </Link>
-        <nav className="ml-1 hidden min-w-0 flex-1 items-center gap-1 lg:flex xl:ml-2">
-          <div className="flex min-w-0 items-center gap-0.5">
-          {primaryNavItems.map((item) => (
+        <nav className="ml-1 hidden min-w-0 flex-1 items-center gap-1 overflow-hidden lg:flex xl:ml-2">
+          <div className="flex min-w-0 items-center gap-0.5 overflow-hidden">
+          {primaryNavItems.map((item) => {
+            const navLabel = item.to === "/quick-prep"
+              ? t("nav.quickPrep").split(" ")[0]
+              : item.to === "/python-game"
+                ? t("nav.pythonGame").split(" ")[0]
+                : t(item.labelKey).split(" ")[0];
+            const hideOnLg = item.to === "/dashboard";
+            return (
             <Link
               key={item.to}
               to={item.to}
-              className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-xs ${
+              className={`flex min-w-0 items-center gap-1 rounded-md px-2 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-xs ${
+                hideOnLg ? "hidden xl:flex" : "flex"
+              } ${
                 isRouteActive(item.to)
-                  ? "bg-secondary text-foreground font-medium scale-105"
-                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 hover:scale-105 active:scale-95"
+                  ? "bg-secondary text-foreground font-medium"
+                  : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 active:scale-95"
               }`}
+              title={navLabel}
             >
-              <span className="text-sm">{item.emoji}</span>
-              {item.to === "/quick-prep"
-                ? t("nav.quickPrep").split(" ")[0]
-                : item.to === "/python-game"
-                  ? t("nav.pythonGame").split(" ")[0]
-                  : t(item.labelKey).split(" ")[0]}
+              <span className="shrink-0 text-sm">{item.emoji}</span>
+              <span className="truncate max-w-[78px] xl:max-w-[110px]">{navLabel}</span>
             </Link>
-          ))}
+          );
+          })}
           </div>
           {secondaryNavItems.length > 0 && (
             <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
               <DropdownMenuTrigger asChild>
                 <button
-                  className={`relative flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-3 xl:text-xs border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                  className={`relative ml-1 flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-3 xl:text-xs border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                     secondaryNavItems.some((item) => isRouteActive(item.to))
                       ? "bg-secondary text-foreground font-semibold border-primary/30 shadow-sm"
                       : "bg-secondary/40 border-border/60 text-foreground/90 hover:bg-secondary hover:border-primary/30 hover:shadow-sm"

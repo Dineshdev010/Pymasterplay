@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { careerTracks } from "@/data/careerLessons";
 import { useProgress } from "@/contexts/ProgressContext";
@@ -9,16 +9,152 @@ import {
   ChevronRight, 
   Lock, 
   Award, 
-  Layout
+  Layout,
+  Search,
+  BookOpen,
+  ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 
+type ExerciseLevel = "beginner" | "intermediate" | "advanced";
+const exerciseLevels: ExerciseLevel[] = ["beginner", "intermediate", "advanced"];
+
+function getRenderedContent(content: string) {
+  const lines = content.split("\n");
+  const blocks: React.ReactNode[] = [];
+  let inCode = false;
+  let codeBuffer: string[] = [];
+  let bulletBuffer: string[] = [];
+
+  const flushCode = (key: string) => {
+    if (!codeBuffer.length) return;
+    blocks.push(
+      <pre key={key} className="mt-4 rounded-xl border border-white/10 bg-[#0d1117] p-4 overflow-x-auto text-sm text-emerald-300/90 font-mono leading-relaxed">
+        {codeBuffer.join("\n")}
+      </pre>,
+    );
+    codeBuffer = [];
+  };
+
+  const flushBullets = (key: string) => {
+    if (!bulletBuffer.length) return;
+    blocks.push(
+      <ul key={key} className="space-y-2 mt-3">
+        {bulletBuffer.map((item, idx) => (
+          <li key={`${key}-${idx}`} className="text-white/80 flex items-start gap-3">
+            <span className="mt-2 h-1.5 w-1.5 rounded-full bg-emerald-400 shrink-0" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>,
+    );
+    bulletBuffer = [];
+  };
+
+  lines.forEach((rawLine, i) => {
+    const line = rawLine.trimEnd();
+    const key = `line-${i}`;
+
+    if (line.startsWith("```")) {
+      flushBullets(`${key}-bullets`);
+      if (inCode) {
+        flushCode(`${key}-code`);
+        inCode = false;
+      } else {
+        inCode = true;
+      }
+      return;
+    }
+
+    if (inCode) {
+      codeBuffer.push(rawLine);
+      return;
+    }
+
+    if (line.startsWith("## ")) {
+      flushBullets(`${key}-bullets`);
+      blocks.push(
+        <h3 key={key} className="text-2xl md:text-3xl font-bold text-white mt-10 mb-3">
+          {line.replace("## ", "")}
+        </h3>,
+      );
+      return;
+    }
+
+    if (line.startsWith("### ")) {
+      flushBullets(`${key}-bullets`);
+      blocks.push(
+        <h4 key={key} className="text-lg font-semibold text-emerald-300 mt-6 mb-2">
+          {line.replace("### ", "")}
+        </h4>,
+      );
+      return;
+    }
+
+    if (line.startsWith("- ")) {
+      bulletBuffer.push(line.replace("- ", ""));
+      return;
+    }
+
+    flushBullets(`${key}-bullets`);
+    if (!line) {
+      blocks.push(<div key={key} className="h-3" />);
+      return;
+    }
+
+    blocks.push(
+      <p key={key} className="text-white/85 leading-7">
+        {line}
+      </p>,
+    );
+  });
+
+  flushBullets("end-bullets");
+  if (inCode) {
+    flushCode("end-code");
+  }
+
+  return blocks;
+}
+
 export default function LinuxLearningPage() {
   const { progress } = useProgress();
   const track = useMemo(() => careerTracks.find(t => t.id === "linux"), []);
   const [selectedId, setSelectedId] = useState<string | null>(track?.lessons[0]?.id || null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const isLessonUnlocked = (index: number): boolean => {
+    if (!track) return false;
+    if (index === 0) return true;
+    const prevLesson = track.lessons[index - 1];
+    return progress.completedExercises.includes(`${prevLesson.id}:beginner`);
+  };
+
+  const isExerciseUnlocked = (lessonId: string, level: ExerciseLevel): boolean => {
+    if (level === "beginner") return true;
+    if (level === "intermediate") return progress.completedExercises.includes(`${lessonId}:beginner`);
+    return progress.completedExercises.includes(`${lessonId}:intermediate`);
+  };
+
+  const getLessonProgress = (lessonId: string) => {
+    return exerciseLevels.filter((level) => progress.completedExercises.includes(`${lessonId}:${level}`)).length;
+  };
+
+  const unlockedLessons = useMemo(() => {
+    if (!track) return [];
+    return track.lessons.filter((_, index) => isLessonUnlocked(index));
+  }, [track, progress.completedExercises]);
+
+  useEffect(() => {
+    if (!track) return;
+    const selectedIndex = track.lessons.findIndex((lesson) => lesson.id === selectedId);
+    const selectedValid = selectedIndex >= 0 && isLessonUnlocked(selectedIndex);
+    if (!selectedValid) {
+      setSelectedId(unlockedLessons[unlockedLessons.length - 1]?.id ?? track.lessons[0]?.id ?? null);
+    }
+  }, [selectedId, track, unlockedLessons]);
 
   const selectedLesson = useMemo(() => {
     if (!track) return null;
@@ -43,24 +179,18 @@ export default function LinuxLearningPage() {
   }
 
   const currentIndex = track.lessons.findIndex((l: { id: string }) => l.id === selectedLesson.id);
-
-  const isLessonUnlocked = (index: number): boolean => {
-    if (index === 0) return true;
-    const prevLesson = track.lessons[index - 1];
-    return progress.completedExercises.includes(`${prevLesson.id}:beginner`);
-  };
-
-  const isExerciseUnlocked = (lessonId: string, level: "beginner" | "intermediate" | "advanced"): boolean => {
-    if (level === "beginner") return true;
-    if (level === "intermediate") return progress.completedExercises.includes(`${lessonId}:beginner`);
-    if (level === "advanced") return progress.completedExercises.includes(`${lessonId}:intermediate`);
-    return false;
-  };
-
-  const getLessonProgress = (lessonId: string) => {
-    const levels = ["beginner", "intermediate", "advanced"] as const;
-    return levels.filter(l => progress.completedExercises.includes(`${lessonId}:${l}`)).length;
-  };
+  const completedExerciseCount = track.lessons.reduce((acc, lesson) => acc + getLessonProgress(lesson.id), 0);
+  const totalExerciseCount = track.lessons.length * exerciseLevels.length;
+  const filteredLessons = track.lessons.filter((lesson) => {
+    if (!searchQuery.trim()) return true;
+    const query = searchQuery.toLowerCase();
+    return lesson.title.toLowerCase().includes(query) || lesson.description.toLowerCase().includes(query);
+  });
+  const selectedLessonContent = useMemo(() => getRenderedContent(selectedLesson.content), [selectedLesson.content]);
+  const prevLesson = currentIndex > 0 ? track.lessons[currentIndex - 1] : null;
+  const nextLesson = track.lessons[currentIndex + 1];
+  const canGoPrev = Boolean(prevLesson);
+  const canGoNext = Boolean(nextLesson && isLessonUnlocked(currentIndex + 1));
 
   return (
     <div className="relative flex flex-col text-white selection:bg-emerald-500/30 overflow-x-hidden bg-black">
@@ -74,14 +204,38 @@ export default function LinuxLearningPage() {
         {/* Left: Content & Roadmap */}
         <aside className="border-r border-white/5 bg-white/[0.01] flex flex-col lg:h-full overflow-hidden">
           {/* Tabs for Sidebar */}
-          <div className="p-4 flex gap-2 border-b border-white/5 bg-black/40">
+          <div className="p-4 border-b border-white/5 bg-black/40 space-y-3">
             <div className="flex-1 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold flex items-center gap-2">
               <Layout className="w-4 h-4" /> Curriculum
             </div>
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div className="rounded-lg border border-white/10 bg-white/5 p-2">
+                <div className="text-white/50 mb-1 flex items-center gap-1">
+                  <BookOpen className="w-3.5 h-3.5" /> Unlocked
+                </div>
+                <div className="font-semibold text-white">{unlockedLessons.length}/{track.lessons.length}</div>
+              </div>
+              <div className="rounded-lg border border-white/10 bg-white/5 p-2">
+                <div className="text-white/50 mb-1 flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Progress
+                </div>
+                <div className="font-semibold text-white">{completedExerciseCount}/{totalExerciseCount}</div>
+              </div>
+            </div>
+            <label className="relative block">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/35" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search lesson..."
+                className="w-full rounded-lg border border-white/10 bg-black/30 py-2 pl-9 pr-3 text-sm text-white placeholder:text-white/35 outline-none focus:border-emerald-500/50"
+              />
+            </label>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4 space-y-2 scrollbar-thin scrollbar-thumb-white/5 scrollbar-track-transparent">
-            {track.lessons.map((lesson, i) => {
+            {filteredLessons.map((lesson) => {
+              const i = track.lessons.findIndex((item) => item.id === lesson.id);
               const unlocked = isLessonUnlocked(i);
               const progressCount = getLessonProgress(lesson.id);
               const isSelected = selectedId === lesson.id;
@@ -147,12 +301,45 @@ export default function LinuxLearningPage() {
                 </button>
               );
             })}
+            {!filteredLessons.length && (
+              <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-white/60">
+                No lessons match your search.
+              </div>
+            )}
           </div>
         </aside>
 
         {/* Right: Active Lesson & Terminal */}
         <div className="bg-black/20 flex flex-col lg:h-full overflow-y-auto">
           <div className="flex-1 max-w-5xl mx-auto w-full px-6 py-10">
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+              <div className="text-sm text-white/70">
+                Working on <span className="font-semibold text-white">{selectedLesson.title}</span>
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={!canGoPrev}
+                  onClick={() => {
+                    if (prevLesson) setSelectedId(prevLesson.id);
+                  }}
+                  className="border-white/20 bg-transparent"
+                >
+                  Previous
+                </Button>
+                <Button
+                  size="sm"
+                  disabled={!canGoNext}
+                  onClick={() => {
+                    if (nextLesson) setSelectedId(nextLesson.id);
+                  }}
+                  className="bg-emerald-600 hover:bg-emerald-500"
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
             <AnimatePresence mode="wait">
               <motion.div
                 key={selectedLesson.id}
@@ -181,19 +368,8 @@ export default function LinuxLearningPage() {
                    </p>
 
                    {/* Rich Lesson Content */}
-                   <div className="prose prose-invert prose-emerald max-w-none space-y-6">
-                     {selectedLesson.content.split('\n').map((line, i) => {
-                       if (line.startsWith('## ')) return <h3 key={i} className="text-2xl font-bold text-white mt-12 mb-4 uppercase tracking-wider flex items-center gap-3">
-                         <span className="w-2 h-6 bg-emerald-500 rounded-full" /> {line.replace('## ', '')}
-                       </h3>;
-                       if (line.startsWith('### ')) return <h4 key={i} className="text-lg font-bold text-emerald-400/80 mt-8 mb-2 font-mono tracking-tighter">{'>_ '}{line.replace('### ', '')}</h4>;
-                       if (line.startsWith('- ')) return <li key={i} className="text-white/60 ml-4 list-none flex items-start gap-4 mb-2">
-                         <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0 shadow-[0_0_5px_rgba(16,185,129,0.5)]" />
-                         <span>{line.replace('- ', '')}</span>
-                       </li>;
-                       if (line.trim() === '') return <div key={i} className="h-4" />;
-                       return <p key={i} className="text-white/90 text-lg leading-relaxed drop-shadow-sm">{line}</p>;
-                     })}
+                   <div className="max-w-none space-y-1">
+                     {selectedLessonContent}
                    </div>
 
                    {selectedLesson.codeExample && (
@@ -231,7 +407,7 @@ export default function LinuxLearningPage() {
                   </div>
 
                   <div className="space-y-6">
-                    {(["beginner", "intermediate", "advanced"] as const).map(level => (
+                    {exerciseLevels.map(level => (
                       <LinuxTerminalEditor
                         key={level}
                         exercise={selectedLesson.exercises[level]}
@@ -244,8 +420,8 @@ export default function LinuxLearningPage() {
 
                   {/* Next Lesson Foot-navigation */}
                   {(() => {
-                    const next = track.lessons[currentIndex + 1];
-                    const canProceed = next && isLessonUnlocked(currentIndex + 1);
+                    const next = nextLesson;
+                    const canProceed = Boolean(next && isLessonUnlocked(currentIndex + 1));
                     if (!next) return (
                       <div className="mt-12 p-8 rounded-2xl border border-reward-gold/20 bg-reward-gold/5 text-center">
                         <Award className="w-12 h-12 text-reward-gold mx-auto mb-4" />

@@ -17,6 +17,37 @@ interface LinuxTerminalEditorProps {
   onComplete?: () => void;
 }
 
+const COMMON_COMMANDS = [
+  "pwd",
+  "ls",
+  "ls -la",
+  "cd /",
+  "cd ~",
+  "mkdir",
+  "touch",
+  "cat",
+  "echo",
+  "cp",
+  "mv",
+  "rm",
+  "find",
+  "grep",
+  "chmod",
+  "chown",
+  "ps",
+  "top",
+  "kill",
+  "uname -a",
+  "whoami",
+  "id",
+  "history",
+  "clear",
+];
+
+function normalizeCommand(cmd: string) {
+  return cmd.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
 export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onComplete }: LinuxTerminalEditorProps) {
   const { progress, completeExercise, addWallet } = useProgress();
   const { toast } = useToast();
@@ -33,13 +64,59 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
 
   const passedId = `${lessonId}:${level}`;
   const passed = progress.completedExercises.includes(passedId);
+  const historyStorageKey = useMemo(() => `pymaster_terminal_history_${lessonId}_${level}`, [lessonId, level]);
+  const [cmdHistory, setCmdHistory] = useState<string[]>(() => {
+    try {
+      const raw = sessionStorage.getItem(historyStorageKey);
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      return Array.isArray(parsed) ? parsed.filter((item) => typeof item === "string") : [];
+    } catch {
+      return [];
+    }
+  });
+  const [historyIdx, setHistoryIdx] = useState(-1);
+  const [activeSuggestionIdx, setActiveSuggestionIdx] = useState(0);
+  const [reverseSearchMode, setReverseSearchMode] = useState(false);
+  const [reverseSearchQuery, setReverseSearchQuery] = useState("");
+  const [reverseSearchCursor, setReverseSearchCursor] = useState(0);
+
+  const expectedCommand = useMemo(
+    () => (exercise.expectedOutput ? normalizeCommand(exercise.expectedOutput) : ""),
+    [exercise.expectedOutput],
+  );
+  const allCommandSuggestions = useMemo(() => {
+    const merged = [...COMMON_COMMANDS, ...cmdHistory];
+    return Array.from(new Set(merged.map((item) => normalizeCommand(item)).filter(Boolean)));
+  }, [cmdHistory]);
+
+  const getClosestSuggestions = (value: string) => {
+    const normalized = normalizeCommand(value);
+    if (!normalized) return allCommandSuggestions.slice(0, 3);
+
+    const startsWithMatches = allCommandSuggestions.filter((candidate) => candidate.startsWith(normalized));
+    if (startsWithMatches.length) return startsWithMatches.slice(0, 3);
+
+    const tokenMatches = allCommandSuggestions.filter((candidate) => candidate.includes(normalized.split(" ")[0] || ""));
+    return tokenMatches.slice(0, 3);
+  };
+  const inlineSuggestions = useMemo(() => {
+    if (passed || locked) return [];
+    if (reverseSearchMode) return [];
+    return getClosestSuggestions(input);
+  }, [input, passed, locked, reverseSearchMode, allCommandSuggestions]);
+
+  const reverseMatches = useMemo(() => {
+    const q = normalizeCommand(reverseSearchQuery);
+    const recentFirst = [...cmdHistory].reverse();
+    if (!q) return recentFirst.slice(0, 20);
+    return recentFirst.filter((cmd) => normalizeCommand(cmd).includes(q)).slice(0, 20);
+  }, [cmdHistory, reverseSearchQuery]);
+
   const isCorrectCommand = (cmd: string) => {
-    if (!exercise.expectedOutput) return true;
-    const cleanCmd = cmd.trim().toLowerCase();
-    const cleanExpected = exercise.expectedOutput.trim().toLowerCase();
-    
-    // Exact match or contains (for more flexibility in linux commands)
-    return cleanCmd === cleanExpected || cleanCmd.startsWith(cleanExpected);
+    if (!expectedCommand) return true;
+    const cleanCmd = normalizeCommand(cmd);
+    return cleanCmd === expectedCommand || cleanCmd.startsWith(expectedCommand);
   };
 
   useEffect(() => {
@@ -48,11 +125,95 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
     }
   }, [history]);
 
-  // Command history persistence within session
-  const [cmdHistory, setCmdHistory] = useState<string[]>([]);
-  const [historyIdx, setHistoryIdx] = useState(-1);
+  useEffect(() => {
+    try {
+      sessionStorage.setItem(historyStorageKey, JSON.stringify(cmdHistory.slice(-100)));
+    } catch {
+      // ignore persistence issues
+    }
+  }, [cmdHistory, historyStorageKey]);
+
+  useEffect(() => {
+    setActiveSuggestionIdx(0);
+  }, [input, reverseSearchMode]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.ctrlKey && e.key.toLowerCase() === "r") {
+      e.preventDefault();
+      if (!reverseSearchMode) {
+        setReverseSearchMode(true);
+        setReverseSearchQuery(input);
+        setReverseSearchCursor(0);
+      } else {
+        const nextCursor = reverseMatches.length ? (reverseSearchCursor + 1) % reverseMatches.length : 0;
+        setReverseSearchCursor(nextCursor);
+        if (reverseMatches.length) {
+          setInput(reverseMatches[nextCursor]);
+        }
+      }
+      return;
+    }
+
+    if (reverseSearchMode) {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setReverseSearchMode(false);
+        setReverseSearchQuery("");
+        setReverseSearchCursor(0);
+        return;
+      }
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (reverseMatches.length) {
+          setInput(reverseMatches[reverseSearchCursor] ?? reverseMatches[0]);
+        }
+        setReverseSearchMode(false);
+        setReverseSearchQuery("");
+        return;
+      }
+
+      if (e.key === "Backspace") {
+        e.preventDefault();
+        setReverseSearchQuery((prev) => prev.slice(0, -1));
+        setReverseSearchCursor(0);
+        return;
+      }
+
+      if (e.key.length === 1 && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        setReverseSearchQuery((prev) => prev + e.key);
+        setReverseSearchCursor(0);
+      }
+      return;
+    }
+
+    if (e.key === "ArrowRight" && inlineSuggestions.length && input && inlineSuggestions[activeSuggestionIdx]?.startsWith(normalizeCommand(input))) {
+      e.preventDefault();
+      setInput(inlineSuggestions[activeSuggestionIdx]);
+      return;
+    }
+
+    if (e.key === "ArrowUp" && inlineSuggestions.length && input) {
+      e.preventDefault();
+      setActiveSuggestionIdx((prev) => (prev - 1 + inlineSuggestions.length) % inlineSuggestions.length);
+      return;
+    }
+
+    if (e.key === "ArrowDown" && inlineSuggestions.length && input) {
+      e.preventDefault();
+      setActiveSuggestionIdx((prev) => (prev + 1) % inlineSuggestions.length);
+      return;
+    }
+
+    if (e.key === "Tab") {
+      e.preventDefault();
+      if (inlineSuggestions.length) {
+        setInput(inlineSuggestions[activeSuggestionIdx] || inlineSuggestions[0]);
+      }
+      return;
+    }
+
     if (e.key === "ArrowUp") {
       e.preventDefault();
       const nextIdx = historyIdx + 1;
@@ -106,6 +267,28 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
       });
       addWallet(25);
       if (onComplete) onComplete();
+    } else if (!isCorrect && expectedCommand) {
+      const normalizedCmd = normalizeCommand(cmd);
+      const expectedRoot = expectedCommand.split(" ")[0];
+      const typedRoot = normalizedCmd.split(" ")[0];
+      const closeSuggestions = getClosestSuggestions(cmd);
+
+      if (typedRoot && typedRoot !== expectedRoot) {
+        finalHistory.push({
+          type: "sys",
+          text: `Hint: start with \`${expectedRoot}\` for this task.`,
+        });
+      } else if (normalizedCmd && expectedCommand.startsWith(normalizedCmd)) {
+        finalHistory.push({
+          type: "sys",
+          text: "You're close. Add the remaining flags/arguments.",
+        });
+      } else if (closeSuggestions.length) {
+        finalHistory.push({
+          type: "sys",
+          text: `Try one of these: ${closeSuggestions.map((item) => `\`${item}\``).join(", ")}`,
+        });
+      }
     }
 
     setHistory(finalHistory);
@@ -186,6 +369,9 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
               <p className="text-sm text-white/80 leading-relaxed font-mono italic">
                 {exercise.prompt}
               </p>
+              <p className="text-[11px] text-white/40 mt-1">
+                Tip: `Tab` autocomplete, `Ctrl+R` reverse history search.
+              </p>
             </div>
           </div>
         </div>
@@ -249,6 +435,41 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
               </button>
             )}
           </form>
+          {reverseSearchMode ? (
+            <div className="border-t border-white/5 bg-black/80 px-5 py-2 text-[12px] text-white/70">
+              <div className="flex items-center gap-2">
+                <span className="text-emerald-400">(reverse-i-search)</span>
+                <span className="text-white/40">`{reverseSearchQuery}`</span>
+                <span className="text-white/60">
+                  {reverseMatches.length ? reverseMatches[reverseSearchCursor] ?? reverseMatches[0] : "No match"}
+                </span>
+              </div>
+            </div>
+          ) : (
+            inlineSuggestions.length > 0 && (
+              <div className="border-t border-white/5 bg-black/70 px-3 py-2">
+                <div className="flex flex-wrap gap-2">
+                  {inlineSuggestions.map((suggestion, idx) => (
+                    <button
+                      key={suggestion}
+                      type="button"
+                      onClick={() => {
+                        setInput(suggestion);
+                        inputRef.current?.focus();
+                      }}
+                      className={`rounded-md border px-2 py-1 text-[11px] font-mono transition-colors ${
+                        idx === activeSuggestionIdx
+                          ? "border-emerald-500/50 bg-emerald-500/10 text-emerald-300"
+                          : "border-white/15 bg-white/5 text-white/60 hover:text-white/85"
+                      }`}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )
+          )}
         </div>
       </div>
 

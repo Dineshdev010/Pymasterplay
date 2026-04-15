@@ -55,6 +55,24 @@ function showBootError(message: string) {
   root.appendChild(container);
 }
 
+function rootLooksBlank() {
+  const root = document.getElementById("root");
+  if (!root) return false;
+  const hasVisualContent = Boolean(root.querySelector("[data-route-content],img,svg,canvas,button,input,textarea,a,pre,code"));
+  const hasText = root.innerText.trim().length > 0;
+  const rect = root.getBoundingClientRect();
+  return !hasVisualContent && !hasText && rect.height < 120;
+}
+
+function maybeShowRuntimeRecovery(message: string) {
+  requestAnimationFrame(() => {
+    if (rootLooksBlank()) {
+      hideLoaderSafely();
+      showBootError(message);
+    }
+  });
+}
+
 function isDynamicImportError(reason: unknown) {
   const text = reason instanceof Error ? reason.message : String(reason ?? "");
   return (
@@ -82,6 +100,7 @@ window.addEventListener("unhandledrejection", (event) => {
   if (appMounted) {
     // Non-fatal async errors can happen after app mount; don't replace the UI.
     console.error("Unhandled promise rejection:", event.reason);
+    maybeShowRuntimeRecovery("A runtime promise failed and the page became blank. Please reload once.");
     return;
   }
 
@@ -92,6 +111,7 @@ window.addEventListener("unhandledrejection", (event) => {
 window.addEventListener("error", (event) => {
   if (appMounted) {
     console.error("Runtime error:", event.error || event.message);
+    maybeShowRuntimeRecovery("A runtime error occurred and the page became blank. Please reload once.");
     return;
   }
 

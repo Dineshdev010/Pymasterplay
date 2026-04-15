@@ -17,11 +17,11 @@ export function AboutUsSection() {
               <div className="aspect-[4/5] rounded-2xl overflow-hidden bg-surface-2 relative group">
                 {/* 
                   TODO: Replace this placeholder with your actual photo in the public folder.
-                  Example: <img src="/instructor.jpg" alt="M. Dinesh Raja" ... />
+                  Example: <img src="/instructor.jpg" alt="Kevin" ... />
                 */}
                 <img 
                   src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop" 
-                  alt="M. Dinesh Raja" 
+                  alt="Kevin" 
                   className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
                   loading="lazy"
                   decoding="async"
@@ -55,7 +55,7 @@ export function AboutUsSection() {
             </div>
             
             <h2 className="text-4xl md:text-5xl font-black text-foreground mb-6 leading-tight">
-              Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-python-yellow">M. Dinesh Raja</span>
+              Hi, I'm <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-python-yellow">Kevin</span>
             </h2>
             
             <div className="space-y-6 text-muted-foreground text-lg mb-10">

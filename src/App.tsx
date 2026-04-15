@@ -121,34 +121,34 @@ function renderRouteElement(route: AppRoute) {
 // ============================================================
 const App = () => (
   <HelmetProvider>
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <SoundProvider>
-          <TooltipProvider>
-            <BrowserRouter>
-              <AuthProvider>
-                <ProgressProvider>
-                  <LanguageProvider>
-                    <Toaster />
-                    <Sonner />
-                    <GlobalConfetti />
-                    <AppLayout>
-                      <ErrorBoundary>
+    <ErrorBoundary fallback={<PageSkeleton />}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <SoundProvider>
+            <TooltipProvider>
+              <BrowserRouter>
+                <AuthProvider>
+                  <ProgressProvider>
+                    <LanguageProvider>
+                      <Toaster />
+                      <Sonner />
+                      <GlobalConfetti />
+                      <AppLayout>
                         <Routes>
                           {appRoutes.map((route) => (
                             <Route key={route.path} path={route.path} element={renderRouteElement(route)} />
                           ))}
                         </Routes>
-                      </ErrorBoundary>
-                    </AppLayout>
-                  </LanguageProvider>
-                </ProgressProvider>
-              </AuthProvider>
-            </BrowserRouter>
-          </TooltipProvider>
-        </SoundProvider>
-      </ThemeProvider>
-  </QueryClientProvider>
+                      </AppLayout>
+                    </LanguageProvider>
+                  </ProgressProvider>
+                </AuthProvider>
+              </BrowserRouter>
+            </TooltipProvider>
+          </SoundProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </ErrorBoundary>
   </HelmetProvider>
 );
 
