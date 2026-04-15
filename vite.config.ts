@@ -42,13 +42,13 @@ export default defineConfig(({ mode }) => {
           theme_color: "#0a0c10",
           icons: [
             {
-              src: "/logo.png",
+              src: "/logo.png?v=2",
               sizes: "192x192",
               type: "image/png",
               purpose: "any",
             },
             {
-              src: "/logo.png",
+              src: "/logo.png?v=2",
               sizes: "512x512",
               type: "image/png",
               purpose: "any maskable",
