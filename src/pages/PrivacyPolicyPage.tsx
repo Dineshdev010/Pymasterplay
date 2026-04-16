@@ -108,7 +108,7 @@ export default function PrivacyPolicyPage() {
           <p className="text-sm text-muted-foreground leading-relaxed">
             If you have questions about this Privacy Policy, please reach out through our{" "}
             <Link to="/about" className="text-primary hover:underline">About page</Link> or email us at{" "}
-            <span className="text-foreground font-medium">support@pymaster.dev</span>.
+            <a href={`mailto:${siteConfig.contact.email}`} className="text-primary font-medium hover:underline">{siteConfig.contact.email}</a>.
           </p>
         </div>
 

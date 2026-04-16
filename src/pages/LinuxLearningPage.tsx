@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { Helmet } from "react-helmet-async";
 import { careerTracks } from "@/data/careerLessons";
 import { useProgress } from "@/contexts/ProgressContext";
@@ -146,31 +146,31 @@ export default function LinuxLearningPage() {
   const track = useMemo(() => careerTracks.find(t => t.id === "linux"), []);
   const [selectedId, setSelectedId] = useState<string | null>(track?.lessons[0]?.id || null);
   const [searchQuery, setSearchQuery] = useState("");
-  const safeLessons = track?.lessons ?? [];
+  const safeLessons = useMemo(() => track?.lessons ?? [], [track]);
   const shellPageRef = useRef<HTMLDivElement>(null);
   const contentPaneRef = useRef<HTMLDivElement>(null);
 
-  const isLessonUnlocked = (index: number): boolean => {
+  const isLessonUnlocked = useCallback((index: number): boolean => {
     if (!track) return false;
     if (index === 0) return true;
     const prevLesson = safeLessons[index - 1];
     if (!prevLesson?.id) return false;
     return progress.completedExercises.includes(`${prevLesson.id}:beginner`);
-  };
+  }, [track, safeLessons, progress.completedExercises]);
 
-  const isExerciseUnlocked = (lessonId: string, level: ExerciseLevel): boolean => {
+  const isExerciseUnlocked = useCallback((lessonId: string, level: ExerciseLevel): boolean => {
     if (level === "beginner") return true;
     if (level === "intermediate") return progress.completedExercises.includes(`${lessonId}:beginner`);
     return progress.completedExercises.includes(`${lessonId}:intermediate`);
-  };
+  }, [progress.completedExercises]);
 
-  const getLessonProgress = (lessonId: string) => {
+  const getLessonProgress = useCallback((lessonId: string) => {
     return exerciseLevels.filter((level) => progress.completedExercises.includes(`${lessonId}:${level}`)).length;
-  };
+  }, [progress.completedExercises]);
 
   const unlockedLessons = useMemo(() => {
     return safeLessons.filter((_, index) => isLessonUnlocked(index));
-  }, [safeLessons, progress.completedExercises]);
+  }, [safeLessons, isLessonUnlocked]);
 
   useEffect(() => {
     if (!track) return;
@@ -179,7 +179,7 @@ export default function LinuxLearningPage() {
     if (!selectedValid) {
       setSelectedId(unlockedLessons[unlockedLessons.length - 1]?.id ?? safeLessons[0]?.id ?? null);
     }
-  }, [selectedId, track, safeLessons, unlockedLessons]);
+  }, [selectedId, track, safeLessons, unlockedLessons, isLessonUnlocked]);
 
   const selectedLesson = useMemo(() => {
     if (!track) return null;
@@ -187,10 +187,51 @@ export default function LinuxLearningPage() {
     return getLocalizedCareerLesson(baseLesson, language as LearnLanguage);
   }, [track, safeLessons, selectedId, language]);
 
+  const currentIndex = useMemo(() => {
+    if (!selectedLesson) return -1;
+    return safeLessons.findIndex((l: { id: string }) => l.id === selectedLesson.id);
+  }, [safeLessons, selectedLesson]);
+
+  const completedExerciseCount = useMemo(() => {
+    return safeLessons.reduce((acc, lesson) => acc + getLessonProgress(lesson.id), 0);
+  }, [safeLessons, getLessonProgress]);
+
+  const totalExerciseCount = useMemo(() => safeLessons.length * exerciseLevels.length, [safeLessons.length]);
+
+  const localizedLessons = useMemo(
+    () => safeLessons.map((lesson) => getLocalizedCareerLesson(lesson, language as LearnLanguage) ?? lesson),
+    [safeLessons, language],
+  );
+
+  const filteredLessons = useMemo(() => {
+    const query = searchQuery.toLowerCase().trim();
+    if (!query) return localizedLessons;
+    return localizedLessons.filter((lesson) => 
+      (lesson.title ?? "").toLowerCase().includes(query) || 
+      (lesson.description ?? "").toLowerCase().includes(query)
+    );
+  }, [localizedLessons, searchQuery]);
+
+  const selectedLessonContent = useMemo(() => {
+    if (!selectedLesson?.content) return [];
+    return getRenderedContent(selectedLesson.content);
+  }, [selectedLesson?.content]);
+  
+  const prevLesson = useMemo(() => currentIndex > 0 ? safeLessons[currentIndex - 1] : null, [currentIndex, safeLessons]);
+  const nextLesson = useMemo(() => safeLessons[currentIndex + 1], [currentIndex, safeLessons]);
+  const canGoPrev = useMemo(() => Boolean(prevLesson), [prevLesson]);
+  const canGoNext = useMemo(() => Boolean(nextLesson && isLessonUnlocked(currentIndex + 1)), [nextLesson, isLessonUnlocked, currentIndex]);
+
   useEffect(() => {
     shellPageRef.current?.scrollTo({ top: 0, behavior: "auto" });
     contentPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
   }, []);
+
+  useEffect(() => {
+    if (selectedLesson?.id) {
+      contentPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    }
+  }, [selectedLesson?.id]);
 
   if (!track || !selectedLesson) {
     return (
@@ -208,28 +249,6 @@ export default function LinuxLearningPage() {
       </div>
     );
   }
-
-  const currentIndex = safeLessons.findIndex((l: { id: string }) => l.id === selectedLesson.id);
-  const completedExerciseCount = safeLessons.reduce((acc, lesson) => acc + getLessonProgress(lesson.id), 0);
-  const totalExerciseCount = safeLessons.length * exerciseLevels.length;
-  const localizedLessons = useMemo(
-    () => safeLessons.map((lesson) => getLocalizedCareerLesson(lesson, language as LearnLanguage) ?? lesson),
-    [safeLessons, language],
-  );
-  const filteredLessons = localizedLessons.filter((lesson) => {
-    if (!searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    return (lesson.title ?? "").toLowerCase().includes(query) || (lesson.description ?? "").toLowerCase().includes(query);
-  });
-  const selectedLessonContent = useMemo(() => getRenderedContent(selectedLesson.content ?? ""), [selectedLesson.content]);
-  const prevLesson = currentIndex > 0 ? safeLessons[currentIndex - 1] : null;
-  const nextLesson = safeLessons[currentIndex + 1];
-  const canGoPrev = Boolean(prevLesson);
-  const canGoNext = Boolean(nextLesson && isLessonUnlocked(currentIndex + 1));
-
-  useEffect(() => {
-    contentPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
-  }, [selectedLesson.id]);
 
   return (
     <div className="relative flex flex-col text-white selection:bg-emerald-500/30 overflow-x-hidden bg-black">

@@ -31,7 +31,7 @@ export function FeedbackForm() {
     const body = encodeURIComponent(
       `Name: ${name || "Anonymous"}\nRating: ${"⭐".repeat(rating)} (${rating}/5)\n\nFeedback:\n${message}`
     );
-    window.open(`mailto:dineshjas986@gmail.com?subject=${subject}&body=${body}`, "_blank");
+    window.open(`mailto:pymasterg@gmail.com?subject=${subject}&body=${body}`, "_blank");
 
     setTimeout(() => {
       setSending(false);
@@ -141,7 +141,7 @@ export function FeedbackForm() {
                 </Button>
 
                 <p className="text-[10px] text-muted-foreground text-center">
-                  Feedback will be sent to dineshjas986@gmail.com
+                  Feedback will be sent to pymasterg@gmail.com
                 </p>
               </form>
             </motion.div>

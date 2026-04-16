@@ -90,7 +90,7 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
     return Array.from(new Set(merged.map((item) => normalizeCommand(item)).filter(Boolean)));
   }, [cmdHistory]);
 
-  const getClosestSuggestions = (value: string) => {
+  const getClosestSuggestions = useCallback((value: string) => {
     const normalized = normalizeCommand(value);
     if (!normalized) return allCommandSuggestions.slice(0, 3);
 
@@ -99,12 +99,13 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
 
     const tokenMatches = allCommandSuggestions.filter((candidate) => candidate.includes(normalized.split(" ")[0] || ""));
     return tokenMatches.slice(0, 3);
-  };
+  }, [allCommandSuggestions]);
+
   const inlineSuggestions = useMemo(() => {
     if (passed || locked) return [];
     if (reverseSearchMode) return [];
     return getClosestSuggestions(input);
-  }, [input, passed, locked, reverseSearchMode, allCommandSuggestions]);
+  }, [input, passed, locked, reverseSearchMode, getClosestSuggestions]);
 
   const reverseMatches = useMemo(() => {
     const q = normalizeCommand(reverseSearchQuery);
@@ -380,13 +381,13 @@ export function LinuxTerminalEditor({ exercise, level, lessonId, locked, onCompl
           {/* Terminal content */}
           <div 
             ref={containerRef} 
-            className="flex-1 overflow-y-auto p-5 space-y-1.5 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent custom-terminal-glow"
+            className="flex-1 overflow-auto p-5 space-y-1.5 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent custom-terminal-glow"
           >
             {history.map((line, idx) => (
-              <div key={idx} className={
-                line.type === "sys" ? "text-emerald-400/90 font-bold" : 
-                line.type === "in" ? "text-white/90" : "text-white/60 whitespace-pre-wrap leading-relaxed"
-              }>
+              <div key={idx} className={`w-max min-w-full pr-4 ${
+                line.type === "sys" ? "text-emerald-400/90 font-bold whitespace-pre-wrap" : 
+                line.type === "in" ? "text-white/90 whitespace-pre-wrap" : "text-white/60 whitespace-pre leading-relaxed"
+              }`}>
                 {line.text}
               </div>
             ))}

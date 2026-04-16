@@ -11,7 +11,7 @@ export const LANGUAGE_OPTIONS = [
 ] as const;
 
 export type LanguageValue = (typeof LANGUAGE_OPTIONS)[number]["value"];
-type TranslationKey = keyof typeof translations.english;
+export type TranslationKey = keyof typeof translations.english;
 
 const translations = {
   english: {

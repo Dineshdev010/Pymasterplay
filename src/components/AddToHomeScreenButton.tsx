@@ -13,6 +13,13 @@ type AddToHomeScreenButtonProps = {
   className?: string;
 };
 
+// Augment window object for global PWA prompt capture added in index.html
+declare global {
+  interface Window {
+    deferredPWAInstallPrompt: BeforeInstallPromptEvent | null;
+  }
+}
+
 const INSTALL_FLAG_KEY = "pymaster_app_installed";
 
 function isIosDevice() {
@@ -52,25 +59,39 @@ export function AddToHomeScreenButton({ variant = "default", className }: AddToH
     const knownInstalled = localStorage.getItem(INSTALL_FLAG_KEY) === "1";
     setInstalled(isStandaloneMode() || knownInstalled);
 
+    const updatePrompt = () => {
+      // Catch any prompt that fired before React mounted
+      if (window.deferredPWAInstallPrompt) {
+        setDeferredPrompt(window.deferredPWAInstallPrompt as BeforeInstallPromptEvent);
+      }
+    };
+    updatePrompt();
+
     const handleBeforeInstallPrompt = (event: Event) => {
       event.preventDefault();
-      setDeferredPrompt(event as BeforeInstallPromptEvent);
+      const pwaEvent = event as BeforeInstallPromptEvent;
+      window.deferredPWAInstallPrompt = pwaEvent;
+      setDeferredPrompt(pwaEvent);
     };
 
     const handleInstalled = () => {
       setInstalled(true);
       localStorage.setItem(INSTALL_FLAG_KEY, "1");
       setDeferredPrompt(null);
+      window.deferredPWAInstallPrompt = null;
       setShowIosHint(false);
       setShowAndroidHint(false);
     };
 
+    // Attach listeners
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    window.addEventListener("pwa-prompt-ready", updatePrompt);
     window.addEventListener("appinstalled", handleInstalled);
     setReady(true);
 
     return () => {
       window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+      window.removeEventListener("pwa-prompt-ready", updatePrompt);
       window.removeEventListener("appinstalled", handleInstalled);
     };
   }, []);
@@ -88,6 +109,7 @@ export function AddToHomeScreenButton({ variant = "default", className }: AddToH
         setInstalled(true);
         localStorage.setItem(INSTALL_FLAG_KEY, "1");
         setDeferredPrompt(null);
+        window.deferredPWAInstallPrompt = null;
       }
       return;
     }

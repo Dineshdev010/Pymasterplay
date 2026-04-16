@@ -1,20 +1,21 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { 
-  BookOpen, Clock3, Copy, LayoutDashboard, Search, Star, StarOff, Play, X
+  Clock3, Copy, LayoutDashboard, Search, Star, StarOff, Play, X
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 import { 
-  prepTracks, QUICK_TIPS, CARD_EXPLANATIONS, TECH_COLOR_CLASSES, TECH_DATA,
+  prepTracks, QUICK_TIPS, TECH_COLOR_CLASSES, TECH_DATA,
   getCardExplanation,
   type TechType, type CheatsheetCard, type CheatsheetSection, type TechEntry
 } from "@/data/quickPrepData";
 import { highlightSnippet } from "@/utils/highlighter";
-import { Sparkles, Terminal, Code2, Brain, Briefcase, Target } from "lucide-react";
+import { Sparkles, Terminal, Code2, Brain, Target, HelpCircle } from "lucide-react";
+import { useTour } from "@/contexts/TourContext";
 
 
 export default function QuickPrepPage() {
@@ -71,6 +72,52 @@ export default function QuickPrepPage() {
     setFavorites((current) => ({ ...current, [key]: !current[key] }));
   };
 
+  const { startTour, isFirstTime } = useTour();
+
+  const handleStartTour = useCallback(() => {
+    startTour([
+      {
+        targetId: "tour-prep-header",
+        title: "Quick Prep Hub",
+        content: "Master key concepts in minutes. Perfect for last-minute interview reviews or daily warmups.",
+      },
+      {
+        targetId: "tour-prep-tracks",
+        title: "Guided Tracks",
+        content: "Choose a track based on your time constraints. 15, 30, or 25-minute sprints.",
+      },
+      {
+        targetId: "tour-tech-tabs",
+        title: "Switch Technologies",
+        content: "Switch between Python, SQL, Pandas, Linux, and Git instantly.",
+      },
+      {
+        targetId: "tour-search",
+        title: "Search & Filter",
+        content: "Quickly find the specific concept or command you're looking for.",
+      },
+      {
+        targetId: "tour-first-card",
+        title: "Snippet Cards",
+        content: "Every card includes a copyable snippet and a shortcut to open it in the compiler.",
+      },
+      {
+        targetId: "tour-fav-star",
+        title: "Save Favorites",
+        content: "Click the star to save snippets you use often. They'll stay here even if you refresh!",
+      },
+    ]);
+  }, [startTour]);
+
+  useEffect(() => {
+    if (isFirstTime) {
+      const timer = setTimeout(() => {
+        handleStartTour();
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [isFirstTime, handleStartTour]);
+
   const openInCompiler = (codeSnippet: string) => {
     // Map 'git' to 'linux' for the compiler terminal mode
     const compilerLang = activeTab === 'git' ? 'linux' : activeTab;
@@ -97,10 +144,16 @@ export default function QuickPrepPage() {
                   <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/5 border border-white/10 group-hover:border-primary/30">←</span>
                   Back to Dashboard
                 </Link>
-                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+                <div id="tour-prep-header" className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
                   <Target className="h-4 w-4" />
                   Master Prep hub
                 </div>
+                <button 
+                  onClick={handleStartTour}
+                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
+                >
+                  <HelpCircle className="h-4 w-4" /> Tour
+                </button>
               </div>
               <h1 className="text-4xl font-black tracking-tighter text-white sm:text-6xl lg:text-7xl">
                 Ready in <span className="text-primary italic font-serif">Minutes</span>.
@@ -134,7 +187,7 @@ export default function QuickPrepPage() {
         </div>
 
         {/* --- PREP TRACKS --- */}
-        <div className="mb-16 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+        <div id="tour-prep-tracks" className="mb-16 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {prepTracks.map((track, idx) => (
             <motion.div
               key={track.title}
@@ -181,7 +234,7 @@ export default function QuickPrepPage() {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80">Tech Selection</span>
           </div>
           
-          <div className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-slate-900/80 border border-white/5 backdrop-blur-md">
+          <div id="tour-tech-tabs" className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-slate-900/80 border border-white/5 backdrop-blur-md">
             {Object.entries(TECH_DATA).map(([key, data]: [string, TechEntry]) => {
               const Icon = data.icon;
               const isActive = activeTab === key;
@@ -219,7 +272,7 @@ export default function QuickPrepPage() {
           </span>
         </div>
 
-        <div className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+        <div id="tour-search" className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
           <label className="group focus-within:ring-2 focus-within:ring-primary/40 flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-slate-300 transition-all">
             <Search className="h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
             <input
@@ -257,7 +310,7 @@ export default function QuickPrepPage() {
             transition={{ duration: 0.3 }}
             className="space-y-12"
           >
-            {filteredSections.map((section: CheatsheetSection) => (
+            {filteredSections.map((section: CheatsheetSection, sectionIdx) => (
               <div key={section.title} className="space-y-6">
                 <div className="flex items-center gap-4">
                   <h3 className="text-base font-black tracking-widest text-slate-400 uppercase">{section.title}</h3>
@@ -265,13 +318,14 @@ export default function QuickPrepPage() {
                 </div>
 
                 <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:gap-6">
-                  {section.cards.map((card: CheatsheetCard) => (
+                  {section.cards.map((card: CheatsheetCard, cardIdx) => (
                     (() => {
                       const favoriteKey = `${activeTab}:${section.title}:${card.title}`;
                       const isFavorite = Boolean(favorites[favoriteKey]);
                       return (
                     <div
                       key={card.title}
+                      id={sectionIdx === 0 && cardIdx === 0 ? "tour-first-card" : undefined}
                       className="group relative rounded-[1.5rem] border border-white/5 bg-slate-900/40 p-5 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:bg-slate-900/60 hover:shadow-2xl hover:shadow-primary/10"
                     >
                       <div className="mb-4 flex items-center justify-between">
@@ -285,14 +339,15 @@ export default function QuickPrepPage() {
                              <Play className="h-4 w-4" />
                            </button>
                            <button
-                            onClick={() => toggleFavorite(favoriteKey)}
-                            className={`p-1.5 rounded-lg border transition-all ${isFavorite ? "border-primary/40 bg-primary/20 text-primary" : "border-white/10 bg-white/5 text-slate-400 hover:text-primary"}`}
+                             onClick={() => toggleFavorite(favoriteKey)}
+                             id={sectionIdx === 0 && cardIdx === 0 ? "tour-fav-star" : undefined}
+                             className={`p-1.5 rounded-lg border transition-all ${isFavorite ? "border-primary/40 bg-primary/20 text-primary" : "border-white/10 bg-white/5 text-slate-400 hover:text-primary"}`}
                            >
                              <Star className={`h-4 w-4 ${isFavorite ? 'fill-primary' : ''}`} />
                            </button>
                            <button 
-                            onClick={() => copyToClipboard(card.snippet)}
-                            className="p-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-primary transition-all md:opacity-0 md:group-hover:opacity-100"
+                             onClick={() => copyToClipboard(card.snippet)}
+                             className="p-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-400 hover:text-primary transition-all md:opacity-0 md:group-hover:opacity-100"
                            >
                              <Copy className="h-4 w-4" />
                            </button>

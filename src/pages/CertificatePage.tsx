@@ -84,7 +84,7 @@ export default function CertificatePage() {
   const completedLessonsCount = progress.completedLessons.length;
   const totalProblems = problems.length;
   const solvedPct = totalProblems > 0 ? Math.round((solvedCount / totalProblems) * 100) : 0;
-  const certificateFee = paymentProfile?.certificate_fee_amount ?? 500;
+  const certificateFee = paymentProfile?.certificate_fee_amount ?? 499;
   const isPaymentVerified = paymentProfile?.certificate_fee_paid === true;
 
   // Calculate completion level based on problem difficulty

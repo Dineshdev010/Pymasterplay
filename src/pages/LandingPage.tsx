@@ -7,11 +7,13 @@
 // ============================================================
 
 import { Helmet } from "react-helmet-async";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Gamepad2 } from "lucide-react";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { SkyBackground } from "@/components/landing/SkyBackground";
+import { useTour } from "@/contexts/TourContext";
+import { MASTER_TOUR_STEPS } from "@/data/tourSteps";
 
 // Defer non-critical sections to improve first load performance.
 const ShootingStars = lazy(() => import("@/components/ShootingStars").then((m) => ({ default: m.ShootingStars })));
@@ -31,7 +33,18 @@ export default function LandingPage() {
   const canonical = "https://pymaster.pro/";
   const [hideFloatingBadges, setHideFloatingBadges] = useState(false);
   const [deferFx, setDeferFx] = useState(false);
+  const { startTour, isFirstTime } = useTour();
 
+  const handleStartTour = useCallback(() => startTour(MASTER_TOUR_STEPS), [startTour]);
+
+  useEffect(() => {
+    if (isFirstTime) {
+      const timer = setTimeout(() => {
+        handleStartTour();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [isFirstTime, handleStartTour]);
 
   useEffect(() => {
     const prefersReduced =
@@ -50,10 +63,6 @@ export default function LandingPage() {
     const t = window.setTimeout(() => setDeferFx(true), 700);
     return () => window.clearTimeout(t);
   }, []);
-
-  const compactSectionClass = "cv-auto -mt-4 sm:-mt-6";
-
-
 
   useEffect(() => {
     const syncSidebarState = (event?: Event) => {
@@ -77,6 +86,8 @@ export default function LandingPage() {
     };
   }, []);
 
+  const compactSectionClass = "cv-auto -mt-4 sm:-mt-6";
+
   return (
     <div className="min-h-screen overflow-x-hidden relative w-full">
       <Helmet>
@@ -95,9 +106,8 @@ export default function LandingPage() {
         <meta name="twitter:description" content="Structured Python lessons, interactive challenges, and practical job-focused prep." />
         <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
       </Helmet>
-      {/* Sky background (auto day/night) */}
+      
       <SkyBackground />
-      {/* Clickable shooting stars that quiz users with Python riddles for XP */}
       {deferFx && (
         <Suspense fallback={null}>
           <ShootingStars />
@@ -119,8 +129,9 @@ export default function LandingPage() {
           )}
         </div>
       )}
-      {/* Main hero with headline, CTA buttons, and quick stats */}
+      
       <HeroSection />
+      
       <section className="container mx-auto px-4 sm:px-6 py-2">
         <div className="rounded-2xl border border-primary/30 bg-primary/10 p-4 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -144,6 +155,7 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
+
       <section className="container mx-auto px-4 sm:px-6 py-2">
         <div className="rounded-2xl border border-border bg-card/80 p-4">
           <h2 className="text-sm font-semibold text-foreground sm:text-base">New: Python Learning For Beginners Guide</h2>
@@ -155,57 +167,57 @@ export default function LandingPage() {
           </Link>
         </div>
       </section>
-      {/* Visual divider between sections */}
+
       <div className="section-divider py-1" />
-      {/* 4-step getting started guide for new users */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <GettingStartedSection />
         </Suspense>
       </div>
-      {/* 6 feature cards (lessons, editor, problems, rewards, streaks, difficulty) */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <FeaturesSection />
         </Suspense>
       </div>
-      {/* 5-step learning path from basics to advanced */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <RoadmapSection />
         </Suspense>
       </div>
-      {/* Preview of the 50 basic problems with code example */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <BasicProblemsSection />
         </Suspense>
       </div>
-      {/* $10K winner challenge banner */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <WinnerBanner />
         </Suspense>
       </div>
-      {/* User testimonials grid */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <TestimonialsSection />
         </Suspense>
       </div>
-      {/* Career paths section (Data, Web, AI, etc.) with expandable details */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <CareerRoadmap />
         </Suspense>
       </div>
-      {/* Coming soon: Java, JavaScript, React, AI/ML courses */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <FutureLearningSection />
         </Suspense>
       </div>
-      {/* Final call-to-action with "Start Now" and "Browse Jobs" buttons */}
+
       <div className={compactSectionClass}>
         <Suspense fallback={null}>
           <CTASection />

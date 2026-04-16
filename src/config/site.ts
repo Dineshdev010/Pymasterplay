@@ -11,7 +11,7 @@ export const siteConfig = {
   
   // Contact details
   contact: {
-    email: "dineshjas986@gmail.com",
+    email: "pymasterg@gmail.com",
     subjectPrefix: "PyMaster Inquiry:",
   },
 

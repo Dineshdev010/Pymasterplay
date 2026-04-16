@@ -23,10 +23,21 @@ import {
   Calculator,
   Gamepad2,
   CircleHelp,
+  type LucideIcon,
 } from "lucide-react";
 
+import { TranslationKey } from "@/contexts/LanguageContext";
+
+export interface NavItem {
+  to: string;
+  icon: LucideIcon;
+  label: string;
+  labelKey: TranslationKey;
+  emoji: string;
+}
+
 // Each item has: route path, Lucide icon, label text, and emoji (for mobile nav)
-export const navItems = [
+export const navItems: NavItem[] = [
   { to: "/", icon: Home, label: "Home", labelKey: "nav.home", emoji: "🏠" },
   { to: "/learn", icon: BookOpen, label: "Learn Python", labelKey: "nav.learnPython", emoji: "📖" },
   { to: "/problems", icon: Code, label: "Problems", labelKey: "nav.problems", emoji: "🔥" },

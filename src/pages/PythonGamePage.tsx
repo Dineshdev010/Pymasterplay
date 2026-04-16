@@ -1,4 +1,4 @@
-import { useMemo, useState, type DragEvent } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 
 import { Code2, GripVertical, Play, Trash2, CheckCircle2, XCircle, Info, Sparkles, Trophy } from "lucide-react";
@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
+import { PythonHighlight } from "@/components/PythonHighlight";
 
 type Block = {
   id: string;
@@ -146,6 +147,208 @@ const topics: Topic[] = [
         hint: "Initialize the list first, then append to it."
       }
     ]
+  },
+  {
+    id: "dictionaries",
+    title: "Dictionaries",
+    description: "Map keys to values like a pro.",
+    color: "purple",
+    blocks: [
+      { id: "dict", label: "user = {'name': 'Alice'}", snippet: "user = {'name': 'Alice'}" },
+      { id: "dict-add", label: "Add age", snippet: "user['age'] = 30" },
+      { id: "dict-print", label: "Print user", snippet: "print(user)" },
+      { id: "dict-get", label: "Print name", snippet: "print(user['name'])" },
+    ],
+    challenges: [
+      {
+        id: "dict-basics",
+        title: "Key to Success",
+        task: "Create a user dictionary, add an age key, and print the dictionary.",
+        targetOutput: "{'name': 'Alice', 'age': 30}",
+        hint: "Initialize the dict first, then set the new key's value, and finally print."
+      }
+    ]
+  },
+  {
+    id: "functions",
+    title: "Functions",
+    description: "Write reusable code blocks.",
+    color: "cyan",
+    blocks: [
+      { id: "def", label: "def greet(n):", snippet: "def greet(n):\n    return f'Hi {n}'" },
+      { id: "call", label: "greet('Admin')", snippet: "msg = greet('Admin')" },
+      { id: "print-fn", label: "Print msg", snippet: "print(msg)" },
+    ],
+    challenges: [
+      {
+        id: "fn-basics",
+        title: "Reusable Logic",
+        task: "Define the greet function, call it with 'Admin', and print the result.",
+        targetOutput: "Hi Admin",
+        hint: "Define -> Call -> Print. Order is everything in Python."
+      }
+    ]
+  },
+  {
+    id: "logic-ops",
+    title: "Logic",
+    description: "Combine multiple conditions easily.",
+    color: "fuchsia",
+    blocks: [
+      { id: "bools", label: "Setup bools", snippet: "is_admin = True\nis_active = False" },
+      { id: "logic-if", label: "if admin and not active", snippet: "if is_admin and not is_active:\n    print('Activate')" },
+      { id: "logic-else", label: "else", snippet: "else:\n    print('Nothing to do')" },
+    ],
+    challenges: [
+      {
+        id: "logic-run",
+        title: "Double Conditions",
+        task: "Set up the booleans, and run the condition to activate the account.",
+        targetOutput: "Activate",
+        hint: "You just need the setup block and the if block."
+      }
+    ]
+  },
+  {
+    id: "math",
+    title: "Math",
+    description: "Perform advanced arithmetic.",
+    color: "orange",
+    blocks: [
+      { id: "math-vars", label: "x=10, y=3", snippet: "x = 10\ny = 3" },
+      { id: "math-div", label: "Floor Division", snippet: "print(x // y)" },
+      { id: "math-mod", label: "Modulo", snippet: "print(x % y)" },
+      { id: "math-pow", label: "Power", snippet: "print(x ** y)" },
+    ],
+    challenges: [
+      {
+        id: "math-run",
+        title: "Number Crunching",
+        task: "Setup the variables, then print the floor division result.",
+        targetOutput: "3",
+        hint: "Floor division uses a double slash //."
+      }
+    ]
+  },
+  {
+    id: "errors",
+    title: "Errors",
+    description: "Handle exceptions safely.",
+    color: "red",
+    blocks: [
+      { id: "try", label: "try block", snippet: "try:\n    print(10 / 0)" },
+      { id: "except", label: "except ZeroDivisionError", snippet: "except ZeroDivisionError:\n    print('Cannot divide by zero')" },
+      { id: "finally", label: "finally block", snippet: "finally:\n    print('Done')" },
+    ],
+    challenges: [
+      {
+        id: "try-run",
+        title: "Safe Division",
+        task: "Catch the division by zero error and print the error message.",
+        targetOutput: "Cannot divide by zero",
+        hint: "Combine the try block with the except block."
+      }
+    ]
+  },
+  {
+    id: "classes",
+    title: "Classes",
+    description: "Object-oriented basics.",
+    color: "pink",
+    blocks: [
+      { id: "class-def", label: "class Dog:", snippet: "class Dog:\n    def bark(self):\n        return 'Woof!'" },
+      { id: "class-inst", label: "my_dog = Dog()", snippet: "my_dog = Dog()" },
+      { id: "class-call", label: "Call bark()", snippet: "print(my_dog.bark())" },
+    ],
+    challenges: [
+      {
+        id: "class-run",
+        title: "Make it Bark",
+        task: "Define the Dog class, instance it, and print the bark output.",
+        targetOutput: "Woof!",
+        hint: "Define class -> Create instance -> Call method."
+      }
+    ]
+  },
+  {
+    id: "imports",
+    title: "Modules",
+    description: "Import external libraries.",
+    color: "sky",
+    blocks: [
+      { id: "import-math", label: "import math", snippet: "import math" },
+      { id: "import-sqrt", label: "math.sqrt(16)", snippet: "print(math.sqrt(16))" },
+      { id: "import-pi", label: "math.pi", snippet: "print(round(math.pi, 2))" },
+    ],
+    challenges: [
+      {
+        id: "import-run",
+        title: "Square Root",
+        task: "Import the math module and calculate the square root of 16.",
+        targetOutput: "4.0",
+        hint: "You need the import statement at the very top."
+      }
+    ]
+  },
+  {
+    id: "list-comp",
+    title: "Comprehensions",
+    description: "One-liner list loops.",
+    color: "rose",
+    blocks: [
+      { id: "comp-base", label: "nums = [1, 2, 3]", snippet: "nums = [1, 2, 3]" },
+      { id: "comp-loop", label: "Squares list", snippet: "sq = [x*x for x in nums]" },
+      { id: "comp-print", label: "Print sq", snippet: "print(sq)" },
+    ],
+    challenges: [
+      {
+        id: "comp-run",
+        title: "Squaring Magic",
+        task: "Create the nums list, run the comprehension, and print the squared result.",
+        targetOutput: "[1, 4, 9]",
+        hint: "Define nums, then build the squares list."
+      }
+    ]
+  },
+  {
+    id: "lambdas",
+    title: "Lambdas",
+    description: "Anonymous inline functions.",
+    color: "violet",
+    blocks: [
+      { id: "lambda-def", label: "add = lambda...", snippet: "add = lambda x, y: x + y" },
+      { id: "lambda-call", label: "add(2, 3)", snippet: "print(add(2, 3))" },
+      { id: "lambda-sub", label: "sub(5, 2)", snippet: "sub = lambda a, b: a - b\nprint(sub(5, 2))" },
+    ],
+    challenges: [
+      {
+        id: "lambda-run",
+        title: "Quick Addition",
+        task: "Define the lambda 'add' function and use it to add 2 and 3.",
+        targetOutput: "5",
+        hint: "Define the lambda first, then print the result."
+      }
+    ]
+  },
+  {
+    id: "strings",
+    title: "Strings",
+    description: "Manipulate text data.",
+    color: "teal",
+    blocks: [
+      { id: "str-def", label: "msg = 'hello python'", snippet: "msg = 'hello python'" },
+      { id: "str-upper", label: "msg.upper()", snippet: "print(msg.upper())" },
+      { id: "str-split", label: "msg.split()", snippet: "print(msg.split())" },
+    ],
+    challenges: [
+      {
+        id: "str-run",
+        title: "Yell It",
+        task: "Define the message and print it in all UPPERCASE.",
+        targetOutput: "HELLO PYTHON",
+        hint: "Use the upper() method."
+      }
+    ]
   }
 ];
 
@@ -155,8 +358,14 @@ function getBlockById(topic: Topic, blockId: string) {
 
 export default function PythonGamePage() {
   const { playSound } = useSound();
-  const [selectedTopicId, setSelectedTopicId] = useState(topics[0].id);
-  const [currentChallengeIdx, setCurrentChallengeIdx] = useState(0);
+  const [selectedTopicId, setSelectedTopicId] = useState(() => {
+    return localStorage.getItem("pymaster_game_topic") || topics[0].id;
+  });
+
+  const [currentChallengeIdx, setCurrentChallengeIdx] = useState(() => {
+    return Number(localStorage.getItem("pymaster_game_challenge")) || 0;
+  });
+
   const [droppedByTopic, setDroppedByTopic] = useState<Record<string, DroppedBlock[]>>(
     Object.fromEntries(topics.map((topic) => [topic.id, []])),
   );
@@ -166,7 +375,23 @@ export default function PythonGamePage() {
   const [executionError, setExecutionError] = useState("");
   const [isRunning, setIsRunning] = useState(false);
   const [gameStatus, setGameStatus] = useState<"idle" | "success" | "failure">("idle");
-  const [completedChallenges, setCompletedChallenges] = useState<Set<string>>(new Set());
+  
+  const [completedChallenges, setCompletedChallenges] = useState<Set<string>>(() => {
+    try {
+      const saved = localStorage.getItem("pymaster_game_completed");
+      if (saved) return new Set(JSON.parse(saved));
+    } catch {
+      // Ignore parsing errors for malformed localStorage data
+    }
+    return new Set();
+  });
+
+  // Sync state to localStorage to prevent resets on HMR / refresh
+  useEffect(() => {
+    localStorage.setItem("pymaster_game_topic", selectedTopicId);
+    localStorage.setItem("pymaster_game_challenge", String(currentChallengeIdx));
+    localStorage.setItem("pymaster_game_completed", JSON.stringify(Array.from(completedChallenges)));
+  }, [selectedTopicId, currentChallengeIdx, completedChallenges]);
 
   const selectedTopic = topics.find((topic) => topic.id === selectedTopicId) || topics[0];
   const currentChallenge = selectedTopic.challenges[currentChallengeIdx] || selectedTopic.challenges[0];
@@ -424,7 +649,7 @@ export default function PythonGamePage() {
                     draggable
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onDragStart={(event: any) => {
+                    onDragStart={(event: React.DragEvent<HTMLDivElement>) => {
                       event.dataTransfer.setData("text/plain", block.id);
                       playSound("click");
                     }}
@@ -633,13 +858,13 @@ export default function PythonGamePage() {
                 </div>
              </div>
 
-             <div className="rounded-3xl border border-white/5 bg-slate-900/30 p-5">
+             <div className="rounded-3xl border border-white/5 bg-slate-900/30 p-5 mt-auto mb-0 min-h-[300px] flex flex-col">
                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xs font-bold tracking-widest text-slate-500 uppercase">Live Code Preview</h3>
+                  <h3 className="text-sm font-bold tracking-widest text-slate-500 uppercase">Live Code Preview</h3>
                </div>
-               <div className="rounded-xl overflow-hidden bg-black/40 ring-1 ring-white/10">
-                  <pre className="p-4 text-[11px] font-mono text-slate-400 overflow-x-auto selection:bg-primary/40">
-                    <code>{generatedCode}</code>
+               <div className="rounded-xl overflow-hidden bg-black/40 ring-1 ring-white/10 flex-1 flex flex-col">
+                  <pre className="p-6 flex-1 lg:text-[14px] text-[13px] leading-7 font-mono text-slate-400 overflow-x-auto selection:bg-primary/40">
+                    <code><PythonHighlight code={generatedCode} /></code>
                   </pre>
                </div>
              </div>

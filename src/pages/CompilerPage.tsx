@@ -8,7 +8,9 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
-import { Play, RotateCcw, FileCode, Square, Brain, ChevronDown } from "lucide-react";
+import { Play, RotateCcw, FileCode, Square, Brain, ChevronDown, HelpCircle } from "lucide-react";
+import { useTour } from "@/contexts/TourContext";
+import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -264,6 +266,32 @@ export default function CompilerPage() {
   const outputPanelRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null);
+  const { startTour } = useTour();
+
+  const handleStartTour = useCallback(() => {
+    startTour([
+      {
+        targetId: "tour-compiler-lang",
+        title: "Language Switcher",
+        content: "Switch between Python, Pandas, SQL, and the Linux terminal here.",
+      },
+      {
+        targetId: "tour-compiler-editor",
+        title: "Code Editor",
+        content: "Write your code here. We provide syntax highlighting and auto-completion to help you out.",
+      },
+      {
+        targetId: "tour-compiler-run",
+        title: "Run your Code",
+        content: "Click this to execute your code. For Python, it runs in your browser using WebAssembly!",
+      },
+      {
+        targetId: "tour-compiler-output",
+        title: "Output & Feedback",
+        content: "See the results of your code execution and AI-powered performance tips here.",
+      },
+    ]);
+  }, [startTour]);
   const { logActivity } = useProgress();
   const isMobile = useIsMobile();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
@@ -523,6 +551,7 @@ export default function CompilerPage() {
           {/* Language Mode Dropdown */}
           <div className="relative">
             <button
+              id="tour-compiler-lang"
               onClick={() => setShowModeMenu(v => !v)}
               aria-label="Change language mode"
               className={`flex items-center gap-1.5 text-sm font-semibold px-2.5 py-1.5 rounded-md bg-secondary border border-border hover:border-primary/40 transition-colors ${lang.color}`}
@@ -635,11 +664,19 @@ export default function CompilerPage() {
                 <Square className="w-3 h-3" /> Stop
               </Button>
             ) : (
-              <Button size="sm" className="h-8 text-xs gap-1 flex-1 sm:flex-none" aria-label="Run code" onClick={runCode}>
+              <Button id="tour-compiler-run" size="sm" className="h-8 text-xs gap-1 flex-1 sm:flex-none" aria-label="Run code" onClick={runCode}>
                 <Play className="w-3 h-3" />▶ Run
               </Button>
             )
           )}
+
+          <button 
+            onClick={handleStartTour}
+            className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-2 ml-1"
+            title="Start Tour"
+          >
+            <HelpCircle className="h-4 w-4" />
+          </button>
 
           {!isLinux && (
             <Button
@@ -739,6 +776,7 @@ export default function CompilerPage() {
           <>
             {/* Monaco Editor Panel */}
             <div
+              id="tour-compiler-editor"
               ref={editorPanelRef}
               style={mode === "sql" ? { height: `${sqlSplit}%` } : undefined}
               className={`flex flex-col min-h-0 shrink-0 ${mode === "sql" ? "border-b border-border" : "h-[50vh] md:h-full md:flex-1 border-b md:border-b-0 md:border-r border-border md:shrink"}`}
@@ -844,6 +882,7 @@ export default function CompilerPage() {
 
             {/* Output Panel */}
             <div
+              id="tour-compiler-output"
               ref={outputPanelRef}
               className={`flex flex-col bg-surface-0 min-h-0 ${mode === "sql" ? "flex-1 w-full" : "min-h-[42vh] md:min-h-0 md:h-full md:w-[32rem] md:flex-none shrink-0"}`}
             >

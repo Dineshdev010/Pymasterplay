@@ -9,7 +9,6 @@ import { useProgress } from "@/contexts/ProgressContext";
 import { CelebrationModal } from "@/components/CelebrationModal"; // Popup for achievements
 import { FeedbackForm } from "@/components/FeedbackForm"; // Floating feedback button
 import { Footer } from "@/components/Footer"; // Page footer (only on home/donate pages)
-import { OnboardingTour } from "@/components/OnboardingTour"; // First-time user walkthrough
 import { TopNavbar } from "@/components/layout/TopNavbar"; // Top navigation bar
 import { Sidebar } from "@/components/layout/Sidebar"; // Desktop sidebar (toggle)
 import { MobileNav } from "@/components/layout/MobileNav"; // Bottom navigation for mobile
@@ -19,10 +18,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SupportTipPopup } from "@/components/SupportTipPopup";
+import { useTour } from "@/contexts/TourContext";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { showCelebration, celebrationData, dismissCelebration, logActivity } = useProgress();
+  const { isActive: tourActive } = useTour(); // Suppress overlapping modals during tour
   const [sidebarOpen, setSidebarOpen] = useState(false); // Controls sidebar visibility
   const isAuthPage = location.pathname === "/auth"; // Auth page has a simpler layout
   const hideFooter =
@@ -147,7 +148,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-[100svh] flex flex-col overflow-x-hidden w-full">
       {/* Achievement celebration popup */}
       <CelebrationModal
-        isOpen={showCelebration}
+        isOpen={showCelebration && !tourActive}
         onClose={dismissCelebration}
         title={celebrationData?.title || ""}
         subtitle={celebrationData?.subtitle || ""}
@@ -191,9 +192,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Floating feedback button (bottom-right corner) */}
       <FeedbackForm />
-      
-      {/* First-time user onboarding tour */}
-      <OnboardingTour />
       
       {/* Global custom cursor effect */}
       <CustomCursor />

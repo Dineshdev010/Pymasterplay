@@ -45,7 +45,7 @@ const escapeHtml = (text: string) => {
  * Highlights a code snippet based on the language
  */
 export const highlightSnippet = (snippet: string, tech: string): string => {
-  const words = snippet.split(/(\s+|[(),.:;=\[\]{}<>!+\-*/])/);
+  const words = snippet.split(/(\s+|[(),.:;=[\]{}<>!+\-*/])/);
   const keywords = LANGUAGE_KEYWORDS[tech] || [];
   
   return words.map(word => {

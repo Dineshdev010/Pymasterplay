@@ -251,6 +251,14 @@
     </div>
     <script>
       (function() {
+        // Capture PWA install prompt globally before React mounts
+        window.deferredPWAInstallPrompt = null;
+        window.addEventListener('beforeinstallprompt', function(e) {
+          e.preventDefault();
+          window.deferredPWAInstallPrompt = e;
+          window.dispatchEvent(new Event('pwa-prompt-ready'));
+        });
+
         var loader = document.getElementById('app-loader');
         var pctEl = document.getElementById('pym-pct');
         

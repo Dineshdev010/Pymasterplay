@@ -222,7 +222,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             ))}
           </span>
         </Link>
-        <nav className="ml-1 hidden min-w-0 flex-1 items-center gap-1 overflow-hidden lg:flex xl:ml-2">
+        <nav id="tour-nav-links" className="ml-1 hidden min-w-0 flex-1 items-center gap-1 overflow-hidden lg:flex xl:ml-2">
           <div className="flex min-w-0 items-center gap-0.5 overflow-hidden">
           {primaryNavItems.map((item) => {
             const navLabel = item.to === "/quick-prep"
@@ -230,10 +230,12 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               : item.to === "/python-game"
                 ? t("nav.pythonGame")
                 : t(item.labelKey);
+            const routeId = item.to === "/" ? "home" : (item.to.replace(/^\//, "") || "home");
             const hideOnLg = item.to === "/dashboard";
             return (
             <Link
               key={item.to}
+              id={`tour-nav-${routeId}`}
               to={item.to}
               className={`flex min-w-0 items-center gap-1 rounded-md px-2 py-1.5 text-[10px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-[11px] ${
                 hideOnLg ? "hidden xl:flex" : "flex"
@@ -369,7 +371,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         {user ? (
           <DropdownMenu open={profileMenuOpen} onOpenChange={setProfileMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <button className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50 hover:bg-secondary transition-colors outline-none cursor-pointer shrink-0">
+              <button id="tour-nav-profile" className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50 hover:bg-secondary transition-colors outline-none cursor-pointer shrink-0">
                 <Avatar className="h-7 w-7 shrink-0 border border-primary/25 ring-2 ring-primary/10 shadow-sm">
                   {localStorage.getItem("pymaster_avatar") ? (
                     <AvatarImage
