@@ -71,8 +71,10 @@ export default function QuickPrepPage() {
     setFavorites((current) => ({ ...current, [key]: !current[key] }));
   };
 
-  const openInCompiler = (code: string) => {
-    navigate(`/compiler?code=${encodeURIComponent(code)}`);
+  const openInCompiler = (codeSnippet: string) => {
+    // Map 'git' to 'linux' for the compiler terminal mode
+    const compilerLang = activeTab === 'git' ? 'linux' : activeTab;
+    navigate(`/compiler?code=${encodeURIComponent(codeSnippet)}&lang=${compilerLang}`);
   };
 
   return (
@@ -90,9 +92,15 @@ export default function QuickPrepPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center">
             <div className="max-w-4xl flex-1 space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
-                <Target className="h-4 w-4" />
-                Master Prep hub
+              <div className="flex items-center gap-4">
+                <Link to="/" className="group flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-primary transition-colors">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/5 border border-white/10 group-hover:border-primary/30">←</span>
+                  Back to Dashboard
+                </Link>
+                <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+                  <Target className="h-4 w-4" />
+                  Master Prep hub
+                </div>
               </div>
               <h1 className="text-4xl font-black tracking-tighter text-white sm:text-6xl lg:text-7xl">
                 Ready in <span className="text-primary italic font-serif">Minutes</span>.
@@ -256,7 +264,7 @@ export default function QuickPrepPage() {
                   <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
                 </div>
 
-                <div className="grid gap-4 grid-cols-1">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:gap-6">
                   {section.cards.map((card: CheatsheetCard) => (
                     (() => {
                       const favoriteKey = `${activeTab}:${section.title}:${card.title}`;

@@ -215,9 +215,25 @@ function addToHistory(mode: LangMode, codeSnippet: string) {
 
 export default function CompilerPage() {
   const [searchParams] = useSearchParams();
-  const [mode, setMode]     = useState<LangMode>("python");
+  
+  // Initialize mode from URL or localStorage
+  const initialMode = useMemo(() => {
+    const lang = searchParams.get("lang");
+    if (lang && ["python", "pandas", "linux", "sql"].includes(lang)) {
+      return lang as LangMode;
+    }
+    return "python";
+  }, [searchParams]);
+
+  const [mode, setMode]     = useState<LangMode>(initialMode);
   const [showModeMenu, setShowModeMenu] = useState(false);
-  const [code, setCode]     = useState(searchParams.get("code") || loadSavedCode("python"));
+  
+  // Initialize code from URL or localStorage
+  const [code, setCode]     = useState(() => {
+    const urlCode = searchParams.get("code");
+    if (urlCode) return urlCode;
+    return loadSavedCode(initialMode);
+  });
   const [output, setOutput] = useState("");
   const [isRunning, setIsRunning]           = useState(false);
   const [executionTime, setExecutionTime]   = useState<number | null>(null);
