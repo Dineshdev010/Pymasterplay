@@ -62,6 +62,95 @@ export function EditorSkeleton() {
   );
 }
 
+export function LinuxLearningSkeleton() {
+  return (
+    <div className="relative min-h-[calc(100vh-3.5rem)] overflow-hidden bg-black text-white">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.18),transparent_30%),radial-gradient(circle_at_bottom_left,rgba(59,130,246,0.12),transparent_26%)]" />
+      <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.12) 1px, transparent 1px)", backgroundSize: "36px 36px" }} />
+
+      <div className="relative z-10 grid min-h-[calc(100vh-3.5rem)] lg:grid-cols-[360px_1fr] animate-pulse">
+        <aside className="border-r border-white/10 bg-white/[0.03] p-4">
+          <div className="mb-4 h-10 w-36 rounded-lg bg-emerald-500/15" />
+          <div className="mb-4 grid grid-cols-2 gap-2">
+            <div className="h-16 rounded-xl bg-white/5" />
+            <div className="h-16 rounded-xl bg-white/5" />
+          </div>
+          <div className="mb-4 h-10 rounded-lg bg-white/5" />
+          <div className="space-y-3">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="rounded-xl border border-white/5 bg-white/[0.03] p-4">
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="h-6 w-6 rounded-lg bg-white/10" />
+                  <div className="h-4 w-32 rounded bg-white/10" />
+                </div>
+                <div className="h-3 w-24 rounded bg-white/10" />
+              </div>
+            ))}
+          </div>
+        </aside>
+
+        <main className="p-6 md:p-10">
+          <div className="mb-8 flex items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3">
+            <div className="h-4 w-52 rounded bg-white/10" />
+            <div className="flex gap-2">
+              <div className="h-9 w-24 rounded-lg bg-white/10" />
+              <div className="h-9 w-24 rounded-lg bg-emerald-500/20" />
+            </div>
+          </div>
+
+          <div className="mb-10 h-6 w-36 rounded bg-emerald-500/15" />
+          <div className="mb-6 h-12 w-2/3 rounded bg-white/10" />
+          <div className="mb-10 h-20 max-w-2xl rounded-2xl border border-emerald-500/10 bg-white/[0.03]" />
+          <div className="space-y-3">
+            <div className="h-4 w-full rounded bg-white/10" />
+            <div className="h-4 w-11/12 rounded bg-white/10" />
+            <div className="h-4 w-9/12 rounded bg-white/10" />
+            <div className="h-24 w-full rounded-2xl bg-[#0d1117]" />
+          </div>
+
+          <div className="my-12 h-px bg-white/10" />
+
+          <div className="mb-6 flex items-center gap-3">
+            <div className="h-12 w-12 rounded-xl bg-white/10" />
+            <div>
+              <div className="mb-2 h-5 w-48 rounded bg-white/10" />
+              <div className="h-3 w-64 rounded bg-white/10" />
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="overflow-hidden rounded-2xl border border-white/10 bg-[#0d1117]/90">
+                <div className="flex items-center justify-between border-b border-white/5 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex gap-1.5">
+                      <div className="h-3 w-3 rounded-full bg-rose-500/40" />
+                      <div className="h-3 w-3 rounded-full bg-amber-500/40" />
+                      <div className="h-3 w-3 rounded-full bg-emerald-500/40" />
+                    </div>
+                    <div className="h-3 w-28 rounded bg-white/10" />
+                  </div>
+                  <div className="h-3 w-20 rounded bg-white/10" />
+                </div>
+                <div className="space-y-3 p-5">
+                  <div className="h-4 w-3/4 rounded bg-white/10" />
+                  <div className="h-28 rounded-xl bg-black/40" />
+                  <div className="h-10 rounded-lg bg-white/[0.04]" />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-8 flex items-center gap-3 font-mono text-sm text-emerald-400/80">
+            <span className="inline-block h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]" />
+            Booting Linux mastery environment...
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
 /**
  * DashboardSkeleton — Loading skeleton for the dashboard page.
  * Shows avatar, stats grid, and content blocks.

@@ -424,7 +424,7 @@ export default function PythonGamePage() {
                     draggable
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onDragStart={(event: DragEvent<HTMLDivElement>) => {
+                    onDragStart={(event: any) => {
                       event.dataTransfer.setData("text/plain", block.id);
                       playSound("click");
                     }}

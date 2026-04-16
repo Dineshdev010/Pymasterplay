@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { careerTracks } from "@/data/careerLessons";
 import { useProgress } from "@/contexts/ProgressContext";
+import { useLanguage } from "@/contexts/LanguageContext";
 import { LinuxTerminalEditor } from "@/components/LinuxTerminalEditor";
 import { LinuxSymbolsBackground } from "@/components/LinuxSymbolsBackground";
 import { 
@@ -20,6 +21,26 @@ import { Badge } from "@/components/ui/badge";
 
 type ExerciseLevel = "beginner" | "intermediate" | "advanced";
 const exerciseLevels: ExerciseLevel[] = ["beginner", "intermediate", "advanced"];
+type LearnLanguage = "english" | "tamil" | "kannada" | "telugu" | "hindi";
+
+function getLocalizedCareerLesson(
+  lesson: (typeof careerTracks)[number]["lessons"][number] | null | undefined,
+  language: LearnLanguage,
+) {
+  if (!lesson) return null;
+  if (language === "english") return lesson;
+  const localized = lesson.translations?.[language];
+  if (!localized) return lesson;
+
+  return {
+    ...lesson,
+    title: localized.title ?? lesson.title,
+    description: localized.description ?? lesson.description,
+    category: localized.category ?? lesson.category,
+    content: localized.content ?? lesson.content,
+    codeExample: localized.codeExample ?? lesson.codeExample,
+  };
+}
 
 function getRenderedContent(content: string) {
   const lines = content.split("\n");
@@ -120,11 +141,14 @@ function getRenderedContent(content: string) {
 }
 
 export default function LinuxLearningPage() {
+  const { language } = useLanguage();
   const { progress } = useProgress();
   const track = useMemo(() => careerTracks.find(t => t.id === "linux"), []);
   const [selectedId, setSelectedId] = useState<string | null>(track?.lessons[0]?.id || null);
   const [searchQuery, setSearchQuery] = useState("");
   const safeLessons = track?.lessons ?? [];
+  const shellPageRef = useRef<HTMLDivElement>(null);
+  const contentPaneRef = useRef<HTMLDivElement>(null);
 
   const isLessonUnlocked = (index: number): boolean => {
     if (!track) return false;
@@ -159,8 +183,14 @@ export default function LinuxLearningPage() {
 
   const selectedLesson = useMemo(() => {
     if (!track) return null;
-    return safeLessons.find((l: { id: string }) => l.id === selectedId) || safeLessons[0] || null;
-  }, [track, safeLessons, selectedId]);
+    const baseLesson = safeLessons.find((l: { id: string }) => l.id === selectedId) || safeLessons[0] || null;
+    return getLocalizedCareerLesson(baseLesson, language as LearnLanguage);
+  }, [track, safeLessons, selectedId, language]);
+
+  useEffect(() => {
+    shellPageRef.current?.scrollTo({ top: 0, behavior: "auto" });
+    contentPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, []);
 
   if (!track || !selectedLesson) {
     return (
@@ -182,7 +212,11 @@ export default function LinuxLearningPage() {
   const currentIndex = safeLessons.findIndex((l: { id: string }) => l.id === selectedLesson.id);
   const completedExerciseCount = safeLessons.reduce((acc, lesson) => acc + getLessonProgress(lesson.id), 0);
   const totalExerciseCount = safeLessons.length * exerciseLevels.length;
-  const filteredLessons = safeLessons.filter((lesson) => {
+  const localizedLessons = useMemo(
+    () => safeLessons.map((lesson) => getLocalizedCareerLesson(lesson, language as LearnLanguage) ?? lesson),
+    [safeLessons, language],
+  );
+  const filteredLessons = localizedLessons.filter((lesson) => {
     if (!searchQuery.trim()) return true;
     const query = searchQuery.toLowerCase();
     return (lesson.title ?? "").toLowerCase().includes(query) || (lesson.description ?? "").toLowerCase().includes(query);
@@ -193,6 +227,10 @@ export default function LinuxLearningPage() {
   const canGoPrev = Boolean(prevLesson);
   const canGoNext = Boolean(nextLesson && isLessonUnlocked(currentIndex + 1));
 
+  useEffect(() => {
+    contentPaneRef.current?.scrollTo({ top: 0, behavior: "auto" });
+  }, [selectedLesson.id]);
+
   return (
     <div className="relative flex flex-col text-white selection:bg-emerald-500/30 overflow-x-hidden bg-black">
       <Helmet>
@@ -201,7 +239,10 @@ export default function LinuxLearningPage() {
       </Helmet>
       <LinuxSymbolsBackground />
       
-      <main className="relative z-10 grid min-h-[calc(100svh-4rem)] sm:min-h-[calc(100svh-3.5rem)] lg:h-[calc(100svh-3.5rem)] lg:grid-cols-[380px_1fr] overflow-y-auto lg:overflow-hidden">
+      <main
+        ref={shellPageRef}
+        className="relative z-10 grid min-h-[calc(100svh-4rem)] sm:min-h-[calc(100svh-3.5rem)] lg:h-[calc(100svh-3.5rem)] lg:grid-cols-[380px_1fr] overflow-y-auto lg:overflow-hidden"
+      >
         {/* Left: Content & Roadmap */}
         <aside className="border-r border-white/5 bg-white/[0.01] flex flex-col lg:h-full overflow-hidden">
           {/* Tabs for Sidebar */}
@@ -311,7 +352,7 @@ export default function LinuxLearningPage() {
         </aside>
 
         {/* Right: Active Lesson & Terminal */}
-        <div className="bg-black/20 flex flex-col lg:h-full overflow-y-auto">
+        <div ref={contentPaneRef} className="bg-black/20 flex flex-col lg:h-full overflow-y-auto">
           <div className="flex-1 max-w-5xl mx-auto w-full px-6 py-10">
             <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
               <div className="text-sm text-white/70">

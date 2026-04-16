@@ -13,7 +13,7 @@ import { AppLayout } from "@/components/AppLayout";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { DashboardSkeleton, EditorSkeleton, PageSkeleton, ProblemsListSkeleton } from "@/components/Skeletons";
+import { DashboardSkeleton, EditorSkeleton, LinuxLearningSkeleton, PageSkeleton, ProblemsListSkeleton } from "@/components/Skeletons";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -22,7 +22,6 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ProgressProvider } from "@/contexts/ProgressContext";
 import { SoundProvider } from "@/contexts/SoundContext";
 import { GlobalConfetti } from "@/components/GlobalConfetti";
-import LinuxLearningPage from "./pages/LinuxLearningPage";
 
 // --- Lazy-loaded Pages ---
 // Each page is loaded on-demand when the user visits its route
@@ -56,6 +55,7 @@ const BlogIndexPage = lazy(() => import("./pages/BlogIndexPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
 const CareerRoadmapPage = lazy(() => import("./pages/CareerRoadmapPage"));
+const LinuxLearningPage = lazy(() => import("./pages/LinuxLearningPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -99,7 +99,7 @@ const appRoutes: AppRoute[] = [
   { path: "/python-game", element: <PythonGamePage />, fallback: <PageSkeleton /> },
   { path: "/python-learning-for-beginners", element: <PythonLearningBeginnersPage />, fallback: <PageSkeleton /> },
   { path: "/python-quiz-100", element: <PythonQuizPage />, fallback: <PageSkeleton /> },
-  { path: "/linux-learn", element: <LinuxLearningPage />, fallback: <EditorSkeleton /> },
+  { path: "/linux-learn", element: <LinuxLearningPage />, fallback: <LinuxLearningSkeleton /> },
   { path: "/career-roadmap", element: <CareerRoadmapPage />, fallback: <PageSkeleton /> },
   { path: "/u/:userId", element: <PublicProfilePage />, fallback: <PageSkeleton /> },
   { path: "/privacy", element: <PrivacyPolicyPage />, fallback: <PageSkeleton /> },

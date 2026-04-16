@@ -2940,7 +2940,7 @@ function iotRobotics(): CareerLesson[] {
 }
 
 
-export const careerTracks: CareerTrack[] = [
+const rawTracks: CareerTrack[] = [
   {
     id: "sql",
     title: "SQL & Databases",
@@ -2960,4 +2960,6 @@ export const careerTracks: CareerTrack[] = [
   { id: "cloud-mlops", title: "Cloud & MLOps", description: "Deploy and scale Python in the cloud", color: "primary", lessons: cloudMlops() },
   { id: "game-dev", title: "Game Development", description: "Build 2D and 3D games with Python", color: "destructive", lessons: gameDev() },
   { id: "iot-robotics", title: "IoT & Robotics", description: "Hardware and embedded Python", color: "reward-gold", lessons: iotRobotics() },
-].map(withFullTrackTranslations);
+];
+
+export const careerTracks = rawTracks.map(withFullTrackTranslations);

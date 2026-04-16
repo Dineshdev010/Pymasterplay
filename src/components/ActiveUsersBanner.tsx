@@ -1,35 +1,31 @@
 import { useEffect, useMemo, useState } from "react";
-import { Activity, Dot } from "lucide-react";
-
-const MIN_ACTIVE_USERS = 148;
-const MAX_ACTIVE_USERS = 412;
-const ROTATION_WINDOW_MS = 5 * 60 * 1000;
-
-function getActiveUsersForWindow(windowKey: number) {
-  const normalized = Math.abs(Math.sin(windowKey * 12.9898) * 43758.5453) % 1;
-  return Math.round(MIN_ACTIVE_USERS + normalized * (MAX_ACTIVE_USERS - MIN_ACTIVE_USERS));
-}
+import { Activity } from "lucide-react";
+import { DEFAULT_ROTATION_WINDOW_MS, getCurrentMetricWindow, getSharedLiveCodersCount } from "@/lib/liveMetrics";
 
 type ActiveUsersBannerMode = "fixed" | "inline";
 
 export function ActiveUsersBanner({ mode = "fixed" }: { mode?: ActiveUsersBannerMode }) {
-  const initialWindow = useMemo(() => Math.floor(Date.now() / ROTATION_WINDOW_MS), []);
+  const initialWindow = useMemo(() => getCurrentMetricWindow(DEFAULT_ROTATION_WINDOW_MS), []);
   const [windowKey, setWindowKey] = useState(initialWindow);
 
   useEffect(() => {
-    const syncWindow = () => setWindowKey(Math.floor(Date.now() / ROTATION_WINDOW_MS));
-    const interval = setInterval(syncWindow, 30000);
+    const syncWindow = () => setWindowKey(getCurrentMetricWindow(DEFAULT_ROTATION_WINDOW_MS));
+    const interval = setInterval(syncWindow, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const activeUsers = getActiveUsersForWindow(windowKey);
+  const activeUsers = getSharedLiveCodersCount(windowKey);
 
   const pill = (
-    <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-background/85 px-2 py-1 text-[10px] shadow-lg backdrop-blur-md sm:px-2.5 sm:text-[11px]">
-      <Activity className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
-      <span className="font-semibold text-foreground">{activeUsers.toLocaleString()}</span>
-      <Dot className="h-3 w-3 text-emerald-500 sm:h-3.5 sm:w-3.5" />
-      <span className="text-muted-foreground">active</span>
+    <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-slate-950/80 px-3 py-1.5 text-[11px] shadow-[0_12px_30px_rgba(16,185,129,0.12)] backdrop-blur-md">
+      <span className="relative flex h-2.5 w-2.5 shrink-0">
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/70" />
+        <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
+      </span>
+      <Activity className="h-3.5 w-3.5 text-emerald-400" />
+      <span className="font-semibold text-white tabular-nums">{activeUsers.toLocaleString()}</span>
+      <span className="h-1 w-1 rounded-full bg-emerald-400/70" />
+      <span className="text-emerald-100/75">active</span>
     </div>
   );
 
