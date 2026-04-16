@@ -12,6 +12,9 @@ import { supabase } from "@/lib/supabase";
 import { getTrophyForStars } from "@/lib/progress";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { readLeaderboardCache, writeLeaderboardCache, type CachedLeaderboardRow } from "@/lib/leaderboardCache";
+import { getDynamicMemers } from "@/data/dummyMemers";
+import { getXpLevel } from "@/lib/progress";
+
 
 type SortKey = "xp" | "problemsSolved" | "streak" | "wallet";
 type LeaderboardWindow = "all-time" | "weekly";
@@ -28,7 +31,12 @@ interface LeaderboardUser {
   wallet: number;
   emoji?: string;
   isYou?: boolean;
+  isLegend?: boolean;
+  isReal?: boolean;
   weeklyMomentum: number;
+  title?: string;
+  level?: number;
+  progressPercentage?: number;
 }
 
 interface LeaderboardRow {
@@ -54,7 +62,11 @@ function mapLeaderboardRows(rows: LeaderboardRow[], currentUserId?: string, curr
     wallet: row.wallet,
     emoji: row.user_id === currentUserId ? currentEmoji : undefined,
     isYou: row.user_id === currentUserId,
+    isReal: true,
     weeklyMomentum: row.streak * 20 + Math.min(row.solved_count, 20) * 8 + Math.floor(row.xp / 150),
+    title: getXpLevel(row.xp).title,
+    level: getXpLevel(row.xp).level,
+    progressPercentage: getXpLevel(row.xp).progressPercentage,
   }));
 }
 
@@ -70,11 +82,7 @@ const trophyTiers = [
   { emoji: "🥉", title: "Bronze", minStars: 20, color: "text-reward-gold", bg: "bg-reward-gold/10 border-reward-gold/30", desc: "Catch 20 stars" },
 ];
 
-const rankIcons: Record<number, React.ReactNode> = {
-  1: <Crown className="w-5 h-5 text-python-yellow" />,
-  2: <Medal className="w-5 h-5 text-muted-foreground" />,
-  3: <Award className="w-5 h-5 text-reward-gold" />,
-};
+
 
 
 
@@ -95,7 +103,8 @@ export default function LeaderboardPage() {
   const [sortBy, setSortBy] = useState<SortKey>("xp");
   const [windowMode, setWindowMode] = useState<LeaderboardWindow>("all-time");
   const [users, setUsers] = useState<LeaderboardUser[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   
   // Memoize user trophy to prevent unnecessary recalculations
@@ -104,7 +113,7 @@ export default function LeaderboardPage() {
 
   useEffect(() => {
     let active = true;
-    setLoading(true);
+    setIsSyncing(true);
 
     const cachedRows = readLeaderboardCache();
     if (cachedRows?.length) {
@@ -132,7 +141,7 @@ export default function LeaderboardPage() {
       const nextUsers = mapLeaderboardRows(rows as LeaderboardRow[], user?.uid, userEquippedEmoji);
 
       setUsers(nextUsers);
-      setLoading(false);
+      setIsSyncing(false);
     });
 
     return () => {
@@ -155,11 +164,34 @@ export default function LeaderboardPage() {
       emoji: userEquippedEmoji,
       isYou: true,
       weeklyMomentum: (progress?.streak || 0) * 20 + Math.min(progress?.solvedProblems?.length || 0, 20) * 8 + Math.floor((progress?.xp || 0) / 150),
+      title: getXpLevel(progress?.xp || 0).title,
+      level: getXpLevel(progress?.xp || 0).level,
+      progressPercentage: getXpLevel(progress?.xp || 0).progressPercentage,
     };
 
+    const dummyMemers = getDynamicMemers().map(memer => ({
+      userId: memer.userId,
+      rank: 0,
+      name: memer.name,
+      avatarLabel: memer.avatarLabel,
+      avatarUrl: memer.avatarUrl,
+      xp: memer.xp,
+      problemsSolved: memer.problemsSolved,
+      streak: memer.streak,
+      wallet: memer.wallet,
+      emoji: memer.emoji,
+      isYou: false,
+      isLegend: true,
+      isReal: false,
+      weeklyMomentum: memer.weeklyMomentum,
+      title: "Legend",
+      level: getXpLevel(memer.xp).level,
+      progressPercentage: 100, // Legends are already "max" in their tier
+    }));
+
     const sourceUsers = user
-      ? [currentUserEntry, ...users.filter((entry) => entry.userId !== user.uid)]
-      : users;
+      ? [currentUserEntry, ...users.filter((entry) => entry.userId !== user.uid), ...dummyMemers]
+      : [...users, ...dummyMemers];
 
     const getMetricValue = (entry: LeaderboardUser) => {
       if (windowMode === "weekly") {
@@ -189,19 +221,35 @@ export default function LeaderboardPage() {
 
   const hasLeaderboardData = allUsers.length > 0;
 
+  const rankIcons: Record<number, string> = {
+    1: "🥇",
+    2: "🥈",
+    3: "🥉",
+  };
+
+  // ─── SHIMMER STYLE ───
+  const shimmerAnimation = `
+    @keyframes shimmer {
+      0% { transform: translateX(-150%); opacity: 0; }
+      50% { opacity: 0.5; }
+      100% { transform: translateX(150%); opacity: 0; }
+    }
+  `;
+
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-      <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
+    <div className="min-h-screen bg-background p-4 md:p-8 pt-20">
+      <style>{shimmerAnimation}</style>
+      <div className="max-w-7xl mx-auto space-y-8">
+        <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Trophy className="w-6 h-6 text-python-yellow" /> Leaderboard
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
-            {loading
-              ? "Loading real rankings..."
-              : windowMode === "all-time"
-                ? "All-time rankings from real learner profiles"
-                : "Weekly view uses current momentum: streak, recent solving pace, and active progress"}
+          <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
+            {isSyncing && <div className="w-2 h-2 rounded-full bg-python-yellow animate-pulse" />}
+            {windowMode === "all-time"
+                ? "All-time rankings from learners & community legends"
+                : "Weekly leaderboard mixes real activity with simulated legends"}
           </p>
           {windowMode === "weekly" && !loading && (
             <p className="text-xs text-primary mt-1">Weekly board resets on {nextWeeklyResetLabel}</p>
@@ -389,7 +437,18 @@ export default function LeaderboardPage() {
         {/* Mobile card view */}
         <div className="sm:hidden">
           {allUsers.map(user => (
-            <div key={`mobile-${user.rank}`} className={`p-4 mb-3 rounded-xl border transition-all duration-200 ${user.isYou ? "bg-primary/20 border-primary shadow-sm shadow-primary/20" : "bg-surface-1 border-border"}`}>
+            <div 
+              key={`mobile-${user.rank}`} 
+              className={`p-4 mb-3 rounded-xl border transition-all duration-300 relative overflow-hidden ${
+                user.isYou 
+                  ? "bg-primary/30 border-primary ring-4 ring-python-yellow/50 shadow-2xl shadow-primary/30 scale-[1.05] z-30 animate-[pulse_3s_infinite]" 
+                : user.isReal
+                  ? "bg-surface-2 border-streak-green/30 ring-1 ring-streak-green/20"
+                  : "bg-surface-1 border-border opacity-70 grayscale-[0.3]"
+              }`}
+            >
+              {user.isYou && <div className="absolute top-0 right-0 bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground rounded-bl-lg uppercase tracking-tighter shadow-sm z-20">You</div>}
+              {user.isReal && !user.isYou && <div className="absolute top-0 right-0 bg-streak-green/20 px-2 py-0.5 text-[8px] font-bold text-streak-green border-l border-b border-streak-green/30 rounded-bl-lg uppercase tracking-tighter">Student</div>}
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold shrink-0 bg-primary text-primary-foreground">
                   <Avatar className="h-full w-full">
@@ -400,7 +459,31 @@ export default function LeaderboardPage() {
                   </Avatar>
                 </div>
                 <div>
-                  <span className="text-sm font-bold text-primary">{user.name}{user.emoji && ` ${user.emoji}`}{user.isYou && ` ${userTrophy.emoji}`}</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-bold text-primary">{user.name}{user.emoji && ` ${user.emoji}`}{user.isYou && ` ${userTrophy.emoji}`}</span>
+                    {user.title && (() => {
+                      const theme = user.isLegend ? { color: "text-python-yellow", bg: "bg-python-yellow/10", border: "border-python-yellow/20" } : getXpLevel(user.xp);
+                      const isHighRank = user.level! >= 13 || user.isLegend;
+                      return (
+                        <span className={`relative inline-flex items-center gap-1 text-[8px] px-2 py-0.5 rounded-full font-bold uppercase tracking-tighter border shadow-sm backdrop-blur-md overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95 group ${theme.color} ${theme.bg} ${theme.border} ${user.isYou ? "ring-1 ring-primary/40" : ""}`}>
+                          {isHighRank && (
+                            <div className="absolute inset-0 w-full h-full pointer-events-none">
+                              <div className="w-1/2 h-full bg-white/20 -skew-x-[35deg] animate-[shimmer_3s_infinite]" />
+                            </div>
+                          )}
+                          <Medal className={`w-2 h-2 ${isHighRank ? "animate-pulse" : ""}`} />
+                          {user.title} <span className="opacity-40 mx-0.5">•</span> Lv {user.level}
+                          
+                          {/* Micro Progress Bar */}
+                          <div className="absolute bottom-0 left-0 h-[1.5px] bg-current opacity-20 w-full" />
+                          <div 
+                            className="absolute bottom-0 left-0 h-[1.5px] bg-current transition-all duration-1000 ease-out" 
+                            style={{ width: `${user.progressPercentage}%` }} 
+                          />
+                        </span>
+                      );
+                    })()}
+                  </div>
                   <div className="text-xs text-muted-foreground">Rank #{user.rank}</div>
                 </div>
               </div>
@@ -438,8 +521,12 @@ export default function LeaderboardPage() {
           {allUsers.map(user => (
             <div
               key={`desktop-${user.rank}`}
-              className={`grid grid-cols-[3rem_1fr_6rem_6rem_6rem_6rem] gap-2 px-4 py-3 border-b items-center overflow-hidden transition-colors duration-200 ${
-                user.isYou ? "bg-primary/15 border-primary shadow-sm relative z-10" : "bg-surface-1 border-border last:border-0"
+              className={`grid grid-cols-[3rem_1fr_6rem_6rem_6rem_6rem] gap-2 px-4 py-3 border-b items-center overflow-hidden transition-all duration-300 ${
+                user.isYou 
+                  ? "bg-primary/25 border-python-yellow ring-2 ring-inset ring-python-yellow/40 shadow-xl relative z-20 scale-[1.02] rounded-md mx-1 my-1.5 animate-[pulse_4s_infinite]" 
+                : user.isReal
+                  ? "bg-surface-2 border-streak-green/20 shadow-sm"
+                  : "bg-surface-1/60 border-border opacity-60 grayscale-[0.4] scale-[0.98]"
               }`}
             >
             <span className="text-sm font-medium text-muted-foreground">
@@ -457,6 +544,35 @@ export default function LeaderboardPage() {
               <span className="text-sm font-bold text-primary truncate">
                 {user.name}{user.emoji && ` ${user.emoji}`}{user.isYou && ` ${userTrophy.emoji}`}
               </span>
+              {user.title && (() => {
+                const theme = user.isLegend ? { color: "text-python-yellow", bg: "bg-python-yellow/10", border: "border-python-yellow/30" } : getXpLevel(user.xp);
+                const isHighRank = user.level! >= 13 || user.isLegend;
+                return (
+                  <span 
+                    className={`relative inline-flex items-center gap-1.5 text-[9px] px-3 py-1.5 rounded-full font-bold uppercase tracking-wider shrink-0 shadow-md border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-110 active:scale-95 group cursor-default ${theme.color} ${theme.bg} ${theme.border} ${user.isYou ? "ring-2 ring-primary/40" : ""}`} 
+                    title={user.isLegend ? "Community Legend" : `${Math.round(user.progressPercentage || 0)}% to level up`}
+                  >
+                    {isHighRank && (
+                      <div className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
+                        <div 
+                          className="w-[150%] h-full bg-gradient-to-r from-transparent via-white to-transparent -skew-x-[25deg] animate-[shimmer_5s_infinite]" 
+                          style={{ animationDelay: `${user.rank * 0.2}s` }}
+                        />
+                      </div>
+                    )}
+                    <Medal className={`w-3 h-3 ${isHighRank ? "animate-bounce mt-[-1px]" : ""}`} />
+                    {user.title} <span className="opacity-30 mx-0.5">•</span> Lv {user.level}
+                    
+                    {/* Micro Progress Bar Container */}
+                    <div className="absolute bottom-0 left-0 h-[2px] bg-current opacity-10 w-full" />
+                    {/* Active Progress Bar */}
+                    <div 
+                      className="absolute bottom-0 left-0 h-[2px] bg-current transition-all duration-1000 ease-out shadow-[0_0_8px_currentColor]" 
+                      style={{ width: `${user.progressPercentage}%` }} 
+                    />
+                  </span>
+                );
+              })()}
             </div>
             <span className={`text-sm text-right font-mono ${sortBy === "xp" ? "text-primary font-semibold" : "text-muted-foreground"}`}>
               {user.xp.toLocaleString()}
@@ -499,6 +615,7 @@ export default function LeaderboardPage() {
             </button>
           ))}
         </div>
+      </div>
       </div>
     </div>
   );

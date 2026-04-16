@@ -33,18 +33,18 @@ export default function LandingPage() {
   const canonical = "https://pymaster.pro/";
   const [hideFloatingBadges, setHideFloatingBadges] = useState(false);
   const [deferFx, setDeferFx] = useState(false);
-  const { startTour, isFirstTime } = useTour();
+  const { startTour, hasSeenTour } = useTour();
 
-  const handleStartTour = useCallback(() => startTour(MASTER_TOUR_STEPS), [startTour]);
+  const handleStartTour = useCallback(() => startTour(MASTER_TOUR_STEPS, "home"), [startTour]);
 
   useEffect(() => {
-    if (isFirstTime) {
+    if (!hasSeenTour("home")) {
       const timer = setTimeout(() => {
         handleStartTour();
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [isFirstTime, handleStartTour]);
+  }, [hasSeenTour, handleStartTour]);
 
   useEffect(() => {
     const prefersReduced =

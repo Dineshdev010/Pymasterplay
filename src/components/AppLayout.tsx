@@ -19,6 +19,7 @@ import { useToast } from "@/hooks/use-toast";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SupportTipPopup } from "@/components/SupportTipPopup";
 import { useTour } from "@/contexts/TourContext";
+import { PwaInstallModal } from "@/components/PwaInstallModal";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -195,6 +196,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       
       {/* Global custom cursor effect */}
       <CustomCursor />
+      
+      {/* Global PWA Install Modal */}
+      <PwaInstallModal />
       
       {/* Support Tip & QR Popup */}
       <SupportTipPopup />

@@ -266,7 +266,7 @@ export default function CompilerPage() {
   const outputPanelRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null);
-  const { startTour } = useTour();
+  const { startTour, hasSeenTour } = useTour();
 
   const handleStartTour = useCallback(() => {
     startTour([
@@ -290,8 +290,18 @@ export default function CompilerPage() {
         title: "Output & Feedback",
         content: "See the results of your code execution and AI-powered performance tips here.",
       },
-    ]);
+    ], "compiler");
   }, [startTour]);
+
+  useEffect(() => {
+    if (!hasSeenTour("compiler")) {
+      const timer = setTimeout(() => {
+        handleStartTour();
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasSeenTour, handleStartTour]);
+
   const { logActivity } = useProgress();
   const isMobile = useIsMobile();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);

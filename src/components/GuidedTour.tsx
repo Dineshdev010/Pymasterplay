@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ArrowRight, ArrowLeft, CheckCircle2, Loader2, MapPin } from "lucide-react";
+import { ArrowRight, ArrowLeft, CheckCircle2, Loader2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTour } from "@/contexts/TourContext";
 
@@ -41,7 +41,7 @@ const PAGE_LABELS: Record<string, string> = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 export const GuidedTour: React.FC = () => {
-  const { isActive, currentStepIndex, steps, nextStep, prevStep, endTour } = useTour();
+  const { isActive, currentStepIndex, steps, nextStep, prevStep } = useTour();
 
   const [highlight,    setHighlight]    = useState<HighlightRect | null>(null);
   const [tooltipPos,   setTooltipPos]   = useState<TooltipPos>({});
@@ -153,10 +153,9 @@ export const GuidedTour: React.FC = () => {
   return (
     <div className="fixed inset-0 z-[9999] pointer-events-none" aria-live="polite">
 
-      {/* ── Dim Backdrop (clicking ends tour) ─────────────────────────────── */}
+      {/* ── Dim Backdrop (unskippable) ─────────────────────────────── */}
       <div
         className="absolute inset-0 bg-black/65 pointer-events-auto"
-        onClick={endTour}
       />
 
       {/* ── Spotlight Ring ────────────────────────────────────────────────── */}
@@ -223,13 +222,6 @@ export const GuidedTour: React.FC = () => {
               )}
               {currentStep?.title}
             </h3>
-            <button
-              onClick={endTour}
-              className="shrink-0 text-slate-600 hover:text-white transition-colors mt-0.5"
-              aria-label="Close tour"
-            >
-              <X className="h-4 w-4" />
-            </button>
           </div>
 
           {/* Content */}

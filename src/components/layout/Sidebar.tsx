@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Check, ChevronDown, ChevronLeft, Languages, Wallet, User } from "lucide-react";
+import { Check, ChevronDown, ChevronLeft, Languages, Wallet, User, Smartphone, Download } from "lucide-react";
 import { motion } from "framer-motion";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getStreakTitle } from "@/lib/progress";
@@ -149,6 +149,21 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
+
+          {/* PWA Install Entry in Sidebar */}
+          <button
+            onClick={() => {
+              onClose();
+              // Small delay to let sidebar close before modal opens (optional)
+              window.dispatchEvent(new CustomEvent("pymaster-open-pwa-modal"));
+            }}
+            className="w-full flex items-center gap-2 px-2.5 py-2 rounded-md text-xs font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-all group"
+          >
+            <Smartphone className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+            <span>{t("nav.installApp") || "Install App"}</span>
+            <Download className="ml-auto w-3 h-3 opacity-50" />
+          </button>
+
           <p className="text-[9px] text-muted-foreground font-mono mt-1"># Python {">>"} Life 🐍</p>
         </div>
       </motion.aside>

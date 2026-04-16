@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import React, { createContext, useContext, useState, useCallback } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 
 export interface TourStep {
@@ -13,11 +13,11 @@ interface TourContextType {
   isActive: boolean;
   currentStepIndex: number;
   steps: TourStep[];
-  startTour: (steps: TourStep[]) => void;
+  startTour: (steps: TourStep[], tourId: string) => void;
   endTour: () => void;
   nextStep: () => void;
   prevStep: () => void;
-  isFirstTime: boolean;
+  hasSeenTour: (tourId: string) => boolean;
 }
 
 const TourContext = createContext<TourContextType | undefined>(undefined);
@@ -26,16 +26,12 @@ export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isActive, setIsActive] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [steps, setSteps] = useState<TourStep[]>([]);
-  const [isFirstTime, setIsFirstTime] = useState(false);
 
   const navigate = useNavigate();
   const location = useLocation();
 
-  useEffect(() => {
-    const hasSeenTour = localStorage.getItem("pymaster_tour_seen");
-    if (!hasSeenTour) {
-      setIsFirstTime(true);
-    }
+  const hasSeenTour = useCallback((tourId: string) => {
+    return localStorage.getItem(`pymaster_tour_seen_${tourId}`) === "true";
   }, []);
 
   /** Navigate to a page if the step requires it (and we're not already there). */
@@ -49,11 +45,11 @@ export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
 
   const startTour = useCallback(
-    (newSteps: TourStep[]) => {
+    (newSteps: TourStep[], tourId: string) => {
       setSteps(newSteps);
       setCurrentStepIndex(0);
       setIsActive(true);
-      localStorage.setItem("pymaster_tour_seen", "true");
+      localStorage.setItem(`pymaster_tour_seen_${tourId}`, "true");
       // Navigate to the first step's page if needed
       if (newSteps[0]?.page && newSteps[0].page !== location.pathname) {
         navigate(newSteps[0].page);
@@ -95,7 +91,7 @@ export const TourProvider: React.FC<{ children: React.ReactNode }> = ({ children
         endTour,
         nextStep,
         prevStep,
-        isFirstTime,
+        hasSeenTour,
       }}
     >
       {children}

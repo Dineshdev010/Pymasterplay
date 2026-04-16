@@ -72,7 +72,7 @@ export default function QuickPrepPage() {
     setFavorites((current) => ({ ...current, [key]: !current[key] }));
   };
 
-  const { startTour, isFirstTime } = useTour();
+  const { startTour, hasSeenTour } = useTour();
 
   const handleStartTour = useCallback(() => {
     startTour([
@@ -106,17 +106,17 @@ export default function QuickPrepPage() {
         title: "Save Favorites",
         content: "Click the star to save snippets you use often. They'll stay here even if you refresh!",
       },
-    ]);
+    ], "quickprep");
   }, [startTour]);
 
   useEffect(() => {
-    if (isFirstTime) {
+    if (!hasSeenTour("quickprep")) {
       const timer = setTimeout(() => {
         handleStartTour();
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [isFirstTime, handleStartTour]);
+  }, [hasSeenTour, handleStartTour]);
 
   const openInCompiler = (codeSnippet: string) => {
     // Map 'git' to 'linux' for the compiler terminal mode

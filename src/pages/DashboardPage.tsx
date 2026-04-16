@@ -21,6 +21,8 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { getPublicUrl } from "@/lib/public-url";
 import { TrophyHall } from "@/components/TrophyHall";
+import { getDynamicMemers } from "@/data/dummyMemers";
+
 
 
 const EMOJI_SHOP: {emoji: string;name: string;price: number;legendary?: boolean;}[] = [
@@ -435,6 +437,15 @@ export default function DashboardPage() {
   ];
   const compareRankings = useMemo(() => {
     const source = compareUsers.length ? compareUsers : [];
+    const dummyMemers = getDynamicMemers().map(memer => ({
+      user_id: memer.userId,
+      display_name: memer.name,
+      xp: memer.xp,
+      solved_count: memer.problemsSolved,
+      streak: memer.streak,
+      wallet: memer.wallet,
+    }));
+
     const fallbackName = profile?.displayName || localStorage.getItem("pymaster_name") || "You";
     const merged = user?.uid
       ? [
@@ -447,8 +458,9 @@ export default function DashboardPage() {
             wallet: progress.wallet,
           },
           ...source.filter((entry) => entry.user_id !== user.uid),
+          ...dummyMemers,
         ]
-      : source;
+      : [...source, ...dummyMemers];
 
     return [...merged]
       .sort((a, b) => b.xp - a.xp || b.streak - a.streak || b.wallet - a.wallet)

@@ -7,6 +7,7 @@
 import { useCallback, useContext, useEffect, useState, type ReactNode, createContext } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase";
+import { clearLocalProgress } from "@/lib/progress";
 
 // --- Custom User interface to match previous app expectation ---
 export interface AppUser {
@@ -236,7 +237,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
     setProfile(null);
-    localStorage.removeItem("pymaster_profile_complete");
+    clearLocalProgress();
   };
 
   // --- Password Reset ---

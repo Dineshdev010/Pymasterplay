@@ -45,7 +45,7 @@ export interface ProgressProfileRow {
 const STORAGE_KEY = "pymaster_progress";
 
 // Default values for a new user
-const defaultProgress: UserProgress = {
+export const defaultProgress: UserProgress = {
   wallet: 0,
   streak: 0,
   lastCodingDate: null,
@@ -101,6 +101,21 @@ export function getProgress(): UserProgress {
  */
 export function saveProgress(progress: UserProgress) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+}
+
+/**
+ * Completely wipe all progress from localStorage.
+ * Used during logout to prevent session leaking.
+ */
+export function clearLocalProgress() {
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem("pymaster_name");
+  localStorage.removeItem("pymaster_bio");
+  localStorage.removeItem("pymaster_avatar");
+  localStorage.removeItem("pymaster_skills");
+  localStorage.removeItem("pymaster_profile_complete");
+  localStorage.removeItem("pymaster_selected_emoji");
+  localStorage.removeItem("pymaster_avatar_id");
 }
 
 function asStringArray(value: unknown): string[] {
@@ -290,6 +305,40 @@ export function getStreakTitle(streak: number): string {
   if (streak >= 30) return "Dedicated Coder";
   if (streak >= 7) return "Python Explorer";
   return "Python Beginner";
+}
+
+/**
+ * Get level title, numerical level, and theme color based on XP.
+ * Level formula: Level = floor(XP / 500) + 1
+ * Titles:
+ * Lv 1-3: Beginner
+ * Lv 4-6: Junior
+ * Lv 7-9: Intermediate
+ * Lv 10-12: Advanced
+ * Lv 13+: Expert
+ */
+export function getXpLevel(xp: number): { title: string; level: number; progressPercentage: number; color: string; bg: string; border: string } {
+  const level = Math.floor(xp / 500) + 1;
+  const progressPercentage = Math.min(100, Math.max(0, ((xp % 500) / 500) * 100));
+  
+  let title = "Beginner";
+  let theme = { color: "text-muted-foreground", bg: "bg-muted/10", border: "border-muted/30" };
+
+  if (level >= 13) {
+    title = "Expert";
+    theme = { color: "text-primary", bg: "bg-primary/10", border: "border-primary/30" };
+  } else if (level >= 10) {
+    title = "Advanced";
+    theme = { color: "text-expert-purple", bg: "bg-expert-purple/10", border: "border-expert-purple/30" };
+  } else if (level >= 7) {
+    title = "Intermediate";
+    theme = { color: "text-reward-gold", bg: "bg-reward-gold/10", border: "border-reward-gold/30" };
+  } else if (level >= 4) {
+    title = "Junior";
+    theme = { color: "text-python-blue", bg: "bg-python-blue/10", border: "border-python-blue/30" };
+  }
+
+  return { title, level, progressPercentage, ...theme };
 }
 
 /**

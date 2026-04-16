@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
   Check, ChevronDown, Clock, HeartHandshake, Languages, LogIn, LogOut, Menu, Moon, Settings, Sun, 
-  Trophy, User, Wallet, Volume2, VolumeX, Medal, ShieldCheck, Award, Zap, Star 
+  User, Volume2, VolumeX, Medal
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useProgress } from "@/contexts/ProgressContext";
 import { useSound } from "@/contexts/SoundContext";
 import { useToast } from "@/hooks/use-toast";
+import { getXpLevel } from "@/lib/progress";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -29,15 +30,7 @@ import { navItems } from "./navItems";
 
 const MENU_HINT_KEY = "pymaster_menu_hint_dismissed";
 
-function getLevelConfig(xp: number) {
-  if (xp >= 50000) return { label: "Legend", Icon: Star, color: "text-amber-400", bgColor: "bg-amber-400/10", border: "border-amber-400/20 shadow-[0_0_10px_rgba(251,191,36,0.2)]" };
-  if (xp >= 20000) return { label: "Grandmaster", Icon: Trophy, color: "text-reward-gold", bgColor: "bg-reward-gold/10", border: "border-reward-gold/20 shadow-[0_0_10px_rgba(212,175,55,0.2)]" };
-  if (xp >= 10000) return { label: "Master", Icon: Award, color: "text-expert-purple", bgColor: "bg-expert-purple/10", border: "border-expert-purple/20" };
-  if (xp >= 5000) return { label: "Expert", Icon: Award, color: "text-blue-500", bgColor: "bg-blue-500/10", border: "border-blue-500/20" };
-  if (xp >= 2500) return { label: "Advanced", Icon: ShieldCheck, color: "text-streak-green", bgColor: "bg-streak-green/10", border: "border-streak-green/20" };
-  if (xp >= 1000) return { label: "Intermediate", Icon: Medal, color: "text-python-yellow", bgColor: "bg-python-yellow/10", border: "border-python-yellow/20" };
-  return { label: "Beginner", Icon: Zap, color: "text-muted-foreground", bgColor: "bg-secondary", border: "border-border" };
-}
+
 
 function TimeTracker() {
   const { progress, addTimeSpent } = useProgress();
@@ -93,8 +86,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const { language, setLanguage, languageOptions, t } = useLanguage();
   const { muted, toggleMuted } = useSound();
   const { toast } = useToast();
-  const levelNumber = Math.floor(progress.xp / 500) + 1;
-  const level = getLevelConfig(progress.xp);
+
   const primaryNavRoutes = ["/", "/learn", "/problems", "/dsa", "/dashboard"];
   const primaryNavItems = navItems.filter((item) => primaryNavRoutes.includes(item.to));
   const secondaryNavItems = navItems.filter((item) => !primaryNavRoutes.includes(item.to));
@@ -172,8 +164,18 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   } as const;
   const selectedLanguageLabel = languageLabelByValue[language] ?? "Default (English)";
 
+  const xpLevel = getXpLevel(progress.xp);
+  const isHighRank = xpLevel.level >= 13;
+
   return (
     <>
+    <style>{`
+      @keyframes nav-shimmer {
+        0% { transform: translateX(-150%); opacity: 0; }
+        50% { opacity: 0.5; }
+        100% { transform: translateX(150%); opacity: 0; }
+      }
+    `}</style>
     <AdViewModal
       isOpen={showAd}
       onClose={() => setShowAd(false)}
@@ -360,14 +362,26 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         <div className="hidden md:flex">
           <StreakFire streak={progress.streak} size="sm" showQuote />
         </div>
-        <div className="hidden sm:flex items-center gap-1.5 text-sm">
-          <Wallet className="w-4 h-4 text-reward-gold" />
-          <span className="text-foreground font-medium">${progress.wallet}</span>
+        <div 
+          className={`hidden xl:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
+          title={`${Math.round(xpLevel.progressPercentage)}% to level ${xpLevel.level + 1}`}
+        >
+          {isHighRank && (
+            <div className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
+              <div className="w-[150%] h-full bg-gradient-to-r from-transparent via-white to-transparent -skew-x-[25deg] animate-[nav-shimmer_5s_infinite]" />
+            </div>
+          )}
+          <Medal className={`w-3.5 h-3.5 ${isHighRank ? "animate-pulse" : ""}`} />
+          <span className="font-bold tracking-tight">{xpLevel.title} <span className="opacity-30 mx-0.5">•</span> Lv {xpLevel.level}</span>
+          
+          {/* Micro Progress Bar */}
+          <div className="absolute bottom-0 left-0 h-[1.5px] bg-current opacity-20 w-full" />
+          <div 
+            className="absolute bottom-0 left-0 h-[1.5px] bg-current shadow-[0_0_4px_currentColor] transition-all duration-1000 ease-out" 
+            style={{ width: `${xpLevel.progressPercentage}%` }} 
+          />
         </div>
-        <div className={`hidden xl:flex items-center gap-1.5 text-[10px] sm:text-xs px-2.5 py-1 rounded-full border ${level.border} ${level.bgColor} transition-all duration-500`}>
-          <level.Icon className={`w-3 h-3 ${level.color}`} />
-          <span className={`${level.color} font-bold tracking-tight`}>{level.label} • Lv {levelNumber}</span>
-        </div>
+
         {user ? (
           <DropdownMenu open={profileMenuOpen} onOpenChange={setProfileMenuOpen}>
             <DropdownMenuTrigger asChild>

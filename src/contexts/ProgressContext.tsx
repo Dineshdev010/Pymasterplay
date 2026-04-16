@@ -21,6 +21,7 @@ import {
   mergeProgress,
   profileRowToProgress,
   progressToProfileUpdate,
+  defaultProgress,
 } from "@/lib/progress";
 import { playCelebrationSound, playApplauseSound, playLevelUpSound } from "@/lib/sounds";
 import { getEarnedBadges } from "@/lib/badges";
@@ -85,8 +86,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     let active = true;
 
     if (!user) {
-      // Fallback to local storage if not logged in
-      setProgress(getProgress());
+      // Fallback to defaults if not logged in
+      setProgress(defaultProgress);
       setHydratedUserId(null);
       lastCloudSnapshotRef.current = "";
       return () => {
