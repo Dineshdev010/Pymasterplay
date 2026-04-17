@@ -17,6 +17,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { triggerTour } from "@/components/TourSystem";
+import { useCallback } from "react";
 
 const categoryOrder = ["Beginner", "Intermediate", "Advanced", "Expert"] as const;
 
@@ -1229,6 +1231,8 @@ export default function LearnPage() {
   const t = text.english;
   const tt = (key: string, fallback: string) => (t as Record<string, string>)[key] ?? fallback;
 
+
+
   const selectedLesson = useMemo(() => {
     const baseLesson = lessons.find((l) => l.id === selectedId);
     return getLocalizedLesson(baseLesson, language);
@@ -1491,7 +1495,7 @@ export default function LearnPage() {
     />
     <div className="flex min-h-[calc(100vh-3.5rem)] flex-col md:h-[calc(100vh-3.5rem)] md:flex-row">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-border bg-surface-1 overflow-y-auto shrink-0 hidden md:block">
+      <aside id="tour-learn-sidebar" className="w-72 border-r border-border bg-surface-1 overflow-y-auto shrink-0 hidden md:block">
         <div className="p-4 border-b border-border">
           <h2 className="font-semibold text-foreground flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-primary" /> {t.lessonsTitle}
@@ -1577,7 +1581,7 @@ export default function LearnPage() {
       {/* Content */}
       <div className="flex-1 overflow-y-auto">
         {selectedLesson ? (
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 md:py-8">
+          <div id="tour-learn-lesson" className="max-w-3xl mx-auto px-4 sm:px-6 py-6 md:py-8">
             {/* Mobile back button */}
             <button 
               onClick={() => setSelectedId(null)} 
@@ -2003,7 +2007,7 @@ export default function LearnPage() {
             })()}
           </div>
         ) : (
-          <div className="flex flex-col items-center md:justify-center h-full text-center px-4 sm:px-6 py-6 overflow-y-auto">
+          <div id="tour-learn-header" className="flex flex-col items-center md:justify-center h-full text-center px-4 sm:px-6 py-6 overflow-y-auto">
             <BookOpen className="w-12 h-12 text-muted-foreground/30 mb-4 hidden md:block" />
             <h2 className="text-xl font-semibold text-foreground mb-2">{t.selectLesson}</h2>
             <p className="text-muted-foreground mb-6 hidden md:block">{t.selectLessonDesc}</p>
@@ -2022,7 +2026,7 @@ export default function LearnPage() {
               </div>
             </div>
 
-            <div className="w-full max-w-5xl mb-8 grid gap-4 sm:grid-cols-2 text-left">
+            <div id="tour-learn-roadmap" className="w-full max-w-5xl mb-8 grid gap-4 sm:grid-cols-2 text-left">
               {topicCoverage.map((group) => (
                 <div key={group.title} className="rounded-2xl border border-border bg-card/60 p-4">
                   <div className="text-sm font-semibold text-foreground mb-3">{group.title}</div>
@@ -2055,7 +2059,7 @@ export default function LearnPage() {
             </div>
 
             {/* Mobile lesson list grouped by category */}
-            <div className="md:hidden w-full max-w-md space-y-4 text-left">
+            <div id="tour-learn-mobile-list" className="md:hidden w-full max-w-md space-y-4 text-left">
               {categories.map(cat => (
                 <div key={cat}>
                   <h3 className={`text-sm font-bold uppercase tracking-wider mb-2 ${categoryTone[cat].label}`}>

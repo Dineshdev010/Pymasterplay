@@ -12,6 +12,9 @@ import { Code, CheckCircle2, ChevronRight, Wallet, Search } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { CompanyBadge } from "@/components/CompanyBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useCallback, useEffect } from "react";
+import { triggerTour } from "@/components/TourSystem";
 
 export default function ProblemsListPage() {
   const { progress } = useProgress();
@@ -22,6 +25,17 @@ export default function ProblemsListPage() {
   const canonical = "https://pymaster.pro/problems";
 
   const companyOptions = ["all", ...Array.from(new Set(problems.flatMap((problem) => problem.companies ?? []))).sort()];
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (user) {
+      const timer = setTimeout(() => {
+        triggerTour("problems");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
 
   const filtered = problems
     .filter(p => filter === "all" || p.difficulty === filter)
@@ -128,14 +142,15 @@ export default function ProblemsListPage() {
       </Helmet>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div>
+        <div id="tour-problems-header">
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">{t.title}</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {progress.solvedProblems.length}/{problems.length} {t.solved}
           </p>
         </div>
-        {/* Search */}
-        <div className="relative w-full sm:w-64">
+        <div className="flex items-center gap-3">
+          {/* Search */}
+          <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
@@ -144,11 +159,12 @@ export default function ProblemsListPage() {
             onChange={e => setSearch(e.target.value)}
             className="w-full pl-9 pr-3 py-2 bg-surface-1 border border-border rounded-lg text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
           />
+          </div>
         </div>
       </div>
 
       {/* Filters */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-none">
+      <div id="tour-problems-filters" className="flex gap-2 mb-6 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-none">
         {difficultyFilters.map(f => (
           <button
             key={f}
@@ -176,7 +192,7 @@ export default function ProblemsListPage() {
         </p>
       )}
 
-      <div className="mb-6">
+      <div id="tour-problems-companies" className="mb-6">
         <div className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           {t.filterByCompany}
         </div>
@@ -219,7 +235,10 @@ export default function ProblemsListPage() {
               className="flex items-center gap-3 px-3 sm:px-4 py-3 bg-card border border-border rounded-lg hover:border-primary/40 transition-colors group"
             >
               {/* Serial number */}
-              <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center text-xs font-mono text-muted-foreground shrink-0">
+              <span 
+                id={serial === 1 ? "tour-problem-card" : undefined}
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center text-xs font-mono text-muted-foreground shrink-0"
+              >
                 {serial}
               </span>
 

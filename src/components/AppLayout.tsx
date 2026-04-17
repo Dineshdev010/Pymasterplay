@@ -7,6 +7,7 @@
 import { useLocation } from "react-router-dom";
 import { useProgress } from "@/contexts/ProgressContext";
 import { CelebrationModal } from "@/components/CelebrationModal"; // Popup for achievements
+import { TourSystem } from "@/components/TourSystem";
 import { FeedbackForm } from "@/components/FeedbackForm"; // Floating feedback button
 import { Footer } from "@/components/Footer"; // Page footer (only on home/donate pages)
 import { TopNavbar } from "@/components/layout/TopNavbar"; // Top navigation bar
@@ -18,13 +19,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SupportTipPopup } from "@/components/SupportTipPopup";
-import { useTour } from "@/contexts/TourContext";
 import { PwaInstallModal } from "@/components/PwaInstallModal";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { showCelebration, celebrationData, dismissCelebration, logActivity } = useProgress();
-  const { isActive: tourActive } = useTour(); // Suppress overlapping modals during tour
   const [sidebarOpen, setSidebarOpen] = useState(false); // Controls sidebar visibility
   const isAuthPage = location.pathname === "/auth"; // Auth page has a simpler layout
   const hideFooter =
@@ -149,13 +148,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <div className="min-h-[100svh] flex flex-col overflow-x-hidden w-full">
       {/* Achievement celebration popup */}
       <CelebrationModal
-        isOpen={showCelebration && !tourActive}
+        isOpen={showCelebration}
         onClose={dismissCelebration}
         title={celebrationData?.title || ""}
         subtitle={celebrationData?.subtitle || ""}
         emoji={celebrationData?.emoji || "🎉"}
         reward={celebrationData?.reward}
       />
+
+      {/* Centralized Tour System for all pages */}
+      <TourSystem />
 
       {/* Top navigation bar with logo, nav links, streak, wallet, etc. */}
       <TopNavbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />

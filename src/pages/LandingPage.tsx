@@ -12,8 +12,8 @@ import { Link } from "react-router-dom";
 import { Gamepad2 } from "lucide-react";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { SkyBackground } from "@/components/landing/SkyBackground";
-import { useTour } from "@/contexts/TourContext";
-import { MASTER_TOUR_STEPS } from "@/data/tourSteps";
+import { useAuth } from "@/contexts/AuthContext";
+import { triggerTour } from "@/components/TourSystem";
 
 // Defer non-critical sections to improve first load performance.
 const ShootingStars = lazy(() => import("@/components/ShootingStars").then((m) => ({ default: m.ShootingStars })));
@@ -33,18 +33,17 @@ export default function LandingPage() {
   const canonical = "https://pymaster.pro/";
   const [hideFloatingBadges, setHideFloatingBadges] = useState(false);
   const [deferFx, setDeferFx] = useState(false);
-  const { startTour, hasSeenTour } = useTour();
-
-  const handleStartTour = useCallback(() => startTour(MASTER_TOUR_STEPS, "home"), [startTour]);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (!hasSeenTour("home")) {
+    // Automatically trigger the home tour for logged-in users
+    if (user) {
       const timer = setTimeout(() => {
-        handleStartTour();
-      }, 3000);
+        triggerTour("home");
+      }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [hasSeenTour, handleStartTour]);
+  }, [user]);
 
   useEffect(() => {
     const prefersReduced =
@@ -132,7 +131,7 @@ export default function LandingPage() {
       
       <HeroSection />
       
-      <section className="container mx-auto px-4 sm:px-6 py-2">
+      <section id="tour-game" className="container mx-auto px-4 sm:px-6 py-2">
         <div className="rounded-2xl border border-primary/30 bg-primary/10 p-4 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-start gap-3">
@@ -156,7 +155,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="container mx-auto px-4 sm:px-6 py-2">
+      <section id="tour-roadmap" className="container mx-auto px-4 sm:px-6 py-2">
         <div className="rounded-2xl border border-border bg-card/80 p-4">
           <h2 className="text-sm font-semibold text-foreground sm:text-base">New: Python Learning For Beginners Guide</h2>
           <p className="mt-1 text-xs text-muted-foreground sm:text-sm">

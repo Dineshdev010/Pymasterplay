@@ -14,6 +14,7 @@ import { initSentry } from "./lib/sentry";
 initSentry();
 
 const CHUNK_RELOAD_KEY = "pymaster_chunk_reload_once";
+const SW_RELOAD_KEY = "pymaster_sw_reload_once";
 let appMounted = false;
 
 function hideLoaderSafely() {
@@ -73,6 +74,13 @@ function maybeShowRuntimeRecovery(message: string) {
   });
 }
 
+function reloadOnceForUpdate(key: string) {
+  if (sessionStorage.getItem(key) === "1") return false;
+  sessionStorage.setItem(key, "1");
+  window.location.reload();
+  return true;
+}
+
 function isDynamicImportError(reason: unknown) {
   const text = reason instanceof Error ? reason.message : String(reason ?? "");
   return (
@@ -122,12 +130,29 @@ window.addEventListener("error", (event) => {
 
 // Mount the App component into the <div id="root"> in index.html
 try {
-  registerSW({
+  let waitingForServiceWorkerActivation = false;
+  const updateSW = registerSW({
     immediate: true,
+    onNeedRefresh() {
+      waitingForServiceWorkerActivation = true;
+      updateSW(true).catch((error) => {
+        console.warn("Service worker refresh warning:", error);
+        reloadOnceForUpdate(SW_RELOAD_KEY);
+      });
+    },
+    onOfflineReady() {
+      sessionStorage.removeItem(SW_RELOAD_KEY);
+    },
     onRegisterError(error) {
       console.warn("Service worker registration warning:", error);
     },
   });
+
+  navigator.serviceWorker?.addEventListener("controllerchange", () => {
+    if (!waitingForServiceWorkerActivation) return;
+    reloadOnceForUpdate(SW_RELOAD_KEY);
+  });
+
   createRoot(document.getElementById("root")!).render(<App />);
   appMounted = true;
   sessionStorage.removeItem(CHUNK_RELOAD_KEY);

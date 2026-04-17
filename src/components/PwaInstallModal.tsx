@@ -146,7 +146,7 @@ export function PwaInstallModal() {
                 <div className="relative mb-6">
                   <div className="absolute inset-0 bg-primary/20 blur-2xl rounded-full" />
                   <div className="relative bg-gradient-to-br from-surface-1 to-surface-2 p-4 rounded-2xl border border-border shadow-xl">
-                    <img src="/logo.png" alt="PyMaster" className="w-16 h-16 rounded-xl" />
+                    <img src="/logo.png" alt="PyMaster" className="w-16 h-16 rounded-xl brightness-110 saturate-150 contrast-110" />
                   </div>
                   <div className="absolute -bottom-2 -right-2 bg-primary text-white p-2 rounded-full shadow-lg">
                     <Zap className="w-4 h-4 fill-current" />

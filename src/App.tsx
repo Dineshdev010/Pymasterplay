@@ -22,8 +22,6 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ProgressProvider } from "@/contexts/ProgressContext";
 import { SoundProvider } from "@/contexts/SoundContext";
 import { GlobalConfetti } from "@/components/GlobalConfetti";
-import { TourProvider } from "@/contexts/TourContext";
-import { GuidedTour } from "@/components/GuidedTour";
 
 // --- Lazy-loaded Pages ---
 // Each page is loaded on-demand when the user visits its route
@@ -111,7 +109,7 @@ const appRoutes: AppRoute[] = [
 
 function renderRouteElement(route: AppRoute) {
   const content = (
-    <ErrorBoundary fallback={route.fallback ?? <PageSkeleton />}>
+    <ErrorBoundary>
       <Suspense fallback={route.fallback ?? <PageSkeleton />}>{route.element}</Suspense>
     </ErrorBoundary>
   );
@@ -136,19 +134,16 @@ const App = () => (
                 <AuthProvider>
                   <ProgressProvider>
                     <LanguageProvider>
-                      <TourProvider>
-                        <Toaster />
-                        <Sonner />
-                        <GlobalConfetti />
-                        <GuidedTour />
-                        <AppLayout>
-                          <Routes>
-                            {appRoutes.map((route) => (
-                              <Route key={route.path} path={route.path} element={renderRouteElement(route)} />
-                            ))}
-                          </Routes>
-                        </AppLayout>
-                      </TourProvider>
+                      <Toaster />
+                      <Sonner />
+                      <GlobalConfetti />
+                      <AppLayout>
+                        <Routes>
+                          {appRoutes.map((route) => (
+                            <Route key={route.path} path={route.path} element={renderRouteElement(route)} />
+                          ))}
+                        </Routes>
+                      </AppLayout>
                     </LanguageProvider>
                   </ProgressProvider>
                 </AuthProvider>

@@ -349,6 +349,146 @@ const topics: Topic[] = [
         hint: "Use the upper() method."
       }
     ]
+  },
+  {
+    id: "tuples",
+    title: "Tuples",
+    description: "Work with fixed collections and indexing.",
+    color: "slate",
+    blocks: [
+      { id: "tuple-def", label: "coords = (4, 7)", snippet: "coords = (4, 7)" },
+      { id: "tuple-first", label: "Print first item", snippet: "print(coords[0])" },
+      { id: "tuple-second", label: "Print second item", snippet: "print(coords[1])" },
+    ],
+    challenges: [
+      {
+        id: "tuple-run",
+        title: "Locked Coordinates",
+        task: "Create a tuple named coords and print its first value.",
+        targetOutput: "4",
+        hint: "Define the tuple first, then use index 0."
+      }
+    ]
+  },
+  {
+    id: "sets",
+    title: "Sets",
+    description: "Store unique values and remove duplicates.",
+    color: "lime",
+    blocks: [
+      { id: "set-def", label: "nums = {1, 2, 2, 3}", snippet: "nums = {1, 2, 2, 3}" },
+      { id: "set-len", label: "Print size", snippet: "print(len(nums))" },
+      { id: "set-check", label: "Check 2 in nums", snippet: "print(2 in nums)" },
+    ],
+    challenges: [
+      {
+        id: "set-run",
+        title: "Unique Count",
+        task: "Create the set and print how many unique values it contains.",
+        targetOutput: "3",
+        hint: "Sets keep only unique items, so duplicates disappear."
+      }
+    ]
+  },
+  {
+    id: "slicing",
+    title: "Slicing",
+    description: "Extract pieces from strings and lists.",
+    color: "yellow",
+    blocks: [
+      { id: "slice-def", label: "word = 'Python'", snippet: "word = 'Python'" },
+      { id: "slice-part", label: "Print first 3 chars", snippet: "print(word[:3])" },
+      { id: "slice-last", label: "Print last 2 chars", snippet: "print(word[-2:])" },
+    ],
+    challenges: [
+      {
+        id: "slice-run",
+        title: "Take a Slice",
+        task: "Define the word 'Python' and print its first three letters.",
+        targetOutput: "Pyt",
+        hint: "Use slicing with `[:3]`."
+      }
+    ]
+  },
+  {
+    id: "nested-loops",
+    title: "Nested Loops",
+    description: "Repeat patterns using loops inside loops.",
+    color: "green",
+    blocks: [
+      { id: "nested-loop", label: "2x2 grid loop", snippet: "for row in range(2):\n    for col in range(2):\n        print(row, col)" },
+      { id: "simple-loop", label: "Print row only", snippet: "for row in range(2):\n    print(row)" },
+      { id: "loop-note", label: "Comment", snippet: "# Nested loops help with grids" },
+    ],
+    challenges: [
+      {
+        id: "nested-run",
+        title: "Grid Walker",
+        task: "Use nested loops to print the row and column pairs of a 2x2 grid.",
+        targetOutput: "0 0\n0 1\n1 0\n1 1",
+        hint: "The ready-made nested loop block already prints every pair."
+      }
+    ]
+  },
+  {
+    id: "recursion",
+    title: "Recursion",
+    description: "Functions can call themselves to solve smaller subproblems.",
+    color: "stone",
+    blocks: [
+      { id: "rec-def", label: "def countdown(n):", snippet: "def countdown(n):\n    if n == 0:\n        print('Lift off')\n        return\n    print(n)\n    countdown(n - 1)" },
+      { id: "rec-call", label: "countdown(2)", snippet: "countdown(2)" },
+      { id: "rec-note", label: "Comment", snippet: "# Base case stops the recursion" },
+    ],
+    challenges: [
+      {
+        id: "rec-run",
+        title: "Recursive Countdown",
+        task: "Define the recursive countdown function and run it with 2.",
+        targetOutput: "2\n1\nLift off",
+        hint: "You need the function definition before the call."
+      }
+    ]
+  },
+  {
+    id: "file-handling",
+    title: "Files",
+    description: "Create and read files with context managers.",
+    color: "zinc",
+    blocks: [
+      { id: "file-write", label: "Write note.txt", snippet: "with open('note.txt', 'w', encoding='utf-8') as file:\n    file.write('Python Game')" },
+      { id: "file-read", label: "Read note.txt", snippet: "with open('note.txt', 'r', encoding='utf-8') as file:\n    print(file.read())" },
+      { id: "file-comment", label: "Comment", snippet: "# Files open safely with with" },
+    ],
+    challenges: [
+      {
+        id: "file-run",
+        title: "Save and Show",
+        task: "Write 'Python Game' to a file and print it back out.",
+        targetOutput: "Python Game",
+        hint: "Write first, then read and print from the same file."
+      }
+    ]
+  },
+  {
+    id: "json",
+    title: "JSON",
+    description: "Convert Python data into JSON strings.",
+    color: "neutral",
+    blocks: [
+      { id: "json-import", label: "import json", snippet: "import json" },
+      { id: "json-data", label: "payload = {'score': 99}", snippet: "payload = {'score': 99}" },
+      { id: "json-print", label: "Print JSON", snippet: "print(json.dumps(payload))" },
+    ],
+    challenges: [
+      {
+        id: "json-run",
+        title: "Serialize Score",
+        task: "Import json, create the payload dictionary, and print it as JSON.",
+        targetOutput: "{\"score\": 99}",
+        hint: "The import should go first, then the data, then `json.dumps`."
+      }
+    ]
   }
 ];
 

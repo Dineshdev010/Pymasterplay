@@ -58,7 +58,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
       >
         <div className="p-4 border-b border-border flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2" onClick={onClose}>
-            <img src="/logo.png" alt="PyMaster" className="w-9 h-9 rounded-lg" decoding="async" />
+            <img src="/logo.png" alt="PyMaster" className="w-9 h-9 rounded-lg brightness-110 saturate-150 contrast-110" decoding="async" />
             <span className="font-bold text-foreground">PyMaster</span>
           </Link>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground transition-colors">
@@ -109,7 +109,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               </div>
             </Link>
           )}
-          <div className="flex items-center gap-2">
+          <div data-tour="sidebar-progress" className="flex items-center gap-2">
             <StreakFire streak={progress.streak} size="sm" />
             <div className="min-w-0">
               <p className="text-xs text-foreground font-medium truncate">{getStreakTitle(progress.streak)}</p>

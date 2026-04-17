@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { Link, useNavigate } from "react-router-dom";
 import { 
-  Clock3, Copy, LayoutDashboard, Search, Star, StarOff, Play, X
+  Clock3, Copy, LayoutDashboard, Search, Star, StarOff, Play, X,
+  Target, Code2, Brain, Sparkles, Terminal
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -14,8 +15,8 @@ import {
   type TechType, type CheatsheetCard, type CheatsheetSection, type TechEntry
 } from "@/data/quickPrepData";
 import { highlightSnippet } from "@/utils/highlighter";
-import { Sparkles, Terminal, Code2, Brain, Target, HelpCircle } from "lucide-react";
-import { useTour } from "@/contexts/TourContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { triggerTour } from "@/components/TourSystem";
 
 
 export default function QuickPrepPage() {
@@ -72,51 +73,16 @@ export default function QuickPrepPage() {
     setFavorites((current) => ({ ...current, [key]: !current[key] }));
   };
 
-  const { startTour, hasSeenTour } = useTour();
-
-  const handleStartTour = useCallback(() => {
-    startTour([
-      {
-        targetId: "tour-prep-header",
-        title: "Quick Prep Hub",
-        content: "Master key concepts in minutes. Perfect for last-minute interview reviews or daily warmups.",
-      },
-      {
-        targetId: "tour-prep-tracks",
-        title: "Guided Tracks",
-        content: "Choose a track based on your time constraints. 15, 30, or 25-minute sprints.",
-      },
-      {
-        targetId: "tour-tech-tabs",
-        title: "Switch Technologies",
-        content: "Switch between Python, SQL, Pandas, Linux, and Git instantly.",
-      },
-      {
-        targetId: "tour-search",
-        title: "Search & Filter",
-        content: "Quickly find the specific concept or command you're looking for.",
-      },
-      {
-        targetId: "tour-first-card",
-        title: "Snippet Cards",
-        content: "Every card includes a copyable snippet and a shortcut to open it in the compiler.",
-      },
-      {
-        targetId: "tour-fav-star",
-        title: "Save Favorites",
-        content: "Click the star to save snippets you use often. They'll stay here even if you refresh!",
-      },
-    ], "quickprep");
-  }, [startTour]);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (!hasSeenTour("quickprep")) {
+    if (user) {
       const timer = setTimeout(() => {
-        handleStartTour();
+        triggerTour("prep");
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [hasSeenTour, handleStartTour]);
+  }, [user]);
 
   const openInCompiler = (codeSnippet: string) => {
     // Map 'git' to 'linux' for the compiler terminal mode
@@ -148,12 +114,6 @@ export default function QuickPrepPage() {
                   <Target className="h-4 w-4" />
                   Master Prep hub
                 </div>
-                <button 
-                  onClick={handleStartTour}
-                  className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
-                >
-                  <HelpCircle className="h-4 w-4" /> Tour
-                </button>
               </div>
               <h1 className="text-4xl font-black tracking-tighter text-white sm:text-6xl lg:text-7xl">
                 Ready in <span className="text-primary italic font-serif">Minutes</span>.
@@ -234,7 +194,7 @@ export default function QuickPrepPage() {
             <span className="text-[10px] font-black uppercase tracking-[0.3em] opacity-80">Tech Selection</span>
           </div>
           
-          <div id="tour-tech-tabs" className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-slate-900/80 border border-white/5 backdrop-blur-md">
+          <div id="tour-prep-tabs" className="flex flex-wrap items-center gap-2 p-2 rounded-2xl bg-slate-900/80 border border-white/5 backdrop-blur-md">
             {Object.entries(TECH_DATA).map(([key, data]: [string, TechEntry]) => {
               const Icon = data.icon;
               const isActive = activeTab === key;
@@ -272,7 +232,7 @@ export default function QuickPrepPage() {
           </span>
         </div>
 
-        <div id="tour-search" className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
+        <div id="tour-prep-search" className="mb-8 grid gap-3 sm:grid-cols-[1fr_auto_auto]">
           <label className="group focus-within:ring-2 focus-within:ring-primary/40 flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-base text-slate-300 transition-all">
             <Search className="h-4 w-4 text-slate-400 group-focus-within:text-primary transition-colors" />
             <input

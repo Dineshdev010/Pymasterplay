@@ -217,7 +217,7 @@ export default function CertificatePage() {
       <div className="relative z-10 flex flex-1 flex-col justify-between px-16 py-8 text-center">
         <div className="mx-auto flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#d6c096] bg-white shadow-sm">
-            <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain" decoding="async" />
+            <img src="/logo.png" alt="Logo" className="h-9 w-9 object-contain brightness-110 saturate-150 contrast-110" decoding="async" />
           </div>
           <div className="text-left">
             <div className="text-xs font-bold uppercase tracking-[0.48em] text-slate-600">PyMaster</div>

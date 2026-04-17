@@ -8,8 +8,9 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
-import { Play, RotateCcw, FileCode, Square, Brain, ChevronDown, HelpCircle } from "lucide-react";
-import { useTour } from "@/contexts/TourContext";
+import { Play, RotateCcw, FileCode, Square, Brain, ChevronDown } from "lucide-react";
+import { triggerTour } from "@/components/TourSystem";
+import { useAuth } from "@/contexts/AuthContext";
 import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
@@ -266,41 +267,16 @@ export default function CompilerPage() {
   const outputPanelRef = useRef<HTMLDivElement | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const editorRef = useRef<any>(null);
-  const { startTour, hasSeenTour } = useTour();
-
-  const handleStartTour = useCallback(() => {
-    startTour([
-      {
-        targetId: "tour-compiler-lang",
-        title: "Language Switcher",
-        content: "Switch between Python, Pandas, SQL, and the Linux terminal here.",
-      },
-      {
-        targetId: "tour-compiler-editor",
-        title: "Code Editor",
-        content: "Write your code here. We provide syntax highlighting and auto-completion to help you out.",
-      },
-      {
-        targetId: "tour-compiler-run",
-        title: "Run your Code",
-        content: "Click this to execute your code. For Python, it runs in your browser using WebAssembly!",
-      },
-      {
-        targetId: "tour-compiler-output",
-        title: "Output & Feedback",
-        content: "See the results of your code execution and AI-powered performance tips here.",
-      },
-    ], "compiler");
-  }, [startTour]);
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (!hasSeenTour("compiler")) {
+    if (user) {
       const timer = setTimeout(() => {
-        handleStartTour();
+        triggerTour("compiler");
       }, 1500);
       return () => clearTimeout(timer);
     }
-  }, [hasSeenTour, handleStartTour]);
+  }, [user]);
 
   const { logActivity } = useProgress();
   const isMobile = useIsMobile();
@@ -680,13 +656,7 @@ export default function CompilerPage() {
             )
           )}
 
-          <button 
-            onClick={handleStartTour}
-            className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors px-2 ml-1"
-            title="Start Tour"
-          >
-            <HelpCircle className="h-4 w-4" />
-          </button>
+
 
           {!isLinux && (
             <Button

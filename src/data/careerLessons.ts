@@ -2962,4 +2962,4 @@ const rawTracks: CareerTrack[] = [
   { id: "iot-robotics", title: "IoT & Robotics", description: "Hardware and embedded Python", color: "reward-gold", lessons: iotRobotics() },
 ];
 
-export const careerTracks = rawTracks.map(withFullTrackTranslations);
+export const careerTracks: CareerTrack[] = rawTracks;

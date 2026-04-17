@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
   Check, ChevronDown, Clock, HeartHandshake, Languages, LogIn, LogOut, Menu, Moon, Settings, Sun, 
-  User, Volume2, VolumeX, Medal
+  User, Volume2, VolumeX, Medal, Wallet
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -194,11 +194,11 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           <motion.img 
             src="/logo.png" 
             alt="PyMaster" 
-            className="w-12 h-12 rounded-xl relative z-10 shadow-lg saturate-150" 
+            className="w-12 h-12 rounded-xl relative z-10 shadow-lg brightness-110 saturate-[1.7] contrast-110" 
             animate={{ y: [0, -3, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             decoding="async"
-            fetchPriority="high"
+            fetchpriority="high"
           />
           <span className="font-bold text-lg text-foreground hidden sm:flex relative z-10 overflow-hidden">
             {"PyMaster".split("").map((char, index) => (
@@ -362,6 +362,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         <div className="hidden md:flex">
           <StreakFire streak={progress.streak} size="sm" showQuote />
         </div>
+        <Link
+          to="/dashboard"
+          className="hidden lg:flex items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_0_14px_rgba(251,191,36,0.14)] transition-all duration-300 hover:scale-105 hover:bg-amber-400/15"
+          title={`Wallet balance: $${progress.wallet}`}
+        >
+          <Wallet className="h-3.5 w-3.5 text-amber-300" />
+          <span className="font-mono tracking-tight">${progress.wallet}</span>
+        </Link>
         <div 
           className={`hidden xl:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
           title={`${Math.round(xpLevel.progressPercentage)}% to level ${xpLevel.level + 1}`}

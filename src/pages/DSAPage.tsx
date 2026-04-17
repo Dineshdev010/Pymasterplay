@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 // DSA PAGE — src/pages/DSAPage.tsx
 // Data Structures & Algorithms mastery page with visual
 // explanations, code examples, complexity analysis, and
@@ -7,12 +7,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { BookOpen, Brain, Search, Zap, ArrowRight, ArrowLeft, CheckCircle2, Code, Target, Lightbulb, TrendingUp, ExternalLink, PlayCircle, AlertTriangle, CheckCheck } from "lucide-react";
+import { BookOpen, Brain, Search, Zap, ArrowRight, ArrowLeft, CheckCircle2, Code, Target, Lightbulb, TrendingUp, ExternalLink, PlayCircle, AlertTriangle, CheckCheck, HelpCircle } from "lucide-react";
 import type { Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
 import { problems, type Problem } from "@/data/problems";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { TourSystem, triggerTour } from "@/components/TourSystem";
+import { useCallback } from "react";
+
 
 interface DSATopic {
   id: string;
@@ -1935,6 +1939,10 @@ export default function DSAPage() {
     }
   }, [masteredTopics]);
 
+  const handleStartTour = useCallback(() => {
+    triggerTour("dsa", true);
+  }, []);
+
   return (
     <div className="flex min-h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-3.5rem)] flex-col md:flex-row md:overflow-hidden">
       <Helmet>
@@ -2471,10 +2479,16 @@ export default function DSAPage() {
         ) : (
           <div className="flex flex-col items-center md:justify-center h-full text-center px-4 sm:px-6 py-6 overflow-y-auto">
             <Brain className="w-12 h-12 text-muted-foreground/30 mb-4 hidden md:block" />
-            <h2 className="text-xl font-semibold text-foreground mb-1">🧠 DSA Mastery</h2>
+            <h2 id="tour-dsa-header" className="text-xl font-semibold text-foreground mb-1">🧠 DSA Mastery</h2>
             <p className="text-muted-foreground mb-6 max-w-md text-sm">
               Learn Data Structures & Algorithms with pattern detection and real-world examples.
             </p>
+            <button 
+              onClick={handleStartTour}
+              className="mb-8 flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
+            >
+              <HelpCircle className="h-4 w-4" /> Tour
+            </button>
 
             {/* Desktop placeholder */}
             <p className="text-muted-foreground hidden md:block">Choose a topic from the sidebar to start learning</p>
@@ -2521,17 +2535,18 @@ export default function DSAPage() {
             </div>
 
             {/* Mobile topic list */}
-            <div className="md:hidden w-full max-w-lg space-y-5 text-left">
-              {categories.map(cat => (
+            <div id="tour-dsa-categories" className="md:hidden w-full max-w-lg space-y-5 text-left">
+              {categories.map((cat, catIdx) => (
                 <div key={cat.id}>
                   <h3 className="text-xs font-bold uppercase tracking-wider text-primary mb-1.5 px-1">{tCategory(cat.title, language)}</h3>
                   <p className="text-[11px] text-muted-foreground mb-2 px-1">{tCategory(cat.desc, language)}</p>
                   <div className="space-y-1.5">
-                    {dsaTopics.filter(t => t.category === cat.id).map(t => (
+                    {dsaTopics.filter(t => t.category === cat.id).map((t, tIdx) => (
                       // Localize per-topic title in the list.
                       <button
                         key={t.id}
                         onClick={() => setSelectedTopic(t.id)}
+                        id={catIdx === 0 && tIdx === 0 ? "tour-dsa-topic" : undefined}
                         className="w-full flex items-center gap-3 px-3 py-2.5 bg-card border border-border rounded-lg hover:border-primary/40 active:bg-secondary/50 transition-colors"
                       >
                         <span className="text-lg shrink-0">{t.emoji}</span>

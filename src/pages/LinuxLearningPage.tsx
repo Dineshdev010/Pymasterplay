@@ -189,7 +189,7 @@ export default function LinuxLearningPage() {
 
   const currentIndex = useMemo(() => {
     if (!selectedLesson) return -1;
-    return safeLessons.findIndex((l: { id: string }) => l.id === selectedLesson.id);
+    return safeLessons.findIndex((l: { id: string }) => l.id === selectedLesson?.id);
   }, [safeLessons, selectedLesson]);
 
   const completedExerciseCount = useMemo(() => {
@@ -372,43 +372,48 @@ export default function LinuxLearningPage() {
 
         {/* Right: Active Lesson & Terminal */}
         <div ref={contentPaneRef} className="bg-black/20 flex flex-col lg:h-full overflow-y-auto">
-          <div className="flex-1 max-w-5xl mx-auto w-full px-6 py-10">
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
-              <div className="text-sm text-white/70">
-                Working on <span className="font-semibold text-white">{selectedLesson.title}</span>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={!canGoPrev}
-                  onClick={() => {
-                    if (prevLesson) setSelectedId(prevLesson.id);
-                  }}
-                  className="border-white/20 bg-transparent"
-                >
-                  Previous
-                </Button>
-                <Button
-                  size="sm"
-                  disabled={!canGoNext}
-                  onClick={() => {
-                    if (nextLesson) setSelectedId(nextLesson.id);
-                  }}
-                  className="bg-emerald-600 hover:bg-emerald-500"
-                >
-                  Next
-                </Button>
-              </div>
+          {!selectedLesson ? (
+            <div className="flex-1 flex items-center justify-center">
+              <div className="animate-pulse text-emerald-500/50 font-mono">INITIALIZING_SYSTEM...</div>
             </div>
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedLesson.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
-              >
+          ) : (
+            <div className="flex-1 max-w-5xl mx-auto w-full px-6 py-10">
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3">
+                <div className="text-sm text-white/70">
+                  Working on <span className="font-semibold text-white">{selectedLesson.title}</span>
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    disabled={!canGoPrev}
+                    onClick={() => {
+                      if (prevLesson) setSelectedId(prevLesson.id);
+                    }}
+                    className="border-white/20 bg-transparent"
+                  >
+                    Previous
+                  </Button>
+                  <Button
+                    size="sm"
+                    disabled={!canGoNext}
+                    onClick={() => {
+                      if (nextLesson) setSelectedId(nextLesson.id);
+                    }}
+                    className="bg-emerald-600 hover:bg-emerald-500"
+                  >
+                    Next
+                  </Button>
+                </div>
+              </div>
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedLesson.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                >
                 {/* Lesson Detail Card */}
                 <div className="mb-12">
                    <div className="flex items-center gap-4 mb-4">
@@ -551,7 +556,8 @@ export default function LinuxLearningPage() {
                 </div>
               </motion.div>
             </AnimatePresence>
-          </div>
+            </div>
+          )}
         </div>
       </main>
     </div>

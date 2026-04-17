@@ -14,6 +14,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { readLeaderboardCache, writeLeaderboardCache, type CachedLeaderboardRow } from "@/lib/leaderboardCache";
 import { getDynamicMemers } from "@/data/dummyMemers";
 import { getXpLevel } from "@/lib/progress";
+import { triggerTour } from "@/components/TourSystem";
 
 
 type SortKey = "xp" | "problemsSolved" | "streak" | "wallet";
@@ -208,6 +209,15 @@ export default function LeaderboardPage() {
       .map((entry, index) => ({ ...entry, rank: index + 1 }));
   }, [profile?.avatarUrl, profile?.displayName, progress?.solvedProblems?.length, progress?.streak, progress?.wallet, progress?.xp, sortBy, user, userEquippedEmoji, users, windowMode]);
 
+  useEffect(() => {
+    if (user) {
+      const timer = setTimeout(() => {
+        triggerTour("leaderboard");
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [user]);
+
   const sortOptions: { key: SortKey; label: string; icon: typeof Trophy }[] = [
     { key: "xp", label: "XP", icon: Trophy },
     { key: "problemsSolved", label: "Problems", icon: Code },
@@ -242,7 +252,7 @@ export default function LeaderboardPage() {
       <div className="max-w-7xl mx-auto space-y-8">
         <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-foreground flex items-center gap-2">
+          <h1 id="tour-leader-header" className="text-2xl font-bold text-foreground flex items-center gap-2">
             <Trophy className="w-6 h-6 text-python-yellow" /> Leaderboard
           </h1>
           <p className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
@@ -291,7 +301,7 @@ export default function LeaderboardPage() {
       </div>
 
       {/* Trophy Tiers - Aspiration Section */}
-      <div className="bg-card border border-border rounded-xl p-6 mb-8">
+      <div id="tour-leader-trophies" className="bg-card border border-border rounded-xl p-6 mb-8">
         <h2 className="text-lg font-semibold text-foreground mb-2 flex items-center gap-2">
           <Star className="w-5 h-5 text-python-yellow fill-python-yellow" /> Trophy Tiers
         </h2>

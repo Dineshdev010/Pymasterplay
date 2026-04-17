@@ -231,7 +231,7 @@ export default function AuthPage() {
               <div className="relative group">
                 <div className="absolute -inset-2 bg-gradient-to-r from-primary to-python-yellow rounded-2xl blur-lg opacity-50 group-hover:opacity-80 transition duration-500 animate-pulse"></div>
                 <div className="relative bg-[#0d0f14] border border-primary/25 p-2.5 rounded-2xl">
-                  <img src="/logo.png" alt="PyMaster" className="w-14 h-14 rounded-xl object-contain" />
+                  <img src="/logo.png" alt="PyMaster" className="w-14 h-14 rounded-xl object-contain brightness-110 saturate-150 contrast-110" />
                 </div>
               </div>
             </div>

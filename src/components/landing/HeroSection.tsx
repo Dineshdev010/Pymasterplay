@@ -192,6 +192,7 @@ export function HeroSection() {
   return (
     <section 
       ref={heroRef} 
+      id="tour-hero"
       className="relative flex min-h-[82vh] items-center overflow-hidden pt-8 sm:pt-4"
       onMouseMove={handleMouseMove}
       onMouseLeave={() => { mouseX.set(0); mouseY.set(0); }}

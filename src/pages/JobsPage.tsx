@@ -3,10 +3,11 @@
 // Python job listings portal with search, filtering by level,
 // and dynamically calculated "posted" dates.
 // ============================================================
-import { useEffect, useMemo, useState } from "react";
-import { Briefcase, MapPin, DollarSign, Clock, ExternalLink, Search, Building2, Sparkles, Rocket, Bookmark, CheckCircle2 } from "lucide-react";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { Briefcase, MapPin, DollarSign, Clock, ExternalLink, Search, Building2, Sparkles, Rocket, Bookmark, CheckCircle2, HelpCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Helmet } from "react-helmet-async";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Job {
   id: string;
@@ -74,18 +75,7 @@ export default function JobsPage() {
   const [savedJobs, setSavedJobs] = useState<string[]>([]);
   const [appliedJobs, setAppliedJobs] = useState<string[]>([]);
 
-  const resetFilters = () => {
-    setSearch("");
-    setLevel("All");
-    setType("All");
-    setRegion("All Jobs");
-    setStatusFilter("All Jobs");
-  };
-
-  const pythonJobs = useMemo<Job[]>(() =>
-    pythonJobsRaw.map(j => ({ ...j, posted: formatPosted(j.daysOffset) })),
-    []
-  );
+  const { user } = useAuth();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -122,6 +112,19 @@ export default function JobsPage() {
     });
   };
 
+  const resetFilters = () => {
+    setSearch("");
+    setLevel("All");
+    setType("All");
+    setRegion("All Jobs");
+    setStatusFilter("All Jobs");
+  };
+
+  const pythonJobs = useMemo<Job[]>(() =>
+    pythonJobsRaw.map(j => ({ ...j, posted: formatPosted(j.daysOffset) })),
+    []
+  );
+
   const filtered = pythonJobs.filter(job => {
     const matchSearch = search === "" || job.title.toLowerCase().includes(search.toLowerCase()) || job.company.toLowerCase().includes(search.toLowerCase()) || job.skills.some(s => s.toLowerCase().includes(search.toLowerCase()));
     const matchLevel = level === "All" || job.level === level;
@@ -133,6 +136,7 @@ export default function JobsPage() {
       (statusFilter === "Applied Jobs" && appliedJobs.includes(job.id));
     return matchSearch && matchLevel && matchType && matchRegion && matchStatus;
   });
+
   const savedJobCards = pythonJobs.filter((job) => savedJobs.includes(job.id)).slice(0, 3);
   const remoteCount = pythonJobs.filter((job) => job.location.toLowerCase().includes("remote")).length;
   const abroadCount = pythonJobs.filter((job) => getJobRegion(job) === "Abroad Jobs").length;
@@ -157,6 +161,7 @@ export default function JobsPage() {
         <meta name="twitter:description" content="Browse curated Python jobs for freshers, remote roles, internships, and abroad opportunities." />
         <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
       </Helmet>
+      
       <div className="mb-8 overflow-hidden rounded-[2rem] border border-primary/15 bg-[radial-gradient(circle_at_top_left,rgba(59,130,246,0.16),transparent_34%),radial-gradient(circle_at_top_right,rgba(34,197,94,0.14),transparent_32%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.96))] p-6 shadow-sm">
         <div className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:items-end">
           <div>
@@ -164,14 +169,16 @@ export default function JobsPage() {
               <Sparkles className="h-3.5 w-3.5" />
               Career Radar
             </div>
-            <h1 className="mt-4 text-3xl md:text-4xl font-black text-foreground flex items-center gap-3">
+            <h1 id="tour-jobs-header" className="mt-4 text-3xl md:text-4xl font-black text-foreground flex items-center gap-3">
               <Briefcase className="w-8 h-8 text-primary" />
               <span className="bg-gradient-to-r from-primary via-sky-500 to-streak-green bg-clip-text text-transparent">Python Jobs</span>
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-7 text-muted-foreground">
               Handpicked Python roles for PyMaster learners. Browse fresher openings, remote work, and abroad opportunities without digging through generic boards.
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
+
+            
+            <div id="tour-jobs-stats" className="mt-5 flex flex-wrap gap-2">
               {regions.map(option => (
                 <Button
                   key={option}
@@ -249,7 +256,7 @@ export default function JobsPage() {
       </div>
 
       {/* Filters */}
-      <div className="mb-6 rounded-2xl border border-border bg-card p-4">
+      <div id="tour-jobs-filters" className="mb-6 rounded-2xl border border-border bg-card p-4">
         <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-foreground">
           <Search className="h-4 w-4 text-primary" />
           Refine Your Search
@@ -331,117 +338,83 @@ export default function JobsPage() {
       )}
 
       {/* Job listings */}
-      <div className="space-y-3">
+      <div id="tour-jobs-list" className="space-y-3">
         {filtered.length === 0 ? (
           <div className="rounded-[1.4rem] border border-border bg-card p-6">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <div className="text-lg font-semibold text-foreground">No jobs match your filters</div>
                 <div className="mt-2 text-sm text-muted-foreground">
-                  This usually happens when a level/type/status filter is too strict. For example, searching <span className="font-medium text-foreground">Analyst</span> while selecting <span className="font-medium text-foreground">Senior</span> can show zero results.
-                </div>
-                <div className="mt-4 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                  <span className="rounded-full border border-border bg-background px-3 py-1">Level: {level}</span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1">Type: {type}</span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1">Region: {region}</span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1">Status: {statusFilter}</span>
-                  <span className="rounded-full border border-border bg-background px-3 py-1">Search: {search || "empty"}</span>
+                  This usually happens when a level/type/status filter is too strict.
                 </div>
               </div>
               <div className="flex flex-col gap-2">
                 <Button type="button" onClick={resetFilters}>
                   Reset Filters
                 </Button>
-                <Button type="button" variant="outline" onClick={() => setSearch("analyst")}>
-                  Search Analyst
-                </Button>
               </div>
-            </div>
-
-            {statusFilter === "Saved Jobs" && savedJobs.length === 0 ? (
-              <div className="mt-5 rounded-xl border border-border bg-surface-1 p-4 text-sm text-muted-foreground">
-                You have no saved jobs yet. Open any job and click <span className="font-medium text-foreground">Save</span>.
-              </div>
-            ) : null}
-            {statusFilter === "Applied Jobs" && appliedJobs.length === 0 ? (
-              <div className="mt-5 rounded-xl border border-border bg-surface-1 p-4 text-sm text-muted-foreground">
-                You have not applied to any jobs yet. Click <span className="font-medium text-foreground">Apply</span> on a job card to mark it applied.
-              </div>
-            ) : null}
-
-            <div className="mt-5 flex flex-wrap gap-2">
-              {["developer", "intern", "data", "django", "remote"].map((term) => (
-                <button
-                  key={term}
-                  type="button"
-                  onClick={() => setSearch(term)}
-                  className="rounded-full border border-border bg-background px-3 py-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground"
-                >
-                  Try “{term}”
-                </button>
-              ))}
             </div>
           </div>
         ) : (
           filtered.map(job => (
-          <div key={job.id} className="relative overflow-hidden rounded-[1.4rem] border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_rgba(59,130,246,0.08)] group">
-            <div className="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-primary/5 transition-transform duration-500 group-hover:scale-125" />
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-              <div className="relative z-10 flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold text-foreground group-hover:text-primary transition-colors">{job.title}</h3>
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${job.level === "Fresher" ? "bg-python-yellow/10 text-python-yellow border border-python-yellow/20" : job.level === "Entry Level" ? "bg-streak-green/10 text-streak-green border border-streak-green/20" : job.level === "Senior" ? "bg-expert-purple/10 text-expert-purple border border-expert-purple/20" : "bg-primary/10 text-primary border border-primary/20"}`}>
-                    {job.level}
-                  </span>
-                  {savedJobs.includes(job.id) && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-primary/10 text-primary border border-primary/20">
-                      Saved
+            <div key={job.id} className="relative overflow-hidden rounded-[1.4rem] border border-border bg-card p-5 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-[0_18px_40px_rgba(59,130,246,0.08)] group">
+              <div className="absolute right-0 top-0 h-24 w-24 rounded-bl-full bg-primary/5 transition-transform duration-500 group-hover:scale-125" />
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <div className="relative z-10 flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-bold text-foreground group-hover:text-primary transition-colors">{job.title}</h3>
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${job.level === "Fresher" ? "bg-python-yellow/10 text-python-yellow border border-python-yellow/20" : job.level === "Entry Level" ? "bg-streak-green/10 text-streak-green border border-streak-green/20" : job.level === "Senior" ? "bg-expert-purple/10 text-expert-purple border border-expert-purple/20" : "bg-primary/10 text-primary border border-primary/20"}`}>
+                      {job.level}
                     </span>
-                  )}
-                  {appliedJobs.includes(job.id) && (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-streak-green/10 text-streak-green border border-streak-green/20 inline-flex items-center gap-1">
-                      <CheckCircle2 className="h-3 w-3" />
-                      Applied
-                    </span>
-                  )}
+                    {savedJobs.includes(job.id) && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-primary/10 text-primary border border-primary/20">
+                        Saved
+                      </span>
+                    )}
+                    {appliedJobs.includes(job.id) && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-medium bg-streak-green/10 text-streak-green border border-streak-green/20 inline-flex items-center gap-1">
+                        <CheckCircle2 className="h-3 w-3" />
+                        Applied
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-3">
+                    <span className="flex items-center gap-1"><Building2 className="w-3.5 h-3.5" />{job.company}</span>
+                    <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{job.location}</span>
+                    <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5" />{job.salary}</span>
+                    <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{job.posted}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-3">{job.description}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {job.skills.map(s => (
+                      <span key={s} className="text-[11px] px-2 py-0.5 rounded-md bg-surface-2 text-foreground border border-border transition-colors group-hover:border-primary/20">{s}</span>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-3">
-                  <span className="flex items-center gap-1"><Building2 className="w-3.5 h-3.5" />{job.company}</span>
-                  <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" />{job.location}</span>
-                  <span className="flex items-center gap-1"><DollarSign className="w-3.5 h-3.5" />{job.salary}</span>
-                  <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{job.posted}</span>
+                <div className="relative z-10 flex shrink-0 self-start gap-2">
+                  <Button
+                    size="sm"
+                    variant={savedJobs.includes(job.id) ? "default" : "outline"}
+                    className="gap-1"
+                    onClick={() => toggleSavedJob(job.id)}
+                  >
+                    {savedJobs.includes(job.id) ? "Saved" : "Save"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="gap-1"
+                    onClick={() => {
+                      markApplied(job.id);
+                      window.open(`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(job.title + " Python")}`, "_blank");
+                    }}
+                  >
+                    {appliedJobs.includes(job.id) ? "Applied" : "Apply"} <ExternalLink className="w-3 h-3" />
+                  </Button>
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">{job.description}</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {job.skills.map(s => (
-                    <span key={s} className="text-[11px] px-2 py-0.5 rounded-md bg-surface-2 text-foreground border border-border transition-colors group-hover:border-primary/20">{s}</span>
-                  ))}
-                </div>
-              </div>
-              <div className="relative z-10 flex shrink-0 self-start gap-2">
-                <Button
-                  size="sm"
-                  variant={savedJobs.includes(job.id) ? "default" : "outline"}
-                  className="gap-1"
-                  onClick={() => toggleSavedJob(job.id)}
-                >
-                  {savedJobs.includes(job.id) ? "Saved" : "Save"}
-                </Button>
-                <Button
-                  size="sm"
-                  className="gap-1"
-                  onClick={() => {
-                    markApplied(job.id);
-                    window.open(`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(job.title + " Python")}`, "_blank");
-                  }}
-                >
-                  {appliedJobs.includes(job.id) ? "Applied" : "Apply"} <ExternalLink className="w-3 h-3" />
-                </Button>
               </div>
             </div>
-          </div>
-        ))
-        )}
+          )
+        ))}
       </div>
     </div>
   );
