@@ -14,7 +14,6 @@ import { CompanyBadge } from "@/components/CompanyBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCallback, useEffect } from "react";
-import { triggerTour } from "@/components/TourSystem";
 
 export default function ProblemsListPage() {
   const { progress } = useProgress();
@@ -27,15 +26,6 @@ export default function ProblemsListPage() {
   const companyOptions = ["all", ...Array.from(new Set(problems.flatMap((problem) => problem.companies ?? []))).sort()];
 
   const { user } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      const timer = setTimeout(() => {
-        triggerTour("problems");
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [user]);
 
   const filtered = problems
     .filter(p => filter === "all" || p.difficulty === filter)
@@ -142,7 +132,7 @@ export default function ProblemsListPage() {
       </Helmet>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-        <div id="tour-problems-header">
+        <div>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">{t.title}</h1>
           <p className="text-muted-foreground text-sm mt-1">
             {progress.solvedProblems.length}/{problems.length} {t.solved}
@@ -164,7 +154,7 @@ export default function ProblemsListPage() {
       </div>
 
       {/* Filters */}
-      <div id="tour-problems-filters" className="flex gap-2 mb-6 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-none">
+      <div className="flex gap-2 mb-6 overflow-x-auto pb-1 -mx-4 px-4 sm:mx-0 sm:px-0 sm:flex-wrap scrollbar-none">
         {difficultyFilters.map(f => (
           <button
             key={f}
@@ -192,7 +182,7 @@ export default function ProblemsListPage() {
         </p>
       )}
 
-      <div id="tour-problems-companies" className="mb-6">
+      <div className="mb-6">
         <div className="mb-2 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           {t.filterByCompany}
         </div>
@@ -236,7 +226,6 @@ export default function ProblemsListPage() {
             >
               {/* Serial number */}
               <span 
-                id={serial === 1 ? "tour-problem-card" : undefined}
                 className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-surface-2 border border-border flex items-center justify-center text-xs font-mono text-muted-foreground shrink-0"
               >
                 {serial}

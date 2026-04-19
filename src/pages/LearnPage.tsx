@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { triggerTour } from "@/components/TourSystem";
 import { useCallback } from "react";
 
 const categoryOrder = ["Beginner", "Intermediate", "Advanced", "Expert"] as const;

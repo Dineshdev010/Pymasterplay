@@ -9,7 +9,6 @@ import { useState, useEffect, useRef, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import Editor from "@monaco-editor/react";
 import { Play, RotateCcw, FileCode, Square, Brain, ChevronDown } from "lucide-react";
-import { triggerTour } from "@/components/TourSystem";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCallback } from "react";
 import { Button } from "@/components/ui/button";
@@ -271,10 +270,7 @@ export default function CompilerPage() {
 
   useEffect(() => {
     if (user) {
-      const timer = setTimeout(() => {
-        triggerTour("compiler");
-      }, 1500);
-      return () => clearTimeout(timer);
+      // Compiler page logic
     }
   }, [user]);
 

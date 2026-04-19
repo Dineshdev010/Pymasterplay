@@ -14,7 +14,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { readLeaderboardCache, writeLeaderboardCache, type CachedLeaderboardRow } from "@/lib/leaderboardCache";
 import { getDynamicMemers } from "@/data/dummyMemers";
 import { getXpLevel } from "@/lib/progress";
-import { triggerTour } from "@/components/TourSystem";
 
 
 type SortKey = "xp" | "problemsSolved" | "streak" | "wallet";
@@ -211,10 +210,7 @@ export default function LeaderboardPage() {
 
   useEffect(() => {
     if (user) {
-      const timer = setTimeout(() => {
-        triggerTour("leaderboard");
-      }, 1500);
-      return () => clearTimeout(timer);
+      // Leaderboard view logic
     }
   }, [user]);
 
@@ -453,7 +449,7 @@ export default function LeaderboardPage() {
                 user.isYou 
                   ? "bg-primary/30 border-primary ring-4 ring-python-yellow/50 shadow-2xl shadow-primary/30 scale-[1.05] z-30 animate-[pulse_3s_infinite]" 
                 : user.isReal
-                  ? "bg-surface-2 border-streak-green/30 ring-1 ring-streak-green/20"
+                  ? "bg-surface-2 border-border shadow-sm bg-gradient-to-r from-surface-1 to-surface-2"
                   : "bg-surface-1 border-border opacity-70 grayscale-[0.3]"
               }`}
             >
@@ -535,7 +531,7 @@ export default function LeaderboardPage() {
                 user.isYou 
                   ? "bg-primary/25 border-python-yellow ring-2 ring-inset ring-python-yellow/40 shadow-xl relative z-20 scale-[1.02] rounded-md mx-1 my-1.5 animate-[pulse_4s_infinite]" 
                 : user.isReal
-                  ? "bg-surface-2 border-streak-green/20 shadow-sm"
+                  ? "bg-surface-2 border-border shadow-sm hover:bg-surface-2/80"
                   : "bg-surface-1/60 border-border opacity-60 grayscale-[0.4] scale-[0.98]"
               }`}
             >

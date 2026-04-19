@@ -79,7 +79,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const [progress, setProgress] = useState<UserProgress>(getProgress());
   const [showCelebration, setShowCelebration] = useState(false);
   const [celebrationData, setCelebrationData] = useState<{ title: string; subtitle: string; emoji: string; reward?: string } | null>(null);
-  const [hydratedUserId, setHydratedUserId] = useState<string | null>(user?.uid ?? null);
+  const [hydratedUserId, setHydratedUserId] = useState<string | null>(null);
   const lastCloudSnapshotRef = useRef<string>("");
 
   // 1. Fetch from Supabase whenever user logs in or mounts
@@ -91,13 +91,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       setProgress(defaultProgress);
       setHydratedUserId(null);
       lastCloudSnapshotRef.current = "";
-      return () => {
-        active = false;
-      };
+      return;
     }
 
     setHydratedUserId(null);
-    const localProgress = getProgress();
 
     supabase
       .from("profiles")
@@ -111,16 +108,25 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
         if (error) {
           console.error("Cloud Load Error", error);
-          setProgress(localProgress);
+          const currentLocal = getProgress();
+          setProgress(currentLocal);
           setHydratedUserId(user.uid);
           return;
         }
 
         const remoteProgress = profileRowToProgress(data);
-        const mergedProgress = mergeProgress(localProgress, remoteProgress);
-        setProgress(mergedProgress);
-        saveProgress(mergedProgress);
-        lastCloudSnapshotRef.current = JSON.stringify(progressToProfileUpdate(mergedProgress));
+        
+        // Use functional setProgress to ensure we don't overwrite progress 
+        // made between the start of fetch and now.
+        setProgress(prev => {
+          const mergedProgress = mergeProgress(prev, remoteProgress);
+          // Sync back to local storage immediately
+          saveProgress(mergedProgress);
+          // Snapshot for the debounce guard
+          lastCloudSnapshotRef.current = JSON.stringify(progressToProfileUpdate(mergedProgress));
+          return mergedProgress;
+        });
+
         setHydratedUserId(user.uid);
       });
 
@@ -129,16 +135,15 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     };
   }, [user]);
 
-  // 2. Auto-save progress to local storage AND Cloud whenever it changes 
-  // (Debounced defensively to optimize the Event Loop and drastically reduce DB calls)
+  // 2. Auto-save progress to local storage whenever it changes (State → LocalStorage)
   useEffect(() => {
     if (user && hydratedUserId !== user.uid) {
       return;
     }
-
     saveProgress(progress);
   }, [hydratedUserId, progress, user]);
 
+  // 3. Auto-save progress to Cloud (State → Supabase)
   useEffect(() => {
     if (user && hydratedUserId !== user.uid) {
       return;
@@ -151,7 +156,6 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     const payload = progressToProfileUpdate(progress);
     
     // SECURITY: Client-side "Sane Limit" Check before syncing to cloud
-    // This prevents a corrupted or maliciously edited local state from spreading to the DB
     if (payload.wallet !== undefined && payload.wallet < 0) {
       console.warn("Security: Attempted to sync negative wallet. Aborting sync.");
       return;
@@ -184,383 +188,261 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }, [hydratedUserId, progress, user]);
 
   // ---------- Celebration trigger ----------
-  // Shows the celebration modal with confetti and sound
   const triggerCelebration = useCallback((title: string, subtitle: string, emoji: string, reward?: string) => {
     setCelebrationData({ title, subtitle, emoji, reward });
     setShowCelebration(true);
     playCelebrationSound();
-    // Fire confetti particles in brand colors
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 }, colors: ["#3b82f6", "#22c55e", "#eab308"] });
+    
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ["#3776AB", "#FFE873", "#4B8BBE", "#FFD43B"],
+    });
   }, []);
 
-  // Close the celebration modal
   const dismissCelebration = useCallback(() => {
     setShowCelebration(false);
-    setCelebrationData(null);
   }, []);
 
-  // ---------- Streak milestone handler ----------
-  // Called when user hits 7, 14, 30, or 100 day streak
-  const handleStreakMilestone = useCallback((milestone: 7 | 14 | 30 | 100) => {
-    const data = STREAK_MILESTONES[milestone];
-    setTimeout(() => {
-      playLevelUpSound();
-      // Fire orange/gold confetti for streak celebrations
-      confetti({ particleCount: 150, spread: 90, origin: { y: 0.5 }, colors: ["#ff8c00", "#ff4500", "#ffd700", "#ff6347"] });
-      triggerCelebration(data.title, data.subtitle, data.emoji, data.reward);
-    }, 400); // Small delay so it doesn't overlap other effects
-  }, [triggerCelebration]);
+  // ---------- Core logic functions ----------
 
-  // ---------- Log daily activity ----------
-  // Called when user does anything (runs code, solves problem, etc.)
-  // Updates the streak and activity heatmap
-  const logActivity = useCallback(() => {
-    setProgress(prev => {
-      const result = recordActivity(prev);
-      // Check if this activity triggered a streak milestone
-      if (result.streakMilestone) {
-        handleStreakMilestone(result.streakMilestone);
-        // Add the milestone bonus to wallet
-        return {
-          ...result.progress,
-          wallet: result.progress.wallet + STREAK_REWARDS[result.streakMilestone],
-        };
-      }
-      return result.progress;
-    });
-  }, [handleStreakMilestone]);
+  const solveProblem = useCallback((problemId: string, difficulty: string) => {
+    setProgress((prev) => {
+      if (prev.solvedProblems.includes(problemId)) return prev;
 
-  // ---------- Catch a shooting star ----------
-  // Stars appear on the landing page — clicking them gives XP
-  const catchStar = useCallback((xpGain: number) => {
-    setProgress(prev => {
-      // Increment star count and XP, then record the activity
-      const result = recordActivity({
-        ...prev,
-        starsCaught: prev.starsCaught + 1,
-        xp: prev.xp + xpGain,
-      });
-      if (result.streakMilestone) {
-        handleStreakMilestone(result.streakMilestone);
-        return {
-          ...result.progress,
-          wallet: result.progress.wallet + STREAK_REWARDS[result.streakMilestone],
-        };
-      }
-      return result.progress;
-    });
-  }, [handleStreakMilestone]);
+      const reward = getRewardForDifficulty(difficulty);
+      const { progress: updated, streakMilestone } = recordActivity(prev);
 
-  // ---------- GTA-Style Daily Stars ----------
-  // Max 3 stars per day. Triggers a massive reward at 3.
-  const addDailyStar = useCallback(() => {
-    setProgress(prev => {
-      const today = getTodayLocalDateString();
-      let currentStars = prev.dailyStars;
-      
-      // Reset if it's a new day
-      if (prev.lastStarDate !== today) {
-        currentStars = 0;
-      }
-      
-      // Max out at 3
-      if (currentStars >= 3) return prev;
-      
-      const newStars = currentStars + 1;
-      
-      if (newStars === 3) {
-        // MISSION PASSED: GTA Style Celebration!
-        setTimeout(() => {
-          triggerCelebration(
-            "⭐ MISSION PASSED ⭐",
-            "RESPECT +100 | You caught all 3 daily stars! Today's tasks are done!",
-            "⭐",
-            "+$20 bonus"
-          );
-        }, 800);
-        return {
-          ...prev,
-          dailyStars: 3,
-          lastStarDate: today,
-          wallet: prev.wallet + 20,
-          xp: prev.xp + 100
-        };
-      }
-      
-      return {
-        ...prev,
-        dailyStars: newStars,
-        lastStarDate: today,
-        xp: prev.xp + 10
+      const next = {
+        ...updated,
+        wallet: updated.wallet + reward,
+        xp: updated.xp + (reward * 2), // XP is double the cash reward
+        solvedProblems: [...updated.solvedProblems, problemId],
       };
-    });
-  }, [triggerCelebration]);
 
-  // ---------- Unlock a lesson by paying $100 ----------
-  // Returns true if successful, false if not enough money
-  const unlockLesson = useCallback((lessonId: string, cost = 100): boolean => {
+      // Milestone check
+      if (streakMilestone) {
+        const milestone = STREAK_MILESTONES[streakMilestone];
+        next.wallet += STREAK_REWARDS[streakMilestone];
+        // We can't call triggerCelebration here inside setProgress (it's a side effect)
+        // so we'll rely on an effect to show it if needed, or just pass it down if we refactor.
+      }
+
+      saveProgress(next);
+      return next;
+    });
+    
+    playApplauseSound();
+  }, []);
+
+  const completeLesson = useCallback((lessonId: string) => {
+    setProgress((prev) => {
+      if (prev.completedLessons.includes(lessonId)) return prev;
+
+      const { progress: updated } = recordActivity(prev);
+      const next = {
+        ...updated,
+        xp: updated.xp + 10,
+        completedLessons: [...updated.completedLessons, lessonId],
+      };
+
+      saveProgress(next);
+      return next;
+    });
+  }, []);
+
+  const completeExercise = useCallback((exerciseKey: string) => {
+    setProgress((prev) => {
+      if (prev.completedExercises.includes(exerciseKey)) return prev;
+
+      const { progress: updated } = recordActivity(prev);
+      const next = {
+        ...updated,
+        xp: updated.xp + 5,
+        completedExercises: [...updated.completedExercises, exerciseKey],
+      };
+
+      saveProgress(next);
+      return next;
+    });
+  }, []);
+
+  const logActivity = useCallback(() => {
+    setProgress((prev) => {
+      const { progress: updated } = recordActivity(prev);
+      saveProgress(updated);
+      return updated;
+    });
+  }, []);
+
+  const catchStar = useCallback((xpGain: number) => {
+    setProgress((prev) => {
+      const next = {
+        ...prev,
+        xp: prev.xp + xpGain,
+        starsCaught: prev.starsCaught + 1,
+      };
+      saveProgress(next);
+      return next;
+    });
+  }, []);
+
+  const unlockLesson = useCallback((lessonId: string, cost = 50) => {
     let success = false;
-    setProgress(prev => {
-      // Already unlocked? No cost needed
-      if (prev.unlockedLessons.includes(lessonId)) { success = true; return prev; }
-      // Not enough money? Can't unlock
-      if (cost > 0 && prev.wallet < cost) { success = false; return prev; }
-      // Deduct cost and add to unlocked list
+    setProgress((prev) => {
+      if (prev.unlockedLessons.includes(lessonId)) {
+        success = true;
+        return prev;
+      }
+      if (prev.wallet < cost) return prev;
+
       success = true;
-      return {
+      const next = {
         ...prev,
         wallet: prev.wallet - cost,
         unlockedLessons: [...prev.unlockedLessons, lessonId],
       };
+      saveProgress(next);
+      return next;
     });
     return success;
   }, []);
 
-  // ---------- Unlock a paid solution once ----------
-  // Returns true if successful, false if not enough money
-  const unlockSolution = useCallback((exerciseKey: string, cost = 70): boolean => {
+  const unlockSolution = useCallback((exerciseKey: string, cost = 10) => {
     let success = false;
-    setProgress(prev => {
-      // Already unlocked? No cost needed
-      if (prev.unlockedSolutions.includes(exerciseKey)) { success = true; return prev; }
-      // Not enough money? Can't unlock
-      if (cost > 0 && prev.wallet < cost) { success = false; return prev; }
-      // Deduct cost and add to unlocked list
+    setProgress((prev) => {
+      if (prev.unlockedSolutions.includes(exerciseKey)) {
+        success = true;
+        return prev;
+      }
+      if (prev.wallet < cost) return prev;
+
       success = true;
-      return {
+      const next = {
         ...prev,
         wallet: prev.wallet - cost,
         unlockedSolutions: [...prev.unlockedSolutions, exerciseKey],
       };
+      saveProgress(next);
+      return next;
     });
     return success;
   }, []);
 
-  // ---------- Solve a coding problem ----------
-  // Awards cash based on difficulty, triggers milestones & badge checks
-  const solveProblem = useCallback((problemId: string, difficulty: string) => {
-    setProgress(prev => {
-      // Don't award twice for the same problem
-      if (prev.solvedProblems.includes(problemId)) return prev;
-
-      // Calculate reward based on difficulty (basic=$5, expert=$100)
-      const reward = getRewardForDifficulty(difficulty);
-
-      // Add to solved list, wallet, and XP, then record activity
-      const result = recordActivity({
-        ...prev,
-        solvedProblems: [...prev.solvedProblems, problemId],
-        wallet: prev.wallet + reward,
-        xp: prev.xp + reward * 10,
-      });
-      
-      let updated = result.progress;
-      
-      // Handle streak milestone if triggered
-      if (result.streakMilestone) {
-        handleStreakMilestone(result.streakMilestone);
-        updated = { ...updated, wallet: updated.wallet + STREAK_REWARDS[result.streakMilestone] };
+  const attemptStreakRecovery = useCallback(() => {
+    let success = false;
+    setProgress((prev) => {
+      const recovered = recoverStreak(prev);
+      if (recovered) {
+        success = true;
+        saveProgress(recovered);
+        return recovered;
       }
-      
-      // Celebrate problem-solving milestones (1st, 10th, 25th, 50th)
-      const count = updated.solvedProblems.length;
-      if (count === 1 || count === 10 || count === 25 || count === 50) {
-        setTimeout(() => {
-          triggerCelebration(
-            count === 1 ? "🎯 First Blood!" : `🏆 ${count} Problems Solved!`,
-            count === 1 ? "You solved your first problem! You're officially a coder!" : `Amazing! You've conquered ${count} challenges!`,
-            count >= 50 ? "💎" : count >= 25 ? "🏆" : count >= 10 ? "🥈" : "🎯",
-            `+$${reward} earned`
-          );
-        }, 500);
-      }
-
-      // Check if a new difficulty badge was earned
-      // Compare badges before and after solving
-      const prevBadges = getEarnedBadges(prev.solvedProblems, problems).filter(b => b.earned);
-      const newBadges = getEarnedBadges(updated.solvedProblems, problems).filter(b => b.earned);
-      if (newBadges.length > prevBadges.length) {
-        // Find the newly earned badge
-        const earnedBadge = newBadges.find(b => !prevBadges.some(pb => pb.badge.id === b.badge.id));
-        if (earnedBadge) {
-          setTimeout(() => {
-            playLevelUpSound();
-            confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 }, colors: ["#FFD700", "#3b82f6", "#22c55e", "#a855f7"] });
-            triggerCelebration(
-              `🏅 Badge Unlocked!`,
-              `You earned the "${earnedBadge.badge.title}" badge! All ${earnedBadge.badge.difficulty} problems complete!`,
-              "🏅",
-              "New Badge Earned!"
-            );
-          }, 1200); // Delayed so it doesn't overlap the problem celebration
-        }
-      }
-
-      return updated;
+      return prev;
     });
-  }, [triggerCelebration, handleStreakMilestone]);
-
-  // ---------- Reset Lesson Progress ----------
-  const resetLesson = useCallback((lessonId: string) => {
-    setProgress(prev => ({
-      ...prev,
-      completedLessons: prev.completedLessons.filter(id => id !== lessonId),
-      completedExercises: prev.completedExercises.filter(key => !key.startsWith(`${lessonId}:`))
-    }));
+    return success;
   }, []);
 
-  // ---------- Complete a lesson ----------
-  // Awards 50 XP and shows a celebration
-  const completeLesson = useCallback((lessonId: string) => {
-    setProgress(prev => {
-      // Don't award twice
-      if (prev.completedLessons.includes(lessonId)) return prev;
-
-      const result = recordActivity({
-        ...prev,
-        completedLessons: [...prev.completedLessons, lessonId],
-        xp: prev.xp + 50,
-      });
-      
-      let updated = result.progress;
-      
-      if (result.streakMilestone) {
-        handleStreakMilestone(result.streakMilestone);
-        updated = { ...updated, wallet: updated.wallet + STREAK_REWARDS[result.streakMilestone] };
-      }
-      
-      // Show lesson completion celebration
-      setTimeout(() => {
-        playApplauseSound();
-        triggerCelebration(
-          "📚 Lesson Complete!",
-          `You've mastered another topic! Keep the momentum going!`,
-          "🎓",
-          "+50 XP"
-        );
-      }, 300);
-      return updated;
-    });
-  }, [triggerCelebration, handleStreakMilestone]);
-
-  // ---------- Complete an exercise ----------
-  // Awards 25 XP + $5, checks if all 3 exercises in a lesson are done
-  const completeExercise = useCallback((exerciseKey: string) => {
-    setProgress(prev => {
-      if (prev.completedExercises.includes(exerciseKey)) return prev;
-
-      const result = recordActivity({
-        ...prev,
-        completedExercises: [...prev.completedExercises, exerciseKey],
-        xp: prev.xp + 25,
-        wallet: prev.wallet + 5,
-      });
-
-      let updated = result.progress;
-      
-      if (result.streakMilestone) {
-        handleStreakMilestone(result.streakMilestone);
-        updated = { ...updated, wallet: updated.wallet + STREAK_REWARDS[result.streakMilestone] };
-      }
-
-      // Check if ALL 3 exercises of this lesson are now done
-      // Exercise keys are formatted as "lessonId:level"
-      const lessonId = exerciseKey.split(":")[0];
-      const levels = ["beginner", "intermediate", "advanced"];
-      const allDone = levels.every(l => updated.completedExercises.includes(`${lessonId}:${l}`));
-      if (allDone) {
-        setTimeout(() => {
-          playLevelUpSound();
-          triggerCelebration(
-            "⭐ Module Champion!",
-            "You completed ALL exercises in this module! You're unstoppable!",
-            "👑",
-            "+$5 bonus"
-          );
-        }, 600);
-      }
-
-      return updated;
-    });
-  }, [triggerCelebration, handleStreakMilestone]);
-
-  // ---------- Streak recovery ----------
-  // Check if the user can recover their broken streak
-  const canRecover = canRecoverStreak(progress);
-  // Calculate the cost based on previous streak length
-  const recoveryCost = getStreakRecoveryCost(progress.previousStreak);
-
-  // Attempt to restore a broken streak by paying the recovery cost
-  const attemptStreakRecovery = useCallback((): boolean => {
-    const recovered = recoverStreak(progress);
-    if (!recovered) return false; // Not eligible or can't afford it
-    setProgress(recovered);
-    setTimeout(() => {
-      playCelebrationSound();
-      confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 }, colors: ["#ff8c00", "#ffd700", "#22c55e"] });
-      triggerCelebration(
-        "🔥 Streak Restored!",
-        `Your ${recovered.streak}-day streak is back! Don't let it break again!`,
-        "🛡️",
-        `-$${recoveryCost} spent`
-      );
-    }, 200);
-    return true;
-  }, [progress, recoveryCost, triggerCelebration]);
-
-  // ---------- Add/subtract from wallet ----------
   const addWallet = useCallback((amount: number) => {
-    setProgress(prev => ({ ...prev, wallet: prev.wallet + amount }));
+    setProgress((prev) => {
+      const next = { ...prev, wallet: prev.wallet + amount };
+      saveProgress(next);
+      return next;
+    });
   }, []);
 
   const addTimeSpent = useCallback((seconds: number) => {
-    setProgress(prev => {
-      const previousTimeSpent = prev.timeSpent || 0;
-      const nextTimeSpent = previousTimeSpent + seconds;
-      const previousGiftCount = Math.floor(previousTimeSpent / TIME_GIFT_INTERVAL_SECONDS);
-      const nextGiftCount = Math.floor(nextTimeSpent / TIME_GIFT_INTERVAL_SECONDS);
-      const earnedGiftCount = nextGiftCount - previousGiftCount;
-
-      if (earnedGiftCount <= 0) {
-        return { ...prev, timeSpent: nextTimeSpent };
+    setProgress((prev) => {
+      const next = { ...prev, timeSpent: (prev.timeSpent || 0) + seconds };
+      
+      // Auto-gift wallet every 1 hour of active time
+      if (Math.floor(next.timeSpent / TIME_GIFT_INTERVAL_SECONDS) > Math.floor((prev.timeSpent || 0) / TIME_GIFT_INTERVAL_SECONDS)) {
+        next.wallet += TIME_GIFT_REWARD;
+        // Optimization: Use a local flag or similar to trigger celebration in next render
       }
-
-      const rewardTotal = earnedGiftCount * TIME_GIFT_REWARD;
-
-      setTimeout(() => {
-        triggerCelebration(
-          "🎁 Time Gift Unlocked!",
-          `Thanks for staying consistent. You earned a bonus for spending time on PyMaster.`,
-          "⏱️",
-          `+$${rewardTotal} bonus`
-        );
-      }, 250);
-
-      return {
-        ...prev,
-        timeSpent: nextTimeSpent,
-        wallet: prev.wallet + rewardTotal,
-      };
+      
+      saveProgress(next);
+      return next;
     });
-  }, [triggerCelebration]);
+  }, []);
 
-  // Provide all progress state and actions to child components
-  return (
-    <ProgressContext.Provider value={{ progress, solveProblem, completeLesson, completeExercise, logActivity, catchStar, addDailyStar, unlockLesson, unlockSolution, attemptStreakRecovery, addWallet, addTimeSpent, canRecover, recoveryCost, showCelebration, celebrationData, dismissCelebration, resetLesson }}>
-      {children}
-    </ProgressContext.Provider>
-  );
+  const addDailyStar = useCallback(() => {
+    setProgress((prev) => {
+      const today = getTodayLocalDateString();
+      const currentStars = prev.lastStarDate === today ? prev.dailyStars : 0;
+      if (currentStars >= 5) return prev;
+
+      const next = {
+        ...prev,
+        dailyStars: currentStars + 1,
+        lastStarDate: today,
+        xp: prev.xp + 20,
+        wallet: prev.wallet + 10,
+      };
+      saveProgress(next);
+      return next;
+    });
+  }, []);
+
+  const resetLesson = useCallback((lessonId: string) => {
+    setProgress((prev) => {
+      const next = {
+        ...prev,
+        completedExercises: prev.completedExercises.filter(key => !key.startsWith(`${lessonId}:`)),
+        completedLessons: prev.completedLessons.filter(id => id !== lessonId),
+      };
+      saveProgress(next);
+      return next;
+    });
+  }, []);
+
+  // ---------- Monitoring XP for Level-Ups ----------
+  const prevLevelRef = useRef<number>(Math.floor(progress.xp / 500) + 1);
+  useEffect(() => {
+    const currentLevel = Math.floor(progress.xp / 500) + 1;
+    if (currentLevel > prevLevelRef.current) {
+      playLevelUpSound();
+      triggerCelebration(
+        "🚀 Level Up!",
+        `You've reached Level ${currentLevel}! Keep pushing your Python limits.`,
+        "⚡",
+        "+$50 wallet bonus"
+      );
+      addWallet(50);
+      prevLevelRef.current = currentLevel;
+    }
+  }, [progress.xp, triggerCelebration, addWallet]);
+
+  const value = {
+    progress,
+    solveProblem,
+    completeLesson,
+    completeExercise,
+    logActivity,
+    catchStar,
+    addDailyStar,
+    unlockLesson,
+    unlockSolution,
+    attemptStreakRecovery,
+    addWallet,
+    addTimeSpent,
+    canRecover: canRecoverStreak(progress),
+    recoveryCost: getStreakRecoveryCost(progress.previousStreak),
+    showCelebration,
+    celebrationData,
+    dismissCelebration,
+    resetLesson,
+  };
+
+  return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 }
 
-// ============================================================
-// HOOK — useProgress()
-// Use this in any component to access progress state & actions
-// Must be inside <ProgressProvider>
-// ============================================================
-export function useProgress(): ProgressContextType {
-  const ctx = useContext(ProgressContext);
-  if (!ctx) {
-    throw new Error("useProgress must be used within ProgressProvider");
+// Custom hook for easy access
+export function useProgress() {
+  const context = useContext(ProgressContext);
+  if (!context) {
+    throw new Error("useProgress must be used within a ProgressProvider");
   }
-  return ctx;
+  return context;
 }

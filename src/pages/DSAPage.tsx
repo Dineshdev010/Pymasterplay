@@ -14,7 +14,6 @@ import { Helmet } from "react-helmet-async";
 import { problems, type Problem } from "@/data/problems";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
-import { TourSystem, triggerTour } from "@/components/TourSystem";
 import { useCallback } from "react";
 
 
@@ -1939,9 +1938,7 @@ export default function DSAPage() {
     }
   }, [masteredTopics]);
 
-  const handleStartTour = useCallback(() => {
-    triggerTour("dsa", true);
-  }, []);
+
 
   return (
     <div className="flex min-h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-3.5rem)] flex-col md:flex-row md:overflow-hidden">
@@ -2483,12 +2480,7 @@ export default function DSAPage() {
             <p className="text-muted-foreground mb-6 max-w-md text-sm">
               Learn Data Structures & Algorithms with pattern detection and real-world examples.
             </p>
-            <button 
-              onClick={handleStartTour}
-              className="mb-8 flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-slate-500 hover:text-white transition-colors"
-            >
-              <HelpCircle className="h-4 w-4" /> Tour
-            </button>
+
 
             {/* Desktop placeholder */}
             <p className="text-muted-foreground hidden md:block">Choose a topic from the sidebar to start learning</p>

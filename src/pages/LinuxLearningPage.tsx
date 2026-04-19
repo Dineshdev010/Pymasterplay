@@ -144,11 +144,18 @@ export default function LinuxLearningPage() {
   const { language } = useLanguage();
   const { progress } = useProgress();
   const track = useMemo(() => careerTracks.find(t => t.id === "linux"), []);
-  const [selectedId, setSelectedId] = useState<string | null>(track?.lessons[0]?.id || null);
-  const [searchQuery, setSearchQuery] = useState("");
   const safeLessons = useMemo(() => track?.lessons ?? [], [track]);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const shellPageRef = useRef<HTMLDivElement>(null);
   const contentPaneRef = useRef<HTMLDivElement>(null);
+
+  // Initialize selectedId when track/lessons are available
+  useEffect(() => {
+    if (safeLessons.length > 0 && !selectedId) {
+      setSelectedId(safeLessons[0].id);
+    }
+  }, [safeLessons, selectedId]);
 
   const isLessonUnlocked = useCallback((index: number): boolean => {
     if (!track) return false;
@@ -172,18 +179,26 @@ export default function LinuxLearningPage() {
     return safeLessons.filter((_, index) => isLessonUnlocked(index));
   }, [safeLessons, isLessonUnlocked]);
 
+  // Ensure selectedId is valid/unlocked
   useEffect(() => {
-    if (!track) return;
+    if (!track || safeLessons.length === 0 || !selectedId) return;
+    
     const selectedIndex = safeLessons.findIndex((lesson) => lesson.id === selectedId);
-    const selectedValid = selectedIndex >= 0 && isLessonUnlocked(selectedIndex);
+    if (selectedIndex < 0) return; // Selected ID not found in this track
+
+    const selectedValid = isLessonUnlocked(selectedIndex);
     if (!selectedValid) {
-      setSelectedId(unlockedLessons[unlockedLessons.length - 1]?.id ?? safeLessons[0]?.id ?? null);
+      // Fallback to the latest unlocked lesson
+      const latestUnlocked = unlockedLessons[unlockedLessons.length - 1];
+      if (latestUnlocked && latestUnlocked.id !== selectedId) {
+        setSelectedId(latestUnlocked.id);
+      }
     }
   }, [selectedId, track, safeLessons, unlockedLessons, isLessonUnlocked]);
 
   const selectedLesson = useMemo(() => {
-    if (!track) return null;
-    const baseLesson = safeLessons.find((l: { id: string }) => l.id === selectedId) || safeLessons[0] || null;
+    if (!track || safeLessons.length === 0) return null;
+    const baseLesson = safeLessons.find((l: { id: string }) => l.id === selectedId) || safeLessons[0];
     return getLocalizedCareerLesson(baseLesson, language as LearnLanguage);
   }, [track, safeLessons, selectedId, language]);
 
@@ -233,7 +248,7 @@ export default function LinuxLearningPage() {
     }
   }, [selectedLesson?.id]);
 
-  if (!track || !selectedLesson) {
+  if (!track || (safeLessons.length > 0 && !selectedLesson)) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-6 min-h-[60vh]">
         <div className="relative">
@@ -249,6 +264,29 @@ export default function LinuxLearningPage() {
       </div>
     );
   }
+
+  if (safeLessons.length === 0) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 min-h-[60vh]">
+        <div className="p-8 border border-emerald-500/20 bg-[#0d1117]/80 rounded-2xl backdrop-blur-sm shadow-2xl text-center max-w-md">
+          <ShieldCheck className="w-16 h-16 text-emerald-500 mx-auto mb-6 opacity-80" />
+          <h2 className="text-2xl font-bold text-white mb-2 font-mono">Kernel Error</h2>
+          <p className="text-emerald-500/60 font-mono text-xs uppercase tracking-widest mb-6">No_Lesson_Modules_Found</p>
+          <div className="h-px w-full bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent mb-6" />
+          <p className="text-white/70 text-sm leading-relaxed mb-8">
+            The Linux mastery track kernel is online, but no educational modules were detected in the data stream.
+          </p>
+          <Button 
+            onClick={() => window.location.reload()}
+            className="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-bold uppercase tracking-widest text-xs h-12 shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+          >
+            Reboot Stream
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
 
   return (
     <div className="relative flex flex-col text-white selection:bg-emerald-500/30 overflow-x-hidden bg-black">

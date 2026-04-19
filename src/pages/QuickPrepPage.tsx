@@ -16,8 +16,6 @@ import {
 } from "@/data/quickPrepData";
 import { highlightSnippet } from "@/utils/highlighter";
 import { useAuth } from "@/contexts/AuthContext";
-import { triggerTour } from "@/components/TourSystem";
-
 
 export default function QuickPrepPage() {
   const navigate = useNavigate();
@@ -72,17 +70,6 @@ export default function QuickPrepPage() {
   const toggleFavorite = (key: string) => {
     setFavorites((current) => ({ ...current, [key]: !current[key] }));
   };
-
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user) {
-      const timer = setTimeout(() => {
-        triggerTour("prep");
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [user]);
 
   const openInCompiler = (codeSnippet: string) => {
     // Map 'git' to 'linux' for the compiler terminal mode
@@ -285,7 +272,6 @@ export default function QuickPrepPage() {
                       return (
                     <div
                       key={card.title}
-                      id={sectionIdx === 0 && cardIdx === 0 ? "tour-first-card" : undefined}
                       className="group relative rounded-[1.5rem] border border-white/5 bg-slate-900/40 p-5 transition-all hover:-translate-y-0.5 hover:border-primary/20 hover:bg-slate-900/60 hover:shadow-2xl hover:shadow-primary/10"
                     >
                       <div className="mb-4 flex items-center justify-between">
@@ -300,7 +286,6 @@ export default function QuickPrepPage() {
                            </button>
                            <button
                              onClick={() => toggleFavorite(favoriteKey)}
-                             id={sectionIdx === 0 && cardIdx === 0 ? "tour-fav-star" : undefined}
                              className={`p-1.5 rounded-lg border transition-all ${isFavorite ? "border-primary/40 bg-primary/20 text-primary" : "border-white/10 bg-white/5 text-slate-400 hover:text-primary"}`}
                            >
                              <Star className={`h-4 w-4 ${isFavorite ? 'fill-primary' : ''}`} />

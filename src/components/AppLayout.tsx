@@ -7,7 +7,6 @@
 import { useLocation } from "react-router-dom";
 import { useProgress } from "@/contexts/ProgressContext";
 import { CelebrationModal } from "@/components/CelebrationModal"; // Popup for achievements
-import { TourSystem } from "@/components/TourSystem";
 import { FeedbackForm } from "@/components/FeedbackForm"; // Floating feedback button
 import { Footer } from "@/components/Footer"; // Page footer (only on home/donate pages)
 import { TopNavbar } from "@/components/layout/TopNavbar"; // Top navigation bar
@@ -155,9 +154,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         emoji={celebrationData?.emoji || "🎉"}
         reward={celebrationData?.reward}
       />
-
-      {/* Centralized Tour System for all pages */}
-      <TourSystem />
 
       {/* Top navigation bar with logo, nav links, streak, wallet, etc. */}
       <TopNavbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />

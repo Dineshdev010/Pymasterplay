@@ -22,7 +22,12 @@ import { useLanguage } from "@/contexts/LanguageContext";
 
 
 function normalizeOutput(output: string) {
-  return output.replace(/\r\n/g, "\n").trim();
+  return output
+    .replace(/\r\n/g, "\n")
+    .split("\n")
+    .map(line => line.trimEnd())
+    .join("\n")
+    .trim();
 }
 
 function getCallableName(code: string): string | null {
@@ -219,7 +224,18 @@ export default function ProblemPage() {
         const result = await executePython(buildTestHarness(code, callableName, testCase.input));
         const actualOutput = normalizeOutput(result.output);
         const expectedOutput = normalizeOutput(testCase.expected);
-        const passed = !result.error && actualOutput === expectedOutput;
+        
+        // Pattern problems require exact whitespace (especially newlines).
+        // Basic/Junior problems should be more lenient with space vs newline.
+        const isPatternProblem = problem.id.includes("star") || problem.id.includes("pattern") || problem.id.includes("square") || problem.id.includes("pyramid");
+        
+        let passed = !result.error && actualOutput === expectedOutput;
+        
+        // Fuzzy fallback for non-pattern problems
+        if (!passed && !result.error && !isPatternProblem) {
+          passed = actualOutput.replace(/\s+/g, " ") === expectedOutput.replace(/\s+/g, " ");
+        }
+
         results.push({ passed, input: testCase.input, expected: testCase.expected });
 
         if (result.error && !result.output) {
@@ -235,6 +251,13 @@ export default function ProblemPage() {
       const result = await executePython(code);
       const actualOutput = normalizeOutput(result.output);
       const expectedOutput = normalizeOutput(problem.testCases[0]?.expected || "");
+      
+      const isPatternProblem = problem.id.includes("star") || problem.id.includes("pattern") || problem.id.includes("square") || problem.id.includes("pyramid");
+      let passed = actualOutput === expectedOutput;
+
+      if (!passed && !isPatternProblem) {
+        passed = actualOutput.replace(/\s+/g, " ") === expectedOutput.replace(/\s+/g, " ");
+      }
 
       if (result.error && !result.output) {
         setOutput(`❌ Error:\n${result.error}`);
@@ -244,7 +267,7 @@ export default function ProblemPage() {
       }
 
       results.push({
-        passed: actualOutput === expectedOutput,
+        passed,
         input: problem.testCases[0]?.input || "",
         expected: problem.testCases[0]?.expected || "",
       });
@@ -527,9 +550,9 @@ export default function ProblemPage() {
                     <div key={i} className="flex items-center gap-2 text-xs font-mono flex-wrap">
                       {r.passed ? <CheckCircle2 className="w-3.5 h-3.5 text-streak-green shrink-0" /> : <XCircle className="w-3.5 h-3.5 text-destructive shrink-0" />}
                       <span className="text-muted-foreground">Test {i + 1}:</span>
-                      <span className="text-foreground break-all">{r.input}</span>
+                      <span className="text-foreground break-all whitespace-pre-wrap">{r.input}</span>
                       <span className="text-muted-foreground">→</span>
-                      <span className={`break-all ${r.passed ? "text-streak-green" : "text-destructive"}`}>{r.expected}</span>
+                      <span className={`break-all whitespace-pre-wrap ${r.passed ? "text-streak-green" : "text-destructive"}`}>{r.expected}</span>
                     </div>
                   ))}
                 </div>

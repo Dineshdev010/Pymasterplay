@@ -13,7 +13,6 @@ import { Gamepad2 } from "lucide-react";
 import { HeroSection } from "@/components/landing/HeroSection";
 import { SkyBackground } from "@/components/landing/SkyBackground";
 import { useAuth } from "@/contexts/AuthContext";
-import { triggerTour } from "@/components/TourSystem";
 
 // Defer non-critical sections to improve first load performance.
 const ShootingStars = lazy(() => import("@/components/ShootingStars").then((m) => ({ default: m.ShootingStars })));
@@ -36,13 +35,7 @@ export default function LandingPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    // Automatically trigger the home tour for logged-in users
-    if (user) {
-      const timer = setTimeout(() => {
-        triggerTour("home");
-      }, 2000);
-      return () => clearTimeout(timer);
-    }
+    // Landing page logic
   }, [user]);
 
   useEffect(() => {

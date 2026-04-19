@@ -13,9 +13,14 @@ export class GitSimulator {
     ["notes.txt",   "Linux notes:\n- pwd shows current directory\n- ls lists files"],
     [".bashrc",     "# .bashrc\nexport PATH=$PATH:/usr/local/bin\nalias ll='ls -la'"],
     [".bash_profile", "# .bash_profile\n[ -f ~/.bashrc ] && . ~/.bashrc"],
+    ["/etc/ssh/sshd_config", "# SSH Server Configuration\nPort 22\nPermitRootLogin no\nPasswordAuthentication yes\nChallengeResponseAuthentication no\nUsePAM yes"],
+    ["/etc/passwd", "root:x:0:0:root:/root:/bin/bash\ndaemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin\nlearner:x:1000:1000:learner:/home/learner:/bin/bash"],
+    ["/etc/shadow", "root:*:19034:0:99999:7:::\nlearner:$6$v1$hashedpassword:19034:0:99999:7:::"],
+    ["/var/log/auth.log", "Apr 12 10:00:01 pymaster-vm sshd[1234]: Server listening on 0.0.0.0 port 22.\nApr 12 10:05:22 pymaster-vm sshd[1235]: Accepted password for learner from 192.168.1.1 port 54321 ssh2"],
+    ["/etc/ufw/before.rules", "# ufw before.rules\n*filter\n:ufw-before-input - [0:0]\n:ufw-before-output - [0:0]\n:ufw-before-forward - [0:0]\nCOMMIT"],
   ]);
   services: Record<string, string> = { nginx: "inactive", ssh: "active", mysql: "inactive", cron: "active" };
-  packages: Set<string> = new Set(["bash", "git", "python3", "pip3", "curl", "vim", "nano"]);
+  packages: Set<string> = new Set(["bash", "git", "python3", "pip3", "curl", "vim", "nano", "nmap", "netcat", "binutils"]);
   envVars: Record<string, string> = {
     HOME: "/home/learner",
     USER: "learner",
@@ -25,7 +30,7 @@ export class GitSimulator {
     TERM: "xterm-256color",
     HOSTNAME: "pymaster-vm",
   };
-  aliases: Record<string, string> = { ll: "ls -la", la: "ls -la", cls: "clear" };
+  aliases: Record<string, string> = { ll: "ls -la", la: "ls -la", cls: "clear", nc: "netcat" };
   cmdHistory: string[] = [];
 
   private prompt() {
@@ -549,6 +554,45 @@ export class GitSimulator {
       case "script": return "Script started, file is typescript";
       case "strace": return `execve("${args[0]}", ...) = 0 (simulated)`;
       case "ltrace": return `(ltrace output for ${args[0]} simulated)`;
+
+      case "nc":
+      case "netcat": {
+        if (args.includes("-l")) {
+          const port = args[args.indexOf("-p") + 1] || args[args.indexOf("-l") + 1] || "8080";
+          return `Listening on [0.0.0.0] (family 0, port ${port})...`;
+        }
+        if (args.length >= 2) {
+          const host = args[0];
+          const port = args[1];
+          return `Connection to ${host} ${port} port [tcp/*] succeeded!`;
+        }
+        return "usage: nc [-l] [-p port] [hostname] [port]";
+      }
+
+      case "nmap": {
+        const target = args[args.length - 1] || "localhost";
+        if (target.startsWith("-") && args.length === 1) return "usage: nmap [Scan Type...] [Options] {target specification}";
+        return `Starting Nmap 7.80 ( https://nmap.org ) at ${new Date().toISOString()}
+Nmap scan report for ${target}
+Host is up (0.0001s latency).
+Not shown: 998 closed ports
+PORT     STATE SERVICE
+22/tcp   open  ssh
+80/tcp   open  http
+
+Nmap done: 1 IP address (1 host up) scanned in 0.05 seconds`;
+      }
+
+      case "strings": {
+        const file = args[0];
+        if (!file) return "usage: strings <file>";
+        let content = this.fileSystem.get(file);
+        if (!content && !file.startsWith("/")) {
+          content = this.fileSystem.get(`${this.cwd}/${file}`.replace(/\/+/g, "/"));
+        }
+        if (!content) return `strings: '${file}': No such file`;
+        return content.split("\n").filter(line => line.length > 4).join("\n");
+      }
 
       case "git": {
         const gitCmd = args[0];
