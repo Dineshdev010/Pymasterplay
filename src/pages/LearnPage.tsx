@@ -1815,16 +1815,16 @@ export default function LearnPage() {
                   const guides = getKeywordGuidesForLine(line);
                   return (
                     <div key={i} className="space-y-1.5">
-                      <p className="text-[15px] sm:text-base text-muted-foreground leading-relaxed flex gap-2">
+                      <p className="text-base sm:text-lg text-foreground leading-relaxed flex gap-2">
                         <span className="text-primary">•</span>
                         <span>{line.replace("- ", "")}</span>
                       </p>
                       {guides.map(({ token, guide }) => (
                         <div key={`${i}-${token}`} className="ml-5 rounded-lg border border-border bg-surface-1/60 px-3 py-2">
-                          <p className="text-xs sm:text-sm text-muted-foreground">
+                          <p className="text-sm sm:text-base text-foreground/90">
                             <span className="font-semibold text-foreground">{token}</span> - <span className="font-medium text-foreground">How:</span> {guide.howToUse}
                           </p>
-                          <p className="text-xs sm:text-sm text-muted-foreground">
+                          <p className="text-sm sm:text-base text-foreground/90">
                             <span className="font-medium text-foreground">Where:</span> {guide.whereToUse}
                           </p>
                           {guide.example && (
@@ -1852,13 +1852,13 @@ export default function LearnPage() {
                 if (inlineGuides.length > 0) {
                   return (
                     <div key={i} className="space-y-1.5">
-                      <p className="text-[15px] sm:text-base text-muted-foreground leading-relaxed">{line}</p>
+                      <p className="text-base sm:text-lg text-foreground leading-relaxed">{line}</p>
                       {inlineGuides.map(({ token, guide }) => (
                         <div key={`${i}-${token}`} className="ml-1 rounded-lg border border-border bg-surface-1/60 px-3 py-2">
-                          <p className="text-xs sm:text-sm text-muted-foreground">
+                          <p className="text-sm sm:text-base text-foreground/90">
                             <span className="font-semibold text-foreground">{token}</span> - <span className="font-medium text-foreground">How:</span> {guide.howToUse}
                           </p>
-                          <p className="text-xs sm:text-sm text-muted-foreground">
+                          <p className="text-sm sm:text-base text-foreground/90">
                             <span className="font-medium text-foreground">Where:</span> {guide.whereToUse}
                           </p>
                           {guide.example && (
@@ -1881,7 +1881,7 @@ export default function LearnPage() {
                     </div>
                   );
                 }
-                return <p key={i} className="text-[15px] sm:text-base text-muted-foreground leading-relaxed">{line}</p>;
+                return <p key={i} className="text-base sm:text-lg text-foreground leading-relaxed">{line}</p>;
               })}
             </div>
 
