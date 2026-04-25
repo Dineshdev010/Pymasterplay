@@ -1021,7 +1021,7 @@ function sqlLessons(): CareerLesson[] {
       },
       exercises: {
         beginner: {
-          prompt: "Select all customers (id, name) ordered by id.",
+          prompt: "Select the first 5 customers (id, name) ordered by id (use LIMIT).",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "id,name\n1,Alice Johnson\n2,Bob Sharma\n3,Charlie Dave\n4,Diana Prince\n5,Ethan Hunt",
         },

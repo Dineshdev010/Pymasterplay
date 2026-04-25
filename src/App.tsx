@@ -20,6 +20,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ProgressProvider } from "@/contexts/ProgressContext";
+import { FocusProvider } from "./contexts/FocusContext";
 import { SoundProvider } from "@/contexts/SoundContext";
 import { GlobalConfetti } from "@/components/GlobalConfetti";
 
@@ -56,6 +57,7 @@ const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 const ProjectsPage = lazy(() => import("./pages/ProjectsPage"));
 const CareerRoadmapPage = lazy(() => import("./pages/CareerRoadmapPage"));
 const LinuxLearningPage = lazy(() => import("./pages/LinuxLearningPage"));
+const ProductiveClockPage = lazy(() => import("./pages/ProductiveClockPage"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -85,7 +87,7 @@ const appRoutes: AppRoute[] = [
   { path: "/problems", element: <ProblemsListPage />, fallback: <ProblemsListSkeleton /> },
   { path: "/problems/:id", element: <ProblemPage />, fallback: <EditorSkeleton /> },
   { path: "/dashboard", element: <DashboardPage />, fallback: <DashboardSkeleton />, protected: true },
-  { path: "/leaderboard", element: <LeaderboardPage />, fallback: <PageSkeleton /> },
+  { path: "/leaderboard", element: <LeaderboardPage />, fallback: <PageSkeleton />, protected: true },
   { path: "/jobs", element: <JobsPage />, fallback: <PageSkeleton /> },
   { path: "/dsa", element: <DSAPage />, fallback: <PageSkeleton /> },
   { path: "/aptitude", element: <AptitudePage />, fallback: <PageSkeleton /> },
@@ -101,6 +103,7 @@ const appRoutes: AppRoute[] = [
   { path: "/python-quiz-100", element: <PythonQuizPage />, fallback: <PageSkeleton /> },
   { path: "/linux-learn", element: <LinuxLearningPage />, fallback: <LinuxLearningSkeleton /> },
   { path: "/career-roadmap", element: <CareerRoadmapPage />, fallback: <PageSkeleton /> },
+  { path: "/productive-clock", element: <ProductiveClockPage />, fallback: <PageSkeleton /> },
   { path: "/u/:userId", element: <PublicProfilePage />, fallback: <PageSkeleton /> },
   { path: "/privacy", element: <PrivacyPolicyPage />, fallback: <PageSkeleton /> },
   { path: "/contact", element: <ContactPage />, fallback: <PageSkeleton /> },
@@ -133,18 +136,20 @@ const App = () => (
               <BrowserRouter>
                 <AuthProvider>
                   <ProgressProvider>
-                    <LanguageProvider>
-                      <Toaster />
-                      <Sonner />
-                      <GlobalConfetti />
-                      <AppLayout>
-                        <Routes>
-                          {appRoutes.map((route) => (
-                            <Route key={route.path} path={route.path} element={renderRouteElement(route)} />
-                          ))}
-                        </Routes>
-                      </AppLayout>
-                    </LanguageProvider>
+                    <FocusProvider>
+                      <LanguageProvider>
+                        <Toaster />
+                        <Sonner />
+                        <GlobalConfetti />
+                        <AppLayout>
+                          <Routes>
+                            {appRoutes.map((route) => (
+                              <Route key={route.path} path={route.path} element={renderRouteElement(route)} />
+                            ))}
+                          </Routes>
+                        </AppLayout>
+                      </LanguageProvider>
+                    </FocusProvider>
                   </ProgressProvider>
                 </AuthProvider>
               </BrowserRouter>

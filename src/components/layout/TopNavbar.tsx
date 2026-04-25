@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
   Check, ChevronDown, Clock, HeartHandshake, Languages, LogIn, LogOut, Menu, Moon, Settings, Sun, 
-  User, Volume2, VolumeX, Medal, Wallet
+  User, Volume2, VolumeX, Medal, Wallet, Focus
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/contexts/AuthContext";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useProgress } from "@/contexts/ProgressContext";
+import { useFocus } from "@/contexts/FocusContext";
 import { useSound } from "@/contexts/SoundContext";
 import { useToast } from "@/hooks/use-toast";
 import { getXpLevel } from "@/lib/progress";
@@ -85,7 +86,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const { user, logout } = useAuth();
   const { language, setLanguage, languageOptions, t } = useLanguage();
   const { muted, toggleMuted } = useSound();
+  const { setShowFocusSettings, isActive, timeLeft } = useFocus();
   const { toast } = useToast();
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, "0")}:${s.toString().padStart(2, "0")}`;
+  };
 
   const primaryNavRoutes = ["/", "/learn", "/problems", "/dsa", "/dashboard"];
   const primaryNavItems = navItems.filter((item) => primaryNavRoutes.includes(item.to));
@@ -370,6 +378,18 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           <Wallet className="h-3.5 w-3.5 text-amber-300" />
           <span className="font-mono tracking-tight">${progress.wallet}</span>
         </Link>
+        <button
+          onClick={() => setShowFocusSettings(true)}
+          className={`hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer shadow-sm ${
+            isActive ? "bg-primary/20 border-primary/40 text-primary animate-pulse" : "bg-secondary/40 border-border/60 text-foreground/90 hover:bg-secondary hover:border-primary/30"
+          }`}
+          title="Productive Clock"
+        >
+          <Focus className={`w-3.5 h-3.5 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+          <span className="font-bold tracking-tight text-[11px] font-mono">
+            {isActive ? formatTime(timeLeft) : "Focus"}
+          </span>
+        </button>
         <div 
           className={`hidden xl:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
           title={`${Math.round(xpLevel.progressPercentage)}% to level ${xpLevel.level + 1}`}

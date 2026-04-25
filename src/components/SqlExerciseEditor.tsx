@@ -75,6 +75,20 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     [],
   );
 
+  const editorOptions = useMemo(
+    () => ({
+      fontSize: 13,
+      fontFamily: "'JetBrains Mono', monospace",
+      minimap: { enabled: false },
+      padding: { top: 12 },
+      scrollBeyondLastLine: false,
+      wordWrap: "on" as const,
+      lineNumbers: "on" as const,
+      automaticLayout: true,
+    }),
+    []
+  );
+
   const runAndCheck = async () => {
     const userSql = sql.trim();
     if (!stripSqlCommentsAndWhitespace(userSql)) {
@@ -84,7 +98,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     }
 
     setIsRunning(true);
-    setOutput(`Running SQL (up to ${timeoutSeconds}s)...`);
+    setOutput(`Executing query...`);
 
     const result = await executeSql(userSql);
     const actualOutput = result.output.trim();
@@ -165,16 +179,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
               theme="vs-dark"
               value={sql}
               onChange={(v) => setSql(v || "")}
-              options={{
-                fontSize: 13,
-                fontFamily: "'JetBrains Mono', monospace",
-                minimap: { enabled: false },
-                padding: { top: 12 },
-                scrollBeyondLastLine: false,
-                wordWrap: "on",
-                lineNumbers: "on",
-                automaticLayout: true,
-              }}
+              options={editorOptions}
             />
           </div>
 

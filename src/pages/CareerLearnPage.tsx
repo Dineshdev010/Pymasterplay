@@ -321,33 +321,23 @@ export default function CareerLearnPage() {
             </div>
 
             {/* Code Example */}
-            <div className="code-block mb-8">
-              <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-                <span className="text-xs text-muted-foreground font-mono">{isBashTrack ? "terminal" : isSqlTrack ? "example.sql" : "example.py"}</span>
-                {isSqlTrack ? (
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-7 text-xs gap-1"
-                    onClick={() => {
-                      setSqlPlayground(selectedLesson.codeExample);
-                      setSqlOutput("");
-                    }}
-                  >
-                    <TerminalIcon className="w-3 h-3" /> Load into SQL Editor
-                  </Button>
-                ) : isBashTrack ? null : (
-                  <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
-                    <Link to={`/compiler?code=${encodeURIComponent(selectedLesson.codeExample)}`}>
-                      <TerminalIcon className="w-3 h-3" /> Try in Compiler
-                    </Link>
-                  </Button>
-                )}
+            {!isSqlTrack && (
+              <div className="code-block mb-8">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-border">
+                  <span className="text-xs text-muted-foreground font-mono">{isBashTrack ? "terminal" : "example.py"}</span>
+                  {isBashTrack ? null : (
+                    <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
+                      <Link to={`/compiler?code=${encodeURIComponent(selectedLesson.codeExample)}`}>
+                        <TerminalIcon className="w-3 h-3" /> Try in Compiler
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+                <pre className="p-4 text-sm font-mono text-foreground overflow-x-auto leading-relaxed">
+                  {selectedLesson.codeExample}
+                </pre>
               </div>
-	              <pre className="p-4 text-sm font-mono text-foreground overflow-x-auto leading-relaxed">
-	                {selectedLesson.codeExample}
-	              </pre>
-	            </div>
+            )}
 
 	            {/* SQL Playground */}
 	            {isSqlTrack && (
@@ -433,7 +423,9 @@ export default function CareerLearnPage() {
 	            <div className="mb-8">
               <h3 className="text-lg font-semibold text-foreground mb-4">
                 Exercises
-                <span className="text-sm font-normal text-muted-foreground ml-2">— Complete beginner to unlock next</span>
+                {!isExerciseUnlocked(selectedLesson.id, "intermediate") && (
+                  <span className="text-sm font-normal text-muted-foreground ml-2">— Complete beginner to unlock next</span>
+                )}
               </h3>
               <div className="space-y-3">
                 {(["beginner", "intermediate", "advanced"] as const).map(level => (
@@ -479,7 +471,7 @@ export default function CareerLearnPage() {
                     <div className="flex items-center gap-2">
                       {canProceed ? <CheckCircle2 className="w-5 h-5 text-streak-green" /> : <Lock className="w-5 h-5 text-muted-foreground" />}
                       <div>
-                        <p className="text-sm font-medium text-foreground">{canProceed ? "Next Lesson Unlocked!" : "Complete beginner exercise to unlock"}</p>
+                        <p className="text-sm font-medium text-foreground">{canProceed ? "Next Lesson Unlocked! (You can proceed or finish remaining exercises)" : "Complete beginner exercise to unlock"}</p>
                         <p className="text-xs text-muted-foreground">{localizedNext?.title ?? next.title}</p>
                       </div>
                     </div>

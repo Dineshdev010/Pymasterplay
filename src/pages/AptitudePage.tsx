@@ -6,7 +6,9 @@ import {
   Brain,
   Calculator,
   CheckCircle2,
+  ChevronDown,
   ChevronRight,
+  ChevronUp,
   Clock3,
   FileCheck,
   Layers3,
@@ -16,6 +18,7 @@ import {
   Target,
   Trophy,
   WandSparkles,
+  XCircle,
 } from "lucide-react";
 import { useProgress } from "@/contexts/ProgressContext";
 import { toast } from "sonner";
@@ -150,16 +153,16 @@ export default function AptitudePage() {
   useEffect(() => { localStorage.setItem("pymaster_apt_ans", JSON.stringify(selectedAnswers)); }, [selectedAnswers]);
   useEffect(() => { localStorage.setItem("pymaster_apt_sub", JSON.stringify(submittedTests)); }, [submittedTests]);
 
-  const resetAllProgress = () => {
-    if (window.confirm("Are you sure you want to clear all your aptitude progress?")) {
-      setHintsUsed({});
-      setSelectedAnswers({});
-      setSubmittedTests({});
-      localStorage.removeItem("pymaster_apt_hints");
-      localStorage.removeItem("pymaster_apt_ans");
-      localStorage.removeItem("pymaster_apt_sub");
-      toast.success("Progress reset successfully!");
-    }
+  const resetAllProgress = () => setShowResetModal(true);
+  const confirmReset = () => {
+    setHintsUsed({});
+    setSelectedAnswers({});
+    setSubmittedTests({});
+    localStorage.removeItem("pymaster_apt_hints");
+    localStorage.removeItem("pymaster_apt_ans");
+    localStorage.removeItem("pymaster_apt_sub");
+    setShowResetModal(false);
+    toast.success("Progress reset successfully!");
   };
   const [mockAnswers, setMockAnswers] = useState<Record<string, string>>({});
   const [mockSubmitted, setMockSubmitted] = useState(false);
@@ -168,6 +171,9 @@ export default function AptitudePage() {
   const [mockSize, setMockSize] = useState(10);
   const [timeLeft, setTimeLeft] = useState(10 * 60);
   const [retryMistakesOnly, setRetryMistakesOnly] = useState(false);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const mockResultRef = useRef<HTMLDivElement>(null);
+  const [collapsedTopics, setCollapsedTopics] = useState<Record<string, boolean>>({});
   const selectedType = aptitudeTypes.find((type) => type.title === activeType) ?? aptitudeTypes[0];
   const allQuestions = aptitudeTypes.flatMap((type) =>
     type.mcqs.map((mcq, index) => ({
@@ -251,6 +257,15 @@ export default function AptitudePage() {
 
     return () => window.clearInterval(interval);
   }, [mockStarted, mockSubmitted]);
+
+  // Auto-scroll to results when mock is submitted
+  useEffect(() => {
+    if (mockSubmitted && mockResultRef.current) {
+      setTimeout(() => {
+        mockResultRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 150);
+    }
+  }, [mockSubmitted]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -343,25 +358,40 @@ export default function AptitudePage() {
     }
   };
 
-  const renderTestCard = (mcq: Mcq, typeTitle: string, index: number) => {
+  const renderTestCard = (mcq: Mcq, typeTitle: string, index: number, total?: number) => {
     const questionKey = `${typeTitle}-${index}`;
     const selectedOption = selectedAnswers[questionKey];
     const isSubmitted = Boolean(submittedTests[questionKey]);
+    const isCorrect = selectedOption === mcq.answer;
 
     return (
-      <div key={questionKey} className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em]">
-          <span className="text-primary">
-            {typeTitle} • Question {index + 1}
-          </span>
-          <span className="rounded-full border border-border bg-background px-2 py-1 text-[10px] text-muted-foreground">
-            {mcq.difficulty}
-          </span>
-          {mcq.companyTags?.slice(0, 2).map((company) => (
-            <span key={company} className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] text-emerald-700 dark:text-emerald-300">
-              {company}
+      <div 
+        key={questionKey} 
+        className={`rounded-2xl border transition-all duration-300 bg-card p-4 shadow-sm ${
+          isSubmitted 
+            ? isCorrect 
+              ? "border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.05)]" 
+              : "border-destructive/30 shadow-[0_0_15px_rgba(239,68,68,0.05)]"
+            : "border-border/60"
+        }`}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold uppercase tracking-[0.16em] mb-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-primary">
+              {typeTitle} • Q{index + 1}{total ? ` of ${total}` : ""}
             </span>
-          ))}
+            {isSubmitted && (
+              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] ${isCorrect ? "bg-emerald-500/10 text-emerald-600" : "bg-destructive/10 text-destructive"}`}>
+                {isCorrect ? <CheckCircle2 className="w-3 h-3" /> : <XCircle className="w-3 h-3" />}
+                {isCorrect ? "Correct" : "Incorrect"}
+              </span>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="rounded-full border border-border bg-background px-2 py-1 text-[10px] text-muted-foreground uppercase">
+              {mcq.difficulty}
+            </span>
+          </div>
         </div>
         <p className="mt-2 text-sm font-medium leading-6 text-foreground">{mcq.question}</p>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -454,6 +484,53 @@ export default function AptitudePage() {
 
   return (
     <div className="min-h-screen bg-background">
+
+      {/* ── Sticky Mock Timer Bar ── */}
+      {mockStarted && !mockSubmitted && (
+        <div className="fixed top-14 inset-x-0 z-40 flex items-center justify-center gap-3 border-b border-amber-500/20 bg-background/95 backdrop-blur-md px-4 py-2 shadow-sm">
+          <Clock3 className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+          <span className={`font-mono text-sm font-bold ${timeLeft <= 60 ? "text-destructive animate-pulse" : "text-amber-700 dark:text-amber-300"}`}>
+            {formatTime(timeLeft)}
+          </span>
+          <span className="text-xs text-muted-foreground">Mock in progress •</span>
+          <span className="text-xs font-semibold text-foreground">{mockAttempted}/{mockQuestions.length} answered</span>
+          <button
+            type="button"
+            onClick={() => setMockSubmitted(true)}
+            className="ml-2 rounded-full border border-primary bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground"
+          >
+            Submit Now
+          </button>
+        </div>
+      )}
+
+      {/* ── Reset Confirmation Modal ── */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
+          <div className="mx-4 w-full max-w-sm rounded-2xl border border-destructive/20 bg-card p-6 shadow-2xl">
+            <h3 className="text-lg font-semibold text-foreground">Reset All Progress?</h3>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">
+              This will permanently clear all your answers, hints, and submitted questions. This cannot be undone.
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setShowResetModal(false)}
+                className="flex-1 rounded-full border border-border px-4 py-2 text-sm font-semibold text-foreground hover:bg-background/80 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmReset}
+                className="flex-1 rounded-full border border-destructive bg-destructive px-4 py-2 text-sm font-semibold text-destructive-foreground hover:bg-destructive/90 transition-colors"
+              >
+                Yes, Reset
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <Helmet>
         <title>Aptitude Prep | PyMaster</title>
         <meta
@@ -920,7 +997,7 @@ export default function AptitudePage() {
                     const index = selectedType.mcqs.findIndex((item) => item.question === mcq.question);
 
                     if (pageMode === "practice") {
-                      return renderTestCard(mcq, selectedType.title, index);
+                      return renderTestCard(mcq, selectedType.title, index, selectedTypeQuestions.length);
                     }
 
                     const answerKey = `${selectedType.title}-${index}`;
@@ -980,7 +1057,7 @@ export default function AptitudePage() {
                 )}
               </div>
               {pageMode === "mock" && mockSubmitted ? (
-                <div className="mt-4 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-4">
+                <div ref={mockResultRef} className="mt-4 rounded-2xl border border-emerald-500/15 bg-emerald-500/5 p-4 scroll-mt-20">
                   <div className="text-sm font-semibold text-foreground">Mock Result Summary</div>
                   <div className="mt-3 grid gap-3 sm:grid-cols-4">
                     <div className="rounded-2xl border border-border/60 bg-background p-3">
@@ -1135,18 +1212,30 @@ export default function AptitudePage() {
             </div>
           ) : null}
           <div className="space-y-6">
-            {aptitudeTypes.map((type) => (
-              <div key={type.title} className="rounded-[1.5rem] border border-border/60 bg-background/70 p-4 sm:p-5">
-                <div className="mb-4">
-                  <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary">
-                    {type.title}
+            {aptitudeTypes.map((type) => {
+              const isCollapsed = collapsedTopics[type.title];
+              return (
+                <div key={type.title} className="rounded-[1.5rem] border border-border/60 bg-background/70 p-4 sm:p-5">
+                  <div 
+                    className="flex items-center justify-between cursor-pointer group"
+                    onClick={() => setCollapsedTopics(prev => ({ ...prev, [type.title]: !isCollapsed }))}
+                  >
+                    <div className="flex flex-col gap-1">
+                      <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-primary w-fit">
+                        {type.title}
+                      </div>
+                      <p className="text-sm leading-6 text-muted-foreground line-clamp-1 group-hover:line-clamp-none transition-all">{type.focus}</p>
+                    </div>
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background group-hover:border-primary/30 transition-colors">
+                      {isCollapsed ? <ChevronDown className="h-4 w-4" /> : <ChevronUp className="h-4 w-4" />}
+                    </div>
                   </div>
-                  <p className="mt-3 text-sm leading-6 text-muted-foreground">{type.focus}</p>
-                </div>
-                <div className="space-y-4">
+                  
+                  {!isCollapsed && (
+                    <div className="mt-6 space-y-4 animate-in fade-in slide-in-from-top-2 duration-300">
                   {type.mcqs.map((mcq, index) => {
                     if (pageMode === "practice") {
-                      return renderTestCard(mcq, type.title, index);
+                      return renderTestCard(mcq, type.title, index, type.mcqs.length);
                     }
 
                     const answerKey = `all-${type.title}-${index}`;
@@ -1201,8 +1290,10 @@ export default function AptitudePage() {
                     );
                   })}
                 </div>
+                )}
               </div>
-            ))}
+            );
+          })}
           </div>
         </div>
       </section>

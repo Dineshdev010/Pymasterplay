@@ -19,12 +19,14 @@ import { useToast } from "@/hooks/use-toast";
 import { CustomCursor } from "@/components/CustomCursor";
 import { SupportTipPopup } from "@/components/SupportTipPopup";
 import { PwaInstallModal } from "@/components/PwaInstallModal";
+import { FloatingFocusTimer } from "@/components/FloatingFocusTimer";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
   const { showCelebration, celebrationData, dismissCelebration, logActivity } = useProgress();
   const [sidebarOpen, setSidebarOpen] = useState(false); // Controls sidebar visibility
   const isAuthPage = location.pathname === "/auth"; // Auth page has a simpler layout
+  const isClockPage = location.pathname === "/productive-clock";
   const hideFooter =
     isAuthPage ||
     location.pathname.startsWith("/compiler") ||
@@ -124,10 +126,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     }
   }, [logActivity, toast]);
 
-  // --- Simplified layout for the auth (login/signup) page ---
-  if (isAuthPage) {
+  // --- Simplified layout for the auth (login/signup) page or Clock page ---
+  if (isAuthPage || isClockPage) {
     return (
-      <div className="min-h-[100svh] flex flex-col overflow-x-hidden w-full">
+      <div className={`min-h-[100svh] flex flex-col overflow-x-hidden w-full ${isClockPage ? 'bg-slate-950' : ''}`}>
         {/* Celebration modal (can appear on any page) */}
         <CelebrationModal
           isOpen={showCelebration}
@@ -137,7 +139,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           emoji={celebrationData?.emoji || "🎉"}
           reward={celebrationData?.reward}
         />
-        <main className="flex-1 w-full">{children}</main>
+        <main className="flex-1 w-full relative">{children}</main>
+        
+        {/* PWA/Support/Feedback modals shouldn't distract on clock page */}
+        {!isClockPage && (
+          <>
+            <FeedbackForm />
+            <PwaInstallModal />
+            <SupportTipPopup />
+          </>
+        )}
       </div>
     );
   }
@@ -200,6 +211,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       
       {/* Support Tip & QR Popup */}
       <SupportTipPopup />
+
+      {/* Global Focus Timer */}
+      <FloatingFocusTimer />
     </div>
   );
 }
