@@ -21,6 +21,7 @@ export function PwaUpdater() {
 
   useEffect(() => {
     if (needRefresh) {
+      console.log("PWA Update detected! Showing toast...");
       toast("New version available", {
         description: "Update to the latest version of PyMaster for new features and fixes.",
         duration: Infinity,

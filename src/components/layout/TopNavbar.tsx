@@ -480,6 +480,10 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>{t("common.signOut")}</span>
               </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <div className="px-2 py-1.5 text-[9px] text-muted-foreground/50 font-mono text-right">
+                v1.2.5-hotfix
+              </div>
             </DropdownMenuContent>
           </DropdownMenu>
         ) : (

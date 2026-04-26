@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
         },
         // Dev service-worker caching can keep old JS around and cause errors like "X is not defined".
         devOptions: {
-          enabled: !isDev,
+          enabled: true,
         },
       }),
       compression({ algorithms: ["gzip", "brotliCompress"], exclude: /\.(png|jpg|webp|woff2|gz|br)$/i }),
