@@ -119,17 +119,27 @@ export default function ProblemsListPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <Helmet>
-        <title>Python Problems | Practice Coding Challenges on PyMaster</title>
+        <title>Python Problems & Interview Challenges | PyMaster</title>
         <meta
           name="description"
-          content="Practice Python coding challenges from basic to expert difficulty with rewards, progress tracking, and built-in problem pages."
+          content="Solve curated Python coding challenges ranging from beginner to expert levels. Explore 500+ problems with test cases, logic hints, and company-specific interview sets for TCS, Infosys, and more."
         />
         <link rel="canonical" href={canonical} />
         <meta property="og:type" content="website" />
         <meta property="og:url" content={canonical} />
-        <meta property="og:title" content="Python Problems | PyMaster" />
-        <meta property="og:description" content="Practice Python coding challenges from basic to expert difficulty with rewards, progress tracking, and built-in problem pages." />
+        <meta property="og:title" content="Python Coding Problems | PyMaster" />
+        <meta property="og:description" content="Master Python with interactive coding challenges. Track your progress, earn rewards, and prepare for technical interviews." />
       </Helmet>
+
+      {/* Crawlable Description for SEO/AdSense */}
+      <div className="mb-6 rounded-xl border border-border/40 bg-surface-1/50 p-4">
+        <p className="text-[11px] text-muted-foreground/80 leading-relaxed">
+          <strong>PyMaster Problem Hub:</strong> Solve curated Python coding challenges ranging from beginner to expert levels. 
+          Each problem includes <strong>automated test cases</strong>, <strong>logic hints</strong>, and <strong>performance metrics</strong> to help you grow as a developer. 
+          Prepare for technical interviews with company-specific question sets from major tech firms. 
+          Filter by difficulty—Basic, Junior, Intermediate, Advanced, and Expert—to find the perfect match for your current skill level and track your consistency with our streak system.
+        </p>
+      </div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
         <div>

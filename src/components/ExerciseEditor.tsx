@@ -4,15 +4,17 @@ import confetti from "canvas-confetti";
 import { Exercise } from "@/data/lessons";
 import { useProgress } from "@/contexts/ProgressContext";
 import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
+import { executeSql } from "@/lib/sqlRunner";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square } from "lucide-react";
+import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square, Terminal } from "lucide-react";
 
 interface ExerciseEditorProps {
   exercise: Exercise;
   level: "beginner" | "intermediate" | "advanced";
   lessonId: string;
   locked?: boolean;
+  language?: string;
 }
 
 function generateHint(exercise: Exercise): string {
@@ -42,7 +44,7 @@ function generateSolution(exercise: Exercise): string {
   return `# Solution: Your code should produce:\n# ${expected.replace(/\n/g, "\n# ")}`;
 }
 
-export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEditorProps) {
+export function ExerciseEditor({ exercise, level, lessonId, locked, language = "python" }: ExerciseEditorProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [code, setCode] = useState(exercise.starterCode);
   const [output, setOutput] = useState("");
@@ -85,14 +87,30 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
     }
 
     setIsRunning(true);
-    setOutput(`⏳ Running in browser worker (up to ${timeoutSeconds}s)...`);
+    const langLabel = language === "sql" ? "SQL" : language === "bash" ? "Terminal" : "Python";
+    setOutput(`⏳ Running ${langLabel} execution...`);
 
-    const result = await executePython(userCode);
-    const actualOutput = result.output.trim();
+    let actualOutput = "";
+    let error = "";
+
+    if (language === "bash") {
+      // For bash/command tracks, the expectedOutput is usually the command string itself
+      // We do a direct string comparison for now as it's a "simulation" environment
+      actualOutput = userCode;
+    } else if (language === "sql") {
+      const result = await executeSql(userCode);
+      actualOutput = result.output.trim();
+      error = result.error;
+    } else {
+      const result = await executePython(userCode);
+      actualOutput = result.output.trim();
+      error = result.error;
+    }
+
     const expected = exercise.expectedOutput.trim();
 
-    if (result.error && !result.output) {
-      setOutput(`❌ Error:\n${result.error}`);
+    if (error && !actualOutput) {
+      setOutput(`❌ Error:\n${error}`);
       setPassed(false);
       setIsRunning(false);
       return;
@@ -157,10 +175,14 @@ export function ExerciseEditor({ exercise, level, lessonId, locked }: ExerciseEd
 
       {isOpen && (
         <div className="border-t border-border">
-          <div className="h-48">
+          <div className="h-48 relative">
+            <div className="absolute top-2 right-4 z-10 flex items-center gap-1.5 px-2 py-1 bg-background/50 backdrop-blur-sm border border-border rounded-md pointer-events-none">
+              <Terminal className="w-3 h-3 text-muted-foreground" />
+              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{language}</span>
+            </div>
             <Editor
               height="100%"
-              language="python"
+              language={language === "bash" ? "shell" : language}
               theme="vs-dark"
               value={code}
               onChange={(v) => setCode(v || "")}

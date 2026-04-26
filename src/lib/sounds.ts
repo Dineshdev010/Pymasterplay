@@ -31,6 +31,13 @@ function getAudioContext(): AudioContext {
 }
 
 /**
+ * Alias for playCelebrationSound
+ */
+export function playSuccessSound() {
+  playCelebrationSound();
+}
+
+/**
  * Play a short celebration fanfare (C5 → E5 → G5 → C6).
  * Used when the user solves a problem or earns a reward.
  */
@@ -146,6 +153,65 @@ export function playLevelUpSound() {
 
       startTime += 0.08; // Overlap notes slightly for a smoother sound
     });
+  } catch {
+    // Audio not supported
+  }
+}
+
+/**
+ * Play a subtle "click/tap" sound.
+ * Good for navigating the sidebar or pressing primary buttons.
+ */
+export function playClickSound() {
+  try {
+    if (isSoundMuted()) return;
+    const audioCtx = getAudioContext();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(200, audioCtx.currentTime + 0.04);
+
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.04);
+  } catch {
+    // Audio not supported
+  }
+}
+
+/**
+ * Play a low, harsh "error" buzz.
+ * Good for compilation errors or wrong answers.
+ */
+export function playErrorSound() {
+  try {
+    if (isSoundMuted()) return;
+    const audioCtx = getAudioContext();
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.type = "sawtooth";
+
+    osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+    osc.frequency.linearRampToValueAtTime(100, audioCtx.currentTime + 0.15);
+
+    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(audioCtx.currentTime);
+    osc.stop(audioCtx.currentTime + 0.15);
   } catch {
     // Audio not supported
   }

@@ -213,7 +213,7 @@ export function ActivityGraph({ activityMap }: ActivityGraphProps) {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-start">
-        <div className="rounded-3xl border border-border/70 bg-background/60 p-4 sm:p-5 lg:self-start">
+        <div className="min-w-0 rounded-3xl border border-border/70 bg-background/60 p-4 sm:p-5 lg:self-start">
           <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h3 className="text-sm font-semibold text-foreground">
@@ -230,7 +230,7 @@ export function ActivityGraph({ activityMap }: ActivityGraphProps) {
             </div>
           </div>
 
-          <div className="overflow-x-auto pb-1">
+          <div className="overflow-x-auto pb-1 custom-scrollbar">
             <div className="flex min-w-max gap-2">
               <div className="flex flex-col gap-[3px] pt-6">
                 {weekdayLabels.map((label, index) => (

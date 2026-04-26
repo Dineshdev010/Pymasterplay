@@ -33,6 +33,7 @@ import {
 import { executeSql } from "@/lib/sqlRunner";
 import { GitSimulator } from "@/lib/gitSimulator";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { playClickSound, playSuccessSound, playErrorSound } from "@/lib/sounds";
 
 // ---------- Language Modes ----------
 type LangMode = "python" | "pandas" | "linux" | "sql";
@@ -363,6 +364,7 @@ export default function CompilerPage() {
   const runCode = async () => {
     if (mode === "linux") return; // Linux uses its own flow
 
+    playClickSound();
     setIsRunning(true);
     setActiveTab("output");
 
@@ -395,10 +397,13 @@ export default function CompilerPage() {
       outputText = result.output
         ? result.output + "\n⚠️ Errors:\n" + result.error
         : "❌ Error:\n" + result.error;
+      playErrorSound();
     } else if (result.output) {
       outputText = result.output;
+      playSuccessSound();
     } else {
       outputText = "(No output — add print() / SELECT to see results)";
+      playSuccessSound();
     }
 
     setOutput(outputText);
@@ -686,10 +691,14 @@ export default function CompilerPage() {
         </div>
       </div>
 
-      {/* Click-away to close mode menu */}
-      {showModeMenu && (
-        <div className="fixed inset-0 z-40" onClick={() => setShowModeMenu(false)} />
-      )}
+
+      {/* Crawlable Description for SEO/AdSense */}
+      <div className="bg-surface-1 border-b border-border/40 px-4 py-2">
+        <p className="text-[11px] text-muted-foreground/80 max-w-4xl leading-relaxed">
+          <strong>PyMaster Interactive Compiler:</strong> Our browser-based code runner supports <strong>Python 3.11</strong>, <strong>Pandas</strong> for data analysis, <strong>SQL (SQLite3)</strong> for database practice, and a <strong>Linux Terminal Sandbox</strong>. 
+          Use this tool to run code instantly, debug scripts, and master syntax with real-time AI-powered feedback. No installation required.
+        </p>
+      </div>
 
       {/* ---------- Main Area ---------- */}
       <div

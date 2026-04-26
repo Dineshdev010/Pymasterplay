@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { navItems } from "./navItems";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { playClickSound } from "@/lib/sounds";
 
 interface SidebarProps {
   open: boolean;
@@ -79,7 +80,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
               <Link
                 key={item.to}
                 to={item.to}
-                onClick={onClose}
+                onClick={() => { playClickSound(); onClose(); }}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                   isActive
                     ? "bg-primary/15 text-primary font-medium border-l-2 border-primary scale-[1.02]"

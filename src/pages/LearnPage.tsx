@@ -21,27 +21,40 @@ import { useCallback } from "react";
 
 const categoryOrder = ["Beginner", "Intermediate", "Advanced", "Expert"] as const;
 
-const categoryTone: Record<(typeof categoryOrder)[number], { label: string; heading: string; badge: string }> = {
+const categoryTone: Record<string, { label: string; heading: string; badge: string; bg: string }> = {
   Beginner: {
     label: "text-streak-green",
     heading: "🟢 Beginner",
     badge: "bg-streak-green/10 text-streak-green border-streak-green/20",
+    bg: "bg-streak-green/5",
   },
   Intermediate: {
     label: "text-primary",
     heading: "🔵 Intermediate",
     badge: "bg-primary/10 text-primary border-primary/20",
+    bg: "bg-primary/5",
   },
   Advanced: {
     label: "text-expert-purple",
     heading: "🟣 Advanced",
     badge: "bg-expert-purple/10 text-expert-purple border-expert-purple/20",
+    bg: "bg-expert-purple/5",
   },
   Expert: {
     label: "text-reward-gold",
     heading: "🟡 Expert",
     badge: "bg-reward-gold/10 text-reward-gold border-reward-gold/20",
+    bg: "bg-reward-gold/5",
   },
+};
+
+const getCategoryColor = (category: string) => {
+  if (categoryTone[category]) return categoryTone[category];
+  // Fallback for career tracks
+  if (category.toLowerCase().includes("sql")) return { label: "text-python-yellow", heading: "📊 SQL", badge: "bg-python-yellow/10 text-python-yellow border-python-yellow/20", bg: "bg-python-yellow/5" };
+  if (category.toLowerCase().includes("linux")) return { label: "text-expert-purple", heading: "🐧 Linux", badge: "bg-expert-purple/10 text-expert-purple border-expert-purple/20", bg: "bg-expert-purple/5" };
+  if (category.toLowerCase().includes("data")) return { label: "text-primary", heading: "📈 Data", badge: "bg-primary/10 text-primary border-primary/20", bg: "bg-primary/5" };
+  return categoryTone.Beginner;
 };
 
 const topicCoverage = [
@@ -1809,35 +1822,61 @@ export default function LearnPage() {
             {/* Content */}
             <div className="mb-8">
               {selectedLesson.content.split("\n").map((line, i) => {
-                if (line.startsWith("### ")) return <h3 key={i} className="text-xl font-semibold text-foreground mt-6 mb-2">{line.replace("### ", "")}</h3>;
-                if (line.startsWith("## ")) return <h2 key={i} className="text-2xl font-bold text-foreground mt-8 mb-3">{line.replace("## ", "")}</h2>;
+                const tone = getCategoryColor(selectedLesson.category);
+                
+                if (line.startsWith("### ")) {
+                  return (
+                    <h3 key={i} className={`text-xl font-bold ${tone.label} mt-8 mb-4 flex items-center gap-2 pl-3 border-l-4 border-current`}>
+                      {line.replace("### ", "")}
+                    </h3>
+                  );
+                }
+                if (line.startsWith("## ")) {
+                  return (
+                    <h2 key={i} className={`text-3xl font-extrabold ${tone.label} mt-12 mb-6 pb-2 border-b-2 border-current/20`}>
+                      {line.replace("## ", "")}
+                    </h2>
+                  );
+                }
+                
                 if (line.startsWith("- ")) {
                   const guides = getKeywordGuidesForLine(line);
                   return (
-                    <div key={i} className="space-y-1.5">
-                      <p className="text-base sm:text-lg text-foreground leading-relaxed flex gap-2">
-                        <span className="text-primary">•</span>
-                        <span>{line.replace("- ", "")}</span>
+                    <div key={i} className="space-y-3 my-4">
+                      <p className="text-base sm:text-lg text-foreground leading-relaxed flex gap-3 items-start">
+                        <span className={`mt-1.5 h-2 w-2 rounded-full ${tone.label.replace("text-", "bg-")} shrink-0`} />
+                        <span className="font-medium">{line.replace("- ", "")}</span>
                       </p>
                       {guides.map(({ token, guide }) => (
-                        <div key={`${i}-${token}`} className="ml-5 rounded-lg border border-border bg-surface-1/60 px-3 py-2">
-                          <p className="text-sm sm:text-base text-foreground/90">
-                            <span className="font-semibold text-foreground">{token}</span> - <span className="font-medium text-foreground">How:</span> {guide.howToUse}
-                          </p>
-                          <p className="text-sm sm:text-base text-foreground/90">
-                            <span className="font-medium text-foreground">Where:</span> {guide.whereToUse}
-                          </p>
+                        <div key={`${i}-${token}`} className={`ml-6 rounded-xl border border-border ${tone.bg} p-4 shadow-sm hover:shadow-md transition-shadow`}>
+                          <div className="flex items-start gap-3 mb-3">
+                            <div className={`p-2 rounded-lg bg-background border border-border ${tone.label}`}>
+                              <BookOpen className="w-4 h-4" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-base font-bold text-foreground">{token}</p>
+                              <p className="text-sm text-muted-foreground leading-snug">
+                                <span className="font-bold text-foreground/80 uppercase text-[10px] tracking-wider mr-1">Usage:</span> {guide.howToUse}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground bg-background/40 px-2 py-1 rounded-md w-fit mb-3">
+                            <CheckCircle2 className="w-3 h-3 text-streak-green" />
+                            <span className="font-medium">Best for: {guide.whereToUse}</span>
+                          </div>
+
                           {guide.example && (
-                            <div className="mt-2 rounded-md border border-border bg-background/80 p-2">
-                              <div className="mb-1 flex items-center justify-between gap-2">
-                                <p className="text-[11px] sm:text-xs font-medium text-foreground">{tt("tryThisCode", "Try this code")}</p>
-                                <Button asChild size="sm" variant="outline" className="h-6 text-[10px] sm:text-xs px-2 gap-1">
+                            <div className="rounded-lg border border-border bg-surface-1/80 overflow-hidden">
+                              <div className="px-3 py-1.5 border-b border-border bg-muted/30 flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Example Snippet</span>
+                                <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] px-2 gap-1.5 hover:bg-primary/10 hover:text-primary">
                                   <Link to={`/compiler?code=${encodeURIComponent(guide.example)}`}>
                                     <Terminal className="w-3 h-3" /> {tt("run", "Run")}
                                   </Link>
                                 </Button>
                               </div>
-                              <pre className="overflow-x-auto whitespace-pre-wrap text-[11px] sm:text-xs text-foreground font-mono">
+                              <pre className="p-3 overflow-x-auto whitespace-pre-wrap text-sm text-foreground font-mono leading-relaxed">
                                 {guide.example}
                               </pre>
                             </div>
@@ -1847,31 +1886,37 @@ export default function LearnPage() {
                     </div>
                   );
                 }
-                if (line.trim() === "") return <br key={i} />;
+                if (line.trim() === "") return <div key={i} className="h-4" />;
+                
                 const inlineGuides = getKeywordGuidesForLine(line);
                 if (inlineGuides.length > 0) {
                   return (
-                    <div key={i} className="space-y-1.5">
+                    <div key={i} className="space-y-3 my-4">
                       <p className="text-base sm:text-lg text-foreground leading-relaxed">{line}</p>
                       {inlineGuides.map(({ token, guide }) => (
-                        <div key={`${i}-${token}`} className="ml-1 rounded-lg border border-border bg-surface-1/60 px-3 py-2">
-                          <p className="text-sm sm:text-base text-foreground/90">
-                            <span className="font-semibold text-foreground">{token}</span> - <span className="font-medium text-foreground">How:</span> {guide.howToUse}
-                          </p>
-                          <p className="text-sm sm:text-base text-foreground/90">
-                            <span className="font-medium text-foreground">Where:</span> {guide.whereToUse}
-                          </p>
+                        <div key={`${i}-${token}`} className={`rounded-xl border border-border ${tone.bg} p-4 shadow-sm`}>
+                           <div className="flex items-start gap-3 mb-2">
+                            <div className={`p-2 rounded-lg bg-background border border-border ${tone.label}`}>
+                              <Play className="w-4 h-4" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="text-base font-bold text-foreground">{token}</p>
+                              <p className="text-sm text-muted-foreground leading-snug">
+                                <span className="font-bold text-foreground/80 uppercase text-[10px] tracking-wider mr-1">Concept:</span> {guide.howToUse}
+                              </p>
+                            </div>
+                          </div>
                           {guide.example && (
-                            <div className="mt-2 rounded-md border border-border bg-background/80 p-2">
-                              <div className="mb-1 flex items-center justify-between gap-2">
-                                <p className="text-[11px] sm:text-xs font-medium text-foreground">{tt("tryThisCode", "Try this code")}</p>
-                                <Button asChild size="sm" variant="outline" className="h-6 text-[10px] sm:text-xs px-2 gap-1">
+                            <div className="mt-3 rounded-lg border border-border bg-surface-1/80 overflow-hidden">
+                              <div className="px-3 py-1.5 border-b border-border bg-muted/30 flex items-center justify-between">
+                                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Interactive Example</span>
+                                <Button asChild size="sm" variant="ghost" className="h-6 text-[10px] px-2 gap-1.5">
                                   <Link to={`/compiler?code=${encodeURIComponent(guide.example)}`}>
-                                    <Terminal className="w-3 h-3" /> {tt("run", "Run")}
+                                    <Terminal className="w-3 h-3" /> Run
                                   </Link>
                                 </Button>
                               </div>
-                              <pre className="overflow-x-auto whitespace-pre-wrap text-[11px] sm:text-xs text-foreground font-mono">
+                              <pre className="p-3 overflow-x-auto whitespace-pre-wrap text-sm text-foreground font-mono">
                                 {guide.example}
                               </pre>
                             </div>
@@ -1881,7 +1926,7 @@ export default function LearnPage() {
                     </div>
                   );
                 }
-                return <p key={i} className="text-base sm:text-lg text-foreground leading-relaxed">{line}</p>;
+                return <p key={i} className="text-base sm:text-lg text-foreground leading-relaxed mb-4">{line}</p>;
               })}
             </div>
 
@@ -1941,6 +1986,7 @@ export default function LearnPage() {
                     level={level}
                     lessonId={selectedLesson.id}
                     locked={!isExerciseUnlocked(selectedLesson.id, level)}
+                    language="python"
                   />
                 ))}
               </div>

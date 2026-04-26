@@ -250,6 +250,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       saveProgress(next);
       return next;
     });
+    playCelebrationSound();
   }, []);
 
   const completeExercise = useCallback((exerciseKey: string) => {
@@ -286,6 +287,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       saveProgress(next);
       return next;
     });
+    playCelebrationSound();
   }, []);
 
   const unlockLesson = useCallback((lessonId: string, cost = 50) => {

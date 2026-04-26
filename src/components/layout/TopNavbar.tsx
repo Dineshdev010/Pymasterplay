@@ -163,14 +163,11 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
     };
   }, [profileMenuOpen]);
 
-  const languageLabelByValue = {
-    english: "Default (English)",
-    tamil: "Tamil",
-    kannada: "Kannada",
-    telugu: "Telugu",
-    hindi: "Hindi",
-  } as const;
-  const selectedLanguageLabel = languageLabelByValue[language] ?? "Default (English)";
+  const getLanguageTranslationKey = (val: string): any => {
+    if (val === "english") return "language.defaultEnglish";
+    return `language.${val}`;
+  };
+  const selectedLanguageLabel = t(getLanguageTranslationKey(language)) || "Default (English)";
 
   const xpLevel = getXpLevel(progress.xp);
   const isHighRank = xpLevel.level >= 13;
@@ -206,7 +203,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             animate={{ y: [0, -3, 0] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             decoding="async"
-            fetchpriority="high"
+            fetchPriority="high"
           />
           <span className="font-bold text-lg text-foreground hidden sm:flex relative z-10 overflow-hidden">
             {"PyMaster".split("").map((char, index) => (
@@ -232,8 +229,8 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             ))}
           </span>
         </Link>
-        <nav id="tour-nav-links" className="ml-1 hidden min-w-0 flex-1 items-center gap-1 overflow-hidden lg:flex xl:ml-2">
-          <div className="flex min-w-0 items-center gap-0.5 overflow-hidden">
+        <nav id="tour-nav-links" className="ml-1 hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto lg:flex xl:ml-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex shrink-0 items-center gap-0.5">
           {primaryNavItems.map((item) => {
             const navLabel = item.to === "/quick-prep"
               ? t("nav.quickPrep")
@@ -247,7 +244,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               key={item.to}
               id={`tour-nav-${routeId}`}
               to={item.to}
-              className={`flex min-w-0 items-center gap-1 rounded-md px-2 py-1.5 text-[10px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-[11px] ${
+              className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-[10px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-[11px] ${
                 hideOnLg ? "hidden xl:flex" : "flex"
               } ${
                 isRouteActive(item.to)
@@ -328,7 +325,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48 mt-2">
-            <DropdownMenuLabel>Language</DropdownMenuLabel>
+            <DropdownMenuLabel>{t("language.title")}</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {languageOptions.map((option) => (
               <DropdownMenuItem
@@ -336,7 +333,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                 className="cursor-pointer flex items-center justify-between"
                 onClick={() => setLanguage(option.value)}
               >
-                <span>{languageLabelByValue[option.value]}</span>
+                <span>{t(getLanguageTranslationKey(option.value))}</span>
                 {language === option.value ? <Check className="w-4 h-4 text-primary" /> : null}
               </DropdownMenuItem>
             ))}
@@ -348,7 +345,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           title={t("common.support")}
         >
           <HeartHandshake className="w-3.5 h-3.5" />
-          <span className="hidden sm:inline">{t("common.support")}</span>
+          <span className="hidden 2xl:inline">{t("common.support")}</span>
         </Link>
         {!user && (
           <button
@@ -387,7 +384,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         >
           <Focus className={`w-3.5 h-3.5 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
           <span className="font-bold tracking-tight text-[11px] font-mono">
-            {isActive ? formatTime(timeLeft) : "Focus"}
+            {isActive ? formatTime(timeLeft) : <span className="hidden 2xl:inline">Focus</span>}
           </span>
         </button>
         <div 
@@ -400,7 +397,8 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             </div>
           )}
           <Medal className={`w-3.5 h-3.5 ${isHighRank ? "animate-pulse" : ""}`} />
-          <span className="font-bold tracking-tight">{xpLevel.title} <span className="opacity-30 mx-0.5">•</span> Lv {xpLevel.level}</span>
+          <span className="hidden 2xl:inline font-bold tracking-tight">{xpLevel.title} <span className="opacity-30 mx-0.5">•</span> Lv {xpLevel.level}</span>
+          <span className="2xl:hidden font-bold tracking-tight">Lv {xpLevel.level}</span>
           
           {/* Micro Progress Bar */}
           <div className="absolute bottom-0 left-0 h-[1.5px] bg-current opacity-20 w-full" />
@@ -426,7 +424,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                     {(localStorage.getItem("pymaster_name") || user.displayName || user.email || "U")[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="hidden xl:block text-xs text-foreground font-medium truncate max-w-[80px]">
+                <span className="hidden 2xl:block text-xs text-foreground font-medium truncate max-w-[80px]">
                   {localStorage.getItem("pymaster_name") || user.displayName || user.email?.split("@")[0] || "User"}
                 </span>
                 <Settings className="w-3.5 h-3.5 text-muted-foreground hidden sm:block" />

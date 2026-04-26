@@ -86,9 +86,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Create a list of 5 numbers and print their average using sum() and len().", starterCode: "numbers = [10, 20, 30, 40, 50]\n\n# Calculate and print the average\n", expectedOutput: "30.0" },
-        intermediate: { prompt: "Given a dictionary of students and scores, print the student with the highest score.", starterCode: "scores = {\"Alice\": 85, \"Bob\": 92, \"Charlie\": 78}\n\n# Find and print the top student\n", expectedOutput: "Bob" },
-        advanced: { prompt: "Calculate total revenue (price * quantity) for all products and print it.", starterCode: "products = [\n    {\"name\": \"Widget\", \"price\": 10, \"quantity\": 5},\n    {\"name\": \"Gadget\", \"price\": 25, \"quantity\": 3},\n    {\"name\": \"Doohickey\", \"price\": 15, \"quantity\": 8}\n]\n\n# Calculate and print total revenue\n", expectedOutput: "245" },
+        beginner: { prompt: "Create `nums = [10, 20, 30, 40, 50]`. Print the `sum()`, then `len()`, then the average (`sum/len`).", starterCode: "nums = [10, 20, 30, 40, 50]\n\n# Print sum, len, and average\n", expectedOutput: "150\n5\n30.0" },
+        intermediate: { prompt: "Given `scores = {'Alice': 85, 'Bob': 92, 'Charlie': 78}`. Print `max()` of `.values()`, then print the key with that max score.", starterCode: "scores = {'Alice': 85, 'Bob': 92, 'Charlie': 78}\n\n# Print max score and top student name\n", expectedOutput: "92\nBob" },
+        advanced: { prompt: "Given products list of dicts with `price` and `quantity`. Calculate each product's revenue (`price*qty`). Print total revenue, then the product name with highest revenue.", starterCode: "products = [\n    {'name': 'Widget', 'price': 10, 'quantity': 5},\n    {'name': 'Gadget', 'price': 25, 'quantity': 3},\n    {'name': 'Doohickey', 'price': 15, 'quantity': 8}\n]\n\n# Print total revenue and best product name\n", expectedOutput: "245\nDoohickey" },
       },
     },
     {
@@ -122,9 +122,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Given temps=[72, 68, 75, 80, 65, 78], print the maximum temperature.", starterCode: "temps = [72, 68, 75, 80, 65, 78]\n\n# Print max temperature\n", expectedOutput: "80" },
-        intermediate: { prompt: "Filter the list to only include even numbers and print. nums=[1,2,3,4,5,6,7,8,9,10]", starterCode: "nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]\n\n# Filter even numbers and print\n", expectedOutput: "[2, 4, 6, 8, 10]" },
-        advanced: { prompt: "Given sales=[200,150,350], calculate and print the percentage the first sale contributes. Round to 1 decimal, format as '28.6%'.", starterCode: "sales = [200, 150, 350]\ntotal = sum(sales)\n\n# Print percentage of first sale\n", expectedOutput: "28.6%" },
+        beginner: { prompt: "Given `temps = [72, 68, 75, 80, 65]`. Print `max()`, `min()`, and `sorted(temps)` on separate lines.", starterCode: "temps = [72, 68, 75, 80, 65]\n\n# Print max, min, and sorted list\n", expectedOutput: "80\n65\n[65, 68, 72, 75, 80]" },
+        intermediate: { prompt: "Use a list comprehension to filter evens from `[1,2,3,4,5,6]`. Then use another to square them. Print both lists.", starterCode: "nums = [1, 2, 3, 4, 5, 6]\n\n# Filter evens, square them, print both\n", expectedOutput: "[2, 4, 6]\n[4, 16, 36]" },
+        advanced: { prompt: "Given `sales = [200, 150, 350]`. Print `sum(sales)`, then the percentage of the max sale rounded to 1 decimal with a `%` sign.", starterCode: "sales = [200, 150, 350]\n\n# Print total and max percentage\n", expectedOutput: "700\n50.0%" },
       },
     },
     {
@@ -158,9 +158,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Create a dict student with keys 'name','grade','gpa'. Print the name.", starterCode: "student = {\"name\": \"Alice\", \"grade\": \"A\", \"gpa\": 3.8}\n\n# Print the name\n", expectedOutput: "Alice" },
-        intermediate: { prompt: "Given a list of products, print the name of the most expensive one.", starterCode: "products = [\n    {\"name\": \"Laptop\", \"price\": 999},\n    {\"name\": \"Phone\", \"price\": 699},\n    {\"name\": \"Tablet\", \"price\": 449}\n]\n\n# Print name of most expensive\n", expectedOutput: "Laptop" },
-        advanced: { prompt: "Count employees in 'Engineering' department. Print the count.", starterCode: "employees = [\n    {\"name\": \"Alice\", \"dept\": \"Engineering\"},\n    {\"name\": \"Bob\", \"dept\": \"Marketing\"},\n    {\"name\": \"Charlie\", \"dept\": \"Engineering\"},\n    {\"name\": \"Diana\", \"dept\": \"Marketing\"},\n    {\"name\": \"Eve\", \"dept\": \"Engineering\"}\n]\n\n# Count Engineering employees\n", expectedOutput: "3" },
+        beginner: { prompt: "Create `d = {'name': 'Alice', 'age': 25}`. Use `.get('city', 'N/A')`. Print the name, then the `.get()` result.", starterCode: "d = {'name': 'Alice', 'age': 25}\n\n# Print name and .get() with default\n", expectedOutput: "Alice\nN/A" },
+        intermediate: { prompt: "Given a list of product dicts, use `max()` with `key=` to find the most expensive. Print its `name` and `price`.", starterCode: "products = [\n    {'name': 'Laptop', 'price': 999},\n    {'name': 'Phone', 'price': 699}\n]\n\n# Find most expensive, print name and price\n", expectedOutput: "Laptop\n999" },
+        advanced: { prompt: "Group employees by `dept`. Use a dict to count per dept. Print `list(counts.items())`.", starterCode: "employees = [\n    {'name': 'A', 'dept': 'Eng'},\n    {'name': 'B', 'dept': 'Sales'},\n    {'name': 'C', 'dept': 'Eng'}\n]\n\n# Count by dept, print items\n", expectedOutput: "[('Eng', 2), ('Sales', 1)]" },
       },
     },
     {
@@ -194,9 +194,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Given scores=[85, 90, 78, 92, 88], calculate and print the mean.", starterCode: "scores = [85, 90, 78, 92, 88]\n\n# Calculate and print mean\n", expectedOutput: "86.6" },
-        intermediate: { prompt: "Find the median of nums=[3,1,4,1,5,9,2,6]. Sort first.", starterCode: "nums = [3, 1, 4, 1, 5, 9, 2, 6]\nsorted_nums = sorted(nums)\nn = len(sorted_nums)\nmedian = (sorted_nums[n//2 - 1] + sorted_nums[n//2]) / 2\nprint(median)\n", expectedOutput: "3.5" },
-        advanced: { prompt: "Calculate standard deviation of data=[10,12,23,23,16,23,21,16]. Print rounded to 2 decimals.", starterCode: "data = [10, 12, 23, 23, 16, 23, 21, 16]\nmean = sum(data) / len(data)\nvariance = sum((x - mean) ** 2 for x in data) / len(data)\nstd_dev = variance ** 0.5\nprint(round(std_dev, 2))\n", expectedOutput: "4.9" },
+        beginner: { prompt: "Given `scores = [85, 90, 78, 92, 88]`. Calculate `mean = sum/len`. Print it. Then print `max(scores) - min(scores)` (range).", starterCode: "scores = [85, 90, 78, 92, 88]\n\n# Print mean and range\n", expectedOutput: "86.6\n14" },
+        intermediate: { prompt: "Find the median of `nums = [3, 1, 5, 2]`. Sort first, then average the two middle values. Print the sorted list, then the median.", starterCode: "nums = [3, 1, 5, 2]\n\n# Sort, find median of even-length list, print both\n", expectedOutput: "[1, 2, 3, 5]\n2.5" },
+        advanced: { prompt: "Given `data = [2, 4, 4, 4, 5, 5, 7, 9]`. Print the mean, then the mode (most frequent value).", starterCode: "data = [2, 4, 4, 4, 5, 5, 7, 9]\n\n# Print mean and mode\n", expectedOutput: "5.0\n4" },
       },
     },
     {
@@ -230,9 +230,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Given categories and values, print which category has the highest value.", starterCode: "categories = [\"A\", \"B\", \"C\", \"D\"]\nvalues = [25, 40, 15, 30]\n\n# Print category with highest value\n", expectedOutput: "B" },
-        intermediate: { prompt: "Calculate the percentage each category represents. Print the largest rounded to 1 decimal.", starterCode: "labels = [\"Python\", \"JS\", \"Java\"]\nusers = [350, 300, 150]\ntotal = sum(users)\npercentages = [(u/total)*100 for u in users]\nprint(round(max(percentages), 1))\n", expectedOutput: "43.8" },
-        advanced: { prompt: "Calculate month-over-month growth rates and print the highest as percentage rounded to 1 decimal.", starterCode: "revenue = [1000, 1200, 1100, 1500, 1800]\ngrowth = []\nfor i in range(1, len(revenue)):\n    rate = ((revenue[i] - revenue[i-1]) / revenue[i-1]) * 100\n    growth.append(round(rate, 1))\nprint(max(growth))\n", expectedOutput: "36.4" },
+        beginner: { prompt: "Given `cats = ['A', 'B', 'C']` and `vals = [25, 40, 15]`. Use `zip()` to pair them. Print the category with the highest value.", starterCode: "cats = ['A', 'B', 'C']\nvals = [25, 40, 15]\n\n# Use zip, find max, print category\n", expectedOutput: "B" },
+        intermediate: { prompt: "Given `users = [350, 300, 150]`. Calculate each as a percentage of total. Print the list of percentages rounded to 1 decimal each.", starterCode: "users = [350, 300, 150]\n\n# Calculate percentages, print list\n", expectedOutput: "[43.8, 37.5, 18.8]" },
+        advanced: { prompt: "Given `revenue = [100, 120, 110, 150]`. Calculate month-over-month growth rates as percentages. Print the list rounded to 1 decimal.", starterCode: "revenue = [100, 120, 110, 150]\n\n# Calculate growth rates, print list\n", expectedOutput: "[20.0, -8.3, 36.4]" },
       },
     },
     {
@@ -266,9 +266,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Create a dict with keys 'City' and 'Pop' with 3 cities. Print the dictionary.", starterCode: "data = {\"City\": [\"NYC\", \"LA\", \"Chicago\"], \"Pop\": [8336817, 3979576, 2693976]}\nprint(data)\n", expectedOutput: "{'City': ['NYC', 'LA', 'Chicago'], 'Pop': [8336817, 3979576, 2693976]}" },
-        intermediate: { prompt: "From a dict of cities and populations, find and print the city with the largest population.", starterCode: "cities = {\"NYC\": 8336817, \"LA\": 3979576, \"Chicago\": 2693976}\n\n# Print city with max population\n", expectedOutput: "NYC" },
-        advanced: { prompt: "Create paired tuples sorted by population descending. Print the first tuple's city name.", starterCode: "cities = [\"NYC\", \"LA\", \"Chicago\", \"Houston\"]\npops = [8336817, 3979576, 2693976, 2320268]\npaired = list(zip(cities, pops))\npaired.sort(key=lambda x: x[1], reverse=True)\nprint(paired[0][0])\n", expectedOutput: "NYC" },
+        beginner: { prompt: "Create a dict-of-lists `data = {'City': ['NYC', 'LA'], 'Pop': [8336817, 3979576]}`. Print `len(data['City'])` (row count) and `len(data)` (column count).", starterCode: "data = {'City': ['NYC', 'LA'], 'Pop': [8336817, 3979576]}\n\n# Print row count and column count\n", expectedOutput: "2\n2" },
+        intermediate: { prompt: "Given `cities = {'NYC': 8336817, 'LA': 3979576}`. Use `max()` with `key=` to find the largest. Print the city name.", starterCode: "cities = {'NYC': 8336817, 'LA': 3979576}\n\n# Find and print city with max population\n", expectedOutput: "NYC" },
+        advanced: { prompt: "Zip `names = ['A', 'B', 'C']` and `vals = [30, 10, 20]`. Sort by value descending. Print the first name and the full sorted list of tuples.", starterCode: "names = ['A', 'B', 'C']\nvals = [30, 10, 20]\n\n# Zip, sort desc, print first name and list\n", expectedOutput: "A\n[('A', 30), ('C', 20), ('B', 10)]" },
       },
     },
     {
@@ -302,9 +302,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Split a multi-line string into lines and print the count.", starterCode: "data = \"Name,Age\\nAlice,25\\nBob,30\\nCharlie,35\"\nlines = data.strip().split(\"\\n\")\nprint(len(lines))\n", expectedOutput: "4" },
-        intermediate: { prompt: "Parse CSV: extract the Age column and print the sum.", starterCode: "data = \"Name,Age\\nAlice,25\\nBob,30\\nCharlie,35\"\nlines = data.strip().split(\"\\n\")\nrows = [line.split(\",\") for line in lines[1:]]\nage_sum = sum(int(row[1]) for row in rows)\nprint(age_sum)\n", expectedOutput: "90" },
-        advanced: { prompt: "Filter CSV rows where Age > 25 and print the count.", starterCode: "data = \"Name,Age\\nAlice,25\\nBob,30\\nCharlie,35\\nDiana,22\"\nlines = data.strip().split(\"\\n\")\nrows = [line.split(\",\") for line in lines[1:]]\ncount = sum(1 for row in rows if int(row[1]) > 25)\nprint(count)\n", expectedOutput: "2" },
+        beginner: { prompt: "Split `'A,B\\nC,D'` by `\\n`, then split each line by `,`. Print the number of rows.", starterCode: "data = 'A,B\\nC,D'\n\n# Split into lines, print row count\n", expectedOutput: "2" },
+        intermediate: { prompt: "Parse CSV string `'Name,Age\\nAlice,25\\nBob,30'`. Extract the header as a list. Sum the Age column. Print both.", starterCode: "data = 'Name,Age\\nAlice,25\\nBob,30'\n\n# Parse header and sum ages, print both\n", expectedOutput: "['Name', 'Age']\n55" },
+        advanced: { prompt: "Parse CSV `'Name,Age\\nA,20\\nB,30\\nC,25'`. Filter rows where `Age > 22`. Print the count and the list of names that passed.", starterCode: "data = 'Name,Age\\nA,20\\nB,30\\nC,25'\n\n# Filter Age > 22, print count and names\n", expectedOutput: "2\n['B', 'C']" },
       },
     },
     {
@@ -338,9 +338,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Group by category and print total for 'A'. data=[('A',10),('B',5),('A',7)]", starterCode: "data = [(\"A\", 10), (\"B\", 5), (\"A\", 7)]\ntotals = {}\nfor cat, val in data:\n    totals[cat] = totals.get(cat, 0) + val\nprint(totals[\"A\"]) \n", expectedOutput: "17" },
-        intermediate: { prompt: "Left join two lists of dicts on id and print the joined name for id=2.", starterCode: "users = [{\"id\": 1, \"name\": \"A\"}, {\"id\": 2, \"name\": \"B\"}]\norders = [{\"id\": 2, \"total\": 50}]\norder_by_id = {o[\"id\"]: o for o in orders}\njoined = []\nfor u in users:\n    row = {**u, **order_by_id.get(u[\"id\"], {})}\n    joined.append(row)\nprint(joined[1][\"name\"]) \n", expectedOutput: "B" },
-        advanced: { prompt: "Build a pivot-like summary: counts by dept from rows. Print Eng count.", starterCode: "rows = [\n    {\"dept\": \"Eng\"}, {\"dept\": \"Eng\"}, {\"dept\": \"Sales\"}, {\"dept\": \"Eng\"}\n]\ncounts = {}\nfor r in rows:\n    d = r[\"dept\"]\n    counts[d] = counts.get(d, 0) + 1\nprint(counts[\"Eng\"]) \n", expectedOutput: "3" },
+        beginner: { prompt: "Group `data = [('A',10),('B',5),('A',7)]` by category using `.get()`. Print the totals dict.", starterCode: "data = [('A', 10), ('B', 5), ('A', 7)]\n\n# Group and sum by category, print dict\n", expectedOutput: "{'A': 17, 'B': 5}" },
+        intermediate: { prompt: "Merge two dicts: `a = {'x': 1}` and `b = {'y': 2}` using `{**a, **b}`. Print the merged dict.", starterCode: "a = {'x': 1}\nb = {'y': 2}\n\n# Merge and print\n", expectedOutput: "{'x': 1, 'y': 2}" },
+        advanced: { prompt: "Given `rows = [{'dept':'Eng'},{'dept':'Sales'},{'dept':'Eng'}]`. Count by dept using `.get()`. Print `sorted(counts.items())`.", starterCode: "rows = [{'dept': 'Eng'}, {'dept': 'Sales'}, {'dept': 'Eng'}]\n\n# Count by dept, print sorted items\n", expectedOutput: "[('Eng', 2), ('Sales', 1)]" },
       },
     },
     {
@@ -374,9 +374,9 @@ function da(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Compute revenue for price=12, qty=4. Print it.", starterCode: "price = 12\nqty = 4\nprint(price * qty)\n", expectedOutput: "48" },
-        intermediate: { prompt: "Find the max value in revenue={'A':40,'B':42,'C':10}. Print the key.", starterCode: "revenue = {\"A\": 40, \"B\": 42, \"C\": 10}\nprint(max(revenue, key=revenue.get))\n", expectedOutput: "B" },
-        advanced: { prompt: "Given nums=[10, None, 30, None, 5], replace None with 0 and print sum.", starterCode: "nums = [10, None, 30, None, 5]\nclean = [0 if x is None else x for x in nums]\nprint(sum(clean))\n", expectedOutput: "45" },
+        beginner: { prompt: "Given `price = 12, qty = 4`. Print revenue (`price * qty`), then print whether revenue exceeds 40 (`True`/`False`).", starterCode: "price = 12\nqty = 4\n\n# Print revenue and whether it exceeds 40\n", expectedOutput: "48\nTrue" },
+        intermediate: { prompt: "Given `rev = {'A': 40, 'B': 42, 'C': 10}`. Use `max()` with `key=rev.get` to find top key. Print the key and its value.", starterCode: "rev = {'A': 40, 'B': 42, 'C': 10}\n\n# Find top key and print key + value\n", expectedOutput: "B\n42" },
+        advanced: { prompt: "Given `nums = [10, None, 30, None, 5]`. Replace `None` with `0` using a comprehension. Print the cleaned list, then `sum()`.", starterCode: "nums = [10, None, 30, None, 5]\n\n# Clean Nones, print list and sum\n", expectedOutput: "[10, 0, 30, 0, 5]\n45" },
       },
     },
   ];
@@ -407,9 +407,9 @@ function wd(): CareerLesson[] {
         },
       },
       exercises: {
-        beginner: { prompt: "Create a dict representing an HTTP response with 'status' and 'body'. Print status.", starterCode: "response = {\"status\": 200, \"body\": \"OK\"}\nprint(response[\"status\"])\n", expectedOutput: "200" },
-        intermediate: { prompt: "Write route(path) returning 'Home' for '/', 'About' for '/about', '404' else. Test '/'.", starterCode: "def route(path):\n    if path == \"/\":\n        return \"Home\"\n    elif path == \"/about\":\n        return \"About\"\n    else:\n        return \"404\"\n\nprint(route(\"/\"))\n", expectedOutput: "Home" },
-        advanced: { prompt: "Parse URL query 'name=Alice&age=25' into a dict and print it.", starterCode: "query = \"name=Alice&age=25\"\nparams = dict(pair.split(\"=\") for pair in query.split(\"&\"))\nprint(params)\n", expectedOutput: "{'name': 'Alice', 'age': '25'}" },
+        beginner: { prompt: "Create a dict `resp = {'status': 200, 'body': 'OK'}`. Print `resp['status']`, then `resp['body']`.", starterCode: "resp = {'status': 200, 'body': 'OK'}\n\n# Print status and body\n", expectedOutput: "200\nOK" },
+        intermediate: { prompt: "Write `route(path)` using a dict of routes. Return `'Home'` for `'/'`, `'About'` for `'/about'`, `'404'` otherwise. Print results for `'/'` and `'/xyz'`.", starterCode: "# Define route function with dict lookup\n\n# Test with '/' and '/xyz'\n", expectedOutput: "Home\n404" },
+        advanced: { prompt: "Parse query string `'name=Alice&age=25'`. Split by `&`, then by `=` into a dict. Print the dict, then print `params['name']`.", starterCode: "query = 'name=Alice&age=25'\n\n# Parse into dict, print dict and name\n", expectedOutput: "{'name': 'Alice', 'age': '25'}\nAlice" },
       },
     },
     {
@@ -417,9 +417,9 @@ function wd(): CareerLesson[] {
       content: "## HTTP Fundamentals\n\n### HTTP Methods\n- **GET** — Retrieve data\n- **POST** — Create data\n- **PUT** — Update data\n- **DELETE** — Remove data\n\n### Status Codes\n- **200** — OK\n- **201** — Created\n- **404** — Not Found\n- **500** — Server Error",
       codeExample: "codes = {200: \"OK\", 201: \"Created\", 404: \"Not Found\", 500: \"Server Error\"}\nfor code, msg in codes.items():\n    print(code, \"-\", msg)",
       exercises: {
-        beginner: { prompt: "Create a dict with status codes. Print the meaning of 404.", starterCode: "codes = {200: \"OK\", 404: \"Not Found\", 500: \"Error\"}\nprint(codes[404])\n", expectedOutput: "Not Found" },
-        intermediate: { prompt: "Write is_success(code) returning True if 200-299. Test with 201.", starterCode: "def is_success(code):\n    return 200 <= code <= 299\n\nprint(is_success(201))\n", expectedOutput: "True" },
-        advanced: { prompt: "Map (method, path) tuples to handler names. Print handler for GET /users.", starterCode: "routes = {\n    (\"GET\", \"/users\"): \"list_users\",\n    (\"POST\", \"/users\"): \"create_user\",\n}\nprint(routes[(\"GET\", \"/users\")])\n", expectedOutput: "list_users" },
+        beginner: { prompt: "Create `codes = {200: 'OK', 404: 'Not Found', 500: 'Error'}`. Print `codes[404]` and `len(codes)`.", starterCode: "codes = {200: 'OK', 404: 'Not Found', 500: 'Error'}\n\n# Print meaning of 404 and count of codes\n", expectedOutput: "Not Found\n3" },
+        intermediate: { prompt: "Write `is_success(code)` returning `True` if `200 <= code <= 299`. Test with `201` and `404`, print both results.", starterCode: "# Define is_success, test with 201 and 404\n", expectedOutput: "True\nFalse" },
+        advanced: { prompt: "Create a routes dict mapping `(method, path)` tuples to handler names. Look up `('GET', '/users')` and `('POST', '/users')`. Print both.", starterCode: "# Define routes dict with tuple keys, look up two routes\n", expectedOutput: "list_users\ncreate_user" },
       },
     },
     {
@@ -427,9 +427,9 @@ function wd(): CareerLesson[] {
       content: "## REST APIs\n\nREST is the standard for building web APIs.\n\n### Principles\n- **Resources** — Everything is a resource\n- **URLs** — Each resource has a unique URL\n- **Methods** — CRUD maps to HTTP methods\n- **JSON** — Standard data format",
       codeExample: "import json\nusers = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\ndef get_user(uid):\n    for u in users:\n        if u[\"id\"] == uid:\n            return json.dumps(u)\n    return json.dumps({\"error\": \"Not found\"})\nprint(get_user(1))",
       exercises: {
-        beginner: { prompt: "Create 2 user dicts. Print the first user's name.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\nprint(users[0][\"name\"])\n", expectedOutput: "Alice" },
-        intermediate: { prompt: "Write find_user(users, id) returning matching user. Print name for id=2.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\ndef find_user(users, uid):\n    for u in users:\n        if u[\"id\"] == uid:\n            return u\n    return None\nprint(find_user(users, 2)[\"name\"])\n", expectedOutput: "Bob" },
-        advanced: { prompt: "Add user with auto-increment id. Print new user's id.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\ndef add_user(users, name):\n    new_id = max(u[\"id\"] for u in users) + 1\n    user = {\"id\": new_id, \"name\": name}\n    users.append(user)\n    return user\nresult = add_user(users, \"Charlie\")\nprint(result[\"id\"])\n", expectedOutput: "3" },
+        beginner: { prompt: "Given `users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]`. Print the first user's name and `len(users)`.", starterCode: "users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]\n\n# Print first name and count\n", expectedOutput: "Alice\n2" },
+        intermediate: { prompt: "Write `find_user(users, uid)` that loops and returns matching dict. Test with `id=2`. Print the user's name.", starterCode: "users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]\n\n# Define find_user, test with id=2\n", expectedOutput: "Bob" },
+        advanced: { prompt: "Write `add_user(users, name)` that auto-increments `id` using `max()`. Add `'Charlie'`. Print `len(users)` and the new user's `id`.", starterCode: "users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]\n\n# Define add_user, add Charlie, print count and new id\n", expectedOutput: "3\n3" },
       },
     },
     {
@@ -437,9 +437,9 @@ function wd(): CareerLesson[] {
       content: "## Templates\n\nTemplates generate dynamic HTML by inserting Python variables.\n\n### Jinja2 Template Engine\n- Variables: {{ name }}\n- Logic: {% if condition %}\n- Loops: {% for item in list %}\n\n### Why Templates?\n- Separate logic from presentation\n- Reuse layouts\n- Dynamic content",
       codeExample: "def render(template, **kwargs):\n    result = template\n    for key, value in kwargs.items():\n        result = result.replace(\"{{ \" + key + \" }}\", str(value))\n    return result\n\nhtml = \"<h1>Hello, {{ name }}!</h1>\"\nprint(render(html, name=\"Alice\"))",
       exercises: {
-        beginner: { prompt: "Use string formatting to print 'Hello, Alice!'.", starterCode: "name = \"Alice\"\nprint(\"Hello, \" + name + \"!\")\n", expectedOutput: "Hello, Alice!" },
-        intermediate: { prompt: "Write render(template, data) replacing {name} with data['name']. Test it.", starterCode: "def render(template, data):\n    for key, val in data.items():\n        template = template.replace(\"{\" + key + \"}\", str(val))\n    return template\nprint(render(\"Hello, {name}!\", {\"name\": \"World\"}))\n", expectedOutput: "Hello, World!" },
-        advanced: { prompt: "Generate an HTML list from items. Print '<ul><li>A</li><li>B</li><li>C</li></ul>'", starterCode: "items = [\"A\", \"B\", \"C\"]\nhtml = \"<ul>\" + \"\".join(\"<li>\" + i + \"</li>\" for i in items) + \"</ul>\"\nprint(html)\n", expectedOutput: "<ul><li>A</li><li>B</li><li>C</li></ul>" },
+        beginner: { prompt: "Use an f-string: `name='Alice'`. Print `f'Hello, {name}!'`.", starterCode: "name = 'Alice'\n\n# Print greeting using f-string\n", expectedOutput: "Hello, Alice!" },
+        intermediate: { prompt: "Write `render(template, data)` replacing `{key}` with values from data dict. Test: `render('Hi {name}', {'name': 'World'})`. Print result.", starterCode: "# Define render, test it\n", expectedOutput: "Hi World" },
+        advanced: { prompt: "Given `items = ['A', 'B', 'C']`, build an HTML unordered list using `join()`. Print `'<ul><li>A</li><li>B</li><li>C</li></ul>'`.", starterCode: "items = ['A', 'B', 'C']\n\n# Build HTML list string and print\n", expectedOutput: "<ul><li>A</li><li>B</li><li>C</li></ul>" },
       },
     },
     {
@@ -447,9 +447,9 @@ function wd(): CareerLesson[] {
       content: "## Databases with Python\n\n### SQLite — Built into Python\n- No setup required\n- File-based database\n- Perfect for learning\n\n### SQL Basics\n- CREATE TABLE — Define structure\n- INSERT — Add data\n- SELECT — Query data\n- UPDATE — Modify data\n- DELETE — Remove data",
       codeExample: "table = [\n    {\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@email.com\"},\n    {\"id\": 2, \"name\": \"Bob\", \"email\": \"bob@email.com\"},\n]\nresult = [r for r in table if r[\"id\"] == 1]\nprint(result[0][\"name\"])",
       exercises: {
-        beginner: { prompt: "Create a list of tuples (1,'Alice'), (2,'Bob'). Print the second row.", starterCode: "rows = [(1, \"Alice\"), (2, \"Bob\")]\nprint(rows[1])\n", expectedOutput: "(2, 'Bob')" },
-        intermediate: { prompt: "Filter tuples where id > 1. Print the result.", starterCode: "rows = [(1, \"Alice\"), (2, \"Bob\"), (3, \"Charlie\")]\nfiltered = [(id, name) for id, name in rows if id > 1]\nprint(filtered)\n", expectedOutput: "[(2, 'Bob'), (3, 'Charlie')]" },
-        advanced: { prompt: "Filter records where age > 25. Print count.", starterCode: "table = [\n    {\"name\": \"Alice\", \"age\": 25},\n    {\"name\": \"Bob\", \"age\": 30},\n    {\"name\": \"Charlie\", \"age\": 22},\n    {\"name\": \"Diana\", \"age\": 28}\n]\nresult = [r for r in table if r[\"age\"] > 25]\nprint(len(result))\n", expectedOutput: "2" },
+        beginner: { prompt: "Create a list of tuples `[(1, 'Alice'), (2, 'Bob')]`. Print the second tuple and its length.", starterCode: "rows = [(1, 'Alice'), (2, 'Bob')]\n\n# Print second tuple and its length\n", expectedOutput: "(2, 'Bob')\n2" },
+        intermediate: { prompt: "Filter a list of tuples `[(1, 'A'), (2, 'B'), (3, 'C')]` where `id > 1`. Print the filtered list.", starterCode: "rows = [(1, 'A'), (2, 'B'), (3, 'C')]\n\n# Filter id > 1, print result\n", expectedOutput: "[(2, 'B'), (3, 'C')]" },
+        advanced: { prompt: "Given records as list of dicts, filter where `age > 25`. Print the count and the list of names.", starterCode: "table = [\n    {'name': 'Alice', 'age': 25},\n    {'name': 'Bob', 'age': 30},\n    {'name': 'Charlie', 'age': 22}\n]\n\n# Filter, print count and names\n", expectedOutput: "1\n['Bob']" },
       },
     },
     {
@@ -457,9 +457,9 @@ function wd(): CareerLesson[] {
       content: "## Authentication\n\nAuthentication verifies who a user is.\n\n### Methods\n- **Session-based** — Server stores session data\n- **Token-based (JWT)** — Client stores a signed token\n- **OAuth** — Login with Google, GitHub, etc.\n\n### Password Hashing\nNever store passwords in plain text! Use hashing.\n\n### JWT (JSON Web Token)\n- Header — Algorithm info\n- Payload — User data\n- Signature — Verifies integrity",
       codeExample: "import hashlib\nimport json\nimport base64\n\n# Simple password hashing\ndef hash_password(pwd):\n    return hashlib.sha256(pwd.encode()).hexdigest()\n\n# JWT-like token concept\ndef create_token(user_id, secret):\n    payload = json.dumps({\"user_id\": user_id})\n    encoded = base64.b64encode(payload.encode()).decode()\n    return encoded\n\ntoken = create_token(42, \"secret\")\nprint(\"Token:\", token)\nprint(\"Hash:\", hash_password(\"mypassword\")[:16] + \"...\")",
       exercises: {
-        beginner: { prompt: "Hash the string 'password123' using hashlib.sha256. Print first 10 chars of the hex digest.", starterCode: "import hashlib\nhashed = hashlib.sha256(\"password123\".encode()).hexdigest()\nprint(hashed[:10])\n", expectedOutput: "ef92b778ba" },
-        intermediate: { prompt: "Encode a dict {\"user\": \"Alice\"} to base64. Print the encoded string.", starterCode: "import json\nimport base64\ndata = json.dumps({\"user\": \"Alice\"})\nencoded = base64.b64encode(data.encode()).decode()\nprint(encoded)\n", expectedOutput: "eyJ1c2VyIjogIkFsaWNlIn0=" },
-        advanced: { prompt: "Verify a password by comparing hashes. Print True if match.", starterCode: "import hashlib\ndef verify(password, stored_hash):\n    return hashlib.sha256(password.encode()).hexdigest() == stored_hash\n\nstored = hashlib.sha256(\"secret\".encode()).hexdigest()\nprint(verify(\"secret\", stored))\n", expectedOutput: "True" },
+        beginner: { prompt: "Hash `'password123'` using `hashlib.sha256`. Print the first 10 characters of the hex digest.", starterCode: "import hashlib\n\n# Hash and print first 10 chars\n", expectedOutput: "ef92b778ba" },
+        intermediate: { prompt: "Encode `{'user': 'Alice'}` as JSON, then `base64` encode it. Print the base64 string.", starterCode: "import json, base64\n\n# JSON encode, base64 encode, print\n", expectedOutput: "eyJ1c2VyIjogIkFsaWNlIn0=" },
+        advanced: { prompt: "Write `verify(pwd, stored)` comparing SHA256 hashes. Hash `'secret'`, then verify with `'secret'` and `'wrong'`. Print both results.", starterCode: "import hashlib\n\n# Define verify, hash 'secret', test both\n", expectedOutput: "True\nFalse" },
       },
     },
     {
@@ -467,9 +467,9 @@ function wd(): CareerLesson[] {
       content: "## Middleware\n\nMiddleware processes requests before they reach your routes.\n\n### Common Middleware\n- **Logging** — Log every request\n- **CORS** — Cross-origin resource sharing\n- **Rate Limiting** — Prevent abuse\n- **Authentication** — Verify tokens\n\n### Error Handling\n- Try/except for graceful failures\n- Custom error responses\n- Error logging and monitoring",
       codeExample: "# Middleware chain concept\ndef logging_middleware(request):\n    print(f\"LOG: {request['method']} {request['path']}\")\n    return request\n\ndef auth_middleware(request):\n    if 'token' not in request:\n        return {\"error\": \"Unauthorized\", \"status\": 401}\n    return request\n\nreq = {\"method\": \"GET\", \"path\": \"/api/data\", \"token\": \"abc123\"}\nreq = logging_middleware(req)\nresult = auth_middleware(req)\nprint(\"Status:\", result.get(\"status\", 200))",
       exercises: {
-        beginner: { prompt: "Write a function that logs a request method and path. Test with GET /home.", starterCode: "def log_request(method, path):\n    print(f\"{method} {path}\")\n\nlog_request(\"GET\", \"/home\")\n", expectedOutput: "GET /home" },
-        intermediate: { prompt: "Write rate_limit(requests, max_req) returning True if under limit. Test 5 < 10.", starterCode: "def rate_limit(requests, max_req):\n    return requests < max_req\n\nprint(rate_limit(5, 10))\n", expectedOutput: "True" },
-        advanced: { prompt: "Chain 2 middleware functions on a request dict. Print final status.", starterCode: "def add_timestamp(req):\n    req[\"timestamp\"] = \"2024-01-01\"\n    return req\n\ndef validate(req):\n    req[\"valid\"] = \"path\" in req\n    return req\n\nreq = {\"path\": \"/api\"}\nreq = add_timestamp(validate(req))\nprint(req[\"valid\"])\n", expectedOutput: "True" },
+        beginner: { prompt: "Write `log_req(method, path)` that prints them as `'GET /home'`. Call it.", starterCode: "# Define log_req, call with 'GET', '/home'\n", expectedOutput: "GET /home" },
+        intermediate: { prompt: "Write `rate_limit(count, max_r)` returning `True` if under limit. Test `5 < 10` and `15 < 10`. Print both.", starterCode: "# Define rate_limit, test both cases\n", expectedOutput: "True\nFalse" },
+        advanced: { prompt: "Write two middleware functions: `add_ts(req)` adds `'ts'` key, `validate(req)` adds `'valid': True` if `'path'` exists. Chain them on `{'path': '/api'}`. Print `req['valid']` and `req['ts']`.", starterCode: "# Define add_ts and validate, chain on req dict\n", expectedOutput: "True\n2024" },
       },
     },
     {
@@ -477,9 +477,9 @@ function wd(): CareerLesson[] {
       content: "## Deploying Python Apps\n\n### Platforms\n- **Heroku** — Simple PaaS\n- **Railway / Render** — Modern alternatives\n- **AWS / GCP** — Full cloud\n- **Docker** — Containerization\n\n### Key Concepts\n- Environment variables for secrets\n- WSGI/ASGI servers (Gunicorn, Uvicorn)\n- Reverse proxy (Nginx)\n- CI/CD pipelines",
       codeExample: "import os\n\n# Environment variables pattern\ndef get_config():\n    return {\n        \"debug\": os.environ.get(\"DEBUG\", \"False\") == \"True\",\n        \"port\": int(os.environ.get(\"PORT\", 8000)),\n        \"db_url\": os.environ.get(\"DATABASE_URL\", \"sqlite:///local.db\"),\n    }\n\nconfig = get_config()\nprint(\"Port:\", config[\"port\"])\nprint(\"Debug:\", config[\"debug\"])",
       exercises: {
-        beginner: { prompt: "Use os.environ.get with a default value. Print the result.", starterCode: "import os\nport = os.environ.get(\"PORT\", \"8000\")\nprint(port)\n", expectedOutput: "8000" },
-        intermediate: { prompt: "Create a config dict from env vars with defaults. Print the database key.", starterCode: "import os\nconfig = {\n    \"host\": os.environ.get(\"HOST\", \"localhost\"),\n    \"database\": os.environ.get(\"DB\", \"myapp\")\n}\nprint(config[\"database\"])\n", expectedOutput: "myapp" },
-        advanced: { prompt: "Parse a connection string 'postgres://user:pass@host:5432/db'. Print the host.", starterCode: "url = \"postgres://user:pass@host:5432/db\"\nparts = url.split(\"@\")[1].split(\":\")\nhost = parts[0]\nprint(host)\n", expectedOutput: "host" },
+        beginner: { prompt: "Use `os.environ.get('PORT', '8000')` to get a value with a default. Print the result and its `type().__name__`.", starterCode: "import os\n\n# Get PORT with default, print value and type name\n", expectedOutput: "8000\nstr" },
+        intermediate: { prompt: "Create a config dict from env vars: `host` (default `'localhost'`) and `db` (default `'myapp'`). Print `config['host']` and `config['db']`.", starterCode: "import os\n\n# Build config dict, print host and db\n", expectedOutput: "localhost\nmyapp" },
+        advanced: { prompt: "Parse connection string `'postgres://user:pass@myhost:5432/db'`. Extract and print the host (`myhost`) and port (`5432`).", starterCode: "url = 'postgres://user:pass@myhost:5432/db'\n\n# Parse host and port, print both\n", expectedOutput: "myhost\n5432" },
       },
     },
     {
@@ -487,9 +487,9 @@ function wd(): CareerLesson[] {
       content: "## Auth & Security (Web)\n\n### Authentication vs Authorization\n- **Authentication**: who you are\n- **Authorization**: what you can access\n\n### Password storage (must)\n- Never store plaintext passwords\n- Store a *salted hash* (e.g., PBKDF2/bcrypt/argon2)\n\n### Sessions vs JWT\n- **Sessions**: server stores session, browser stores cookie\n- **JWT**: server signs a token, browser stores token\n\n### Common pitfalls\n- Missing input validation\n- Insecure secrets in code\n- No rate limiting on login\n- Broken access control",
       codeExample: "import hashlib\n\n# Hash password (demo only; use proper password hash libs in real apps)\ndef hash_password(pwd, salt=\"mysalt\"):\n    return hashlib.sha256((salt + pwd).encode()).hexdigest()\n\nstored = hash_password(\"Pass123\")\nprint(stored[:12])\nprint(hash_password(\"Pass123\") == stored)\n",
       exercises: {
-        beginner: { prompt: "Check if '/admin' starts with '/'. Print True/False.", starterCode: "path = \"/admin\"\nprint(path.startswith(\"/\"))\n", expectedOutput: "True" },
-        intermediate: { prompt: "Validate username is at least 3 chars and alphanumeric. Test 'ab'. Print False.", starterCode: "u = \"ab\"\nok = len(u) >= 3 and u.isalnum()\nprint(ok)\n", expectedOutput: "False" },
-        advanced: { prompt: "Implement a tiny rate-limit: allow max 3 tries. Given tries=4 print 'Blocked'.", starterCode: "tries = 4\nprint(\"Blocked\" if tries > 3 else \"OK\")\n", expectedOutput: "Blocked" },
+        beginner: { prompt: "Check if `'/admin'` starts with `'/'`. Also check if `'user'` is alphanumeric. Print both.", starterCode: "path = '/admin'\nuser = 'user'\n\n# Print startswith and isalnum checks\n", expectedOutput: "True\nTrue" },
+        intermediate: { prompt: "Validate username `'ab'`: must be `>= 3` chars and `.isalnum()`. Print result. Then validate `'abc'` and print.", starterCode: "# Validate 'ab' and 'abc', print both results\n", expectedOutput: "False\nTrue" },
+        advanced: { prompt: "Given `tries = 4, max_tries = 3`. Print `'Blocked'` if over limit else `'OK'`. Then reset `tries = 0` and print `'OK'`.", starterCode: "tries = 4\nmax_tries = 3\n\n# Check and print, then reset and print again\n", expectedOutput: "Blocked\nOK" },
       },
     },
     {
@@ -497,9 +497,9 @@ function wd(): CareerLesson[] {
       content: "## Testing\n\n### Why tests matter\n- Prevent regressions\n- Make refactors safe\n- Improve confidence before deploy\n\n### What to test\n- Pure functions: easiest\n- API routes: status code + JSON shape\n- Database logic: constraints and edge cases\n\n### Debugging checklist\n- Reproduce the bug\n- Reduce to a minimal case\n- Add logs for inputs/outputs\n- Write a test that fails, then fix",
       codeExample: "import unittest\n\ndef add(a, b):\n    return a + b\n\nclass TestAdd(unittest.TestCase):\n    def test_add(self):\n        self.assertEqual(add(2, 3), 5)\n\nif __name__ == \"__main__\":\n    suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestAdd)\n    result = unittest.TextTestRunner(verbosity=0).run(suite)\n    print(\"OK\" if result.wasSuccessful() else \"FAIL\")\n",
       exercises: {
-        beginner: { prompt: "Write a function that returns 'OK' if status code is 200 else 'ERR'. Test 200 and print.", starterCode: "def status_label(code):\n    return \"OK\" if code == 200 else \"ERR\"\n\nprint(status_label(200))\n", expectedOutput: "OK" },
-        intermediate: { prompt: "Given items=[1,2,3], assert length is 3 using a simple if and print 'pass'.", starterCode: "items = [1, 2, 3]\nif len(items) == 3:\n    print(\"pass\")\n", expectedOutput: "pass" },
-        advanced: { prompt: "Given response={'user':{'id':1}}, check nested key exists safely and print True.", starterCode: "response = {\"user\": {\"id\": 1}}\nprint(\"user\" in response and \"id\" in response[\"user\"]) \n", expectedOutput: "True" },
+        beginner: { prompt: "Write `status_label(code)` returning `'OK'` if 200 else `'ERR'`. Test with `200` and `500`. Print both.", starterCode: "# Define status_label, test with 200 and 500\n", expectedOutput: "OK\nERR" },
+        intermediate: { prompt: "Given `items = [1, 2, 3]`. Assert `len(items) == 3`. If True print `'pass'`. Also check if `sum(items) == 6`, print that too.", starterCode: "items = [1, 2, 3]\n\n# Check len and sum, print pass/fail\n", expectedOutput: "pass\npass" },
+        advanced: { prompt: "Safely access nested dict `resp = {'user': {'id': 1}}`. Check if `'user'` key exists AND `'id'` exists inside. Print `True`. Then try `.get('missing', {}).get('id')` and print result.", starterCode: "resp = {'user': {'id': 1}}\n\n# Check nested keys, print True. Try missing key, print None\n", expectedOutput: "True\nNone" },
       },
     },
   ];
@@ -518,9 +518,9 @@ function aiml(): CareerLesson[] {
         hindi: { title: "Machine Learning क्या है?", description: "ML के मुख्य concepts और प्रकार" },
       },
       exercises: {
-        beginner: { prompt: "Calculate the mean of [1500, 2000, 1200]. Print rounded to 1 decimal.", starterCode: "features = [1500, 2000, 1200]\nmean = sum(features) / len(features)\nprint(round(mean, 1))\n", expectedOutput: "1566.7" },
-        intermediate: { prompt: "Calculate mean absolute error between predicted=[300,450,200] and actual=[310,440,210]. Print it.", starterCode: "predicted = [300, 450, 200]\nactual = [310, 440, 210]\nerrors = [abs(p - a) for p, a in zip(predicted, actual)]\nmae = sum(errors) / len(errors)\nprint(round(mae, 1))\n", expectedOutput: "10.0" },
-        advanced: { prompt: "Linear prediction y = mx + b. Given m=2, b=1, predict for x=[1,2,3,4,5]. Print list.", starterCode: "m = 2\nb = 1\nx_values = [1, 2, 3, 4, 5]\npredictions = [m * x + b for x in x_values]\nprint(predictions)\n", expectedOutput: "[3, 5, 7, 9, 11]" },
+        beginner: { prompt: "Given `features = [1500, 2000, 1200]`. Print `sum()`, `len()`, and mean rounded to 1 decimal.", starterCode: "features = [1500, 2000, 1200]\n\n# Print sum, len, mean\n", expectedOutput: "4700\n3\n1566.7" },
+        intermediate: { prompt: "Calculate MAE between `pred=[300,450,200]` and `actual=[310,440,210]`. Print it.", starterCode: "pred = [300, 450, 200]\nactual = [310, 440, 210]\n\n# Calculate and print MAE\n", expectedOutput: "10.0" },
+        advanced: { prompt: "Linear model `y = mx + b`. Given `m=2, b=1`, predict for `x=[1,2,3]`. Print the predictions list and the `max()`.", starterCode: "m = 2\nb = 1\nx_values = [1, 2, 3]\n\n# Predict, print list and max\n", expectedOutput: "[3, 5, 7]\n7" },
       },
     },
     {
@@ -528,9 +528,9 @@ function aiml(): CareerLesson[] {
       content: "## NumPy: Foundation of ML\n\nNumPy provides fast array operations.\n\n### Why NumPy?\n- 10-100x faster than Python lists\n- Vectorization — operate on entire arrays\n- Broadcasting — automatic shape alignment\n- Linear algebra built-in",
       codeExample: "a = [1, 2, 3]\nb = [4, 5, 6]\nresult = [x + y for x, y in zip(a, b)]\nprint(\"Add:\", result)\ndot = sum(x * y for x, y in zip(a, b))\nprint(\"Dot:\", dot)\nscaled = [x * 2 for x in a]\nprint(\"Scale:\", scaled)",
       exercises: {
-        beginner: { prompt: "Add vectors [1,2,3] and [4,5,6] element-wise. Print result.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\nresult = [x + y for x, y in zip(a, b)]\nprint(result)\n", expectedOutput: "[5, 7, 9]" },
-        intermediate: { prompt: "Calculate dot product of [1,2,3] and [4,5,6]. Print it.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\ndot = sum(x * y for x, y in zip(a, b))\nprint(dot)\n", expectedOutput: "32" },
-        advanced: { prompt: "Calculate magnitude of vector [3,4]. Print it.", starterCode: "import math\nv = [3, 4]\nmagnitude = math.sqrt(sum(x**2 for x in v))\nprint(magnitude)\n", expectedOutput: "5.0" },
+        beginner: { prompt: "Add `[1,2,3]` and `[4,5,6]` element-wise using `zip()`. Print the result list.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\n\n# Element-wise add, print\n", expectedOutput: "[5, 7, 9]" },
+        intermediate: { prompt: "Calculate dot product of `[1,2,3]` and `[4,5,6]` using `zip()` and `sum()`. Print it.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\n\n# Dot product, print\n", expectedOutput: "32" },
+        advanced: { prompt: "Scale `[2, 4, 6]` by `0.5` (multiply each). Print the list. Then calculate magnitude of `[3,4]` using `math.sqrt`. Print it.", starterCode: "import math\n\n# Scale list, print. Magnitude of [3,4], print.\n", expectedOutput: "[1.0, 2.0, 3.0]\n5.0" },
       },
     },
     {
@@ -538,9 +538,9 @@ function aiml(): CareerLesson[] {
       content: "## Classification\n\nPredicts which category a data point belongs to.\n\n### Examples\n- Email: Spam or Not Spam\n- Image: Cat or Dog\n- Transaction: Fraud or Legit\n\n### K-Nearest Neighbors (KNN)\n1. Calculate distance to all training points\n2. Find K nearest\n3. Majority vote = prediction",
       codeExample: "import math\ndata = [\n    [1, 2, \"A\"], [2, 3, \"A\"], [3, 1, \"A\"],\n    [6, 5, \"B\"], [7, 7, \"B\"], [8, 6, \"B\"],\n]\ndef distance(p1, p2):\n    return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)\nnew_point = [5, 5]\ndists = [(distance(new_point, d[:2]), d[2]) for d in data]\ndists.sort()\nprint(\"Nearest 3:\", [d[1] for d in dists[:3]])",
       exercises: {
-        beginner: { prompt: "Calculate Euclidean distance between (0,0) and (3,4). Print it.", starterCode: "import math\nd = math.sqrt(3**2 + 4**2)\nprint(d)\n", expectedOutput: "5.0" },
-        intermediate: { prompt: "Find majority vote from ['A','A','B','A','B']. Print it.", starterCode: "labels = [\"A\", \"A\", \"B\", \"A\", \"B\"]\ncounts = {}\nfor l in labels:\n    counts[l] = counts.get(l, 0) + 1\nprint(max(counts, key=counts.get))\n", expectedOutput: "A" },
-        advanced: { prompt: "Calculate accuracy: predicted=['A','B','A','A'] vs actual=['A','B','B','A']. Print as percentage.", starterCode: "predicted = [\"A\", \"B\", \"A\", \"A\"]\nactual = [\"A\", \"B\", \"B\", \"A\"]\ncorrect = sum(p == a for p, a in zip(predicted, actual))\naccuracy = (correct / len(actual)) * 100\nprint(accuracy)\n", expectedOutput: "75.0" },
+        beginner: { prompt: "Calculate Euclidean distance between `(0,0)` and `(3,4)` using `math.sqrt`. Print it.", starterCode: "import math\n\n# Calculate and print distance\n", expectedOutput: "5.0" },
+        intermediate: { prompt: "Find majority vote from `['A','A','B','A','B']`. Count with a dict, then use `max()` with `key=`. Print the winner and its count.", starterCode: "labels = ['A', 'A', 'B', 'A', 'B']\n\n# Count, find max, print winner and count\n", expectedOutput: "A\n3" },
+        advanced: { prompt: "Calculate accuracy: `pred=['A','B','A','A']` vs `actual=['A','B','B','A']`. Print correct count and accuracy as percentage.", starterCode: "pred = ['A', 'B', 'A', 'A']\nactual = ['A', 'B', 'B', 'A']\n\n# Count correct, print count and accuracy %\n", expectedOutput: "3\n75.0" },
       },
     },
     {
@@ -548,9 +548,9 @@ function aiml(): CareerLesson[] {
       content: "## Linear Regression\n\nPredict a continuous value from input features.\n\n### The Math\n- y = mx + b (slope-intercept)\n- m = slope (rate of change)\n- b = y-intercept\n\n### Training\n- Find m and b that minimize error\n- Cost function: Mean Squared Error\n- Gradient descent optimization\n\n### Applications\n- House price prediction\n- Stock forecasting\n- Sales estimation",
       codeExample: "# Simple linear regression from scratch\nX = [1, 2, 3, 4, 5]\ny = [2, 4, 5, 4, 5]\n\nn = len(X)\nmean_x = sum(X) / n\nmean_y = sum(y) / n\n\nnumerator = sum((X[i] - mean_x) * (y[i] - mean_y) for i in range(n))\ndenominator = sum((X[i] - mean_x) ** 2 for i in range(n))\n\nm = numerator / denominator\nb = mean_y - m * mean_x\n\nprint(\"Slope:\", round(m, 2))\nprint(\"Intercept:\", round(b, 2))\nprint(\"Predict x=6:\", round(m * 6 + b, 2))",
       exercises: {
-        beginner: { prompt: "Given y=2x+1, predict y for x=5. Print it.", starterCode: "m = 2\nb = 1\nx = 5\ny = m * x + b\nprint(y)\n", expectedOutput: "11" },
-        intermediate: { prompt: "Calculate MSE for predictions [2,4,6] vs actual [2.5,3.5,6]. Print rounded to 2 decimals.", starterCode: "pred = [2, 4, 6]\nactual = [2.5, 3.5, 6]\nmse = sum((p - a) ** 2 for p, a in zip(pred, actual)) / len(pred)\nprint(round(mse, 2))\n", expectedOutput: "0.17" },
-        advanced: { prompt: "Calculate R-squared for predictions. Print rounded to 2 decimals.", starterCode: "actual = [3, 5, 7, 9]\npred = [2.8, 5.2, 6.8, 9.1]\nmean_a = sum(actual) / len(actual)\nss_res = sum((a - p) ** 2 for a, p in zip(actual, pred))\nss_tot = sum((a - mean_a) ** 2 for a in actual)\nr2 = 1 - (ss_res / ss_tot)\nprint(round(r2, 2))\n", expectedOutput: "0.99" },
+        beginner: { prompt: "Given `y = 2x + 1`, predict for `x=5`. Print it.", starterCode: "m = 2\nb = 1\nx = 5\n\n# Calculate y and print\n", expectedOutput: "11" },
+        intermediate: { prompt: "Calculate MSE for `pred=[2,4,6]` vs `actual=[2.5,3.5,6]`. Print rounded to 2 decimals.", starterCode: "pred = [2, 4, 6]\nactual = [2.5, 3.5, 6]\n\n# Calculate MSE, print rounded\n", expectedOutput: "0.17" },
+        advanced: { prompt: "Calculate R² for `actual=[3,5,7,9]` and `pred=[2.8,5.2,6.8,9.1]`. Print rounded to 2 decimals.", starterCode: "actual = [3, 5, 7, 9]\npred = [2.8, 5.2, 6.8, 9.1]\n\n# Calculate R-squared, print\n", expectedOutput: "0.99" },
       },
     },
     {
@@ -558,9 +558,9 @@ function aiml(): CareerLesson[] {
       content: "## Neural Networks\n\nInspired by the brain — layers of connected neurons.\n\n### Architecture\n- **Input Layer** — Receives features\n- **Hidden Layers** — Learn patterns\n- **Output Layer** — Makes predictions\n\n### Activation Functions\n- **ReLU** — max(0, x)\n- **Sigmoid** — 1/(1+e^-x) → outputs 0-1\n- **Softmax** — Multi-class probabilities\n\n### Training: Backpropagation\n1. Forward pass — compute output\n2. Calculate loss\n3. Backward pass — compute gradients\n4. Update weights",
       codeExample: "import math\n\n# Activation functions\ndef relu(x):\n    return max(0, x)\n\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\n# Simple neuron\ndef neuron(inputs, weights, bias):\n    total = sum(i * w for i, w in zip(inputs, weights)) + bias\n    return sigmoid(total)\n\nresult = neuron([1.0, 0.5], [0.8, 0.2], -0.1)\nprint(\"Output:\", round(result, 4))",
       exercises: {
-        beginner: { prompt: "Implement ReLU: return max(0, x). Test with -3 and 5. Print results.", starterCode: "def relu(x):\n    return max(0, x)\n\nprint(relu(-3))\nprint(relu(5))\n", expectedOutput: "0\n5" },
-        intermediate: { prompt: "Calculate sigmoid(0). Print rounded to 1 decimal.", starterCode: "import math\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\nprint(round(sigmoid(0), 1))\n", expectedOutput: "0.5" },
-        advanced: { prompt: "Weighted sum of inputs=[1,2,3] with weights=[0.5,0.3,0.2] plus bias=0.1. Print rounded to 1.", starterCode: "inputs = [1, 2, 3]\nweights = [0.5, 0.3, 0.2]\nbias = 0.1\nresult = sum(i * w for i, w in zip(inputs, weights)) + bias\nprint(round(result, 1))\n", expectedOutput: "1.8" },
+        beginner: { prompt: "Implement `relu(x)` returning `max(0, x)`. Test with `-3` and `5`. Print both.", starterCode: "# Define relu, test with -3 and 5\n", expectedOutput: "0\n5" },
+        intermediate: { prompt: "Implement `sigmoid(x)` using `math.exp`. Print `sigmoid(0)` rounded to 1 decimal.", starterCode: "import math\n\n# Define sigmoid, print sigmoid(0) rounded\n", expectedOutput: "0.5" },
+        advanced: { prompt: "Compute weighted sum: `inputs=[1,2,3]`, `weights=[0.5,0.3,0.2]`, `bias=0.1`. Use `zip()`. Print rounded to 1 decimal.", starterCode: "inputs = [1, 2, 3]\nweights = [0.5, 0.3, 0.2]\nbias = 0.1\n\n# Weighted sum + bias, print\n", expectedOutput: "1.8" },
       },
     },
     {
@@ -568,9 +568,9 @@ function aiml(): CareerLesson[] {
       content: "## NLP — Teaching Computers to Read\n\n### Text Processing Pipeline\n1. **Tokenization** — Split text into words\n2. **Lowercasing** — Normalize case\n3. **Stop words** — Remove common words (the, is, a)\n4. **Stemming** — Reduce to root (running → run)\n5. **Vectorization** — Convert text to numbers\n\n### Applications\n- Chatbots & virtual assistants\n- Sentiment analysis\n- Translation\n- Text summarization",
       codeExample: "# Simple NLP pipeline\ntext = \"The quick brown fox jumps over the lazy dog\"\n\n# Tokenize\ntokens = text.lower().split()\nprint(\"Tokens:\", len(tokens))\n\n# Remove stop words\nstop_words = {\"the\", \"over\", \"a\", \"is\", \"and\"}\nfiltered = [w for w in tokens if w not in stop_words]\nprint(\"Filtered:\", filtered)\n\n# Word frequency\nfreq = {}\nfor w in filtered:\n    freq[w] = freq.get(w, 0) + 1\nprint(\"Frequencies:\", freq)",
       exercises: {
-        beginner: { prompt: "Tokenize 'Hello World Python' into a list. Print the list.", starterCode: "text = \"Hello World Python\"\ntokens = text.split()\nprint(tokens)\n", expectedOutput: "['Hello', 'World', 'Python']" },
-        intermediate: { prompt: "Count word frequency in 'the cat sat on the mat'. Print frequency of 'the'.", starterCode: "text = \"the cat sat on the mat\"\nwords = text.split()\nfreq = {}\nfor w in words:\n    freq[w] = freq.get(w, 0) + 1\nprint(freq[\"the\"])\n", expectedOutput: "2" },
-        advanced: { prompt: "Simple sentiment: count positive words. Print the count.", starterCode: "text = \"great amazing product but terrible shipping\"\npositive = {\"great\", \"amazing\", \"good\", \"excellent\"}\nwords = text.split()\ncount = sum(1 for w in words if w in positive)\nprint(count)\n", expectedOutput: "2" },
+        beginner: { prompt: "Tokenize `'Hello World Python'` using `.split()`. Print the list and `len()` of tokens.", starterCode: "text = 'Hello World Python'\n\n# Split and print tokens and count\n", expectedOutput: "['Hello', 'World', 'Python']\n3" },
+        intermediate: { prompt: "Count word frequency in `'the cat sat on the mat'` using a dict. Print freq of `'the'` and total unique words.", starterCode: "text = 'the cat sat on the mat'\n\n# Count freq, print 'the' count and unique count\n", expectedOutput: "2\n5" },
+        advanced: { prompt: "Simple sentiment: count positive words `{'great','amazing'}` in `'great amazing but terrible'`. Print positive count and total word count.", starterCode: "text = 'great amazing but terrible'\npositive = {'great', 'amazing'}\n\n# Count positive and total, print both\n", expectedOutput: "2\n4" },
       },
     },
     {
@@ -578,9 +578,9 @@ function aiml(): CareerLesson[] {
       content: "## Computer Vision\n\nTeach computers to see and understand images.\n\n### Key Concepts\n- **Pixels** — Image = grid of numbers\n- **Channels** — RGB (Red, Green, Blue)\n- **Filters/Kernels** — Detect edges, blur, sharpen\n- **CNNs** — Convolutional Neural Networks\n\n### Applications\n- Face recognition\n- Object detection\n- Self-driving cars\n- Medical imaging",
       codeExample: "# Image as a matrix concept\nimage = [\n    [0, 0, 255, 0, 0],\n    [0, 255, 255, 255, 0],\n    [255, 255, 255, 255, 255],\n    [0, 255, 255, 255, 0],\n    [0, 0, 255, 0, 0],\n]\n\n# Count bright pixels (> 128)\nbright = sum(1 for row in image for pixel in row if pixel > 128)\ntotal = sum(len(row) for row in image)\nprint(f\"Bright pixels: {bright}/{total}\")\nprint(f\"Brightness: {round(bright/total*100)}%\")",
       exercises: {
-        beginner: { prompt: "Create a 3x3 grid of zeros. Print it.", starterCode: "grid = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]\nfor row in grid:\n    print(row)\n", expectedOutput: "[0, 0, 0]\n[0, 0, 0]\n[0, 0, 0]" },
-        intermediate: { prompt: "Flatten a 2x3 matrix to a 1D list. Print it.", starterCode: "matrix = [[1, 2, 3], [4, 5, 6]]\nflat = [val for row in matrix for val in row]\nprint(flat)\n", expectedOutput: "[1, 2, 3, 4, 5, 6]" },
-        advanced: { prompt: "Calculate average pixel value of image=[[100,200],[150,50]]. Print it.", starterCode: "image = [[100, 200], [150, 50]]\ntotal = sum(p for row in image for p in row)\ncount = sum(len(row) for row in image)\nprint(total / count)\n", expectedOutput: "125.0" },
+        beginner: { prompt: "Create a 3x3 grid of zeros using nested lists. Print each row.", starterCode: "# Create 3x3 grid, print each row\n", expectedOutput: "[0, 0, 0]\n[0, 0, 0]\n[0, 0, 0]" },
+        intermediate: { prompt: "Flatten `[[1,2,3],[4,5,6]]` to a 1D list. Print the flat list and its `len()`.", starterCode: "matrix = [[1, 2, 3], [4, 5, 6]]\n\n# Flatten and print list and length\n", expectedOutput: "[1, 2, 3, 4, 5, 6]\n6" },
+        advanced: { prompt: "Calculate average pixel value of `image=[[100,200],[150,50]]`. Print total, count, and average.", starterCode: "image = [[100, 200], [150, 50]]\n\n# Calculate total, count, average and print all\n", expectedOutput: "500\n4\n125.0" },
       },
     },
     {
@@ -588,9 +588,9 @@ function aiml(): CareerLesson[] {
       content: "## Feature Engineering\n\nModels learn from *features*.\n\n### Common transformations\n- **Scaling**: min-max, standardization\n- **Encoding**: one-hot for categories\n- **Text**: bag-of-words, TF-IDF (concept)\n- **Datetime**: day-of-week, month, hour\n\n### Rule of thumb\nIf a human can explain why a signal matters, it is often a good candidate feature.",
       codeExample: "# Simple scaling (min-max)\nx = [10, 20, 15, 30]\nmn, mx = min(x), max(x)\nscaled = [round((v - mn) / (mx - mn), 2) for v in x]\nprint(scaled)\n",
       exercises: {
-        beginner: { prompt: "Compute min-max scaled value of v=5 with min=0 max=10. Print it.", starterCode: "v = 5\nmn = 0\nmx = 10\nprint((v - mn) / (mx - mn))\n", expectedOutput: "0.5" },
-        intermediate: { prompt: "One-hot encode 'B' from categories=['A','B','C']. Print the list.", starterCode: "categories = [\"A\", \"B\", \"C\"]\nvalue = \"B\"\nvec = [1 if c == value else 0 for c in categories]\nprint(vec)\n", expectedOutput: "[0, 1, 0]" },
-        advanced: { prompt: "Extract day-of-week from '2024-01-07' (Sunday). Print 'Sun'.", starterCode: "from datetime import datetime\ns = \"2024-01-07\"\nd = datetime.strptime(s, \"%Y-%m-%d\")\nprint(d.strftime(\"%a\"))\n", expectedOutput: "Sun" },
+        beginner: { prompt: "Min-max scale `v=5` with `min=0, max=10`. Print the result.", starterCode: "v = 5\nmn = 0\nmx = 10\n\n# Scale and print\n", expectedOutput: "0.5" },
+        intermediate: { prompt: "One-hot encode `'B'` from `categories=['A','B','C']`. Print the vector.", starterCode: "categories = ['A', 'B', 'C']\nvalue = 'B'\n\n# One-hot encode and print\n", expectedOutput: "[0, 1, 0]" },
+        advanced: { prompt: "Extract day-of-week from `'2024-01-07'` using `strptime` and `strftime('%a')`. Print the short name.", starterCode: "from datetime import datetime\ns = '2024-01-07'\n\n# Parse and print day abbreviation\n", expectedOutput: "Sun" },
       },
     },
     {
@@ -598,9 +598,9 @@ function aiml(): CareerLesson[] {
       content: "## Evaluation\n\n### Why accuracy can be misleading\nIf 95% of transactions are not fraud, a model that always predicts \"not fraud\" is 95% accurate but useless.\n\n### Confusion matrix\n- TP: true positives\n- FP: false positives\n- TN: true negatives\n- FN: false negatives\n\n### Metrics\n- **Precision** = TP / (TP + FP)\n- **Recall** = TP / (TP + FN)\n- **F1** = harmonic mean of precision and recall",
       codeExample: "# Compute precision/recall from predictions\nactual = [1, 0, 1, 1, 0]\npred =   [1, 0, 0, 1, 1]\n\nTP = sum(1 for a, p in zip(actual, pred) if a == 1 and p == 1)\nFP = sum(1 for a, p in zip(actual, pred) if a == 0 and p == 1)\nFN = sum(1 for a, p in zip(actual, pred) if a == 1 and p == 0)\n\nprecision = TP / (TP + FP) if TP + FP else 0\nrecall = TP / (TP + FN) if TP + FN else 0\nprint(round(precision, 2), round(recall, 2))\n",
       exercises: {
-        beginner: { prompt: "Given TP=3, FP=1, compute precision. Print 0.75.", starterCode: "TP = 3\nFP = 1\nprint(TP / (TP + FP))\n", expectedOutput: "0.75" },
-        intermediate: { prompt: "Given TP=2, FN=1, compute recall. Print 0.6666666666666666.", starterCode: "TP = 2\nFN = 1\nprint(TP / (TP + FN))\n", expectedOutput: "0.6666666666666666" },
-        advanced: { prompt: "Compute accuracy for actual=[1,0,1,0] pred=[1,1,1,0]. Print 0.75.", starterCode: "actual = [1, 0, 1, 0]\npred = [1, 1, 1, 0]\ncorrect = sum(1 for a, p in zip(actual, pred) if a == p)\nprint(correct / len(actual))\n", expectedOutput: "0.75" },
+        beginner: { prompt: "Given `TP=3, FP=1`. Compute precision (`TP/(TP+FP)`). Print it.", starterCode: "TP = 3\nFP = 1\n\n# Compute and print precision\n", expectedOutput: "0.75" },
+        intermediate: { prompt: "Given `TP=2, FN=1`. Compute recall. Print it rounded to 4 decimals.", starterCode: "TP = 2\nFN = 1\n\n# Compute and print recall\n", expectedOutput: "0.6667" },
+        advanced: { prompt: "Compute accuracy for `actual=[1,0,1,0]` vs `pred=[1,1,1,0]`. Print correct count and accuracy.", starterCode: "actual = [1, 0, 1, 0]\npred = [1, 1, 1, 0]\n\n# Count correct, print count and accuracy\n", expectedOutput: "3\n0.75" },
       },
     },
   ];
@@ -619,9 +619,9 @@ function auto(): CareerLesson[] {
         hindi: { title: "Python Automation Basics", description: "दोहराए जाने वाले कार्यों को ऑटोमेट करें" },
       },
       exercises: {
-        beginner: { prompt: "Filter image files (.png, .jpg) from a list. Print count.", starterCode: "files = [\"doc.pdf\", \"img.png\", \"data.csv\", \"pic.jpg\"]\nimages = [f for f in files if f.endswith((\".png\", \".jpg\"))]\nprint(len(images))\n", expectedOutput: "2" },
-        intermediate: { prompt: "Add 'backup_' prefix to filenames. Print new list.", starterCode: "files = [\"data.csv\", \"config.json\"]\nrenamed = [\"backup_\" + f for f in files]\nprint(renamed)\n", expectedOutput: "['backup_data.csv', 'backup_config.json']" },
-        advanced: { prompt: "Count ERROR entries in log lines. Print the count.", starterCode: "logs = [\n    \"INFO: Server started\",\n    \"ERROR: Connection failed\",\n    \"INFO: Request processed\",\n    \"ERROR: Timeout\",\n    \"ERROR: Disk full\"\n]\nerror_count = sum(1 for log in logs if log.startswith(\"ERROR\"))\nprint(error_count)\n", expectedOutput: "3" },
+        beginner: { prompt: "Filter files ending with `.png` or `.jpg` from a list. Print the filtered list and its `len()`.", starterCode: "files = ['doc.pdf', 'img.png', 'data.csv', 'pic.jpg']\n\n# Filter images, print list and count\n", expectedOutput: "['img.png', 'pic.jpg']\n2" },
+        intermediate: { prompt: "Add `'backup_'` prefix to each filename in `['data.csv', 'config.json']`. Print the new list.", starterCode: "files = ['data.csv', 'config.json']\n\n# Prefix each, print\n", expectedOutput: "['backup_data.csv', 'backup_config.json']" },
+        advanced: { prompt: "Count lines starting with `'ERROR'` in a log list. Print the count and the first error message.", starterCode: "logs = [\n    'INFO: Started',\n    'ERROR: Connection failed',\n    'INFO: OK',\n    'ERROR: Timeout'\n]\n\n# Count errors, print count and first error\n", expectedOutput: "2\nERROR: Connection failed" },
       },
     },
     {
@@ -629,9 +629,9 @@ function auto(): CareerLesson[] {
       content: "## Web Scraping\n\nExtract data from websites programmatically.\n\n### How It Works\n1. Send HTTP request\n2. Parse HTML content\n3. Extract needed data\n4. Store it\n\n### Tools\n- requests — Fetch pages\n- BeautifulSoup — Parse HTML\n- Scrapy — Full framework",
       codeExample: "html = '<h1>Welcome</h1><p class=\"price\">29.99</p><p class=\"price\">49.99</p>'\nimport re\nprices = re.findall(r'class=\"price\">(\\d+\\.\\d+)', html)\nprint(\"Prices found:\", prices)\nprint(\"Total:\", sum(float(p) for p in prices))",
       exercises: {
-        beginner: { prompt: "Extract text between <h1> tags. Print it.", starterCode: "html = \"<h1>Hello World</h1>\"\ntext = html.replace(\"<h1>\", \"\").replace(\"</h1>\", \"\")\nprint(text)\n", expectedOutput: "Hello World" },
-        intermediate: { prompt: "Parse '$29.99' to a float and print it.", starterCode: "price_str = \"$29.99\"\nprice = float(price_str.replace(\"$\", \"\"))\nprint(price)\n", expectedOutput: "29.99" },
-        advanced: { prompt: "Count URLs starting with 'https' in a text. Print count.", starterCode: "text = \"Visit https://example.com or http://old.com or https://secure.org\"\nwords = text.split()\nhttps_count = sum(1 for w in words if w.startswith(\"https://\"))\nprint(https_count)\n", expectedOutput: "2" },
+        beginner: { prompt: "Extract text between `<h1>` and `</h1>` from `'<h1>Hello</h1>'` using `.replace()`. Print it.", starterCode: "html = '<h1>Hello</h1>'\n\n# Extract text and print\n", expectedOutput: "Hello" },
+        intermediate: { prompt: "Parse `'$29.99'` to a float by removing `'$'`. Print the float and its `type().__name__`.", starterCode: "price_str = '$29.99'\n\n# Parse to float, print value and type\n", expectedOutput: "29.99\nfloat" },
+        advanced: { prompt: "Count URLs starting with `'https'` in a text. Also count `'http'` (non-https). Print both counts.", starterCode: "text = 'Visit https://a.com or http://b.com or https://c.org'\n\n# Count https and http-only URLs, print both\n", expectedOutput: "2\n1" },
       },
     },
     {
@@ -639,9 +639,9 @@ function auto(): CareerLesson[] {
       content: "## Regular Expressions (Regex)\n\nRegex lets you search for patterns in text.\n\n### Common Patterns\n- \\d — Any digit\n- \\w — Any word character\n- . — Any character\n- * — Zero or more\n- + — One or more\n- [] — Character class\n\n### Python's re module\n- re.search() — Find first match\n- re.findall() — Find all matches\n- re.sub() — Replace matches",
       codeExample: "import re\n\ntext = \"Contact us at support@example.com or sales@company.org\"\n\n# Find all emails\nemails = re.findall(r'[\\w.]+@[\\w.]+', text)\nprint(\"Emails:\", emails)\n\n# Find all phone-like patterns\nphones = \"Call 555-1234 or 555-5678\"\nnumbers = re.findall(r'\\d{3}-\\d{4}', phones)\nprint(\"Numbers:\", numbers)",
       exercises: {
-        beginner: { prompt: "Find all digits in 'abc123def456'. Print them as a list.", starterCode: "import re\ntext = \"abc123def456\"\ndigits = re.findall(r'\\d+', text)\nprint(digits)\n", expectedOutput: "['123', '456']" },
-        intermediate: { prompt: "Extract email domains from 'user@gmail.com admin@yahoo.com'. Print them.", starterCode: "import re\ntext = \"user@gmail.com admin@yahoo.com\"\ndomains = re.findall(r'@([\\w.]+)', text)\nprint(domains)\n", expectedOutput: "['gmail.com', 'yahoo.com']" },
-        advanced: { prompt: "Replace all digits with '#' in 'Phone: 555-1234'. Print result.", starterCode: "import re\ntext = \"Phone: 555-1234\"\nresult = re.sub(r'\\d', '#', text)\nprint(result)\n", expectedOutput: "Phone: ###-####" },
+        beginner: { prompt: "Use `re.findall(r'\\d+', 'abc123def456')`. Print the list of matches.", starterCode: "import re\ntext = 'abc123def456'\n\n# Find all digit groups, print\n", expectedOutput: "['123', '456']" },
+        intermediate: { prompt: "Extract email domains from `'user@gmail.com admin@yahoo.com'` using `re.findall(r'@([\\w.]+)')`. Print the list.", starterCode: "import re\ntext = 'user@gmail.com admin@yahoo.com'\n\n# Extract domains, print\n", expectedOutput: "['gmail.com', 'yahoo.com']" },
+        advanced: { prompt: "Replace all digits with `'#'` in `'Phone: 555-1234'` using `re.sub()`. Print the result.", starterCode: "import re\ntext = 'Phone: 555-1234'\n\n# Replace digits, print\n", expectedOutput: "Phone: ###-####" },
       },
     },
     {
@@ -649,9 +649,9 @@ function auto(): CareerLesson[] {
       content: "## API Integration\n\nAPIs let your scripts talk to other services.\n\n### REST API Basics\n- GET — Read data\n- POST — Send data\n- Headers — Authentication, content type\n- JSON — Standard data format\n\n### Common APIs\n- Weather data\n- Social media\n- Payment processing\n- Email services",
       codeExample: "import json\n\n# Simulating API response\napi_response = json.dumps({\n    \"status\": \"success\",\n    \"data\": {\"temp\": 72, \"city\": \"New York\"},\n    \"count\": 1\n})\n\nparsed = json.loads(api_response)\nprint(\"City:\", parsed[\"data\"][\"city\"])\nprint(\"Temp:\", parsed[\"data\"][\"temp\"])",
       exercises: {
-        beginner: { prompt: "Parse JSON string '{\"name\": \"Alice\"}'. Print the name.", starterCode: "import json\ndata = json.loads('{\"name\": \"Alice\"}')\nprint(data[\"name\"])\n", expectedOutput: "Alice" },
-        intermediate: { prompt: "Convert a dict to JSON string. Print it.", starterCode: "import json\ndata = {\"status\": \"ok\", \"code\": 200}\nresult = json.dumps(data)\nprint(result)\n", expectedOutput: '{"status": "ok", "code": 200}' },
-        advanced: { prompt: "Build a query string from dict params. Print it.", starterCode: "params = {\"q\": \"python\", \"page\": \"1\", \"sort\": \"new\"}\nquery = \"&\".join(f\"{k}={v}\" for k, v in params.items())\nprint(query)\n", expectedOutput: "q=python&page=1&sort=new" },
+        beginner: { prompt: "Parse JSON `'{\"name\": \"Alice\"}'` using `json.loads()`. Print the name.", starterCode: "import json\n\n# Parse and print name\n", expectedOutput: "Alice" },
+        intermediate: { prompt: "Convert `{'status': 'ok', 'code': 200}` to JSON using `json.dumps()`. Print the string.", starterCode: "import json\ndata = {'status': 'ok', 'code': 200}\n\n# Convert and print\n", expectedOutput: '{"status": "ok", "code": 200}' },
+        advanced: { prompt: "Build a query string from `{'q': 'python', 'page': '1'}` using `join()`. Print the result.", starterCode: "params = {'q': 'python', 'page': '1'}\n\n# Build query string, print\n", expectedOutput: "q=python&page=1" },
       },
     },
     {
@@ -659,9 +659,9 @@ function auto(): CareerLesson[] {
       content: "## Task Scheduling\n\nAutomate when scripts run.\n\n### Methods\n- **time.sleep()** — Simple delays\n- **schedule library** — Readable scheduling\n- **cron (Linux)** — OS-level scheduling\n- **Windows Task Scheduler**\n\n### Use Cases\n- Daily report generation\n- Hourly data sync\n- Monitoring & alerts\n- Backup automation",
       codeExample: "import time\nfrom datetime import datetime\n\n# Simulating a scheduled task\ndef run_task():\n    now = datetime.now().strftime(\"%H:%M:%S\")\n    print(f\"[{now}] Task executed\")\n\n# Simulating cron-like schedule\nschedule = {\n    \"daily_report\": \"08:00\",\n    \"hourly_sync\": \"every 1h\",\n    \"backup\": \"02:00\"\n}\n\nfor task, when in schedule.items():\n    print(f\"{task}: runs at {when}\")",
       exercises: {
-        beginner: { prompt: "Get current hour using datetime. Print it.", starterCode: "from datetime import datetime\nhour = datetime.now().hour\nprint(type(hour).__name__)\n", expectedOutput: "int" },
-        intermediate: { prompt: "Create a schedule dict with 3 tasks. Print the number of tasks.", starterCode: "schedule = {\n    \"backup\": \"02:00\",\n    \"report\": \"08:00\",\n    \"sync\": \"12:00\"\n}\nprint(len(schedule))\n", expectedOutput: "3" },
-        advanced: { prompt: "Parse cron-like string '*/5 * * * *'. Print the interval (5).", starterCode: "cron = \"*/5 * * * *\"\nminute_field = cron.split()[0]\ninterval = int(minute_field.split(\"/\")[1])\nprint(interval)\n", expectedOutput: "5" },
+        beginner: { prompt: "Get the current hour using `datetime.now().hour`. Print its `type().__name__`.", starterCode: "from datetime import datetime\n\n# Get hour, print its type name\n", expectedOutput: "int" },
+        intermediate: { prompt: "Create a schedule dict with 3 tasks and their times. Print `len(schedule)` and the keys as a sorted list.", starterCode: "# Create schedule dict, print count and sorted keys\n", expectedOutput: "3\n['backup', 'report', 'sync']" },
+        advanced: { prompt: "Parse cron `'*/5 * * * *'`. Split by space, extract interval from first field. Print the field and the interval as int.", starterCode: "cron = '*/5 * * * *'\n\n# Parse first field and interval, print both\n", expectedOutput: "*/5\n5" },
       },
     },
     {
@@ -669,9 +669,9 @@ function auto(): CareerLesson[] {
       content: "## Email Automation\n\nAutomate sending emails for reports, alerts, notifications.\n\n### Python Email Libraries\n- **smtplib** — Built-in SMTP client\n- **email.mime** — Create rich email messages\n- **SendGrid / Mailgun** — Cloud email APIs\n\n### Email Structure\n- From, To, Subject\n- Body (plain text or HTML)\n- Attachments",
       codeExample: "# Email template builder\ndef build_email(to, subject, body, attachments=None):\n    email = {\n        \"to\": to,\n        \"subject\": subject,\n        \"body\": body,\n        \"attachments\": attachments or []\n    }\n    return email\n\nemail = build_email(\n    \"user@example.com\",\n    \"Daily Report\",\n    \"Here is your report for today.\"\n)\nprint(f\"To: {email['to']}\")\nprint(f\"Subject: {email['subject']}\")",
       exercises: {
-        beginner: { prompt: "Create an email dict with 'to', 'subject', 'body'. Print the subject.", starterCode: "email = {\"to\": \"alice@mail.com\", \"subject\": \"Hello\", \"body\": \"Hi there\"}\nprint(email[\"subject\"])\n", expectedOutput: "Hello" },
-        intermediate: { prompt: "Format an email body with variables. Print it.", starterCode: "name = \"Alice\"\ntotal = 150\nbody = f\"Dear {name}, your total is ${total}.\"\nprint(body)\n", expectedOutput: "Dear Alice, your total is $150." },
-        advanced: { prompt: "Build a recipient list from a CSV-like string. Print the count.", starterCode: "csv = \"alice@mail.com,bob@mail.com,charlie@mail.com\"\nrecipients = csv.split(\",\")\nprint(len(recipients))\n", expectedOutput: "3" },
+        beginner: { prompt: "Create email dict with `to`, `subject`, `body`. Print `subject` and `len()` of keys.", starterCode: "# Create email dict, print subject and key count\n", expectedOutput: "Hello\n3" },
+        intermediate: { prompt: "Format email body using f-string: `name='Alice'`, `total=150`. Print `f'Dear {name}, total is ${total}.'`.", starterCode: "name = 'Alice'\ntotal = 150\n\n# Format and print body\n", expectedOutput: "Dear Alice, total is $150." },
+        advanced: { prompt: "Split CSV `'a@mail.com,b@mail.com,c@mail.com'` into a list. Print the list and `len()`.", starterCode: "csv = 'a@mail.com,b@mail.com,c@mail.com'\n\n# Split and print list and count\n", expectedOutput: "['a@mail.com', 'b@mail.com', 'c@mail.com']\n3" },
       },
     },
     {
@@ -679,9 +679,9 @@ function auto(): CareerLesson[] {
       content: "## CLI Tools\n\nA lot of real automation is just clean CLI scripts.\n\n### Must-have skills\n- **argparse** — parse command-line arguments\n- **logging** — structured output you can trust\n- **exit codes** — tell other tools success/failure\n\n### Logging levels\n- DEBUG: details\n- INFO: normal progress\n- WARNING: something odd\n- ERROR: failed",
       codeExample: "import logging\n\nlogging.basicConfig(level=logging.INFO, format=\"%(levelname)s: %(message)s\")\n\ndef run(task):\n    logging.info(\"Starting %s\", task)\n    if task == \"backup\":\n        logging.info(\"Backup complete\")\n        return 0\n    logging.error(\"Unknown task\")\n    return 1\n\ncode = run(\"backup\")\nprint(code)\n",
       exercises: {
-        beginner: { prompt: "Print 'INFO' if ok=True else 'ERROR'.", starterCode: "ok = True\nprint(\"INFO\" if ok else \"ERROR\")\n", expectedOutput: "INFO" },
-        intermediate: { prompt: "Write a function exit_code(success) returns 0 if True else 1. Print for False.", starterCode: "def exit_code(success):\n    return 0 if success else 1\n\nprint(exit_code(False))\n", expectedOutput: "1" },
-        advanced: { prompt: "Given args=['--task','clean'], parse task value without argparse and print it.", starterCode: "args = [\"--task\", \"clean\"]\nidx = args.index(\"--task\")\nprint(args[idx + 1])\n", expectedOutput: "clean" },
+        beginner: { prompt: "Print `'INFO'` if `ok=True` else `'ERROR'`. Then print `type(ok).__name__`.", starterCode: "ok = True\n\n# Print INFO/ERROR and type name\n", expectedOutput: "INFO\nbool" },
+        intermediate: { prompt: "Write `exit_code(success)` returning `0` if True else `1`. Test with `True` and `False`. Print both.", starterCode: "# Define exit_code, test both\n", expectedOutput: "0\n1" },
+        advanced: { prompt: "Given `args = ['--task', 'clean', '--verbose']`. Find `'--task'` index and print next value. Also check if `'--verbose'` is in args, print True/False.", starterCode: "args = ['--task', 'clean', '--verbose']\n\n# Parse task value and check verbose flag\n", expectedOutput: "clean\nTrue" },
       },
     },
     {
@@ -689,9 +689,9 @@ function auto(): CareerLesson[] {
       content: "## Concurrency\n\nWhen automation feels slow, it is often waiting on I/O (network, disk).\n\n### Options\n- **threads**: good for I/O bound tasks\n- **async**: good for many network calls\n- **processes**: for CPU heavy work\n\n### Safety rules\n- Limit parallelism (do not spawn 1000 tasks)\n- Timeouts everywhere\n- Retries with backoff for network calls",
       codeExample: "from concurrent.futures import ThreadPoolExecutor\n\nitems = [1, 2, 3, 4]\n\ndef work(x):\n    return x * x\n\nwith ThreadPoolExecutor(max_workers=2) as ex:\n    results = list(ex.map(work, items))\n\nprint(results)\n",
       exercises: {
-        beginner: { prompt: "Square numbers [1,2,3] using a loop and print list.", starterCode: "nums = [1, 2, 3]\nout = []\nfor n in nums:\n    out.append(n * n)\nprint(out)\n", expectedOutput: "[1, 4, 9]" },
-        intermediate: { prompt: "Use list comprehension to double [2,4,6]. Print list.", starterCode: "nums = [2, 4, 6]\nprint([n * 2 for n in nums])\n", expectedOutput: "[4, 8, 12]" },
-        advanced: { prompt: "Given tasks=['a','b','c'], limit concurrency to 2. Print 2.", starterCode: "tasks = [\"a\", \"b\", \"c\"]\nmax_workers = min(2, len(tasks))\nprint(max_workers)\n", expectedOutput: "2" },
+        beginner: { prompt: "Square each number in `[1, 2, 3]` using a list comprehension. Print the list.", starterCode: "nums = [1, 2, 3]\n\n# Square each, print\n", expectedOutput: "[1, 4, 9]" },
+        intermediate: { prompt: "Use `map()` with a lambda to double `[2, 4, 6]`. Print the resulting list.", starterCode: "nums = [2, 4, 6]\n\n# Use map to double, print\n", expectedOutput: "[4, 8, 12]" },
+        advanced: { prompt: "Given `tasks = ['a', 'b', 'c']`. Set `max_workers = min(2, len(tasks))`. Print `max_workers` and `len(tasks)`.", starterCode: "tasks = ['a', 'b', 'c']\n\n# Calculate max_workers, print both\n", expectedOutput: "2\n3" },
       },
     },
   ];
@@ -710,9 +710,9 @@ function de(): CareerLesson[] {
         hindi: { title: "Data Engineering Fundamentals", description: "Pipelines, ETL और data infrastructure" },
       },
       exercises: {
-        beginner: { prompt: "Remove None values from a list. Print clean list.", starterCode: "data = [1, None, 3, None, 5]\nclean = [x for x in data if x is not None]\nprint(clean)\n", expectedOutput: "[1, 3, 5]" },
-        intermediate: { prompt: "Convert string numbers to int, skip invalid. Print valid count.", starterCode: "raw = [\"10\", \"20\", \"abc\", \"40\", \"xyz\"]\nvalid = []\nfor item in raw:\n    try:\n        valid.append(int(item))\n    except ValueError:\n        pass\nprint(len(valid))\n", expectedOutput: "3" },
-        advanced: { prompt: "ETL: uppercase all names. Print first transformed name.", starterCode: "data = [{\"name\": \"alice\"}, {\"name\": \"bob\"}]\ntransformed = [{\"name\": d[\"name\"].upper()} for d in data]\nprint(transformed[0][\"name\"])\n", expectedOutput: "ALICE" },
+        beginner: { prompt: "Remove `None` values from `[1, None, 3, None, 5]`. Print the clean list.", starterCode: "data = [1, None, 3, None, 5]\n\n# Remove Nones, print\n", expectedOutput: "[1, 3, 5]" },
+        intermediate: { prompt: "Convert string numbers to int, skip invalid with `try/except`. Print valid count and the valid list.", starterCode: "raw = ['10', '20', 'abc', '40']\n\n# Convert, skip errors, print count and list\n", expectedOutput: "3\n[10, 20, 40]" },
+        advanced: { prompt: "Transform: uppercase all names in `[{'name':'alice'},{'name':'bob'}]`. Print the transformed list.", starterCode: "data = [{'name': 'alice'}, {'name': 'bob'}]\n\n# Uppercase names, print list\n", expectedOutput: "[{'name': 'ALICE'}, {'name': 'BOB'}]" },
       },
     },
     {
@@ -720,9 +720,9 @@ function de(): CareerLesson[] {
       content: "## SQL Mastery\n\nData engineers live and breathe SQL.\n\n### Advanced SQL\n- **JOINs** — Combine tables\n- **GROUP BY** — Aggregate data\n- **Window Functions** — Running totals, rankings\n- **Subqueries** — Queries within queries\n- **CTEs** — Common Table Expressions\n\n### Database Design\n- Normalization (1NF, 2NF, 3NF)\n- Star schema vs snowflake\n- Indexing strategies",
       codeExample: "# Simulating SQL operations in Python\norders = [\n    {\"id\": 1, \"customer\": \"Alice\", \"amount\": 100},\n    {\"id\": 2, \"customer\": \"Bob\", \"amount\": 200},\n    {\"id\": 3, \"customer\": \"Alice\", \"amount\": 150},\n]\n\n# GROUP BY customer, SUM(amount)\nfrom collections import defaultdict\ntotals = defaultdict(int)\nfor o in orders:\n    totals[o[\"customer\"]] += o[\"amount\"]\n\nfor customer, total in totals.items():\n    print(f\"{customer}: ${total}\")",
       exercises: {
-        beginner: { prompt: "Group items by category and count. Print Engineering count.", starterCode: "items = [\"Engineering\", \"Marketing\", \"Engineering\", \"Sales\"]\ncounts = {}\nfor item in items:\n    counts[item] = counts.get(item, 0) + 1\nprint(counts[\"Engineering\"])\n", expectedOutput: "2" },
-        intermediate: { prompt: "Simulate a LEFT JOIN. Print matched count.", starterCode: "users = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\norders = [{\"user_id\": 1, \"item\": \"Book\"}, {\"user_id\": 1, \"item\": \"Pen\"}]\njoined = [(u, [o for o in orders if o[\"user_id\"] == u[\"id\"]]) for u in users]\nprint(len(joined[0][1]))\n", expectedOutput: "2" },
-        advanced: { prompt: "Calculate running total of [100, 200, 150, 300]. Print the list.", starterCode: "values = [100, 200, 150, 300]\nrunning = []\ntotal = 0\nfor v in values:\n    total += v\n    running.append(total)\nprint(running)\n", expectedOutput: "[100, 300, 450, 750]" },
+        beginner: { prompt: "Group `['Eng', 'Sales', 'Eng', 'Sales']` and count occurrences. Print the counts dict.", starterCode: "items = ['Eng', 'Sales', 'Eng', 'Sales']\n\n# Count each, print dict\n", expectedOutput: "{'Eng': 2, 'Sales': 2}" },
+        intermediate: { prompt: "Simulate LEFT JOIN: for each user, find matching orders. Print the number of orders for user id=1.", starterCode: "users = [{'id': 1, 'name': 'A'}, {'id': 2, 'name': 'B'}]\norders = [{'uid': 1, 'item': 'X'}, {'uid': 1, 'item': 'Y'}]\n\n# Count orders for user 1, print\n", expectedOutput: "2" },
+        advanced: { prompt: "Calculate running total of `[100, 200, 150]`. Print the running totals list.", starterCode: "values = [100, 200, 150]\n\n# Build running total list, print\n", expectedOutput: "[100, 300, 450]" },
       },
     },
     {
@@ -730,9 +730,9 @@ function de(): CareerLesson[] {
       content: "## Data Pipelines\n\nAutomate the flow of data from source to destination.\n\n### Pipeline Components\n1. **Source** — Where data comes from\n2. **Processor** — Transform/clean\n3. **Sink** — Where data goes\n4. **Scheduler** — When it runs\n5. **Monitor** — Track failures\n\n### Pipeline Patterns\n- Batch processing (hourly/daily)\n- Stream processing (real-time)\n- Lambda architecture (batch + stream)",
       codeExample: "# Pipeline builder pattern\nclass Pipeline:\n    def __init__(self):\n        self.steps = []\n    \n    def add_step(self, name, func):\n        self.steps.append((name, func))\n        return self\n    \n    def run(self, data):\n        for name, func in self.steps:\n            data = func(data)\n            print(f\"Step '{name}': {len(data)} records\")\n        return data\n\np = Pipeline()\np.add_step(\"filter\", lambda d: [x for x in d if x > 0])\np.add_step(\"double\", lambda d: [x * 2 for x in d])\nresult = p.run([-1, 2, -3, 4, 5])\nprint(\"Result:\", result)",
       exercises: {
-        beginner: { prompt: "Apply two transformations: filter positives, then double. Print result.", starterCode: "data = [-1, 2, -3, 4]\nstep1 = [x for x in data if x > 0]\nstep2 = [x * 2 for x in step1]\nprint(step2)\n", expectedOutput: "[4, 8]" },
-        intermediate: { prompt: "Chain 3 string transformations on a list. Print result.", starterCode: "names = [\" Alice \", \" BOB \", \" charlie \"]\ncleaned = [n.strip().lower().capitalize() for n in names]\nprint(cleaned)\n", expectedOutput: "['Alice', 'Bob', 'Charlie']" },
-        advanced: { prompt: "Implement a simple pipeline using functions. Print final count.", starterCode: "def extract():\n    return list(range(10))\n\ndef transform(data):\n    return [x for x in data if x % 2 == 0]\n\ndef load(data):\n    return len(data)\n\nresult = load(transform(extract()))\nprint(result)\n", expectedOutput: "5" },
+        beginner: { prompt: "Apply two steps: filter positives from `[-1, 2, -3, 4]`, then double them. Print the final list.", starterCode: "data = [-1, 2, -3, 4]\n\n# Filter positives, double, print\n", expectedOutput: "[4, 8]" },
+        intermediate: { prompt: "Chain 3 transformations on `[' Alice ', ' BOB ']`: `.strip()`, `.lower()`, `.capitalize()`. Print the result list.", starterCode: "names = [' Alice ', ' BOB ']\n\n# Strip, lower, capitalize each, print\n", expectedOutput: "['Alice', 'Bob']" },
+        advanced: { prompt: "Write 3 functions: `extract()` returns `range(10)` as list, `transform(data)` filters evens, `load(data)` returns `len`. Chain them. Print the final count.", starterCode: "# Define extract, transform, load. Chain and print\n", expectedOutput: "5" },
       },
     },
     {
@@ -740,9 +740,9 @@ function de(): CareerLesson[] {
       content: "## Stream Processing\n\nProcess data as it arrives, not in batches.\n\n### Concepts\n- **Events** — Individual data points\n- **Producers** — Generate events\n- **Consumers** — Process events\n- **Topics** — Event categories\n- **Windowing** — Group events by time\n\n### Tools\n- Apache Kafka — Event streaming\n- Apache Flink — Stream processing\n- Redis Streams — Lightweight streaming",
       codeExample: "from collections import deque\n\n# Simulating a message queue\nclass MessageQueue:\n    def __init__(self):\n        self.queue = deque()\n    \n    def produce(self, message):\n        self.queue.append(message)\n    \n    def consume(self):\n        return self.queue.popleft() if self.queue else None\n\nmq = MessageQueue()\nmq.produce({\"event\": \"click\", \"user\": \"Alice\"})\nmq.produce({\"event\": \"purchase\", \"user\": \"Bob\"})\n\nwhile msg := mq.consume():\n    print(f\"Processing: {msg['event']} by {msg['user']}\")",
       exercises: {
-        beginner: { prompt: "Use deque as a queue. Add 3 items, pop first. Print it.", starterCode: "from collections import deque\nq = deque()\nq.append(\"a\")\nq.append(\"b\")\nq.append(\"c\")\nprint(q.popleft())\n", expectedOutput: "a" },
-        intermediate: { prompt: "Implement sliding window average for [1,3,5,7,9] with window=3. Print last avg.", starterCode: "data = [1, 3, 5, 7, 9]\nwindow = 3\navgs = []\nfor i in range(len(data) - window + 1):\n    avg = sum(data[i:i+window]) / window\n    avgs.append(round(avg, 1))\nprint(avgs[-1])\n", expectedOutput: "7.0" },
-        advanced: { prompt: "Count events by type from a stream. Print click count.", starterCode: "events = [\"click\", \"view\", \"click\", \"purchase\", \"click\", \"view\"]\ncounts = {}\nfor e in events:\n    counts[e] = counts.get(e, 0) + 1\nprint(counts[\"click\"])\n", expectedOutput: "3" },
+        beginner: { prompt: "Use `deque` as a queue. Append `'a','b','c'`. `popleft()`. Print popped value and remaining deque.", starterCode: "from collections import deque\n\n# Create deque, append, popleft, print both\n", expectedOutput: "a\ndeque(['b', 'c'])" },
+        intermediate: { prompt: "Sliding window average of `[1,3,5,7,9]` with `window=3`. Print the list of averages.", starterCode: "data = [1, 3, 5, 7, 9]\nwindow = 3\n\n# Calculate sliding averages, print list\n", expectedOutput: "[3.0, 5.0, 7.0]" },
+        advanced: { prompt: "Count events by type from `['click','view','click','click','view']`. Print the counts dict.", starterCode: "events = ['click', 'view', 'click', 'click', 'view']\n\n# Count by type, print dict\n", expectedOutput: "{'click': 3, 'view': 2}" },
       },
     },
     {
@@ -750,9 +750,9 @@ function de(): CareerLesson[] {
       content: "## Cloud Data Platforms\n\n### AWS Data Services\n- **S3** — Object storage\n- **Redshift** — Data warehouse\n- **Glue** — ETL service\n- **Kinesis** — Streaming\n\n### GCP Data Services\n- **BigQuery** — Serverless analytics\n- **Cloud Storage** — Object storage\n- **Dataflow** — Stream & batch processing\n\n### Key Concepts\n- Infrastructure as Code\n- Auto-scaling\n- Cost optimization",
       codeExample: "# Cloud storage path patterns\ndef s3_path(bucket, prefix, date, filename):\n    return f\"s3://{bucket}/{prefix}/{date}/{filename}\"\n\n# Partitioned data paths\nfor month in [\"2024-01\", \"2024-02\", \"2024-03\"]:\n    path = s3_path(\"data-lake\", \"sales\", month, \"data.parquet\")\n    print(path)",
       exercises: {
-        beginner: { prompt: "Build an S3-like path string. Print it.", starterCode: "bucket = \"my-bucket\"\nkey = \"data/file.csv\"\npath = f\"s3://{bucket}/{key}\"\nprint(path)\n", expectedOutput: "s3://my-bucket/data/file.csv" },
-        intermediate: { prompt: "Generate partitioned paths for 3 dates. Print count.", starterCode: "dates = [\"2024-01-01\", \"2024-01-02\", \"2024-01-03\"]\npaths = [f\"data/date={d}/part.parquet\" for d in dates]\nprint(len(paths))\n", expectedOutput: "3" },
-        advanced: { prompt: "Parse an S3 path to extract bucket and key. Print the bucket.", starterCode: "path = \"s3://analytics-bucket/raw/users/data.csv\"\nparts = path.replace(\"s3://\", \"\").split(\"/\", 1)\nprint(parts[0])\n", expectedOutput: "analytics-bucket" },
+        beginner: { prompt: "Build an S3 path from `bucket='my-bucket'` and `key='data/file.csv'`. Print it.", starterCode: "bucket = 'my-bucket'\nkey = 'data/file.csv'\n\n# Build path, print\n", expectedOutput: "s3://my-bucket/data/file.csv" },
+        intermediate: { prompt: "Generate partitioned paths for `dates=['2024-01','2024-02','2024-03']`. Print each path and total count.", starterCode: "dates = ['2024-01', '2024-02', '2024-03']\n\n# Generate paths, print each and count\n", expectedOutput: "data/date=2024-01/part.parquet\ndata/date=2024-02/part.parquet\ndata/date=2024-03/part.parquet\n3" },
+        advanced: { prompt: "Parse `'s3://analytics-bucket/raw/users/data.csv'`. Extract and print the bucket name and the key (everything after bucket).", starterCode: "path = 's3://analytics-bucket/raw/users/data.csv'\n\n# Extract bucket and key, print both\n", expectedOutput: "analytics-bucket\nraw/users/data.csv" },
       },
     },
     {
@@ -760,9 +760,9 @@ function de(): CareerLesson[] {
       content: "## Data Modeling\n\nGood models make analytics easy.\n\n### Common models\n- **Star schema**: fact table + dimension tables\n- **Snowflake**: normalized dimensions\n\n### Key ideas\n- **Primary key**: unique row id\n- **Foreign key**: links tables\n- **Grain**: what one row represents\n\n### Interview gold\nAlways state the grain first. It avoids 50% of modeling bugs.",
       codeExample: "# Fact table grain example\nfacts = [\n    {\"order_id\": 1, \"user_id\": 10, \"amount\": 50},\n    {\"order_id\": 2, \"user_id\": 10, \"amount\": 20},\n    {\"order_id\": 3, \"user_id\": 11, \"amount\": 30},\n]\n\n# Aggregate to user grain\nby_user = {}\nfor f in facts:\n    by_user[f[\"user_id\"]] = by_user.get(f[\"user_id\"], 0) + f[\"amount\"]\nprint(by_user[10])\n",
       exercises: {
-        beginner: { prompt: "Print the grain phrase: 'one row = one order'.", starterCode: "print(\"one row = one order\")\n", expectedOutput: "one row = one order" },
-        intermediate: { prompt: "Given orders=[(1,10),(2,10),(3,11)], count orders for user 10 and print 2.", starterCode: "orders = [(1, 10), (2, 10), (3, 11)]\ncount = sum(1 for oid, uid in orders if uid == 10)\nprint(count)\n", expectedOutput: "2" },
-        advanced: { prompt: "Detect duplicate primary keys in ids=[1,2,2,3]. Print True.", starterCode: "ids = [1, 2, 2, 3]\nprint(len(ids) != len(set(ids)))\n", expectedOutput: "True" },
+        beginner: { prompt: "Print `'one row = one order'`. Then print `len('order')`.", starterCode: "# Print grain phrase and len of 'order'\n", expectedOutput: "one row = one order\n5" },
+        intermediate: { prompt: "Given `orders=[(1,10),(2,10),(3,11)]`. Count orders for user `10` and print. Also print total orders.", starterCode: "orders = [(1, 10), (2, 10), (3, 11)]\n\n# Count user 10 orders and total, print both\n", expectedOutput: "2\n3" },
+        advanced: { prompt: "Detect duplicate IDs in `[1, 2, 2, 3]`. Print `True` if duplicates exist. Also print how many duplicates.", starterCode: "ids = [1, 2, 2, 3]\n\n# Check for dups, print bool and count\n", expectedOutput: "True\n1" },
       },
     },
     {
@@ -770,9 +770,9 @@ function de(): CareerLesson[] {
       content: "## Data Quality\n\nIf data is wrong, everything is wrong.\n\n### Common checks\n- Not null for key columns\n- Uniqueness for ids\n- Valid ranges (age 0-120)\n- Referential integrity (foreign keys exist)\n\n### Reliability habits\n- Add checks at every stage\n- Fail fast for bad data\n- Track metrics: rows in/out, null rate, duplicates",
       codeExample: "# Simple data validation checks\nrows = [\n    {\"id\": 1, \"age\": 25},\n    {\"id\": 2, \"age\": None},\n    {\"id\": 2, \"age\": 40},\n]\n\nids = [r[\"id\"] for r in rows]\nnull_age = sum(1 for r in rows if r[\"age\"] is None)\nduplicates = len(ids) - len(set(ids))\nprint(null_age, duplicates)\n",
       exercises: {
-        beginner: { prompt: "Count None values in [1,None,2,None]. Print 2.", starterCode: "data = [1, None, 2, None]\nprint(sum(1 for x in data if x is None))\n", expectedOutput: "2" },
-        intermediate: { prompt: "Check if all ages are between 0 and 120 for ages=[10,50,130]. Print False.", starterCode: "ages = [10, 50, 130]\nok = all(0 <= a <= 120 for a in ages)\nprint(ok)\n", expectedOutput: "False" },
-        advanced: { prompt: "Compute duplicate count for ids=[1,2,2,2]. Print 2.", starterCode: "ids = [1, 2, 2, 2]\ndups = len(ids) - len(set(ids))\nprint(dups)\n", expectedOutput: "2" },
+        beginner: { prompt: "Count `None` values in `[1, None, 2, None]`. Print the count and total length.", starterCode: "data = [1, None, 2, None]\n\n# Count Nones and total, print both\n", expectedOutput: "2\n4" },
+        intermediate: { prompt: "Check if ALL ages in `[10, 50, 130]` are between 0-120. Print the result. Also print the invalid value.", starterCode: "ages = [10, 50, 130]\n\n# Check validity, print result and invalid value\n", expectedOutput: "False\n130" },
+        advanced: { prompt: "Count duplicate values in `ids=[1,2,2,2]`. Print unique count and duplicate count.", starterCode: "ids = [1, 2, 2, 2]\n\n# Print unique count and duplicate count\n", expectedOutput: "2\n2" },
       },
     },
   ];
@@ -791,9 +791,9 @@ function cs(): CareerLesson[] {
         hindi: { title: "Cybersecurity के लिए Python", description: "Python के साथ security fundamentals" },
       },
       exercises: {
-        beginner: { prompt: "Caesar cipher: shift 'abc' by 1. Print encrypted.", starterCode: "text = \"abc\"\nencrypted = \"\".join(chr(ord(c) + 1) for c in text)\nprint(encrypted)\n", expectedOutput: "bcd" },
-        intermediate: { prompt: "Check password strength: 8+ chars, has digit, has uppercase. Test 'Secure1!'. Print True/False.", starterCode: "pwd = \"Secure1!\"\nis_strong = len(pwd) >= 8 and any(c.isdigit() for c in pwd) and any(c.isupper() for c in pwd)\nprint(is_strong)\n", expectedOutput: "True" },
-        advanced: { prompt: "XOR encrypt 'Hi' with key=42. Print list of encrypted values.", starterCode: "text = \"Hi\"\nkey = 42\nencrypted = [ord(c) ^ key for c in text]\nprint(encrypted)\n", expectedOutput: "[98, 67]" },
+        beginner: { prompt: "Caesar cipher: shift each char in `'abc'` by 1 using `chr(ord(c)+1)`. Print encrypted string.", starterCode: "text = 'abc'\n\n# Shift each char, print\n", expectedOutput: "bcd" },
+        intermediate: { prompt: "Check password `'Secure1!'`: length >= 8, has digit, has uppercase. Print `True`/`False` and the length.", starterCode: "pwd = 'Secure1!'\n\n# Check strength, print result and length\n", expectedOutput: "True\n8" },
+        advanced: { prompt: "XOR encrypt `'Hi'` with `key=42`. Print the encrypted list. Then decrypt back and print the original string.", starterCode: "text = 'Hi'\nkey = 42\n\n# Encrypt, print list. Decrypt, print string.\n", expectedOutput: "[98, 67]\nHi" },
       },
     },
     {
@@ -801,9 +801,9 @@ function cs(): CareerLesson[] {
       content: "## Ethics and Permission\n\nSecurity skills must be used responsibly.\n\n### What is allowed\n- Your own devices and applications\n- Systems you have **explicit written permission** to test\n- Practice targets designed for learning (CTFs and labs)\n\n### What is not allowed\n- Testing random websites/apps\n- Attempting to access accounts/data you do not own\n- \"Trying\" attacks on public networks\n\n### Safe practice labs (recommended)\n- OWASP Juice Shop (web app practice)\n- DVWA (web vulnerability practice)\n- TryHackMe / Hack The Box (guided labs)\n\n### A professional pentest always includes\n1. Scope + permission\n2. Testing plan\n3. Evidence (screenshots/logs)\n4. Fix recommendations\n5. Final report",
       codeExample: "# Scope guard: only allow testing approved targets\nallowed = {\"localhost\", \"127.0.0.1\", \"example.com\"}\n\ndef in_scope(host: str) -> bool:\n    return host.strip().lower() in allowed\n\ntests = [\"localhost\", \"Example.com\", \"google.com\"]\nfor host in tests:\n    print(host, \"->\", \"IN SCOPE\" if in_scope(host) else \"OUT OF SCOPE\")\n",
       exercises: {
-        beginner: { prompt: "Create an allowlist of 2 hosts and check if 'localhost' is allowed. Print True/False.", starterCode: "allowed = {\"localhost\", \"127.0.0.1\"}\nprint(\"localhost\" in allowed)\n", expectedOutput: "True" },
-        intermediate: { prompt: "Normalize a host to lowercase and strip spaces. Print it.", starterCode: "host = \"  ExAmPlE.Com  \"\nprint(host.strip().lower())\n", expectedOutput: "example.com" },
-        advanced: { prompt: "Given hosts list, print count of in-scope hosts.", starterCode: "allowed = {\"localhost\", \"127.0.0.1\"}\nhosts = [\"localhost\", \"google.com\", \"127.0.0.1\", \"example.com\"]\ncount = sum(1 for h in hosts if h in allowed)\nprint(count)\n", expectedOutput: "2" },
+        beginner: { prompt: "Create an allowlist `{'localhost', '127.0.0.1'}`. Check `'localhost'`. Print result and `len()` of set.", starterCode: "allowed = {'localhost', '127.0.0.1'}\n\n# Check and print result + set size\n", expectedOutput: "True\n2" },
+        intermediate: { prompt: "Normalize `'  ExAmPlE.Com  '` with `.strip().lower()`. Print the result and its `len()`.", starterCode: "host = '  ExAmPlE.Com  '\n\n# Normalize, print result and length\n", expectedOutput: "example.com\n11" },
+        advanced: { prompt: "Given hosts, check each against allowlist. Print in-scope count and out-of-scope count.", starterCode: "allowed = {'localhost', '127.0.0.1'}\nhosts = ['localhost', 'google.com', '127.0.0.1', 'evil.com']\n\n# Count in-scope and out-of-scope, print both\n", expectedOutput: "2\n2" },
       },
     },
     {
@@ -811,9 +811,9 @@ function cs(): CareerLesson[] {
       content: "## Network Monitoring (Defensive)\n\nThis section focuses on **defensive** network skills: understanding traffic, reading logs, and doing safe diagnostics.\n\n### Key Concepts\n- **Ports** — Services listen on specific ports (80=HTTP, 443=HTTPS)\n- **TCP/UDP** — Transport protocols\n- **IP Addresses** — Network identification\n- **DNS** — Domain name resolution\n\n### Defensive tasks\n- Read firewall logs\n- Detect repeated failed connections\n- Spot suspicious spikes\n- Track top source IPs\n\n### Python tools\n- socket — DNS lookup and safe connectivity checks\n- collections — counting and grouping\n- datetime — timelines",
       codeExample: "# Firewall log parsing (defensive)\nlogs = [\n    \"ALLOW 192.168.1.10 -> 10.0.0.2:443\",\n    \"DENY 10.0.0.5 -> 10.0.0.2:22\",\n    \"DENY 10.0.0.5 -> 10.0.0.2:22\",\n    \"DENY 10.0.0.5 -> 10.0.0.2:22\",\n    \"ALLOW 192.168.1.20 -> 10.0.0.2:80\",\n]\n\ncounts = {}\nfor line in logs:\n    action, src, _, _ = line.split(maxsplit=3)\n    if action == \"DENY\":\n        counts[src] = counts.get(src, 0) + 1\n\nfor src, c in counts.items():\n    if c >= 3:\n        print(f\"ALERT: repeated denies from {src} ({c})\")\n",
       exercises: {
-        beginner: { prompt: "Count how many DENY lines exist. Print count.", starterCode: "logs = [\"ALLOW\", \"DENY\", \"DENY\"]\ncount = sum(1 for x in logs if x == \"DENY\")\nprint(count)\n", expectedOutput: "2" },
-        intermediate: { prompt: "Extract port number from '10.0.0.2:443'. Print 443.", starterCode: "dest = \"10.0.0.2:443\"\nport = int(dest.split(\":\")[1])\nprint(port)\n", expectedOutput: "443" },
-        advanced: { prompt: "Find the most common source IP. Print it.", starterCode: "sources = [\"10.0.0.5\", \"10.0.0.5\", \"192.168.1.10\"]\ncounts = {}\nfor s in sources:\n    counts[s] = counts.get(s, 0) + 1\nprint(max(counts, key=counts.get))\n", expectedOutput: "10.0.0.5" },
+        beginner: { prompt: "Count `'DENY'` entries in `['ALLOW', 'DENY', 'DENY']`. Print the count and `'ALLOW'` count.", starterCode: "logs = ['ALLOW', 'DENY', 'DENY']\n\n# Count DENY and ALLOW, print both\n", expectedOutput: "2\n1" },
+        intermediate: { prompt: "Extract port from `'10.0.0.2:443'` by splitting on `':'`. Print the port as int and the IP.", starterCode: "dest = '10.0.0.2:443'\n\n# Split, print port and IP\n", expectedOutput: "443\n10.0.0.2" },
+        advanced: { prompt: "Find the most common IP from `['10.0.0.5','10.0.0.5','192.168.1.10']`. Print it and its count.", starterCode: "sources = ['10.0.0.5', '10.0.0.5', '192.168.1.10']\n\n# Count, find max, print IP and count\n", expectedOutput: "10.0.0.5\n2" },
       },
     },
     {
@@ -821,9 +821,9 @@ function cs(): CareerLesson[] {
       content: "## Cryptography\n\n### Types\n- **Symmetric** — Same key to encrypt & decrypt (AES)\n- **Asymmetric** — Public/private key pair (RSA)\n- **Hashing** — One-way transformation (SHA256)\n\n### Common Algorithms\n- AES — Advanced Encryption Standard\n- RSA — Public key encryption\n- SHA256 — Secure hash\n- bcrypt — Password hashing\n\n### Use Cases\n- Secure communication (HTTPS)\n- Password storage\n- Digital signatures\n- Blockchain",
       codeExample: "# Simple substitution cipher\nimport string\n\ndef caesar_encrypt(text, shift):\n    result = \"\"\n    for char in text:\n        if char.isalpha():\n            base = ord('A') if char.isupper() else ord('a')\n            result += chr((ord(char) - base + shift) % 26 + base)\n        else:\n            result += char\n    return result\n\nencrypted = caesar_encrypt(\"Hello World\", 3)\nprint(\"Encrypted:\", encrypted)\ndecrypted = caesar_encrypt(encrypted, -3)\nprint(\"Decrypted:\", decrypted)",
       exercises: {
-        beginner: { prompt: "ROT13 encrypt 'abc'. Print result.", starterCode: "text = \"abc\"\nresult = \"\".join(chr((ord(c) - ord('a') + 13) % 26 + ord('a')) for c in text)\nprint(result)\n", expectedOutput: "nop" },
-        intermediate: { prompt: "XOR encrypt and decrypt 'Hi' with key=7. Print decrypted matches original.", starterCode: "text = \"Hi\"\nkey = 7\nencrypted = [ord(c) ^ key for c in text]\ndecrypted = \"\".join(chr(c ^ key) for c in encrypted)\nprint(decrypted == text)\n", expectedOutput: "True" },
-        advanced: { prompt: "Generate a simple hash by summing char codes mod 1000. Print hash of 'password'.", starterCode: "text = \"password\"\nhash_val = sum(ord(c) for c in text) % 1000\nprint(hash_val)\n", expectedOutput: "879" },
+        beginner: { prompt: "ROT13 encrypt `'abc'`. Print the result.", starterCode: "text = 'abc'\n\n# ROT13 encrypt, print\n", expectedOutput: "nop" },
+        intermediate: { prompt: "XOR encrypt `'Hi'` with `key=7`, then decrypt. Print whether decrypted matches original.", starterCode: "text = 'Hi'\nkey = 7\n\n# Encrypt, decrypt, compare, print True/False\n", expectedOutput: "True" },
+        advanced: { prompt: "Generate hash by summing char codes of `'password'` mod 1000. Print the hash. Also print `len('password')`.", starterCode: "text = 'password'\n\n# Calculate hash and length, print both\n", expectedOutput: "879\n8" },
       },
     },
     {
@@ -831,9 +831,9 @@ function cs(): CareerLesson[] {
       content: "## Digital Forensics\n\nInvestigating security incidents and analyzing evidence.\n\n### Key Areas\n- **Log Analysis** — Server and application logs\n- **File Analysis** — Metadata, hidden data\n- **Memory Forensics** — RAM analysis\n- **Network Forensics** — Packet capture analysis\n\n### Python Tools\n- os/pathlib — File system analysis\n- struct — Binary file parsing\n- datetime — Timeline analysis\n- json/csv — Log parsing",
       codeExample: "# Log analysis for security\nlogs = [\n    \"2024-01-15 10:30:00 LOGIN alice 192.168.1.10 SUCCESS\",\n    \"2024-01-15 10:31:00 LOGIN root 10.0.0.5 FAILED\",\n    \"2024-01-15 10:31:05 LOGIN root 10.0.0.5 FAILED\",\n    \"2024-01-15 10:31:10 LOGIN root 10.0.0.5 FAILED\",\n    \"2024-01-15 10:35:00 LOGIN bob 192.168.1.20 SUCCESS\",\n]\n\n# Detect brute force (3+ failures from same IP)\nfailures = {}\nfor log in logs:\n    if \"FAILED\" in log:\n        ip = log.split()[3]\n        failures[ip] = failures.get(ip, 0) + 1\n\nfor ip, count in failures.items():\n    if count >= 3:\n        print(f\"ALERT: Brute force from {ip} ({count} attempts)\")",
       exercises: {
-        beginner: { prompt: "Count FAILED entries in a list of log strings. Print count.", starterCode: "logs = [\"SUCCESS\", \"FAILED\", \"SUCCESS\", \"FAILED\", \"FAILED\"]\ncount = sum(1 for l in logs if l == \"FAILED\")\nprint(count)\n", expectedOutput: "3" },
-        intermediate: { prompt: "Extract unique IPs from logs. Print count.", starterCode: "logs = [\"192.168.1.1 GET /\", \"10.0.0.1 POST /login\", \"192.168.1.1 GET /about\"]\nips = set(log.split()[0] for log in logs)\nprint(len(ips))\n", expectedOutput: "2" },
-        advanced: { prompt: "Find the IP with most requests. Print it.", starterCode: "logs = [\"192.168.1.1\", \"10.0.0.1\", \"192.168.1.1\", \"192.168.1.1\", \"10.0.0.1\"]\ncounts = {}\nfor ip in logs:\n    counts[ip] = counts.get(ip, 0) + 1\nprint(max(counts, key=counts.get))\n", expectedOutput: "192.168.1.1" },
+        beginner: { prompt: "Count `'FAILED'` entries in `['SUCCESS', 'FAILED', 'SUCCESS', 'FAILED', 'FAILED']`. Print the count.", starterCode: "logs = ['SUCCESS', 'FAILED', 'SUCCESS', 'FAILED', 'FAILED']\n\n# Count FAILED, print\n", expectedOutput: "3" },
+        intermediate: { prompt: "Extract unique IPs from log lines. Print the set and its `len()`.", starterCode: "logs = ['192.168.1.1 GET /', '10.0.0.1 POST /login', '192.168.1.1 GET /about']\n\n# Extract unique IPs, print set and count\n", expectedOutput: "{'192.168.1.1', '10.0.0.1'}\n2" },
+        advanced: { prompt: "Find IP with most requests from `['192.168.1.1','10.0.0.1','192.168.1.1','192.168.1.1']`. Print the IP and its count.", starterCode: "logs = ['192.168.1.1', '10.0.0.1', '192.168.1.1', '192.168.1.1']\n\n# Count, find max, print IP and count\n", expectedOutput: "192.168.1.1\n3" },
       },
     },
     {
@@ -841,9 +841,9 @@ function cs(): CareerLesson[] {
       content: "## Ethical Security Testing (With Permission)\n\nThis is about **authorized** security testing, not hacking random targets.\n\n### Always required\n- Written permission + scope\n- A safe test environment (labs/CTFs/staging)\n- A report that helps developers fix issues\n\n### High-level workflow\n1. **Scope** — what is allowed and not allowed\n2. **Discovery** — identify assets and entry points\n3. **Validation** — confirm issues safely (no data theft)\n4. **Fix guidance** — recommend secure changes\n5. **Reporting** — evidence + impact + remediation\n\n### Common web risk categories (OWASP-style)\n- Injection\n- Broken authentication\n- Security misconfiguration\n- Sensitive data exposure\n- Access control issues",
       codeExample: "# SQL Injection detection concept\ndef is_sql_injection(input_str):\n    suspicious = [\"'\", \"--\", \"OR 1=1\", \"DROP\", \"UNION SELECT\", \";\", \"/*\"]\n    input_upper = input_str.upper()\n    return any(s.upper() in input_upper for s in suspicious)\n\ntests = [\"Alice\", \"' OR 1=1 --\", \"normal_user\", \"'; DROP TABLE users;--\"]\nfor t in tests:\n    result = \"⚠️ INJECTION\" if is_sql_injection(t) else \"✅ Safe\"\n    print(f\"{t[:20]:20s} -> {result}\")",
       exercises: {
-        beginner: { prompt: "Check if a string contains a single quote. Print True/False.", starterCode: "user_input = \"hello'world\"\nhas_quote = \"'\" in user_input\nprint(has_quote)\n", expectedOutput: "True" },
-        intermediate: { prompt: "Normalize input by trimming spaces. Print the cleaned username.", starterCode: "user_input = \"  admin  \"\nprint(user_input.strip())\n", expectedOutput: "admin" },
-        advanced: { prompt: "Check if password is in a common passwords list. Print 'Weak' or 'OK'.", starterCode: "common = [\"password\", \"123456\", \"admin\", \"qwerty\"]\npwd = \"admin\"\nresult = \"Weak\" if pwd in common else \"OK\"\nprint(result)\n", expectedOutput: "Weak" },
+        beginner: { prompt: "Check if `\"hello'world\"` contains a single quote. Print `True`/`False` and `len()` of the string.", starterCode: "user_input = \"hello'world\"\n\n# Check for quote, print result and length\n", expectedOutput: "True\n11" },
+        intermediate: { prompt: "Strip and lowercase `'  Admin  '`. Print the result and check if it equals `'admin'`.", starterCode: "user_input = '  Admin  '\n\n# Clean, print result and equality check\n", expectedOutput: "admin\nTrue" },
+        advanced: { prompt: "Check if `pwd='admin'` is in common list `['password','123456','admin']`. Print `'Weak'`/`'OK'`. Also print `len(common)`.", starterCode: "common = ['password', '123456', 'admin']\npwd = 'admin'\n\n# Check and print result + common list size\n", expectedOutput: "Weak\n3" },
       },
     },
     {
@@ -851,9 +851,9 @@ function cs(): CareerLesson[] {
       content: "## Secure Coding\n\nCybersecurity is not only pen testing. Secure coding prevents issues from existing.\n\n### Safer habits\n- Validate and sanitize user input\n- Never hardcode secrets (use environment variables)\n- Use constant-time comparisons for tokens\n- Keep dependencies updated\n\n### Common web-ish mistakes\n- Using `eval()` on user input\n- Building SQL strings with concatenation\n- Logging secrets\n\nThis lesson focuses on defensive practices you can apply anywhere.",
       codeExample: "import hmac\n\n# Constant-time comparison\nexpected = \"token123\"\nprovided = \"token123\"\nprint(hmac.compare_digest(expected, provided))\n",
       exercises: {
-        beginner: { prompt: "Reject input if it contains ';'. For s='ok;drop' print 'Reject'.", starterCode: "s = \"ok;drop\"\nprint(\"Reject\" if \";\" in s else \"OK\")\n", expectedOutput: "Reject" },
-        intermediate: { prompt: "Read env var with default. For missing var, print 'local'.", starterCode: "import os\nprint(os.environ.get(\"ENV\", \"local\"))\n", expectedOutput: "local" },
-        advanced: { prompt: "Avoid eval: safely convert '42' to int and print 42.", starterCode: "s = \"42\"\nprint(int(s))\n", expectedOutput: "42" },
+        beginner: { prompt: "Check if `';'` is in `'ok;drop'`. Print `'Reject'`/`'OK'`. Also print the input length.", starterCode: "s = 'ok;drop'\n\n# Check for semicolon, print result and length\n", expectedOutput: "Reject\n7" },
+        intermediate: { prompt: "Use `os.environ.get('ENV', 'local')` for a missing var. Print the result and its `type().__name__`.", starterCode: "import os\n\n# Get env var with default, print value and type\n", expectedOutput: "local\nstr" },
+        advanced: { prompt: "Safely convert `'42'` to int (no `eval`). Print the int and check `type().__name__` is `'int'`.", starterCode: "s = '42'\n\n# Convert safely, print value and type check\n", expectedOutput: "42\nTrue" },
       },
     },
     {
@@ -861,9 +861,9 @@ function cs(): CareerLesson[] {
       content: "## Detection Basics\n\nMany security roles involve detection engineering.\n\n### What you do\n- Collect logs (auth, app, network)\n- Normalize fields (time, user, ip, action)\n- Write rules (thresholds, patterns)\n- Reduce false positives\n\n### Example ideas\n- 5+ failed logins from one IP in 10 minutes\n- Rare admin actions\n- Sudden spike in 404/500s",
       codeExample: "# Detect repeated failures per IP\nlogs = [\n    \"FAILED 10.0.0.1\",\n    \"FAILED 10.0.0.1\",\n    \"OK 10.0.0.1\",\n    \"FAILED 10.0.0.1\",\n]\n\nfails = {}\nfor line in logs:\n    status, ip = line.split()\n    if status == \"FAILED\":\n        fails[ip] = fails.get(ip, 0) + 1\n\nprint(fails.get(\"10.0.0.1\", 0))\n",
       exercises: {
-        beginner: { prompt: "Count 'FAILED' in ['OK','FAILED','FAILED']. Print 2.", starterCode: "items = [\"OK\", \"FAILED\", \"FAILED\"]\nprint(sum(1 for x in items if x == \"FAILED\"))\n", expectedOutput: "2" },
-        intermediate: { prompt: "Given counts={'ip':4}, if >=3 print 'ALERT'.", starterCode: "counts = {\"ip\": 4}\nprint(\"ALERT\" if counts[\"ip\"] >= 3 else \"OK\")\n", expectedOutput: "ALERT" },
-        advanced: { prompt: "Extract IPs from ['FAILED 1.1.1.1','OK 2.2.2.2'] and print ['1.1.1.1','2.2.2.2'].", starterCode: "logs = [\"FAILED 1.1.1.1\", \"OK 2.2.2.2\"]\nips = [line.split()[1] for line in logs]\nprint(ips)\n", expectedOutput: "['1.1.1.1', '2.2.2.2']" },
+        beginner: { prompt: "Count `'FAILED'` in `['OK','FAILED','FAILED']`. Print count and total list length.", starterCode: "items = ['OK', 'FAILED', 'FAILED']\n\n# Count FAILED and total, print both\n", expectedOutput: "2\n3" },
+        intermediate: { prompt: "Given `counts={'ip': 4}`. If value `>= 3` print `'ALERT'` else `'OK'`. Also print the count.", starterCode: "counts = {'ip': 4}\n\n# Check threshold, print alert and count\n", expectedOutput: "ALERT\n4" },
+        advanced: { prompt: "Extract IPs from `['FAILED 1.1.1.1','OK 2.2.2.2']`. Print the IP list and unique count.", starterCode: "logs = ['FAILED 1.1.1.1', 'OK 2.2.2.2']\n\n# Extract IPs, print list and unique count\n", expectedOutput: "['1.1.1.1', '2.2.2.2']\n2" },
       },
     },
   ];
@@ -1024,16 +1024,19 @@ function sqlLessons(): CareerLesson[] {
           prompt: "Select the first 5 customers (id, name) ordered by id (use LIMIT).",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "id,name\n1,Alice Johnson\n2,Bob Sharma\n3,Charlie Dave\n4,Diana Prince\n5,Ethan Hunt",
+          solution: "SELECT id, name FROM customers ORDER BY id LIMIT 5;",
         },
         intermediate: {
           prompt: "List Electronics products (name, price) ordered by price DESC.",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,price\nDell 24\" Monitor,12000\nSony Headphones,4500\nMechanical Keyboard,2500\nLogitech Mouse,800",
+          solution: "SELECT name, price FROM products WHERE category = 'Electronics' ORDER BY price DESC;",
         },
         advanced: {
           prompt: "Show the top 3 most expensive products (name, price).",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,price\nDell 24\" Monitor,12000\nSony Headphones,4500\nMechanical Keyboard,2500",
+          solution: "SELECT name, price FROM products ORDER BY price DESC LIMIT 3;",
         },
       },
     },
@@ -1081,18 +1084,19 @@ function sqlLessons(): CareerLesson[] {
           prompt: "List customers from Mumbai (name, city) ordered by name.",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,city\nAlice Johnson,Mumbai\nDiana Prince,Mumbai\nJulia Roberts,Mumbai",
+          solution: "SELECT name, city FROM customers WHERE city = 'Mumbai' ORDER BY name;",
         },
         intermediate: {
           prompt: "Show March 2026 orders (id, order_date, status) ordered by order_date.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "id,order_date,status\n4,2026-03-12,completed\n5,2026-03-15,completed\n6,2026-03-18,processing\n7,2026-03-20,completed\n8,2026-03-25,shipped\n9,2026-03-28,completed",
+          solution: "SELECT id, order_date, status FROM orders WHERE order_date LIKE '2026-03-%' ORDER BY order_date;",
         },
         advanced: {
           prompt: "List products priced between 100 and 2000 (name, price) ordered by price.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,price\nOrganic Tea,250\nCushion Cover,300\nNescafe Coffee,350\nAlgorithmic Socks,400\nResistance Band,400\nSteelo Water Bottle,450\nParker Pen,500\nData Science Cap,600\nLogitech Mouse,800\nPython Book,800\nYoga Mat,900\nTable Lamp,1100\nMoleskine Diary,1200\nSQL Masterclass,1200\nDumbbell 5kg,1500",
+          solution: "SELECT name, price FROM products WHERE price BETWEEN 100 AND 2000 ORDER BY price;",
         },
       },
     },
@@ -1138,21 +1142,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Count orders by status (status, count) ordered by status.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "status,count\ncancelled,1\ncompleted,13\npending,1\nprocessing,3\nshipped,2",
+          solution: "SELECT status, COUNT(*) AS count FROM orders GROUP BY status ORDER BY status;",
         },
         intermediate: {
           prompt: "For completed orders only, compute total quantity sold per product (name, total_qty) ordered by total_qty DESC then name.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,total_qty\nLays Chips,10\nPython Book,4\nAlgorithmic Socks,3\nNescafe Coffee,3\nSony Headphones,3\nDumbbell 5kg,2\nMechanical Keyboard,2\nMoleskine Diary,2\nParker Pen,2\nPyMaster Hoodie,2\nSteelo Water Bottle,2\nTable Lamp,2\nData Science Cap,1\nLogitech Mouse,1\nOrganic Tea,1\nResistance Band,1\nSQL Masterclass,1\nYoga Mat,1",
+          solution: "SELECT p.name, SUM(oi.qty) AS total_qty FROM order_items oi JOIN orders o ON oi.order_id = o.id JOIN products p ON oi.product_id = p.id WHERE o.status = 'completed' GROUP BY p.name ORDER BY total_qty DESC, p.name;",
         },
         advanced: {
           prompt: "Compute revenue per completed order (order_id, revenue) ordered by order_id.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "order_id,revenue\n1,2000\n2,7000\n4,2000\n5,1150\n7,3400\n9,6700\n10,550\n12,3900\n14,2800\n16,7000\n17,2400\n18,2900\n20,400",
+          solution: "SELECT o.id AS order_id, SUM(p.price * oi.qty) AS revenue FROM orders o JOIN order_items oi ON o.id = oi.order_id JOIN products p ON oi.product_id = p.id WHERE o.status = 'completed' GROUP BY o.id ORDER BY o.id;",
         },
       },
     },
@@ -1198,21 +1202,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "List all orders with customer name (order_id, name, status) ordered by order_id.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "order_id,name,status\n1,Alice Johnson,completed\n2,Bob Sharma,completed\n3,Alice Johnson,cancelled\n4,Charlie Dave,completed\n5,Diana Prince,completed\n6,Ethan Hunt,processing\n7,Fiona Apple,completed\n8,George Miller,shipped\n9,Hannah Abbott,completed\n10,Ian Wright,completed\n11,Julia Roberts,processing\n12,Kevin Hart,completed\n13,Laura Palmer,shipped\n14,Mike Ross,completed\n15,Nina Simone,pending\n16,Alice Johnson,completed\n17,Bob Sharma,completed\n18,Oscar Wilde,completed\n19,Charlie Dave,processing\n20,Fiona Apple,completed",
+          solution: "SELECT o.id AS order_id, c.name, o.status FROM orders o JOIN customers c ON o.customer_id = c.id ORDER BY o.id;",
         },
         intermediate: {
           prompt: "For order_id=1, list items (order_id, product, quantity) ordered by product.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "order_id,product,quantity\n1,Logitech Mouse,1\n1,Nescafe Coffee,2\n1,Parker Pen,1",
+          solution: "SELECT oi.order_id, p.name AS product, oi.qty AS quantity FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = 1 ORDER BY p.name;",
         },
         advanced: {
           prompt: "Total spent per customer on completed orders (include customers with 0). Output (name, total_spent) ordered by total_spent DESC.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nBob Sharma,9400\nAlice Johnson,9000\nHannah Abbott,6700\nKevin Hart,3900\nFiona Apple,3800\nOscar Wilde,2900\nMike Ross,2800\nCharlie Dave,2000\nDiana Prince,1150\nIan Wright,550\nEthan Hunt,0\nGeorge Miller,0\nJulia Roberts,0\nLaura Palmer,0\nNina Simone,0",
+          solution: "SELECT c.name, COALESCE(SUM(p.price * oi.qty), 0) AS total_spent FROM customers c LEFT JOIN orders o ON c.id = o.customer_id AND o.status = 'completed' LEFT JOIN order_items oi ON o.id = oi.order_id LEFT JOIN products p ON oi.product_id = p.id GROUP BY c.name ORDER BY total_spent DESC;",
         },
       },
     },
@@ -1258,21 +1262,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Find customers who have a cancelled order (name).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name\nAlice Johnson",
+          solution: "SELECT name FROM customers WHERE id IN (SELECT customer_id FROM orders WHERE status = 'cancelled');",
         },
         intermediate: {
           prompt: "Find products that were never ordered (name) ordered by name.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name\nCushion Cover",
+          solution: "SELECT name FROM products WHERE id NOT IN (SELECT product_id FROM order_items) ORDER BY name;",
         },
         advanced: {
           prompt: "Find customers whose completed total_spent is greater than the average total_spent across all customers (include 0). Output (name, total_spent) ordered by total_spent DESC.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nDiana,3050\nCharlie,2860",
+          solution: "WITH customer_spend AS (\n  SELECT c.name, COALESCE(SUM(p.price * oi.qty), 0) AS total_spent\n  FROM customers c\n  LEFT JOIN orders o ON c.id = o.customer_id AND o.status = 'completed'\n  LEFT JOIN order_items oi ON o.id = oi.order_id\n  LEFT JOIN products p ON oi.product_id = p.id\n  GROUP BY c.name\n)\nSELECT name, total_spent \nFROM customer_spend \nWHERE total_spent > (SELECT AVG(total_spent) FROM customer_spend)\nORDER BY total_spent DESC;",
         },
       },
     },
@@ -1318,21 +1322,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Using a CTE, compute completed order revenue (order_id, revenue) ordered by order_id.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "order_id,revenue\n1,2000\n2,7000\n4,2000\n5,1150\n7,3400\n9,6700\n10,550\n12,3900\n14,2800\n16,7000\n17,2400\n18,2900\n20,400",
+          solution: "WITH order_rev AS (\n  SELECT oi.order_id, SUM(p.price * oi.qty) AS revenue\n  FROM order_items oi\n  JOIN products p ON oi.product_id = p.id\n  GROUP BY oi.order_id\n)\nSELECT o.id AS order_id, r.revenue\nFROM orders o\nJOIN order_rev r ON o.id = r.order_id\nWHERE o.status = 'completed'\nORDER BY o.id;",
         },
         intermediate: {
           prompt: "Compute monthly completed revenue (month, revenue) ordered by month.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "month,revenue\n2026-01,9000\n2026-03,13250\n2026-04,19950",
+          solution: "WITH monthly_rev AS (\n  SELECT substr(o.order_date, 1, 7) AS month, p.price * oi.qty AS line_revenue\n  FROM orders o\n  JOIN order_items oi ON o.id = oi.order_id\n  JOIN products p ON oi.product_id = p.id\n  WHERE o.status = 'completed'\n)\nSELECT month, SUM(line_revenue) AS revenue\nFROM monthly_rev\nGROUP BY month\nORDER BY month;",
         },
         advanced: {
           prompt: "Find the top customer by completed total_spent (name, total_spent).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nBob Sharma,9400",
+          solution: "WITH spend AS (\n  SELECT c.name, SUM(p.price * oi.qty) AS total_spent\n  FROM customers c\n  JOIN orders o ON c.id = o.customer_id\n  JOIN order_items oi ON o.id = oi.order_id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY c.name\n)\nSELECT name, total_spent \nFROM spend \nORDER BY total_spent DESC \nLIMIT 1;",
         },
       },
     },
@@ -1378,22 +1382,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Rank products by price within each category (category, name, price, price_rank) ordered by category, name.",
-          starterCode:
-            "-- Write your SQL here\n",
-          expectedOutput:
-            "category,name,price,price_rank\nApparel,Algorithmic Socks,400,3\nApparel,Data Science Cap,600,2\nApparel,PyMaster Hoodie,2200,1\nBooks,Python Book,800,2\nBooks,SQL Masterclass,1200,1\nElectronics,Dell 24\" Monitor,12000,1\nElectronics,Logitech Mouse,800,4\nElectronics,Mechanical Keyboard,2500,3\nElectronics,Sony Headphones,4500,2\nFitness,Dumbbell 5kg,1500,1\nFitness,Resistance Band,400,3\nFitness,Yoga Mat,900,2\nGrocery,Lays Chips,20,3\nGrocery,Nescafe Coffee,350,1\nGrocery,Organic Tea,250,2\nHome,Cushion Cover,300,3\nHome,Steelo Water Bottle,450,2\nHome,Table Lamp,1100,1\nStationery,Moleskine Diary,1200,1\nStationery,Parker Pen,500,2",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "category,name,price,price_rank\nApparel,Algorithmic Socks,400,3\nApparel,Data Science Cap,600,2\nApparel,PyMaster Hoodie,2200,1\nBooks,Python Book,800,2\nBooks,SQL Masterclass,1200,1\nElectronics,Dell 24\" Monitor,12000,1\nElectronics,Logitech Mouse,800,4\nElectronics,Mechanical Keyboard,2500,3\nElectronics,Sony Headphones,4500,2\nFitness,Dumbbell 5kg,1500,1\nFitness,Resistance Band,400,3\nFitness,Yoga Mat,900,2\nGrocery,Lays Chips,20,3\nGrocery,Nescafe Coffee,350,1\nGrocery,Organic Tea,250,2\nHome,Cushion Cover,300,3\nHome,Steelo Water Bottle,450,2\nHome,Table Lamp,1100,1\nStationery,Moleskine Diary,1200,1\nStationery,Parker Pen,500,2",
+          solution: "SELECT category, name, price, RANK() OVER (PARTITION BY category ORDER BY price DESC) AS price_rank FROM products ORDER BY category, name;",
         },
         intermediate: {
           prompt: "Show completed daily revenue and running_total (order_date, revenue, running_total) ordered by order_date.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "order_date,revenue,running_total\n2026-01-05,2000,2000\n2026-01-06,7000,9000\n2026-03-12,2000,11000\n2026-03-15,1150,12150\n2026-03-20,3400,15550\n2026-03-28,6700,22250\n2026-04-01,550,22800\n2026-04-05,3900,26700\n2026-04-10,2800,29500\n2026-04-15,7000,36500\n2026-04-18,2400,38900\n2026-04-20,2900,41800\n2026-04-25,400,42200",
+          solution: "WITH daily_rev AS (\n  SELECT o.order_date, SUM(p.price * oi.qty) AS revenue\n  FROM orders o\n  JOIN order_items oi ON o.id = oi.order_id\n  JOIN products p ON oi.product_id = p.id\n  WHERE o.status = 'completed'\n  GROUP BY o.order_date\n)\nSELECT order_date, revenue, SUM(revenue) OVER (ORDER BY order_date) AS running_total\nFROM daily_rev\nORDER BY order_date;",
         },
         advanced: {
           prompt: "Top 2 customers by completed total_spent with rank (name, total_spent, spend_rank) ordered by spend_rank.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,total_spent,spend_rank\nBob Sharma,9400,1\nAlice Johnson,9000,2",
+          solution: "WITH spend AS (\n  SELECT c.name, SUM(p.price * oi.qty) AS total_spent\n  FROM customers c\n  JOIN orders o ON c.id = o.customer_id\n  JOIN order_items oi ON o.id = oi.order_id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY c.name\n)\nSELECT name, total_spent, RANK() OVER (ORDER BY total_spent DESC) AS spend_rank\nFROM spend\nORDER BY spend_rank\nLIMIT 2;",
         },
       },
     },
@@ -1439,21 +1442,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Create table temp_notes(id INTEGER, note TEXT) then select its name from sqlite_master.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name\ntemp_notes",
+          solution: "CREATE TABLE temp_notes(id INTEGER, note TEXT);\nSELECT name FROM sqlite_master WHERE type='table' AND name='temp_notes';",
         },
         intermediate: {
           prompt: "Create table projects(id INTEGER PRIMARY KEY, name TEXT NOT NULL), insert 1 row, then select count.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "count\n1",
+          solution: "CREATE TABLE projects(id INTEGER PRIMARY KEY, name TEXT NOT NULL);\nINSERT INTO projects(name) VALUES ('Project 1');\nSELECT COUNT(*) AS count FROM projects;",
         },
         advanced: {
           prompt: "Create table emails(email TEXT UNIQUE), insert 2 distinct emails, then select count.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "count\n2",
+          solution: "CREATE TABLE emails(email TEXT UNIQUE);\nINSERT INTO emails(email) VALUES ('a@b.com'), ('c@d.com');\nSELECT COUNT(*) AS count FROM emails;",
         },
       },
     },
@@ -1499,21 +1502,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Insert a customer (id=101, Farah, Delhi) then select (name, city) for id=101.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,city\nFarah,Delhi",
+          solution: "INSERT INTO customers(id, name, city, signup_date) VALUES (101, 'Farah', 'Delhi', '2026-04-26');\nSELECT name, city FROM customers WHERE id = 101;",
         },
         intermediate: {
           prompt: "Update order 3 from cancelled to completed, then count completed orders (count).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "count\n5",
+          solution: "UPDATE orders SET status = 'completed' WHERE id = 3;\nSELECT COUNT(*) AS count FROM orders WHERE status = 'completed';",
         },
         advanced: {
           prompt: "Delete order_items for order_id=3, then show total_qty for order 3 as 0 (use COALESCE).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "total_qty\n0",
+          solution: "DELETE FROM order_items WHERE order_id = 3;\nSELECT COALESCE(SUM(qty), 0) AS total_qty FROM order_items WHERE order_id = 3;",
         },
       },
     },
@@ -1559,21 +1562,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "BEGIN; insert a customer (id=101); ROLLBACK; then count customers (count).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "count\n15",
+          solution: "BEGIN;\nINSERT INTO customers(id, name, city) VALUES (101, 'Farah', 'Delhi');\nROLLBACK;\nSELECT COUNT(*) AS count FROM customers;",
         },
         intermediate: {
           prompt: "BEGIN; update Pen price to 9999; ROLLBACK; then select Pen price (price).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "price\n500",
+          solution: "BEGIN;\nUPDATE products SET price = 9999 WHERE name = 'Parker Pen';\nROLLBACK;\nSELECT price FROM products WHERE name = 'Parker Pen';",
         },
         advanced: {
           prompt: "BEGIN; update Pen price to 15; COMMIT; then select Pen price (price).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "price\n15",
+          solution: "BEGIN;\nUPDATE products SET price = 15 WHERE name = 'Parker Pen';\nCOMMIT;\nSELECT price FROM products WHERE name = 'Parker Pen';",
         },
       },
     },
@@ -1619,21 +1622,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Create index idx_orders_customer on orders(customer_id) then list index names for orders (name).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name\nidx_orders_customer",
+          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nSELECT name FROM sqlite_master WHERE type='index' AND tbl_name='orders';",
         },
         intermediate: {
           prompt: "Create two indexes on orders: idx_orders_customer and idx_orders_status, then list them ordered by name.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name\nidx_orders_customer\nidx_orders_status",
+          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\nSELECT name FROM sqlite_master WHERE type='index' AND tbl_name='orders' ORDER BY name;",
         },
         advanced: {
           prompt: "After creating the two indexes, count how many indexes exist on orders (count).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "count\n2",
+          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\nSELECT COUNT(*) AS count FROM sqlite_master WHERE type='index' AND tbl_name='orders';",
         },
       },
     },
@@ -1679,21 +1682,21 @@ function sqlLessons(): CareerLesson[] {
       exercises: {
         beginner: {
           prompt: "Create view v_completed_orders (orders + customers for completed) then select first 2 rows (order_id, name) ordered by order_id.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "order_id,name\n1,Alice Johnson\n2,Bob Sharma",
+          solution: "CREATE VIEW v_completed_orders AS\nSELECT o.id AS order_id, c.name\nFROM orders o\nJOIN customers c ON o.customer_id = c.id\nWHERE o.status = 'completed';\n\nSELECT order_id, name FROM v_completed_orders ORDER BY order_id LIMIT 2;",
         },
         intermediate: {
           prompt: "Create view v_customer_spend (name,total_spent for completed) then list customers with total_spent > 2000 ordered by total_spent DESC.",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nBob Sharma,9400\nAlice Johnson,9000\nHannah Abbott,6700\nKevin Hart,3900\nFiona Apple,3800\nOscar Wilde,2900\nMike Ross,2800",
+          solution: "CREATE VIEW v_customer_spend AS\nSELECT c.name, SUM(p.price * oi.qty) AS total_spent\nFROM customers c\nJOIN orders o ON c.id = o.customer_id\nJOIN order_items oi ON o.id = oi.order_id\nJOIN products p ON oi.product_id = p.id\nWHERE o.status = 'completed'\nGROUP BY c.name;\n\nSELECT name, total_spent FROM v_customer_spend WHERE total_spent > 2000 ORDER BY total_spent DESC;",
         },
         advanced: {
           prompt: "Create then DROP view v_customer_spend, then verify it no longer exists (count).",
-          starterCode:
-            "-- Write your SQL here\n",
+          starterCode: "-- Write your SQL here\n",
           expectedOutput: "count\n0",
+          solution: "CREATE VIEW v_customer_spend AS SELECT name FROM customers;\nDROP VIEW v_customer_spend;\nSELECT COUNT(*) AS count FROM sqlite_master WHERE type='view' AND name='v_customer_spend';",
         },
       },
     },
@@ -2649,9 +2652,9 @@ function cloudMlops(): CareerLesson[] {
         hindi: { title: "Cloud Computing परिचय", description: "AWS, GCP और serverless क्रांति के बारे में सीखें" },
       },
       exercises: {
-        beginner: { prompt: "Return 'Cloud' if env_var exists, else 'Local'. Print for True.", starterCode: "env_exists = True\nprint(\"Cloud\" if env_exists else \"Local\")\n", expectedOutput: "Cloud" },
-        intermediate: { prompt: "Calculate cost: 0.05 per hour. Print for 24 hours.", starterCode: "hours = 24\nrate = 0.05\nprint(hours * rate)\n", expectedOutput: "1.2" },
-        advanced: { prompt: "Filter list of regions to only those starting with 'us-'. Print count.", starterCode: "regions = [\"us-east-1\", \"eu-west-1\", \"us-west-2\", \"ap-south-1\"]\nus_regions = [r for r in regions if r.startswith(\"us-\")]\nprint(len(us_regions))\n", expectedOutput: "2" },
+        beginner: { prompt: "Print `'Cloud'` if `env_exists=True` else `'Local'`. Also print `type(env_exists).__name__`.", starterCode: "env_exists = True\n\n# Print Cloud/Local and type name\n", expectedOutput: "Cloud\nbool" },
+        intermediate: { prompt: "Calculate cost: `$0.05/hour` for `24` hours. Print cost and formatted as `'$1.20'`.", starterCode: "hours = 24\nrate = 0.05\n\n# Print cost and formatted string\n", expectedOutput: "1.2\n$1.20" },
+        advanced: { prompt: "Filter regions starting with `'us-'` from a list. Print the filtered list and count.", starterCode: "regions = ['us-east-1', 'eu-west-1', 'us-west-2', 'ap-south-1']\n\n# Filter US regions, print list and count\n", expectedOutput: "['us-east-1', 'us-west-2']\n2" },
       },
     },
     {
@@ -2659,9 +2662,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## The Server OS\n\nMost cloud servers run Linux. You must be comfortable with the command line to manage them.\n\n### Key Skills\n- **SSH** — Secure Shell for remote access\n- **Permissions** — chmod and chown\n- **Processes** — top, ps, and kill\n- **Logs** — journalctl and tail -f",
       codeExample: "# Simulating a shell command in Python\ndef list_files(path):\n    import os\n    return os.listdir(path)\n\nprint(\"Directory contents:\", list_files(\".\")[:3])",
       exercises: {
-        beginner: { prompt: "Return the command to list all files: 'ls -la'.", starterCode: "print(\"ls -la\")\n", expectedOutput: "ls -la" },
-        intermediate: { prompt: "Check if path='/var/log' exists. Print True/False.", starterCode: "import os\npath = \"/var/log\"\nprint(os.path.exists(path))\n", expectedOutput: "True" },
-        advanced: { prompt: "Convert 1024 bytes to KB. Print '1 KB'.", starterCode: "bytes = 1024\nprint(f\"{bytes // 1024} KB\")\n", expectedOutput: "1 KB" },
+        beginner: { prompt: "Print the command `'ls -la'` and its `len()`.", starterCode: "cmd = 'ls -la'\n\n# Print command and its length\n", expectedOutput: "ls -la\n5" },
+        intermediate: { prompt: "Check if path `'/var/log'` exists using `os.path.exists()`. Print result.", starterCode: "import os\npath = '/var/log'\n\n# Check and print\n", expectedOutput: "True" },
+        advanced: { prompt: "Convert `2048` bytes to KB and MB. Print both as formatted strings.", starterCode: "b = 2048\n\n# Print KB and MB\n", expectedOutput: "2 KB\n0.002 MB" },
       },
     },
     {
@@ -2669,9 +2672,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## Dependency Isolation\n\nAvoid global package conflicts by using virtual environments.\n\n### Tools\n- **venv** — Built-in Python library\n- **pip** — The package manager\n- **requirements.txt** — Listing your needs",
       codeExample: "# Building a requirements string\nlibs = [\"flask==2.0\", \"requests>=2.25\", \"pandas\"]\nreq_text = \"\\n\".join(libs)\nprint(req_text)",
       exercises: {
-        beginner: { prompt: "Print the command to create a venv: 'python -m venv venv'.", starterCode: "print(\"python -m venv venv\")\n", expectedOutput: "python -m venv venv" },
-        intermediate: { prompt: "Filter libraries that have a specific version '=='. Print them.", starterCode: "libs = [\"flask==2.0\", \"numpy\", \"scipy==1.6\"]\npinned = [l for l in libs if \"==\" in l]\nprint(pinned)\n", expectedOutput: "['flask==2.0', 'scipy==1.6']" },
-        advanced: { prompt: "Parse 'requests>=2.25' to get just the name 'requests'. Print it.", starterCode: "lib = \"requests>=2.25\"\nname = lib.split(\">=\")[0]\nprint(name)\n", expectedOutput: "requests" },
+        beginner: { prompt: "Print `'python -m venv venv'` and `len('venv')`.", starterCode: "# Print venv command and len of 'venv'\n", expectedOutput: "python -m venv venv\n4" },
+        intermediate: { prompt: "Filter libs with `'=='` from `['flask==2.0', 'numpy', 'scipy==1.6']`. Print filtered list and count.", starterCode: "libs = ['flask==2.0', 'numpy', 'scipy==1.6']\n\n# Filter pinned, print list and count\n", expectedOutput: "['flask==2.0', 'scipy==1.6']\n2" },
+        advanced: { prompt: "Parse `'requests>=2.25'` to extract package name. Print name and version.", starterCode: "lib = 'requests>=2.25'\n\n# Extract name and version, print both\n", expectedOutput: "requests\n2.25" },
       },
     },
     {
@@ -2679,9 +2682,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## Why Containers?\n\n\"It works on my machine\" is a nightmare in production. Docker solves this by packaging the code, OS, and dependencies together.\n\n### Key Terms\n- **Dockerfile** — The recipe for your image\n- **Image** — The packaged executable\n- **Container** — A running instance of an image\n- **Registry** — Where you store images (Docker Hub, ECR)",
       codeExample: "# Example Dockerfile-like concept\nconfig = {\n    \"FROM\": \"python:3.9-slim\",\n    \"WORKDIR\": \"/app\",\n    \"COPY\": \". .\",\n    \"RUN\": \"pip install -r requirements.txt\",\n    \"CMD\": [\"python\", \"app.py\"]\n}\n\nfor key, val in config.items():\n    print(f\"{key}: {val}\")",
       exercises: {
-        beginner: { prompt: "Print the standard Python Docker image name 'python:3.9-slim'.", starterCode: "print(\"python:3.9-slim\")\n", expectedOutput: "python:3.9-slim" },
-        intermediate: { prompt: "Extract the tag '3.9' from 'python:3.9'. Print it.", starterCode: "image = \"python:3.9\"\ntag = image.split(\":\")[1]\nprint(tag)\n", expectedOutput: "3.9" },
-        advanced: { prompt: "Build a 'docker run' command with -p 80:80. Print it.", starterCode: "port = 80\nimage = \"myapp\"\nprint(f\"docker run -p {port}:{port} {image}\")\n", expectedOutput: "docker run -p 80:80 myapp" },
+        beginner: { prompt: "Print `'python:3.9-slim'` and split by `':'`. Print the list.", starterCode: "image = 'python:3.9-slim'\n\n# Print image and split result\n", expectedOutput: "python:3.9-slim\n['python', '3.9-slim']" },
+        intermediate: { prompt: "Extract tag from `'python:3.9'`. Print the tag and the image name.", starterCode: "image = 'python:3.9'\n\n# Extract name and tag, print both\n", expectedOutput: "python\n3.9" },
+        advanced: { prompt: "Build a docker run command with port mapping. Given `port=80, image='myapp'`. Print the command.", starterCode: "port = 80\nimage = 'myapp'\n\n# Build and print command\n", expectedOutput: "docker run -p 80:80 myapp" },
       },
     },
     {
@@ -2689,9 +2692,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## Continuous Everything\n\n- **CI (Continuous Integration)**: Auto-test code on every push.\n- **CD (Continuous Deployment)**: Auto-deploy to production.\n\n### Tools\n- **GitHub Actions** — Native to GitHub\n- **GitLab CI** — Built-in to GitLab\n- **Jenkins** — The self-hosted veteran",
       codeExample: "# Simulating a YAML workflow check\ndef check_workflow(yaml_dict):\n    return \"jobs\" in yaml_dict and \"steps\" in yaml_dict[\"jobs\"]\n\nworkflow = {\"jobs\": {\"steps\": [\"test\", \"deploy\"]}}\nprint(\"Valid Workflow:\", check_workflow(workflow))",
       exercises: {
-        beginner: { prompt: "Check if 'deploy' stage is in stages=['test', 'build', 'deploy']. Print True/False.", starterCode: "stages = [\"test\", \"build\", \"deploy\"]\nprint(\"deploy\" in stages)\n", expectedOutput: "True" },
-        intermediate: { prompt: "Filter failed builds from [{'id': 1, 'status': 'success'}, {'id': 2, 'status': 'failed'}]. Print IDs.", starterCode: "builds = [{\"id\": 1, \"status\": \"success\"}, {\"id\": 2, \"status\": \"failed\"}]\nfailed = [b[\"id\"] for b in builds if b[\"status\"] == \"failed\"]\nprint(failed)\n", expectedOutput: "[2]" },
-        advanced: { prompt: "Combine 3 test commands into one string with ' && '. commands=['lint', 'unit', 'e2e']. Print result.", starterCode: "commands = [\"lint\", \"unit\", \"e2e\"]\nprint(\" && \".join(commands))\n", expectedOutput: "lint && unit && e2e" },
+        beginner: { prompt: "Check if `'deploy'` is in `['test','build','deploy']`. Print result and list length.", starterCode: "stages = ['test', 'build', 'deploy']\n\n# Check and print result + length\n", expectedOutput: "True\n3" },
+        intermediate: { prompt: "Filter failed builds from a list of dicts. Print the failed IDs list.", starterCode: "builds = [{'id': 1, 'status': 'success'}, {'id': 2, 'status': 'failed'}]\n\n# Filter failed, print IDs\n", expectedOutput: "[2]" },
+        advanced: { prompt: "Join `['lint','unit','e2e']` with `' && '`. Print the result and `len()` of original list.", starterCode: "commands = ['lint', 'unit', 'e2e']\n\n# Join and print result + count\n", expectedOutput: "lint && unit && e2e\n3" },
       },
     },
     {
@@ -2699,9 +2702,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## Is it Up?\n\nMonitoring tells you if your app is running; Observability tells you *why* it's failing.\n\n### The 3 Pillars\n1. **Metrics** — Latency, Error rates, CPU usage\n2. **Logs** — Application events\n3. **Traces** — Request lifecycle across services",
       codeExample: "# Simple health check logic\ndef health_check(status_code):\n    if status_code == 200: return \"HEALTHY\"\n    if status_code >= 500: return \"CRITICAL\"\n    return \"WARNING\"\n\nprint(\"Status:\", health_check(503))",
       exercises: {
-        beginner: { prompt: "If CPU > 80, print 'Alert'. Else 'OK'. Test with 90.", starterCode: "cpu = 90\nprint(\"Alert\" if cpu > 80 else \"OK\")\n", expectedOutput: "Alert" },
-        intermediate: { prompt: "Calculate average response time: total=1500ms, count=50. Print result.", starterCode: "total = 1500\ncount = 50\nprint(total / count)\n", expectedOutput: "30.0" },
-        advanced: { prompt: "Filter timestamps to those in the last 1 minute (current=100, list=[50, 95, 98]). Print count.", starterCode: "now = 100\ntimes = [50, 95, 98]\nrecent = [t for t in times if now - t <= 10]\nprint(len(recent))\n", expectedOutput: "2" },
+        beginner: { prompt: "If `cpu > 80`, print `'Alert'` else `'OK'`. Test with `90`. Also print the cpu value.", starterCode: "cpu = 90\n\n# Check and print alert + value\n", expectedOutput: "Alert\n90" },
+        intermediate: { prompt: "Calculate average response time: `total=1500ms`, `count=50`. Print result and whether it exceeds `25ms`.", starterCode: "total = 1500\ncount = 50\n\n# Print avg and threshold check\n", expectedOutput: "30.0\nTrue" },
+        advanced: { prompt: "Filter timestamps within last 10 units (`now=100`). Print count and the filtered list.", starterCode: "now = 100\ntimes = [50, 95, 98]\n\n# Filter recent, print count and list\n", expectedOutput: "2\n[95, 98]" },
       },
     },
     {
@@ -2709,9 +2712,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## The OS of the Cloud\n\nKubernetes (K8s) automates deployment, scaling, and management of containerized apps.\n\n### Concepts\n- **Pod** — Smallest unit (holds containers)\n- **Service** — Network endpoint\n- **Deployment** — Defines the desired state\n- **Namespace** — Virtual clusters",
       codeExample: "# Replica scaling logic\ndef calculate_replicas(load):\n    import math\n    return math.ceil(load / 100) # 1 replica per 100 users\n\nprint(\"Required Replicas for 450 users:\", calculate_replicas(450))",
       exercises: {
-        beginner: { prompt: "Print the K8s CLI tool name: 'kubectl'.", starterCode: "print(\"kubectl\")\n", expectedOutput: "kubectl" },
-        intermediate: { prompt: "Check if pod status is 'Running'. status='Pending'. Print False.", starterCode: "status = \"Pending\"\nprint(status == \"Running\")\n", expectedOutput: "False" },
-        advanced: { prompt: "Given nodes=[True, True, False], calculate health percentage. Print 66.7.", starterCode: "nodes = [True, True, False]\nhealth = (sum(nodes) / len(nodes)) * 100\nprint(round(health, 1))\n", expectedOutput: "66.7" },
+        beginner: { prompt: "Print `'kubectl'`. Also print its `len()`.", starterCode: "# Print kubectl and its length\n", expectedOutput: "kubectl\n7" },
+        intermediate: { prompt: "Check pod `status='Pending'` against `'Running'`. Print the comparison result and the status.", starterCode: "status = 'Pending'\n\n# Compare and print result + status\n", expectedOutput: "False\nPending" },
+        advanced: { prompt: "Given `nodes=[True, True, False]`. Calculate health %. Print the percentage and unhealthy count.", starterCode: "nodes = [True, True, False]\n\n# Print health % and unhealthy count\n", expectedOutput: "66.7\n1" },
       },
     },
     {
@@ -2719,9 +2722,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## Function as a Service (FaaS)\n\nServerless lets you run code in response to events (HTTP, file uploads) without managing any infrastructure.\n\n### Benefits\n- **Auto-scaling** — Zero to thousands in seconds\n- **Pay-per-use** — Only pay for execution time\n- **Reduced Ops** — No patching servers",
       codeExample: "# Cold start vs Warm start simulation\ndef lambda_handler(event, context):\n    return f\"Hello from Serverless! Event: {event}\"\n\nprint(lambda_handler(\"signup\", {}))",
       exercises: {
-        beginner: { prompt: "Print the name of AWS's serverless offering: 'Lambda'.", starterCode: "print(\"Lambda\")\n", expectedOutput: "Lambda" },
-        intermediate: { prompt: "Calculate cost for 1,000,000 requests at $0.20 per million. Print result.", starterCode: "reqs = 1000000\nrate = 0.20\nprint(reqs / 1000000 * rate)\n", expectedOutput: "0.2" },
-        advanced: { prompt: "Filter cold start logs (init_time > 100ms). list=[50, 450, 20]. Print IDs of cold starts.", starterCode: "logs = [{\"id\": 1, \"time\": 50}, {\"id\": 2, \"time\": 450}]\ncold = [l[\"id\"] for l in logs if l[\"time\"] > 100]\nprint(cold)\n", expectedOutput: "[2]" },
+        beginner: { prompt: "Print `'Lambda'` and `'Cloud Functions'` on separate lines.", starterCode: "# Print both serverless names\n", expectedOutput: "Lambda\nCloud Functions" },
+        intermediate: { prompt: "Calculate cost: `1,000,000` requests at `$0.20/million`. Print cost and `type(cost).__name__`.", starterCode: "reqs = 1000000\nrate = 0.20\n\n# Calculate, print cost and type\n", expectedOutput: "0.2\nfloat" },
+        advanced: { prompt: "Filter cold starts (`time > 100`) from logs. Print filtered list and count.", starterCode: "logs = [{'id': 1, 'time': 50}, {'id': 2, 'time': 450}]\n\n# Filter cold starts, print list and count\n", expectedOutput: "[{'id': 2, 'time': 450}]\n1" },
       },
     },
     {
@@ -2729,9 +2732,9 @@ function cloudMlops(): CareerLesson[] {
       content: "## Harden the Cloud\n\nSecurity and Costs are the biggest risks in the cloud.\n\n### Best Practices\n- **IAM** — Identity and Access Management (Least Privilege)\n- **Encryption** — At rest and in transit\n- **Budget Alerts** — Stop runaway costs\n- **VPC Peering** — Secure network boundaries",
       codeExample: "# Budget alert logic\nbudget = 100\nspent = 85\ndef check_budget(b, s):\n    return \"WARN\" if s > b * 0.8 else \"OK\"\n\nprint(\"Budget status:\", check_budget(budget, spent))",
       exercises: {
-        beginner: { prompt: "Print the security principle acronym for 'Least Privilege': 'POLP'.", starterCode: "print(\"POLP\")\n", expectedOutput: "POLP" },
-        intermediate: { prompt: "Check if spent $120 exceeds budget $100. Print True/False.", starterCode: "spent = 120\nbudget = 100\nprint(spent > budget)\n", expectedOutput: "True" },
-        advanced: { prompt: "Filter unencrypted buckets from [{'id': 'b1', 'enc': True}, {'id': 'b2', 'enc': False}]. Print ID.", starterCode: "buckets = [{\"id\": \"b1\", \"enc\": True}, {\"id\": \"b2\", \"enc\": False}]\nrisky = [b[\"id\"] for b in buckets if not b[\"enc\"]]\nprint(risky[0])\n", expectedOutput: "b2" },
+        beginner: { prompt: "Print `'POLP'` (Principle of Least Privilege) and what it stands for.", starterCode: "# Print acronym and meaning\n", expectedOutput: "POLP\nPrinciple of Least Privilege" },
+        intermediate: { prompt: "Check if `spent=120` exceeds `budget=100`. Print result and the overage amount.", starterCode: "spent = 120\nbudget = 100\n\n# Print exceeded check and overage\n", expectedOutput: "True\n20" },
+        advanced: { prompt: "Filter unencrypted buckets. Print the risky IDs list and total bucket count.", starterCode: "buckets = [{'id': 'b1', 'enc': True}, {'id': 'b2', 'enc': False}]\n\n# Filter unencrypted, print IDs and total count\n", expectedOutput: "['b2']\n2" },
       },
     },
   ];
@@ -2750,9 +2753,9 @@ function gameDev(): CareerLesson[] {
         hindi: { title: "Game Loop", description: "गेम real-time में कैसे update और render होता है समझें" },
       },
       exercises: {
-        beginner: { prompt: "Calculate time for 60 FPS in milliseconds. Print rounded to 1 decimal.", starterCode: "fps = 60\nms_per_frame = 1000 / fps\nprint(round(ms_per_frame, 1))\n", expectedOutput: "16.7" },
-        intermediate: { prompt: "Write a loop that updates 'pos' by 'vel' 10 times. pos=0, vel=5. Print final pos.", starterCode: "pos = 0\nvel = 5\nfor _ in range(10):\n    pos += vel\nprint(pos)\n", expectedOutput: "50" },
-        advanced: { prompt: "Calculate distance between (0,0) and (x,y) if x=10, y=24. Print it.", starterCode: "import math\nx, y = 10, 24\ndist = math.sqrt(x**2 + y**2)\nprint(dist)\n", expectedOutput: "26.0" },
+        beginner: { prompt: "Calculate ms per frame for 60 FPS: `1000/60`. Print rounded to 1 decimal.", starterCode: "fps = 60\n\n# Calculate ms/frame, print\n", expectedOutput: "16.7" },
+        intermediate: { prompt: "Simulate movement: `pos=0, vel=5`, update 10 times. Print final `pos` and `vel`.", starterCode: "pos = 0\nvel = 5\n\n# Update 10 times, print pos and vel\n", expectedOutput: "50\n5" },
+        advanced: { prompt: "Calculate distance from `(0,0)` to `(10,24)` using `math.sqrt`. Print the distance and the sum of squares.", starterCode: "import math\nx, y = 10, 24\n\n# Print distance and sum of squares\n", expectedOutput: "26.0\n676" },
       },
     },
     {
@@ -2760,9 +2763,9 @@ function gameDev(): CareerLesson[] {
       content: "## Moving the Player\n\nInputs are handled by polling events.\n\n### Common Controls\n- **WASD** / Arrow Keys for movement\n- **Space** for jump / primary action\n- **Mouse Pos** for aiming\n\n### Vector Movement\nUse X and Y coordinates to represent position. `pos.x += speed * direction`",
       codeExample: "# Simple movement logic\npos = {\"x\": 100, \"y\": 100}\nspeed = 5\n\ndef move(direction):\n    if direction == \"LEFT\": pos[\"x\"] -= speed\n    if direction == \"RIGHT\": pos[\"x\"] += speed\n\nmove(\"RIGHT\")\nprint(\"New Pos:\", pos)",
       exercises: {
-        beginner: { prompt: "If 'KEY_UP' is pressed, decrease 'y' by 10. Given y=50, print result.", starterCode: "y = 50\nkey = \"KEY_UP\"\nif key == \"KEY_UP\":\n    y -= 10\nprint(y)\n", expectedOutput: "40" },
-        intermediate: { prompt: "Clamp value between 0 and 100. Test with 150. Print result.", starterCode: "val = 150\nclamped = max(0, min(100, val))\nprint(clamped)\n", expectedOutput: "100" },
-        advanced: { prompt: "Calculate rotation angle in degrees for vector (1,1). Print 45.0.", starterCode: "import math\nx, y = 1, 1\nangle = math.degrees(math.atan2(y, x))\nprint(angle)\n", expectedOutput: "45.0" },
+        beginner: { prompt: "If `key='KEY_UP'`, decrease `y=50` by 10. Print new `y` and `key`.", starterCode: "y = 50\nkey = 'KEY_UP'\n\n# Handle input, print y and key\n", expectedOutput: "40\nKEY_UP" },
+        intermediate: { prompt: "Clamp `val=150` between 0 and 100. Print the clamped value and whether it was clamped (`True`/`False`).", starterCode: "val = 150\n\n# Clamp, print result and whether clamped\n", expectedOutput: "100\nTrue" },
+        advanced: { prompt: "Calculate rotation angle in degrees for vector `(1,1)` using `math.atan2`. Print angle and the vector tuple.", starterCode: "import math\nx, y = 1, 1\n\n# Print angle and vector\n", expectedOutput: "45.0\n(1, 1)" },
       },
     },
     {
@@ -2770,9 +2773,9 @@ function gameDev(): CareerLesson[] {
       content: "## Visualizing the Game\n\nSprites are 2D images representing characters or objects.\n\n### Animations\nAnimations are achieved by switching between a sequence of images (frames) over time.\n\n### Sprite Sheets\nA single large image containing multiple frames. You 'clip' the parts you need.",
       codeExample: "# Animating a sprite index\ndef next_frame(current, total):\n    return (current + 1) % total\n\nframe = 0\nfor _ in range(5):\n    frame = next_frame(frame, 4)\n    print(\"Drawing frame:\", frame)",
       exercises: {
-        beginner: { prompt: "Print the next frame index (0-7) if current=7.", starterCode: "current = 7\nprint((current + 1) % 8)\n", expectedOutput: "0" },
-        intermediate: { prompt: "Scale a sprite: width=32, scale=2.5. Print new width.", starterCode: "w = 32\ns = 2.5\nprint(w * s)\n", expectedOutput: "80.0" },
-        advanced: { prompt: "Calculate UV offset for frame 3 in a 4-frame sheet (width=1.0). Print 0.75.", starterCode: "f = 3\ntotal = 4\nprint(f / total)\n", expectedOutput: "0.75" },
+        beginner: { prompt: "Next frame index (0-7) if `current=7`. Print the result and `current`.", starterCode: "current = 7\n\n# Wrap-around frame, print next and current\n", expectedOutput: "0\n7" },
+        intermediate: { prompt: "Scale sprite: `width=32`, `scale=2.5`. Print new width and original width.", starterCode: "w = 32\ns = 2.5\n\n# Print scaled and original\n", expectedOutput: "80.0\n32" },
+        advanced: { prompt: "Calculate UV offset for frame 3 in a 4-frame sheet. Print offset and total frames.", starterCode: "f = 3\ntotal = 4\n\n# Print UV offset and total\n", expectedOutput: "0.75\n4" },
       },
     },
     {
@@ -2780,9 +2783,9 @@ function gameDev(): CareerLesson[] {
       content: "## Physical Logic\n\nCollision detection determines if two objects are overlapping.\n\n### AABB (Axis-Aligned Bounding Box)\nThe simplest collision: checking if two rectangles intersect.\n\n### Circle Collision\nChecking if the distance between two centers is less than the sum of their radii.",
       codeExample: "# AABB collision check\ndef check_collision(rect1, rect2):\n    return (rect1['x'] < rect2['x'] + rect2['w'] and\n            rect1['x'] + rect1['w'] > rect2['x'] and\n            rect1['y'] < rect2['y'] + rect2['h'] and\n            rect1['y'] + rect1['h'] > rect2['y'])\n\nr1 = {'x': 0, 'y': 0, 'w': 10, 'h': 10}\nr2 = {'x': 5, 'y': 5, 'w': 10, 'h': 10}\nprint(\"Collision:\", check_collision(r1, r2))",
       exercises: {
-        beginner: { prompt: "If distance is 5 and radii sum is 10, is there a collision? Print True/False.", starterCode: "dist = 5\nradii = 10\nprint(dist < radii)\n", expectedOutput: "True" },
-        intermediate: { prompt: "Check if point (5,5) is inside rect x=0, y=0, w=10, h=10. Print True/False.", starterCode: "px, py = 5, 5\nrx, ry, rw, rh = 0, 0, 10, 10\nprint(rx < px < rx + rw and ry < py < ry + rh)\n", expectedOutput: "True" },
-        advanced: { prompt: "Reflect velocity (v=-5) on impact. Flip sign. Print result.", starterCode: "v = -5\nprint(v * -1)\n", expectedOutput: "5" },
+        beginner: { prompt: "If `dist=5` and `radii_sum=10`, is there a collision? Print result and the gap distance.", starterCode: "dist = 5\nradii = 10\n\n# Print collision check and gap\n", expectedOutput: "True\n5" },
+        intermediate: { prompt: "Check if point `(5,5)` is inside rect `(0,0,10,10)`. Print result and the point as tuple.", starterCode: "px, py = 5, 5\nrx, ry, rw, rh = 0, 0, 10, 10\n\n# Check containment, print result and point\n", expectedOutput: "True\n(5, 5)" },
+        advanced: { prompt: "Reflect velocity `v=-5` on impact (flip sign). Print new velocity and `abs()` value.", starterCode: "v = -5\n\n# Reflect, print new and absolute\n", expectedOutput: "5\n5" },
       },
     },
     {
@@ -2790,9 +2793,9 @@ function gameDev(): CareerLesson[] {
       content: "## The Flow of the Game\n\nStates control what logic and visuals are active.\n\n### Common States\n- **MENU**: Logo and Start button\n- **PLAYING**: The actual game loop\n- **PAUSED**: Static screen with 'Resume'\n- **GAMEOVER**: Final score and 'Retry'",
       codeExample: "# Simple state machine\nstate = \"MENU\"\n\ndef change_state(new_state):\n    global state\n    state = new_state\n    print(f\"Switching to {state} state\")\n\nchange_state(\"PLAYING\")\nchange_state(\"GAMEOVER\")",
       exercises: {
-        beginner: { prompt: "If score > 100, set state to 'WON'. Given score=150, print current state.", starterCode: "score = 150\nstate = \"PLAY\"\nif score > 100: state = \"WON\"\nprint(state)\n", expectedOutput: "WON" },
-        intermediate: { prompt: "Toggle 'PAUSE' state. If active, set False, else True. Given active=True, print result.", starterCode: "active = True\nactive = not active\nprint(active)\n", expectedOutput: "False" },
-        advanced: { prompt: "Filter high scores > 500 from [100, 550, 400, 900]. Print count.", starterCode: "scores = [100, 550, 400, 900]\nhigh = [s for s in scores if s > 500]\nprint(len(high))\n", expectedOutput: "2" },
+        beginner: { prompt: "If `score=150 > 100`, set `state='WON'`. Print the state and score.", starterCode: "score = 150\nstate = 'PLAY'\n\n# Update state if score > 100, print state and score\n", expectedOutput: "WON\n150" },
+        intermediate: { prompt: "Toggle `active=True` using `not`. Print new value and its type name.", starterCode: "active = True\n\n# Toggle, print value and type\n", expectedOutput: "False\nbool" },
+        advanced: { prompt: "Filter high scores `> 500` from `[100, 550, 400, 900]`. Print count and the list.", starterCode: "scores = [100, 550, 400, 900]\n\n# Filter, print count and list\n", expectedOutput: "2\n[550, 900]" },
       },
     },
     {
@@ -2800,9 +2803,9 @@ function gameDev(): CareerLesson[] {
       content: "## Audio Feedback\n\nSound effects (SFX) and background music (BGM) provide emotional feedback.\n\n### Important Concepts\n- **Channels**: Playing multiple sounds at once\n- **Volume**: 0.0 to 1.0\n- **Pan**: Left/Right balance (Stereo)",
       codeExample: "# Simulated audio mixer\ndef play_sound(name, volume=1.0):\n    print(f\"Playing {name} at volume {volume}\")\n\nplay_sound(\"laser_shot\", 0.5)\nplay_sound(\"explosion\", 0.8)",
       exercises: {
-        beginner: { prompt: "Scale volume by 0.5 if 'MUTE' is False. Given vol=1.0, print result.", starterCode: "vol = 1.0\nmute = False\nif not mute: vol *= 0.5\nprint(vol)\n", expectedOutput: "0.5" },
-        intermediate: { prompt: "Limit volume between 0.0 and 1.0. Given vol=1.5, print 1.0.", starterCode: "vol = 1.5\nprint(max(0.0, min(1.0, vol)))\n", expectedOutput: "1.0" },
-        advanced: { prompt: "Calculate stereo pan for listener at x=0. Sound at x=100. Print 'RIGHT'.", starterCode: "sx = 100\nlx = 0\nprint(\"RIGHT\" if sx > lx else \"LEFT\")\n", expectedOutput: "RIGHT" },
+        beginner: { prompt: "Scale `vol=1.0` by `0.5` if `mute=False`. Print result and the mute flag.", starterCode: "vol = 1.0\nmute = False\n\n# Scale vol, print result and mute\n", expectedOutput: "0.5\nFalse" },
+        intermediate: { prompt: "Clamp `vol=1.5` between 0.0 and 1.0. Print clamped value and whether it was clamped.", starterCode: "vol = 1.5\n\n# Clamp, print value and was_clamped\n", expectedOutput: "1.0\nTrue" },
+        advanced: { prompt: "Sound at `sx=100`, listener at `lx=0`. Print `'RIGHT'`/`'LEFT'` and distance.", starterCode: "sx = 100\nlx = 0\n\n# Determine pan direction and distance, print both\n", expectedOutput: "RIGHT\n100" },
       },
     },
     {
@@ -2810,9 +2813,9 @@ function gameDev(): CareerLesson[] {
       content: "## Basic AI Logic\n\nHow do enemies know where to go?\n\n### Chasing\nMove towards the player's (x, y) coordinates.\n\n### Waypoints\nFollowing a predefined list of points.\n\n### A* Pathfinding\nCalculating the most efficient path around obstacles (Advanced).",
       codeExample: "# Simple chase logic\ndef chase(enemy_pos, player_pos, speed):\n    if enemy_pos < player_pos: return enemy_pos + speed\n    return enemy_pos - speed\n\nnew_x = chase(10, 100, 5)\nprint(\"Enemy moved to:\", new_x)",
       exercises: {
-        beginner: { prompt: "If enemy_y > player_y, move enemy UP (y -= 5). Given ey=100, py=50, print new ey.", starterCode: "ey, py = 100, 50\nif ey > py: ey -= 5\nprint(ey)\n", expectedOutput: "95" },
-        intermediate: { prompt: "Calculate angle to target at (x=10, y=10) from (0,0). Print 45.0.", starterCode: "import math\nx, y = 10, 10\nprint(math.degrees(math.atan2(y, x)))\n", expectedOutput: "45.0" },
-        advanced: { prompt: "Check if player is in range (10). Distance=8. Print True/False.", starterCode: "dist = 8\nprint(dist <= 10)\n", expectedOutput: "True" },
+        beginner: { prompt: "If `ey=100 > py=50`, move enemy up (`ey -= 5`). Print new `ey` and `py`.", starterCode: "ey, py = 100, 50\n\n# Move enemy if above player, print both\n", expectedOutput: "95\n50" },
+        intermediate: { prompt: "Calculate angle to target `(10,10)` from `(0,0)` in degrees using `math.atan2`. Print angle.", starterCode: "import math\nx, y = 10, 10\n\n# Calculate and print angle\n", expectedOutput: "45.0" },
+        advanced: { prompt: "Check if `dist=8` is within detection range `10`. Print result and remaining range.", starterCode: "dist = 8\ndetect_range = 10\n\n# Print in-range check and remaining\n", expectedOutput: "True\n2" },
       },
     },
     {
@@ -2820,9 +2823,9 @@ function gameDev(): CareerLesson[] {
       content: "## The Visual Engine\n\nShaders are small programs that run on the GPU to calculate light, shadow, and color.\n\n### Ursina Shaders\nUrsina (a 3D engine for Python) uses GLSL-style shaders for post-processing and materials.\n\n- **Vertex Shaders**: Move the points (geometry)\n- **Fragment Shaders**: Color the pixels",
       codeExample: "# Pseudo-shader configuration\ndef apply_shader(entity, shader_type):\n    print(f\"Applying {shader_type} to {entity.name}\")\n\n# Simulating a light intensity calculation\ndef calc_light(distance, intensity):\n    return intensity / (distance ** 2)\n\nprint(\"Light at 10 units:\", calc_light(10, 100))",
       exercises: {
-        beginner: { prompt: "Calculate light intensity at dist=2 for intensity=8. Print 2.0.", starterCode: "d, i = 2, 8\nprint(i / (d ** 2))\n", expectedOutput: "2.0" },
-        intermediate: { prompt: "Scale RGB color (255, 0, 0) by 0.5 for a dark red. Print result.", starterCode: "c = (255, 0, 0)\ndark = tuple(int(x * 0.5) for x in c)\nprint(dark)\n", expectedOutput: "(127, 0, 0)" },
-        advanced: { prompt: "Calculate dot product of (1,0) and (0,1). Print 0.", starterCode: "v1 = (1, 0)\nv2 = (0, 1)\ndot = v1[0]*v2[0] + v1[1]*v2[1]\nprint(dot)\n", expectedOutput: "0" },
+        beginner: { prompt: "Calculate light intensity at `dist=2`, `intensity=8`. Print result and the formula name.", starterCode: "d, i = 2, 8\n\n# Print intensity and formula name\n", expectedOutput: "2.0\ninverse square" },
+        intermediate: { prompt: "Scale RGB `(255, 0, 0)` by `0.5`. Print the dark color tuple and original.", starterCode: "c = (255, 0, 0)\n\n# Scale, print dark and original\n", expectedOutput: "(127, 0, 0)\n(255, 0, 0)" },
+        advanced: { prompt: "Calculate dot product of `(1,0)` and `(0,1)`. Print result and whether vectors are perpendicular.", starterCode: "v1 = (1, 0)\nv2 = (0, 1)\n\n# Print dot product and perpendicular check\n", expectedOutput: "0\nTrue" },
       },
     },
     {
@@ -2830,9 +2833,9 @@ function gameDev(): CareerLesson[] {
       content: "## Online Worlds\n\nSyncing position and state between multiple clients.\n\n### Architecture\n- **Server**: The authority on state\n- **Client**: Sends input, receives state\n- **Latency (Ping)**: The delay between players\n\n### Optimization\n**Prediction**: Guessing where a player will be to hide lag.",
       codeExample: "# Simulating a packet sync\ndef send_packet(player_id, pos):\n    import json\n    return json.dumps({\"id\": player_id, \"x\": pos[0], \"y\": pos[1]})\n\nprint(\"Sync Packet:\", send_packet(\"PRO_Gamer\", (250, 420)))",
       exercises: {
-        beginner: { prompt: "Filter packets from list for player_id=1. Print matching packet.", starterCode: "packets = [{\"id\": 1, \"x\": 10}, {\"id\": 2, \"x\": 50}]\np = [pk for pk in packets if pk[\"id\"] == 1]\nprint(p[0])\n", expectedOutput: "{'id': 1, 'x': 10}" },
-        intermediate: { prompt: "Calculate latency: send=100ms, recv=250ms. Print total 150ms.", starterCode: "s, r = 100, 250\nprint(r - s)\n", expectedOutput: "150" },
-        advanced: { prompt: "Generate a player ping ID string 'PING_101'.", starterCode: "id = 101\nprint(f\"PING_{id}\")\n", expectedOutput: "PING_101" },
+        beginner: { prompt: "Filter packets for `player_id=1`. Print the matching packet and total packet count.", starterCode: "packets = [{'id': 1, 'x': 10}, {'id': 2, 'x': 50}]\n\n# Filter, print match and total count\n", expectedOutput: "{'id': 1, 'x': 10}\n2" },
+        intermediate: { prompt: "Calculate latency: `send=100ms`, `recv=250ms`. Print latency and `type(latency).__name__`.", starterCode: "s, r = 100, 250\n\n# Calculate and print latency and type\n", expectedOutput: "150\nint" },
+        advanced: { prompt: "Generate ping ID string `'PING_101'` from `id=101`. Print it and `len()` of the string.", starterCode: "id = 101\n\n# Build ping string, print it and length\n", expectedOutput: "PING_101\n8" },
       },
     },
   ];
@@ -2851,9 +2854,9 @@ function iotRobotics(): CareerLesson[] {
         hindi: { title: "Hardware Basics", description: "Pixels to Pins: MicroPython का परिचय" },
       },
       exercises: {
-        beginner: { prompt: "Print 'HIGH' if pin value is 1, else 'LOW'.", starterCode: "val = 1\nprint(\"HIGH\" if val == 1 else \"LOW\")\n", expectedOutput: "HIGH" },
-        intermediate: { prompt: "Convert 1023 (10-bit max) to a percentage (0-100). Print it.", starterCode: "val = 1023\npercent = (val / 1023) * 100\nprint(percent)\n", expectedOutput: "100.0" },
-        advanced: { prompt: "Calculate ohms: R = V/I. Given V=3.3, I=0.02. Print result.", starterCode: "v = 3.3\ni = 0.02\nr = v / i\nprint(r)\n", expectedOutput: "165.0" },
+        beginner: { prompt: "Print `'HIGH'` if `val=1` else `'LOW'`. Also print the val.", starterCode: "val = 1\n\n# Print HIGH/LOW and val\n", expectedOutput: "HIGH\n1" },
+        intermediate: { prompt: "Convert `1023` (10-bit max) to percentage. Print the percentage and raw value.", starterCode: "val = 1023\n\n# Convert and print percentage and raw\n", expectedOutput: "100.0\n1023" },
+        advanced: { prompt: "Calculate ohms: `R = V/I`. Given `V=3.3, I=0.02`. Print R and the unit `'ohms'`.", starterCode: "v = 3.3\ni = 0.02\n\n# Calculate R, print value and unit\n", expectedOutput: "165.0\nohms" },
       },
     },
     {
@@ -2861,9 +2864,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## The MicroPython REPL\n\nREPL stands for **Read-Eval-Print Loop**. It allows you to run Python code live on your hardware via a serial connection.\n\n### Workflow\n1. Flash the MicroPython firmware (.bin file)\n2. Connect via USB\n3. Write `main.py` - this runs automatically on boot",
       codeExample: "# Typical boot sequence\ndef boot():\n    print(\"System Initializing...\")\n    import gc\n    gc.collect()\n    print(\"Memory Free:\", gc.mem_free())\n\nboot()",
       exercises: {
-        beginner: { prompt: "Print the name of the file that runs automatically on boot: 'main.py'.", starterCode: "print(\"main.py\")\n", expectedOutput: "main.py" },
-        intermediate: { prompt: "Calculate 2^10 (1024) to see addressable memory space. Print it.", starterCode: "print(2**10)\n", expectedOutput: "1024" },
-        advanced: { prompt: "Return 'OK' if mem_free > 5000, else 'LOW'. Given 6000, print result.", starterCode: "free = 6000\nprint(\"OK\" if free > 5000 else \"LOW\")\n", expectedOutput: "OK" },
+        beginner: { prompt: "Print `'main.py'` and `len('main.py')`.", starterCode: "# Print boot file name and its length\n", expectedOutput: "main.py\n7" },
+        intermediate: { prompt: "Calculate `2**10` and print the result. Also print `type(result).__name__`.", starterCode: "# Calculate, print value and type\n", expectedOutput: "1024\nint" },
+        advanced: { prompt: "If `free=6000 > 5000` print `'OK'` else `'LOW'`. Print result and the free value.", starterCode: "free = 6000\n\n# Check, print result and free\n", expectedOutput: "OK\n6000" },
       },
     },
     {
@@ -2871,9 +2874,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## Digital Logic\n\n- **Digital Output**: High (3.3V) or Low (0V). Perfect for LEDs.\n- **Digital Input**: Reading a button. Use **Pull-up** or **Pull-down** resistors to avoid 'floating' values.",
       codeExample: "# Simulating a button press toggle\nled_state = False\ndef on_button_press():\n    global led_state\n    led_state = not led_state\n    print(\"LED is now\", \"ON\" if led_state else \"OFF\")\n\non_button_press()\non_button_press()",
       exercises: {
-        beginner: { prompt: "Toggle the bit 0 to 1. Given bit=0, print (bit + 1).", starterCode: "bit = 0\nprint(bit + 1)\n", expectedOutput: "1" },
-        intermediate: { prompt: "If button is pressed (1) and door is open (1), trigger alarm. Print 'ALARM'.", starterCode: "btn, door = 1, 1\nif btn and door: print(\"ALARM\")\n", expectedOutput: "ALARM" },
-        advanced: { prompt: "Calculate debounce delay: total=50ms, samples=5. Print average 10.0.", starterCode: "t, s = 50, 5\nprint(t / s)\n", expectedOutput: "10.0" },
+        beginner: { prompt: "Toggle `bit=0` to 1. Print new bit and `type(bit).__name__`.", starterCode: "bit = 0\n\n# Toggle, print value and type\n", expectedOutput: "1\nint" },
+        intermediate: { prompt: "If `btn=1` AND `door=1`, print `'ALARM'`. Also print `btn AND door` result.", starterCode: "btn, door = 1, 1\n\n# Check alarm, print msg and AND result\n", expectedOutput: "ALARM\n1" },
+        advanced: { prompt: "Calculate debounce delay: `total=50ms, samples=5`. Print average and total.", starterCode: "t, s = 50, 5\n\n# Print average and total\n", expectedOutput: "10.0\n50" },
       },
     },
     {
@@ -2881,9 +2884,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## Analog to Digital\n\nSensors like LDRs (light) or Potentiometers provide a continuous voltage. The **ADC** (Analog-to-Digital Converter) converts this voltage into a number (usually 0 to 1023 or 4095).",
       codeExample: "# Map 0-1023 to 0-100%\ndef map_sensor(val):\n    return round((val / 1023) * 100, 1)\n\nprint(\"Light Level:\", map_sensor(512), \"%\")",
       exercises: {
-        beginner: { prompt: "If value is 0, print 'DARK'. Else if > 800, print 'BRIGHT'. Test with 900.", starterCode: "v = 900\nif v == 0: print(\"DARK\")\nelif v > 800: print(\"BRIGHT\")\n", expectedOutput: "BRIGHT" },
-        intermediate: { prompt: "Convert Celsius to Fahrenheit: (C * 9/5) + 32. Given C=25, print result.", starterCode: "c = 25\nf = (c * 9/5) + 32\nprint(f)\n", expectedOutput: "77.0" },
-        advanced: { prompt: "Calculate rolling average of [100, 105, 95]. Print it.", starterCode: "vals = [100, 105, 95]\nprint(sum(vals) / len(vals))\n", expectedOutput: "100.0" },
+        beginner: { prompt: "If `v=900 > 800` print `'BRIGHT'`, elif `v==0` print `'DARK'`. Also print `v`.", starterCode: "v = 900\n\n# Check brightness, print label and value\n", expectedOutput: "BRIGHT\n900" },
+        intermediate: { prompt: "Convert `C=25` to Fahrenheit. Print the result and the formula used.", starterCode: "c = 25\n\n# Convert, print result and formula\n", expectedOutput: "77.0\n(C * 9/5) + 32" },
+        advanced: { prompt: "Rolling average of `[100, 105, 95]`. Print average and `len()` of input.", starterCode: "vals = [100, 105, 95]\n\n# Print average and length\n", expectedOutput: "100.0\n3" },
       },
     },
     {
@@ -2891,9 +2894,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## Talking to Chips\n\nMost advanced sensors use protocols like **I2C** or **SPI** to send complex data (like GPS coordinates or 3D acceleration).\n\n- **I2C**: Uses only 2 wires (SDA, SCL). Great for simple sensors.\n- **SPI**: Uses 4 wires. Much faster, used for screens and SD cards.",
       codeExample: "# Simulating an I2C scan\ndef scan_i2c():\n    devices = [0x27, 0x3C, 0x68]\n    return [hex(d) for d in devices]\n\nprint(\"Found I2C devices:\", scan_i2c())",
       exercises: {
-        beginner: { prompt: "Convert decimal 60 to hex. Print result.", starterCode: "print(hex(60))\n", expectedOutput: "0x3c" },
-        intermediate: { prompt: "Check if address 0x27 is in [0x20, 0x27, 0x30]. Print True/False.", starterCode: "addrs = [0x20, 0x27, 0x30]\nprint(0x27 in addrs)\n", expectedOutput: "True" },
-        advanced: { prompt: "Calculate I2C bitrate: 100kHz is how many bits per second? Print 100000.", starterCode: "print(100 * 1000)\n", expectedOutput: "100000" },
+        beginner: { prompt: "Convert decimal `60` to hex. Print the result and `type(60).__name__`.", starterCode: "# Print hex and type\n", expectedOutput: "0x3c\nint" },
+        intermediate: { prompt: "Check if `0x27` is in `[0x20, 0x27, 0x30]`. Print result and `len()` of list.", starterCode: "addrs = [0x20, 0x27, 0x30]\n\n# Check and print result + length\n", expectedOutput: "True\n3" },
+        advanced: { prompt: "I2C bitrate: `100kHz = 100 * 1000`. Print the value and `'bits/sec'`.", starterCode: "# Calculate, print value and unit\n", expectedOutput: "100000\nbits/sec" },
       },
     },
     {
@@ -2901,9 +2904,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## Visual Output\n\nSmall 0.96\" OLED screens are common in IoT projects. They usually use the SSD1306 driver.\n\n### Drawing Steps\n1. Clear the buffer\n2. Draw text or pixels\n3. Call `show()` to push the buffer to the screen hardware.",
       codeExample: "# Pseudo-code for OLED\ndef draw_text(oled, x, y, text):\n    print(f\"Drawing '{text}' at ({x}, {y})\")\n\ndraw_text(None, 0, 0, \"PyMaster IoT\")\ndraw_text(None, 0, 16, \"Temp: 24C\")",
       exercises: {
-        beginner: { prompt: "Calculate pixels in a 128x64 display. Print result.", starterCode: "print(128 * 64)\n", expectedOutput: "8192" },
-        intermediate: { prompt: "Centered text: screen=128, text_w=40. Calculate starting x. Print 44.", starterCode: "sw, tw = 128, 40\nprint((sw - tw) // 2)\n", expectedOutput: "44" },
-        advanced: { prompt: "Generate coordinate list for a line from (0,0) to (2,2): [(0,0), (1,1), (2,2)].", starterCode: "print([(i, i) for i in range(3)])\n", expectedOutput: "[(0, 0), (1, 1), (2, 2)]" },
+        beginner: { prompt: "Calculate pixels in `128x64` display. Print count and display dimensions.", starterCode: "w, h = 128, 64\n\n# Print pixel count and dimensions\n", expectedOutput: "8192\n128x64" },
+        intermediate: { prompt: "Center text: `screen=128`, `text_w=40`. Print starting x and remaining space.", starterCode: "sw, tw = 128, 40\n\n# Print start x and remaining\n", expectedOutput: "44\n88" },
+        advanced: { prompt: "Generate coordinates for diagonal line from `(0,0)` to `(2,2)`. Print the list and its length.", starterCode: "# Generate diagonal coords, print list and length\n", expectedOutput: "[(0, 0), (1, 1), (2, 2)]\n3" },
       },
     },
     {
@@ -2911,9 +2914,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## Motion Control\n\nServos are controlled using **PWM**. By changing the 'Duty Cycle' (the percentage of time the signal is ON), you can set the exact angle of the motor.\n\n- **0% Duty**: 0 degrees\n- **100% Duty**: 180 degrees (usually)",
       codeExample: "# Mapping angle (0-180) to Duty (0-1023)\ndef angle_to_duty(angle):\n    return int((angle / 180) * 1023)\n\nprint(\"Duty for 90 degrees:\", angle_to_duty(90))",
       exercises: {
-        beginner: { prompt: "If angle > 180, cap it at 180. Test with 200. Print 180.", starterCode: "a = 200\nprint(min(180, a))\n", expectedOutput: "180" },
-        intermediate: { prompt: "Calculate angle for duty=511 (half of 1023). Print 90.", starterCode: "d = 511\nprint(int((d / 1023) * 180))\n", expectedOutput: "89" },
-        advanced: { prompt: "Generate movement steps: start=0, end=90, step=30. Print list.", starterCode: "print(list(range(0, 91, 30)))\n", expectedOutput: "[0, 30, 60, 90]" },
+        beginner: { prompt: "Cap `angle=200` at `180`. Print capped value and original.", starterCode: "a = 200\n\n# Cap, print capped and original\n", expectedOutput: "180\n200" },
+        intermediate: { prompt: "Calculate angle for `duty=511` (max 1023, range 180°). Print angle and the formula.", starterCode: "d = 511\n\n# Print angle and formula description\n", expectedOutput: "89\n(duty/1023)*180" },
+        advanced: { prompt: "Generate steps from 0 to 90 by 30. Print the list and `len()` of it.", starterCode: "# Print movement steps and count\n", expectedOutput: "[0, 30, 60, 90]\n4" },
       },
     },
     {
@@ -2921,9 +2924,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## Every Byte Counts\n\nMicrocontrollers are powerful but have very little memory.\n\n### Optimization Tips\n- **Avoid large imports**: Only import what you need.\n- **Use frozen modules**: Pre-compiled Python scripts.\n- **Manual Garbage Collection**: Run `gc.collect()` after heavy tasks.",
       codeExample: "# Measuring memory before/after\nimport gc\ndef check_mem():\n    gc.collect()\n    return gc.mem_free()\n\nprint(\"Free RAM:\", check_mem(), \"bytes\")",
       exercises: {
-        beginner: { prompt: "Calculate KB from 32768 bytes. Print 32.0.", starterCode: "b = 32768\nprint(b / 1024)\n", expectedOutput: "32.0" },
-        intermediate: { prompt: "String vs Bytes: Check size of b'hello'. Print 5.", starterCode: "print(len(b'hello'))\n", expectedOutput: "5" },
-        advanced: { prompt: "Calculate % free if total=32000, free=8000. Print 25.0.", starterCode: "t, f = 32000, 8000\nprint((f / t) * 100)\n", expectedOutput: "25.0" },
+        beginner: { prompt: "Calculate KB from `32768` bytes. Print KB and raw bytes.", starterCode: "b = 32768\n\n# Print KB and bytes\n", expectedOutput: "32.0\n32768" },
+        intermediate: { prompt: "Check `len(b'hello')` and compare to `len('hello')`. Print both.", starterCode: "# Print len of bytes and string\n", expectedOutput: "5\n5" },
+        advanced: { prompt: "Calculate `%` free if `total=32000`, `free=8000`. Print percentage and used amount.", starterCode: "t, f = 32000, 8000\n\n# Print percentage and used\n", expectedOutput: "25.0\n24000" },
       },
     },
     {
@@ -2931,9 +2934,9 @@ function iotRobotics(): CareerLesson[] {
       content: "## The Internet of Things\n\n**MQTT** is the standard protocol for IoT. It's lightweight and works by 'Publishing' data to a 'Topic' and 'Subscribing' to receive commands.\n\n### Workflow\n1. Device connects to Wi-Fi\n2. Device connects to an MQTT Broker\n3. Device publishes sensor data every 10 seconds",
       codeExample: "# Pseudo-code MQTT Publish\ndef mqtt_pub(topic, msg):\n    print(f\"MQTT -> [{topic}]: {msg}\")\n\nmqtt_pub(\"home/livingroom/temp\", \"24.5\")",
       exercises: {
-        beginner: { prompt: "Check if 'temp' is in topic 'livingroom/temp'. Print True/False.", starterCode: "t = \"livingroom/temp\"\nprint(\"temp\" in t)\n", expectedOutput: "True" },
-        intermediate: { prompt: "Join list ['iot', 'sensor', '1'] with '/' for a topic. Print result.", starterCode: "parts = [\"iot\", \"sensor\", \"1\"]\nprint(\"/\".join(parts))\n", expectedOutput: "iot/sensor/1" },
-        advanced: { prompt: "Filter packets where topic='cmd'. list=[{'t':'data'}, {'t':'cmd'}]. Print count.", starterCode: "ps = [{\"t\": \"data\"}, {\"t\": \"cmd\"}]\nprint(sum(1 for p in ps if p[\"t\"] == \"cmd\"))\n", expectedOutput: "1" },
+        beginner: { prompt: "Check if `'temp'` is in topic `'livingroom/temp'`. Print result and `len()` of topic.", starterCode: "t = 'livingroom/temp'\n\n# Check and print result + length\n", expectedOutput: "True\n15" },
+        intermediate: { prompt: "Join `['iot','sensor','1']` with `'/'`. Print the topic and part count.", starterCode: "parts = ['iot', 'sensor', '1']\n\n# Join, print topic and count\n", expectedOutput: "iot/sensor/1\n3" },
+        advanced: { prompt: "Filter packets where `topic='cmd'`. Print matching count and total.", starterCode: "ps = [{'t': 'data'}, {'t': 'cmd'}]\n\n# Filter, print cmd count and total\n", expectedOutput: "1\n2" },
       },
     },
   ];

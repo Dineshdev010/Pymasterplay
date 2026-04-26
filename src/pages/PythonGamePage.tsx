@@ -789,8 +789,8 @@ export default function PythonGamePage() {
                     draggable
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    onDragStart={(event: React.DragEvent<HTMLDivElement>) => {
-                      event.dataTransfer.setData("text/plain", block.id);
+                    onDragStart={(e: any) => {
+                      e.dataTransfer?.setData?.("text/plain", block.id);
                       playSound("click");
                     }}
                     className="flex cursor-grab items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 hover:bg-white/[0.08] hover:border-white/10 active:cursor-grabbing transition-all ring-1 ring-inset ring-white/[0.02]"

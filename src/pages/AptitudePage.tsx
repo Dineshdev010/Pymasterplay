@@ -532,12 +532,23 @@ export default function AptitudePage() {
         </div>
       )}
       <Helmet>
-        <title>Aptitude Prep | PyMaster</title>
+        <title>Aptitude Prep & Mock Tests | PyMaster</title>
         <meta
           name="description"
-          content="Prepare for aptitude rounds with quantitative aptitude, logical reasoning, verbal ability, data interpretation, shortcuts, and practice MCQs."
+          content="Master quantitative aptitude, logical reasoning, and verbal ability with our specialized placement preparation modules. Practice with company-specific question sets and timed mock tests."
         />
+        <meta property="og:title" content="Aptitude Mastery & Placement Prep" />
+        <meta property="og:description" content="Prepare for tech rounds with 100+ MCQs, shortcut cards, and real-time mock tests." />
       </Helmet>
+
+      {/* Crawlable Description for SEO/AdSense */}
+      <div className="bg-surface-1 border-b border-border/40 px-4 py-2">
+        <p className="text-[11px] text-muted-foreground/80 max-w-6xl mx-auto leading-relaxed">
+          <strong>PyMaster Aptitude Training:</strong> Master quantitative aptitude, logical reasoning, and verbal ability with our specialized placement preparation modules. 
+          Prepare for placement rounds with <strong>100+ interactive MCQs</strong>, <strong>shortcut cards</strong>, <strong>learning blocks</strong>, and <strong>timed mock tests</strong> tailored for companies like TCS, Infosys, and Wipro. 
+          Track your accuracy and build speed with real-time feedback.
+        </p>
+      </div>
 
       <section className="relative overflow-hidden border-b border-border/60 bg-[linear-gradient(135deg,rgba(14,165,233,0.08),rgba(245,158,11,0.08),rgba(16,185,129,0.06))]">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(14,165,233,0.18),transparent_28%),radial-gradient(circle_at_top_right,rgba(245,158,11,0.16),transparent_24%),radial-gradient(circle_at_bottom,rgba(16,185,129,0.12),transparent_28%)]" />

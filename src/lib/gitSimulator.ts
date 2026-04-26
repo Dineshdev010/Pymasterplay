@@ -338,8 +338,6 @@ export class GitSimulator {
         return "Proto  Recv-Q  Send-Q  Local Address     Foreign Address   State\ntcp        0       0   0.0.0.0:22        0.0.0.0:*         LISTEN\ntcp        0       0   127.0.0.1:631     0.0.0.0:*         LISTEN";
       case "ss":
         return "Netid  State   Recv-Q  Send-Q  Local Address:Port  Peer Address:Port\ntcp    LISTEN  0       128     *:22               *:*";
-      case "nmap":
-        return `Starting Nmap 7.93 ( https://nmap.org )\nNmap scan report for ${args[args.length-1] || "localhost"}\n22/tcp   open  ssh\n80/tcp   open  http\n443/tcp  open  https`;
       case "traceroute":
         return `traceroute to ${args[0] || "google.com"}, 30 hops max\n 1  192.168.1.1  1.234 ms\n 2  10.0.0.1     5.678 ms\n 3  google.com   12.345 ms`;
       case "dig":

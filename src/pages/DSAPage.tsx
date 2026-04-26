@@ -16,6 +16,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCallback } from "react";
 
+const CANONICAL_URL = "https://pymaster.pro/dsa";
+
 
 interface DSATopic {
   id: string;
@@ -1941,21 +1943,35 @@ export default function DSAPage() {
 
 
   return (
-    <div className="flex min-h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-3.5rem)] flex-col md:flex-row md:overflow-hidden">
+    <div className="flex flex-col min-h-[calc(100dvh-3.5rem)] lg:h-[calc(100dvh-3.5rem)] lg:overflow-hidden">
       <Helmet>
-        <title>Data Structures & Algorithms in Python | PyMaster</title>
-        <meta name="description" content="Master Python Data Structures and Algorithms with visual explanations, complexity analysis, and real-world patterns. Free DSA course." />
+        <title>Data Structures & Algorithms in Python | PyMaster Mastery</title>
+        <meta
+          name="description"
+          content="Master Data Structures and Algorithms with interactive explanations, visual diagrams, and Python code examples. Learn fundamental patterns like Sliding Window, Two Pointers, and Binary Search."
+        />
         <link rel="canonical" href={canonical} />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content={canonical} />
-        <meta property="og:title" content="Python DSA Mastery | PyMaster" />
-        <meta property="og:description" content="Learn Arrays, Hash Maps, Dynamic Programming, and Graph patterns in Python with amazing visual examples." />
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content="Python DSA Guide: Patterns & Fundamentals" />
+        <meta property="og:description" content="A comprehensive guide to mastering DSA with Python. Visual explanations, complexity analysis, and pattern detection tips." />
         <meta property="og:image" content="https://pymaster.pro/og-image.png" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Python DSA Mastery | PyMaster" />
-        <meta name="twitter:description" content="Learn Arrays, Hash Maps, Dynamic Programming, and Graph patterns in Python with visual examples." />
-        <meta name="twitter:image" content="https://pymaster.pro/og-image.png" />
+        <meta name="twitter:title" content="Python DSA Guide: Patterns & Fundamentals" />
+        <meta name="twitter:description" content="Master DSA with Python visual examples." />
       </Helmet>
+
+      {/* Crawlable Description for SEO/AdSense */}
+      <div className="bg-surface-1 border-b border-border/40 px-4 py-2 shrink-0">
+        <p className="text-[10px] text-muted-foreground/70 max-w-7xl mx-auto leading-relaxed">
+          <strong>PyMaster DSA Guide:</strong> Master Data Structures and Algorithms (DSA) with our comprehensive guide featuring 
+          <strong>interactive explanations</strong>, <strong>visual diagrams</strong>, and <strong>Python code examples</strong>. 
+          Learn fundamental patterns like <strong>Sliding Window</strong>, <strong>Two Pointers</strong>, <strong>Binary Search</strong>, and <strong>Recursion</strong>. 
+          Each topic includes <strong>time and space complexity analysis</strong>, <strong>pattern detection tips</strong> for coding interviews, and <strong>real-world applications</strong> to help you excel in technical rounds at top tech companies.
+        </p>
+      </div>
+
+      <div className="flex flex-1 min-h-0 flex-col md:flex-row">
+
       
       {/* Sidebar */}
       <aside className="w-72 border-r border-border bg-surface-1 overflow-y-auto scrollbar-none shrink-0 hidden md:block">
@@ -2560,6 +2576,7 @@ export default function DSAPage() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

@@ -452,6 +452,7 @@ export default function CareerLearnPage() {
                       level={level}
                       lessonId={selectedLesson.id}
                       locked={!isExerciseUnlocked(selectedLesson.id, level)}
+                      language={track.language || "python"}
                     />
                   )
                 ))}

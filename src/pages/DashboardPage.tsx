@@ -16,12 +16,14 @@ import { StreakFire } from "@/components/StreakFire";
 import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp, Brain } from "lucide-react";
+import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp, Brain, Volume2, VolumeX } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { getPublicUrl } from "@/lib/public-url";
 import { TrophyHall } from "@/components/TrophyHall";
 import { getDynamicMemers } from "@/data/dummyMemers";
+import { Helmet } from "react-helmet-async";
+import { playSuccessSound, playClickSound } from "@/lib/sounds";
 
 
 
@@ -214,6 +216,11 @@ export default function DashboardPage() {
   const [savingProfileDetails, setSavingProfileDetails] = useState(false);
   const [giftTick, setGiftTick] = useState(0);
   const [quizProgress, setQuizProgress] = useState<QuizProgressSnapshot>(() => readQuizProgressSnapshot());
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => {
+    const stored = localStorage.getItem("pymaster_sound_muted");
+    // Muted by default on first visit; enabled if user has explicitly set it to "false"
+    return stored === "false";
+  });
   const [dashboardDensity, setDashboardDensity] = useState<"full" | "focus">(
     () => (localStorage.getItem(DASHBOARD_DENSITY_KEY) as "full" | "focus") || "full",
   );
@@ -225,6 +232,13 @@ export default function DashboardPage() {
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
   const shareCardRef = useRef<HTMLDivElement>(null);
+
+  const toggleSound = () => {
+    const next = !soundEnabled;
+    setSoundEnabled(next);
+    localStorage.setItem("pymaster_sound_muted", next ? "false" : "true");
+    if (next) playSuccessSound(); // play a preview when enabling
+  };
 
   useEffect(() => {
     if (!profile) return;
@@ -685,7 +699,22 @@ export default function DashboardPage() {
 
 
   return (
-    <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 rounded-none md:rounded-[2rem] ${selectedTheme.shell}`}>
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <Helmet>
+        <title>Dashboard | PyMaster - Track Your Python Learning Progress</title>
+        <meta name="description" content="Manage your PyMaster profile, track your coding streaks, view your XP progress, and monitor your achievements. Your central hub for Python mastery." />
+        <meta property="og:title" content="PyMaster Learning Dashboard" />
+        <meta property="og:description" content="Track your path to becoming a Python expert with real-time stats and insights." />
+      </Helmet>
+
+      {/* Crawlable Description for SEO/AdSense */}
+      <div className="mb-6 rounded-xl border border-border/40 bg-surface-1/50 p-4">
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          <strong>PyMaster Dashboard:</strong> Track your coding progress, view activity heatmaps, and manage your Python learning profile. Monitor your XP, streaks, and achievements as you advance through the curriculum. This personalized hub helps you stay consistent and visualize your growth as a developer.
+        </p>
+      </div>
+
+      <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 rounded-none md:rounded-[2rem] ${selectedTheme.shell}`}>
       <div className="mb-6 rounded-2xl border border-border bg-card/80 p-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-2">
@@ -1105,7 +1134,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+          <div className="mt-5 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-3">
             {[
               { to: "/learn", title: "Learn", desc: "Continue lessons", icon: BookOpen, accent: "text-streak-green" },
               { to: "/problems", title: "Problems", desc: "Practice daily", icon: Code, accent: "text-primary" },
@@ -1117,7 +1146,7 @@ export default function DashboardPage() {
               <button
                 key={item.to}
                 type="button"
-                onClick={() => navigate(item.to)}
+                onClick={() => { playClickSound(); navigate(item.to); }}
                 className="rounded-xl border border-border bg-surface-1 p-4 text-left hover:border-primary/30 hover:bg-primary/5 transition-colors"
               >
                 <div className="flex items-start justify-between gap-2">
@@ -1130,6 +1159,26 @@ export default function DashboardPage() {
                 <div className="mt-1 text-[11px] leading-5 text-muted-foreground">{item.desc}</div>
               </button>
             ))}
+
+            {/* Sound Toggle Action */}
+            <button
+              type="button"
+              onClick={toggleSound}
+              className="group rounded-xl border border-border bg-surface-1 p-4 text-left hover:border-primary/30 hover:bg-primary/5 transition-all active:scale-95"
+            >
+              <div className="flex items-start justify-between gap-2">
+                <div className={`rounded-lg border border-border bg-background p-2 ${soundEnabled ? "text-primary" : "text-muted-foreground"}`}>
+                  {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                </div>
+                <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${soundEnabled ? "bg-primary/10 border-primary/20 text-primary" : "bg-muted/10 border-border text-muted-foreground"}`}>
+                  {soundEnabled ? "ON" : "OFF"}
+                </div>
+              </div>
+              <div className="mt-3 text-sm font-semibold text-foreground">Sound Effects</div>
+              <div className="mt-1 text-[11px] leading-5 text-muted-foreground">
+                {soundEnabled ? "Audio feedback is enabled" : "Audio is currently muted"}
+              </div>
+            </button>
           </div>
         </div>
       </SectionErrorBoundary>
@@ -1752,6 +1801,7 @@ export default function DashboardPage() {
         </div>
       </SectionErrorBoundary>
       )}
+    </div>
     </div>);
 
 }
