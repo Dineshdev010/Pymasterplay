@@ -6,8 +6,6 @@ import { compression } from "vite-plugin-compression2";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const isDev = mode === "development";
-
   return {
     server: {
       host: "::",
@@ -25,7 +23,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       VitePWA({
-        registerType: "prompt",
+        registerType: "autoUpdate",
         injectRegister: "auto",
         includeAssets: ["logo.png"],
         manifestFilename: "manifest.json",
@@ -77,9 +75,9 @@ export default defineConfig(({ mode }) => {
             },
           ],
         },
-        // Dev service-worker caching can keep old JS around and cause errors like "X is not defined".
+        // Avoid a persistent dev service worker so local UI changes are not masked by stale caches.
         devOptions: {
-          enabled: true,
+          enabled: false,
         },
       }),
       compression({ algorithms: ["gzip", "brotliCompress"], exclude: /\.(png|jpg|webp|woff2|gz|br)$/i }),
