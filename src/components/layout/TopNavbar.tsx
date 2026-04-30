@@ -242,31 +242,33 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               </div>
             )}
           </div>
-          <span className="font-bold text-lg text-foreground flex relative z-10 overflow-hidden">
-            {"PyMaster".split("").map((char, index) => (
-              <motion.span
-                key={index}
-                animate={{
-                  y: [0, -10, 0, 15, 0], 
-                  rotate: [0, 0, 0, 25, 0], 
-                  opacity: [1, 1, 1, 0.4, 1], 
-                }}
-                transition={{
-                  duration: 2.5,
-                  repeat: Infinity,
-                  repeatDelay: 3, 
-                  delay: index * 0.08, 
-                  times: [0, 0.2, 0.4, 0.6, 1], 
-                  ease: "easeInOut"
-                }}
-                style={{ display: "inline-block" }}
-              >
-                {char}
-              </motion.span>
-            ))}
+          <span className="font-bold text-base sm:text-lg text-foreground flex relative z-10 shrink-0">
+            <span className="hidden sm:inline-flex">
+              {"PyMaster".split("").map((char, index) => (
+                <motion.span
+                  key={index}
+                  animate={{
+                    y: [0, -10, 0, 15, 0], 
+                    rotate: [0, 0, 0, 25, 0], 
+                    opacity: [1, 1, 1, 0.4, 1], 
+                  }}
+                  transition={{
+                    duration: 2.5,
+                    repeat: Infinity,
+                    repeatDelay: 3, 
+                    delay: index * 0.08, 
+                    times: [0, 0.2, 0.4, 0.6, 1], 
+                    ease: "easeInOut"
+                  }}
+                  style={{ display: "inline-block" }}
+                >
+                  {char}
+                </motion.span>
+              ))}
+            </span>
           </span>
         </Link>
-        <nav id="tour-nav-links" className="ml-1 hidden min-w-0 items-center gap-1 sm:flex xl:ml-2">
+        <nav id="tour-nav-links" className="ml-1 hidden min-w-0 items-center gap-0.5 sm:flex xl:ml-2">
           <div className="flex shrink-0 items-center gap-0.5">
           {primaryNavItems.map((item) => {
             const navLabel = item.to === "/quick-prep"
@@ -281,17 +283,17 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               key={item.to}
               id={`tour-nav-${routeId}`}
               to={item.to}
-              className={`flex shrink-0 items-center gap-1 rounded-md px-2 py-1.5 text-[10px] transition-all duration-200 xl:gap-1.5 xl:px-2.5 xl:text-[11px] ${
+              className={`flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1.5 transition-all duration-200 ${
                 hideOnLg ? "hidden xl:flex" : "flex"
               } ${
                 isRouteActive(item.to)
-                  ? "bg-secondary text-foreground font-medium"
+                  ? "bg-secondary text-foreground font-medium shadow-sm"
                   : "text-muted-foreground hover:text-foreground hover:bg-secondary/50 active:scale-95"
               }`}
               title={navLabel}
             >
-              <span className="shrink-0 text-sm">{item.emoji}</span>
-              <span className="whitespace-nowrap">{navLabel}</span>
+              <span className="shrink-0 text-base">{item.emoji}</span>
+              <span className="whitespace-nowrap text-[11px] hidden 2xl:inline font-medium">{navLabel}</span>
             </Link>
           );
           })}
@@ -345,13 +347,16 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           </DropdownMenu>
         </nav>
       </div>
-      <div className="ml-2 flex shrink-0 items-center gap-2 sm:gap-3">
+      <div className="ml-2 flex shrink-0 items-center gap-1 sm:gap-2">
         {/* Smooth Real-Time Study Clock */}
-        <TimeTracker />
+        <div className="hidden lg:block">
+          <TimeTracker />
+        </div>
+        
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="hidden md:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium bg-secondary/50 text-foreground hover:bg-secondary transition-colors shrink-0 border border-border/60"
+              className="hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium bg-secondary/50 text-foreground hover:bg-secondary transition-colors shrink-0 border border-border/60"
               aria-label="Select language"
               title={`Language: ${selectedLanguageLabel}`}
             >
@@ -374,31 +379,35 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
+
         <Link
           to="/contact"
-          className="hidden xl:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
+          className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
           title={t("common.support")}
         >
           <HeartHandshake className="w-3.5 h-3.5" />
-          <span className="hidden 2xl:inline">{t("common.support")}</span>
+          <span>{t("common.support")}</span>
         </Link>
-        {!user && (
+
+        <div className="hidden sm:flex items-center gap-1">
+          {!user && (
+            <button
+              onClick={toggleTheme}
+              className="flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              aria-label="Toggle theme"
+            >
+              {theme === "dark" ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+          )}
           <button
-            onClick={toggleTheme}
-            className="flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-            aria-label="Toggle theme"
+            onClick={toggleMuted}
+            className="flex items-center justify-center w-8 h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+            aria-label={muted ? "Unmute sounds" : "Mute sounds"}
+            title={muted ? "Unmute sounds" : "Mute sounds"}
           >
-            {theme === "dark" ? <Sun className="w-5 h-5 sm:w-4 sm:h-4" /> : <Moon className="w-5 h-5 sm:w-4 sm:h-4" />}
+            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
           </button>
-        )}
-        <button
-          onClick={toggleMuted}
-          className="flex items-center justify-center w-9 h-9 sm:w-8 sm:h-8 rounded-md text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
-          aria-label={muted ? "Unmute sounds" : "Mute sounds"}
-          title={muted ? "Unmute sounds" : "Mute sounds"}
-        >
-          {muted ? <VolumeX className="w-5 h-5 sm:w-4 sm:h-4" /> : <Volume2 className="w-5 h-5 sm:w-4 sm:h-4" />}
-        </button>
+        </div>
         <div className="hidden md:flex">
           <StreakFire streak={progress.streak} size="sm" showQuote />
         </div>
@@ -406,24 +415,27 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           to="/dashboard"
           className="hidden lg:flex items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_0_14px_rgba(251,191,36,0.14)] transition-all duration-300 hover:scale-105 hover:bg-amber-400/15"
           title={`Wallet balance: $${progress.wallet}`}
-        >
-          <Wallet className="h-3.5 w-3.5 text-amber-300" />
-          <span className="font-mono tracking-tight">${progress.wallet}</span>
-        </Link>
+        
+        <div className="hidden 2xl:flex">
+          <WalletBalance />
+        </div>
+
         <button
-          onClick={() => setShowFocusSettings(true)}
-          className={`hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer shadow-sm ${
-            isActive ? "bg-primary/20 border-primary/40 text-primary animate-pulse" : "bg-secondary/40 border-border/60 text-foreground/90 hover:bg-secondary hover:border-primary/30"
+          onClick={toggleFocusMode}
+          className={`hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm ${
+            isActive 
+              ? "bg-primary/10 border-primary/40 text-primary animate-pulse" 
+              : "bg-secondary/40 border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
           }`}
-          title="Productive Clock"
+          title={isActive ? "Focus Mode Active" : "Start Focus Mode"}
         >
-          <Focus className={`w-3.5 h-3.5 ${isActive ? "text-primary" : "text-muted-foreground"}`} />
+          <Target className={`w-3.5 h-3.5 ${isActive ? "animate-spin-slow" : "group-hover:rotate-12"}`} />
           <span className="font-bold tracking-tight text-[11px] font-mono">
             {isActive ? formatTime(timeLeft) : <span className="hidden 2xl:inline">Focus</span>}
           </span>
         </button>
         <div 
-          className={`hidden lg:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
+          className={`hidden xl:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
           title={`${Math.round(xpLevel.progressPercentage)}% to level ${xpLevel.level + 1}`}
         >
           {isHighRank && (
