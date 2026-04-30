@@ -413,11 +413,11 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         </div>
         <Link
           to="/dashboard"
-          className="hidden 2xl:flex items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_0_14px_rgba(251,191,36,0.14)] transition-all duration-300 hover:scale-105 hover:bg-amber-400/15"
+          className="hidden sm:flex items-center gap-1 sm:gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-semibold text-amber-200 shadow-[0_0_14px_rgba(251,191,36,0.14)] transition-all duration-300 hover:scale-105 hover:bg-amber-400/15 shrink-0"
           title={`Wallet balance: $${progress.wallet}`}
         >
-          <Wallet className="h-3.5 w-3.5 text-amber-300" />
-          <span className="font-mono tracking-tight">${progress.wallet}</span>
+          <Wallet className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-300 shrink-0" />
+          <span className="font-mono tracking-tight shrink-0">${progress.wallet}</span>
         </Link>
 
         <button
