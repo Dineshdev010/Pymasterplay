@@ -1629,6 +1629,73 @@ def subsets_bitmask(nums):
       },
     },
   },
+  {
+    id: "range-queries", title: "Segment & Fenwick Trees", emoji: "🌲📈", category: "advanced", difficulty: "Hard",
+    whatIsIt: "Advanced structures for efficient range queries (sum, min, max) and updates. Segment Trees are versatile, while Fenwick Trees (BIT) are more space-efficient for sum queries.",
+    whyUseIt: "When you have frequent updates and range queries. Both operations take O(log n), compared to O(n) for naive updates/queries.",
+    whenToUse: ["Range sum/min/max queries with updates", "Counting inversions in an array", "Dynamic frequency tables"],
+    patternDetection: ["🔍 'Range sum with point updates...' → Fenwick Tree", "🔍 'Range min/max with range updates...' → Segment Tree with Lazy Propagation"],
+    timeComplexity: "Query: O(log n) | Update: O(log n)",
+    spaceComplexity: "Segment Tree: O(4n) | Fenwick Tree: O(n)",
+    codeExample: `# Fenwick Tree (BIT) for Range Sum
+class FenwickTree:
+    def __init__(self, n):
+        self.tree = [0] * (n + 1)
+    def update(self, i, delta):
+        i += 1
+        while i < len(self.tree):
+            self.tree[i] += delta
+            i += i & (-i)
+    def query(self, i):
+        i += 1
+        s = 0
+        while i > 0:
+            s += self.tree[i]
+            i -= i & (-i)
+        return s`,
+    realWorldUse: "Database query optimization, computational geometry, competitive programming",
+    visualExplanation: "Segment Tree 🧱: A tree where each node stores the result for a specific range. BIT 📉: A compact representation using bit manipulation to jump over ranges efficiently.",
+    translations: {
+      tamil: { title: "Segment & Fenwick Trees", whatIsIt: "Range queries (sum, min, max) மற்றும் updates-ஐ திறமையாக செய்ய உதவும் மேம்பட்ட அமைப்புகள்." },
+      kannada: { title: "Segment & Fenwick Trees", whatIsIt: "Range queries ಮತ್ತು updates ಅನ್ನು ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಮಾಡಲು ಸುಧಾರಿತ ರಚನೆಗಳು." },
+      telugu: { title: "Segment & Fenwick Trees", whatIsIt: "Range queries మరియు updates ని సమర్ధవంతంగా చేయడానికి అడ్వాన్స్‌డ్ స్ట్రక్చర్లు." },
+      hindi: { title: "Segment & Fenwick Trees", whatIsIt: "Range queries और updates को कुशलतापूर्वक करने के लिए उन्नत संरचनाएं।" },
+    }
+  },
+  {
+    id: "adv-graphs", title: "Advanced Graph Algos", emoji: "🕸️⚡", category: "advanced", difficulty: "Hard",
+    whatIsIt: "Algorithms for complex graph properties: Topological Sort for dependencies, and Kosaraju/Tarjan for finding Strongly Connected Components (SCC).",
+    whyUseIt: "When you need to order tasks with dependencies or identify groups of nodes where everyone can reach everyone else.",
+    whenToUse: ["Task scheduling (Topological Sort)", "Detecting cycles in directed graphs", "Identifying clusters (SCC)"],
+    patternDetection: ["🔍 'Order tasks by dependencies...' → Topological Sort (Kahn's or DFS)", "🔍 'Find groups that can all reach each other...' → SCC (Kosaraju/Tarjan)"],
+    timeComplexity: "O(V + E)",
+    spaceComplexity: "O(V)",
+    codeExample: `# Topological Sort (Kahn's Algorithm)
+from collections import deque
+def topo_sort(v, adj):
+    indegree = [0] * v
+    for i in range(v):
+        for neighbor in adj[i]:
+            indegree[neighbor] += 1
+    queue = deque([i for i in range(v) if indegree[i] == 0])
+    topo = []
+    while queue:
+        u = queue.popleft()
+        topo.append(u)
+        for neighbor in adj[u]:
+            indegree[neighbor] -= 1
+            if indegree[neighbor] == 0:
+                queue.append(neighbor)
+    return topo if len(topo) == v else []`,
+    realWorldUse: "Build systems (Makefile), package managers (pip/npm), circuit analysis, web crawlers",
+    visualExplanation: "Topological Sort 🏗️: Arranging nodes in a line so all arrows point forward. SCC 🌀: Finding 'islands' in a directed graph where you can travel between any two points.",
+    translations: {
+      tamil: { title: "மேம்பட்ட வரைபடங்கள்", whatIsIt: "Topological Sort மற்றும் SCC (Kosaraju, Tarjan) போன்ற சிக்கலான வரைபட பண்புகளுக்கான அல்காரிதம்கள்." },
+      kannada: { title: "ಸುಧಾರಿತ ಗ್ರಾಫ್‌ಗಳು", whatIsIt: "Topological Sort ಮತ್ತು SCC (Kosaraju, Tarjan) ನಂತಹ ಸಂಕೀರ್ಣ ಗ್ರಾಫ್ அல்காரிதம்கள்." },
+      telugu: { title: "అడ్వాన్స్‌డ్ గ్రాఫ్స్", whatIsIt: "Topological Sort మరియు SCC (Kosaraju, Tarjan) వంటి సంక్లిష్ట గ్రాఫ్ అల్గారిథమ్స్." },
+      hindi: { title: "उन्नत ग्राफ", whatIsIt: "Topological Sort और SCC (Kosaraju, Tarjan) जैसे जटिल ग्राफ एल्गोरिदम।" },
+    }
+  },
 ];
 
 const categories = [

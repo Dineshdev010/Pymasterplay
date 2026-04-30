@@ -719,37 +719,6 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      {/* PWA Recovery Banner - Temporary */}
-      <div className="mb-6 rounded-2xl border border-blue-500/30 bg-blue-500/5 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-500">
-            <RefreshCw className="h-5 w-5 animate-spin" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-foreground">Navbar not updating?</h3>
-            <p className="text-xs text-muted-foreground">If you can't see the new Menu dropdown, click the button to force a hard refresh.</p>
-          </div>
-        </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={async () => {
-            if ("serviceWorker" in navigator) {
-              const regs = await navigator.serviceWorker.getRegistrations();
-              for (const r of regs) await r.unregister();
-            }
-            if ("caches" in window) {
-              const keys = await caches.keys();
-              for (const k of keys) await caches.delete(k);
-            }
-            window.location.reload();
-          }}
-          className="shrink-0 bg-blue-500 text-white hover:bg-blue-600 border-none shadow-lg shadow-blue-500/20"
-        >
-          Force Update Now
-        </Button>
-      </div>
-
       <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 rounded-none md:rounded-[2rem] ${selectedTheme.shell}`}>
       <div className="mb-6 rounded-2xl border border-border bg-card/80 p-4">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">

@@ -15,11 +15,14 @@ import { GitTerminalEditor } from "@/components/GitTerminalEditor";
 import Editor from "@monaco-editor/react";
 import { SQL_PRACTICE_DB_NAME, SQL_PRACTICE_DB_SETUP_SQL, SQL_PRACTICE_DB_TABLES } from "@/data/sqlSampleData";
 import { executeSql } from "@/lib/sqlRunner";
-import { cancelActivePythonExecution, getPythonExecutionTimeoutMs } from "@/lib/piston";
-import { BookOpen, CheckCircle2, ChevronRight, Lock, ArrowLeft, Terminal as TerminalIcon, Database, Play, RotateCcw, Square } from "lucide-react";
+import { cancelActivePythonExecution, getPythonExecutionTimeoutMs, preloadPyodide } from "@/lib/piston";
+import { BookOpen, CheckCircle2, ChevronRight, Lock, ArrowLeft, Terminal as TerminalIcon, Database, Play, RotateCcw, Square, Trophy, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import confetti from "canvas-confetti";
+import { Progress } from "@/components/ui/progress";
+import { motion, AnimatePresence } from "framer-motion";
 
 type LearnLanguage = "english" | "tamil" | "kannada" | "telugu" | "hindi";
 
@@ -50,28 +53,29 @@ function buildLessonPattern(strokeHex: string) {
 function getLessonWallpaper(trackId: string, lessonTitle?: string, category?: string) {
   const topic = `${trackId} ${lessonTitle ?? ""} ${category ?? ""}`.toLowerCase();
 
+  // Premium Mesh Gradients
   if (topic.includes("cloud") || topic.includes("mlops") || topic.includes("deploy")) {
-    return `linear-gradient(140deg, rgba(9, 22, 45, 0.92), rgba(37, 99, 235, 0.26)), ${buildLessonPattern("#60a5fa")}`;
+    return `radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.4), transparent 50%), radial-gradient(circle at 80% 70%, rgba(14, 165, 233, 0.3), transparent 50%), linear-gradient(140deg, rgba(9, 22, 45, 0.95), rgba(15, 23, 42, 0.98))`;
   }
   if (topic.includes("sql") || topic.includes("database") || topic.includes("etl")) {
-    return `linear-gradient(140deg, rgba(8, 24, 32, 0.92), rgba(8, 145, 178, 0.24)), ${buildLessonPattern("#22d3ee")}`;
+    return `radial-gradient(circle at 10% 20%, rgba(8, 145, 178, 0.35), transparent 50%), radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.25), transparent 50%), linear-gradient(140deg, rgba(8, 24, 32, 0.95), rgba(2, 6, 23, 0.98))`;
   }
   if (topic.includes("linux") || topic.includes("bash") || topic.includes("terminal") || topic.includes("git")) {
-    return `linear-gradient(140deg, rgba(8, 26, 16, 0.92), rgba(34, 197, 94, 0.24)), ${buildLessonPattern("#4ade80")}`;
+    return `radial-gradient(circle at 30% 20%, rgba(34, 197, 94, 0.3), transparent 50%), radial-gradient(circle at 70% 80%, rgba(20, 184, 166, 0.25), transparent 50%), linear-gradient(140deg, rgba(8, 26, 16, 0.95), rgba(2, 44, 34, 0.98))`;
   }
-  if (topic.includes("ai") || topic.includes("ml") || topic.includes("neural") || topic.includes("nlp")) {
-    return `linear-gradient(140deg, rgba(24, 14, 42, 0.92), rgba(147, 51, 234, 0.24)), ${buildLessonPattern("#c084fc")}`;
+  if (topic.includes("ai") || topic.includes("ml") || topic.includes("neural") || topic.includes("nlp") || topic.includes("agent")) {
+    return `radial-gradient(circle at 20% 40%, rgba(147, 51, 234, 0.4), transparent 50%), radial-gradient(circle at 80% 60%, rgba(236, 72, 153, 0.3), transparent 50%), linear-gradient(140deg, rgba(24, 14, 42, 0.95), rgba(10, 2, 20, 0.98))`;
   }
   if (topic.includes("web") || topic.includes("api") || topic.includes("http") || topic.includes("auth")) {
-    return `linear-gradient(140deg, rgba(13, 20, 40, 0.92), rgba(59, 130, 246, 0.24)), ${buildLessonPattern("#60a5fa")}`;
+    return `radial-gradient(circle at 15% 25%, rgba(59, 130, 246, 0.35), transparent 50%), radial-gradient(circle at 85% 75%, rgba(99, 102, 241, 0.3), transparent 50%), linear-gradient(140deg, rgba(13, 20, 40, 0.95), rgba(4, 10, 20, 0.98))`;
   }
   if (topic.includes("data") || topic.includes("pandas") || topic.includes("analysis")) {
-    return `linear-gradient(140deg, rgba(16, 21, 35, 0.92), rgba(234, 179, 8, 0.2)), ${buildLessonPattern("#facc15")}`;
+    return `radial-gradient(circle at 25% 35%, rgba(234, 179, 8, 0.3), transparent 50%), radial-gradient(circle at 75% 65%, rgba(249, 115, 22, 0.25), transparent 50%), linear-gradient(140deg, rgba(26, 21, 15, 0.95), rgba(10, 5, 2, 0.98))`;
   }
   if (topic.includes("security") || topic.includes("cyber")) {
-    return `linear-gradient(140deg, rgba(38, 12, 16, 0.92), rgba(239, 68, 68, 0.2)), ${buildLessonPattern("#f87171")}`;
+    return `radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.35), transparent 50%), radial-gradient(circle at 80% 80%, rgba(185, 28, 28, 0.3), transparent 50%), linear-gradient(140deg, rgba(38, 12, 16, 0.95), rgba(10, 2, 4, 0.98))`;
   }
-  return `linear-gradient(140deg, rgba(10, 18, 35, 0.92), rgba(99, 102, 241, 0.18)), ${buildLessonPattern("#475569")}`;
+  return `radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.25), transparent 60%), linear-gradient(140deg, rgba(10, 18, 35, 0.95), rgba(2, 6, 23, 0.98))`;
 }
 
 export default function CareerLearnPage() {
@@ -91,6 +95,13 @@ export default function CareerLearnPage() {
   // Derive track type flags unconditionally (before any early return)
   const isSqlTrack = (track?.language ?? "python") === "sql" || track?.id === "sql";
   const isBashTrack = (track?.language ?? "python") === "bash" || track?.id === "git";
+
+  // Eagerly preload Pyodide for Python tracks so it's ready by the time the user opens an exercise
+  useEffect(() => {
+    if (!isSqlTrack && !isBashTrack) {
+      preloadPyodide();
+    }
+  }, [isSqlTrack, isBashTrack]);
 
   const sqlCategories = useMemo(() => {
     if (!isSqlTrack || !track) return [];
@@ -176,10 +187,36 @@ export default function CareerLearnPage() {
     setIsSqlRunning(false);
   };
 
+  const trackProgress = useMemo(() => {
+    if (!track) return 0;
+    const totalExercises = track.lessons.length * 3;
+    const completed = track.lessons.reduce((acc, l) => acc + getLessonProgress(l.id), 0);
+    return Math.round((completed / totalExercises) * 100);
+  }, [track, progress.completedExercises]);
+
+  useEffect(() => {
+    if (selectedLesson && getLessonProgress(selectedLesson.id) === 3) {
+      const key = `confetti-${selectedLesson.id}`;
+      if (!sessionStorage.getItem(key)) {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"]
+        });
+        sessionStorage.setItem(key, "true");
+        toast.success("Lesson Mastered!", { 
+          description: `You've completed all exercises for ${selectedLesson.title}`,
+          icon: <Trophy className="w-4 h-4 text-reward-gold" />
+        });
+      }
+    }
+  }, [selectedLesson?.id, progress.completedExercises]);
+
   return (
     <div className="flex h-[calc(100dvh-3.5rem)] flex-col md:flex-row overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-border bg-surface-1 overflow-y-auto shrink-0 hidden md:block">
+      <aside className="w-72 border-r border-white/5 bg-black/40 backdrop-blur-2xl overflow-y-auto shrink-0 hidden md:block z-20 shadow-2xl">
         <div className="p-4 border-b border-border">
           <Button asChild variant="ghost" size="sm" className="h-7 text-xs gap-1 mb-2 -ml-2">
             <Link to="/"><ArrowLeft className="w-3 h-3" /> Home</Link>
@@ -196,8 +233,10 @@ export default function CareerLearnPage() {
             const exercisesDone = getLessonProgress(lesson.id);
             const allDone = exercisesDone === 3;
             return (
-              <button
+              <motion.button
                 key={lesson.id}
+                whileHover={unlocked ? { x: 4 } : {}}
+                whileTap={unlocked ? { scale: 0.98 } : {}}
                 onClick={() => {
                   if (!unlocked) return;
                   if (!ensureAuthForLessonIndex(i)) return;
@@ -206,40 +245,63 @@ export default function CareerLearnPage() {
                 disabled={!unlocked}
                 className={`w-full text-left px-3 py-2.5 rounded-md text-sm flex items-center gap-2 transition-colors mb-0.5 ${
                   !unlocked ? "text-muted-foreground/40 cursor-not-allowed"
-                    : selectedId === lesson.id ? "bg-secondary text-foreground"
+                    : selectedId === lesson.id ? "bg-secondary text-foreground shadow-sm"
                     : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
                 }`}
               >
                 {!unlocked ? <Lock className="w-4 h-4 text-muted-foreground/40 shrink-0" />
                   : allDone ? <CheckCircle2 className="w-4 h-4 text-streak-green shrink-0" />
-                  : <span className="w-4 h-4 rounded-full border border-border text-[10px] flex items-center justify-center shrink-0">{exercisesDone > 0 ? exercisesDone : i + 1}</span>
+                  : <span className="w-4 h-4 rounded-full border border-border text-[10px] flex items-center justify-center shrink-0 bg-background">{exercisesDone > 0 ? exercisesDone : i + 1}</span>
                 }
                 <span className="truncate flex-1">{localizedLesson.title}</span>
                 {unlocked && exercisesDone > 0 && !allDone && (
-                  <span className="text-[10px] text-python-yellow">{exercisesDone}/3</span>
+                  <span className="text-[10px] text-reward-gold bg-reward-gold/10 px-1.5 py-0.5 rounded-full font-bold">{exercisesDone}/3</span>
                 )}
-              </button>
+              </motion.button>
             );
           })}
         </nav>
       </aside>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto relative scroll-smooth">
+        {/* Track Progress Sticky Bar */}
+        <div className="sticky top-0 z-50 w-full bg-black/30 backdrop-blur-2xl border-b border-white/10 px-4 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+          <div className="max-w-3xl mx-auto flex items-center gap-4">
+            <div className="flex-1">
+              <div className="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1">
+                <span className="text-muted-foreground flex items-center gap-1">
+                  <Star className="w-3 h-3 text-reward-gold fill-reward-gold" /> Track Progress
+                </span>
+                <span className="text-primary">{trackProgress}%</span>
+              </div>
+              <Progress value={trackProgress} className="h-1.5" />
+            </div>
+          </div>
+        </div>
+
         <div className="relative min-h-full">
-          <div
-            className="pointer-events-none absolute inset-0 transition-all duration-500"
+          <motion.div
+            className="pointer-events-none absolute inset-0 transition-all duration-1000"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.8, backgroundPosition: ["0% 0%", "100% 100%"] }}
+            transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "linear" }}
             style={{
               backgroundImage: lessonWallpaper,
-              backgroundSize: "cover, 220px 220px",
-              backgroundPosition: "center, center",
-              opacity: 0.55,
+              backgroundSize: "200% 200%",
             }}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-background/25 to-background/70" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
           <div className="relative z-10">
+          <AnimatePresence mode="wait">
           {selectedLesson ? (
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 md:py-8">
+          <motion.div 
+            key={selectedLesson.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            className="max-w-4xl mx-auto px-4 sm:px-8 py-8 md:py-12 mt-4 mb-12 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]"
+          >
             {/* Mobile back button */}
             <button 
               onClick={() => setSelectedId(null)} 
@@ -263,7 +325,7 @@ export default function CareerLearnPage() {
               )}
             </div>
             <div className="flex items-start justify-between gap-4 mb-4">
-              <h1 className="text-2xl md:text-3xl font-bold text-foreground">{selectedLesson.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 drop-shadow-sm">{selectedLesson.title}</h1>
               {getLessonProgress(selectedLesson.id) > 0 && (
                 <Button 
                   variant="outline" 
@@ -312,8 +374,8 @@ export default function CareerLearnPage() {
             {/* Content */}
             <div className="mb-8">
               {selectedLesson.content.split("\n").map((line, i) => {
-                if (line.startsWith("### ")) return <h3 key={i} className="text-lg font-semibold text-foreground mt-6 mb-2">{line.replace("### ", "")}</h3>;
-                if (line.startsWith("## ")) return <h2 key={i} className="text-xl font-bold text-foreground mt-8 mb-3">{line.replace("## ", "")}</h2>;
+                if (line.startsWith("### ")) return <h3 key={i} className="text-xl font-semibold tracking-tight text-white/90 mt-8 mb-3">{line.replace("### ", "")}</h3>;
+                if (line.startsWith("## ")) return <h2 key={i} className="text-2xl font-bold tracking-tight text-white mt-10 mb-4 drop-shadow-sm">{line.replace("## ", "")}</h2>;
                 if (line.startsWith("- ")) return <li key={i} className="text-muted-foreground ml-4 list-disc">{line.replace("- ", "")}</li>;
                 if (line.trim() === "") return <br key={i} />;
                 return <p key={i} className="text-muted-foreground leading-relaxed">{line}</p>;
@@ -493,9 +555,15 @@ export default function CareerLearnPage() {
                 </div>
               );
             })()}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center text-center px-6 py-6 overflow-y-auto max-h-[calc(100dvh-3.5rem)]">
+            </motion.div>
+          ) : (
+            <motion.div 
+              key="fallback"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="flex flex-col items-center text-center px-6 py-6 overflow-y-auto max-h-[calc(100dvh-3.5rem)]"
+            >
             <BookOpen className="w-12 h-12 text-muted-foreground/30 mb-4" />
             <h2 className="text-xl font-semibold text-foreground mb-2">{track.title}</h2>
             <p className="text-muted-foreground mb-6">Select a lesson from the sidebar to start learning</p>
@@ -527,8 +595,9 @@ export default function CareerLearnPage() {
                 );
               })}
             </div>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
         </div>
         </div>
       </div>

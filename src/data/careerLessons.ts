@@ -59,324 +59,408 @@ function withFullTrackTranslations(track: CareerTrack): CareerTrack {
 
 function da(): CareerLesson[] {
   return [
+    // ═══════════════════════════════════════════════════════
+    // PHASE 1: FOUNDATIONS (Modules 1–4)
+    // Build the mindset, math, stats & business context first
+    // ═══════════════════════════════════════════════════════
     {
-      id: "da-intro", title: "Introduction to Data Analysis", description: "What is data analysis and why Python is the best tool for it",
-      content: "## What is Data Analysis?\n\nData analysis is the process of inspecting, cleaning, transforming, and modeling data to discover useful information.\n\n### Why Python for Data Analysis?\n- **Rich ecosystem** — Pandas, NumPy, Matplotlib, Seaborn\n- **Easy syntax** — Focus on logic, not boilerplate\n- **Community** — Millions of tutorials and StackOverflow answers\n- **Industry standard** — Used at Google, Netflix, NASA\n\n### The Data Analysis Workflow\n1. **Collect** data from files, APIs, or databases\n2. **Clean** — handle missing values, fix types\n3. **Explore** — summary statistics, distributions\n4. **Visualize** — charts, graphs, dashboards\n5. **Interpret** — draw conclusions, tell the story",
-      codeExample: "# A taste of data analysis in Python\nimport pandas as pd\n\ndata = {\n    \"Name\": [\"Alice\", \"Bob\", \"Charlie\"],\n    \"Age\": [25, 30, 35],\n    \"Salary\": [50000, 60000, 70000]\n}\n\ndf = pd.DataFrame(data)\nprint(df)\nprint(\"Average salary:\", df['Salary'].mean())",
+      id: "da-intro", title: "1. The Analyst Mindset", description: "Overview of the Data Analyst role and workflow",
+      content: "## The Data Analyst Role\n\nData Analysts translate numbers into business decisions.\n\n### The Workflow\n1. **Question** — Define the business problem.\n2. **Collect** — Gather data from SQL, APIs, or Files.\n3. **Clean** — Handle missing values and errors.\n4. **Analyze** — Find patterns, trends, and correlations.\n5. **Visualize** — Create charts and dashboards.\n6. **Communicate** — Present findings to stakeholders.",
+      codeExample: "import pandas as pd\ndf = pd.DataFrame({'Sales': [100, 150, 200], 'Month': ['Jan', 'Feb', 'Mar']})\nprint(df.describe())",
       translations: {
-        tamil: {
-          title: "Data Analysis அறிமுகம்",
-          description: "Data analysis என்றால் என்ன, ஏன் Python சிறந்த கருவி என்பதை அறியுங்கள்",
-          content: "## Data Analysis என்றால் என்ன?\n\nData analysis என்பது தரவை ஆய்வு செய்து, சுத்தம் செய்து, மாற்றி, பயனுள்ள தகவலை கண்டுபிடிக்கும் செயல்முறை.\n\n### ஏன் Data Analysis க்கு Python?\n- **பெரிய ecosystem** — Pandas, NumPy, Matplotlib, Seaborn\n- **எளிய syntax** — boilerplate விட logic மீது கவனம்\n- **சமூக ஆதரவு** — ஆயிரக்கணக்கான tutorials மற்றும் உதவிகள்\n- **Industry standard** — முன்னணி நிறுவனங்களில் பயன்படுத்தப்படுகிறது\n\n### Data Analysis Workflow\n1. **Collect** — files, APIs, databases-ல் இருந்து data சேகரிக்கவும்\n2. **Clean** — missing values மற்றும் types சரி செய்யவும்\n3. **Explore** — summary stats மற்றும் patterns பார்க்கவும்\n4. **Visualize** — charts, graphs உருவாக்கவும்\n5. **Interpret** — முடிவுகளை எடுத்துரைக்கவும்",
-        },
-        kannada: {
-          title: "Data Analysis ಪರಿಚಯ",
-          description: "Data analysis ಎಂದರೇನು ಮತ್ತು ಅದಕ್ಕೆ Python ಯಾಕೆ ಉತ್ತಮ ಎಂಬುದನ್ನು ಕಲಿಯಿರಿ",
-          content: "## Data Analysis ಎಂದರೇನು?\n\nData analysis ಎಂದರೆ ಡೇಟಾವನ್ನು ಪರಿಶೀಲಿಸಿ, ಸ್ವಚ್ಛಗೊಳಿಸಿ, ಪರಿವರ್ತಿಸಿ, ಉಪಯುಕ್ತ ತಿಳಿವಳಿಕೆಯನ್ನು ಕಂಡುಹಿಡಿಯುವ ಪ್ರಕ್ರಿಯೆ.\n\n### Data Analysis ಗೆ Python ಯಾಕೆ?\n- **ದೊಡ್ಡ ecosystem** — Pandas, NumPy, Matplotlib, Seaborn\n- **ಸರಳ syntax** — boilerplate ಕ್ಕಿಂತ logic ಮೇಲೆ ಹೆಚ್ಚು ಗಮನ\n- **ಸಮುದಾಯ** — ಅನೇಕ tutorials ಮತ್ತು support\n- **Industry standard** — ದೊಡ್ಡ ಕಂಪನಿಗಳಲ್ಲಿ ವ್ಯಾಪಕ ಬಳಕೆ\n\n### Data Analysis Workflow\n1. **Collect** — files, APIs, databases ಇಂದ data ಸಂಗ್ರಹಿಸಿ\n2. **Clean** — missing values ಮತ್ತು types ಸರಿಪಡಿಸಿ\n3. **Explore** — summary statistics ಮತ್ತು patterns ನೋಡಿ\n4. **Visualize** — charts ಮತ್ತು graphs ಮಾಡಿ\n5. **Interpret** — ಸ್ಪಷ್ಟವಾದ ನಿರ್ಣಯಕ್ಕೆ ಬನ್ನಿ",
-        },
-        telugu: {
-          title: "Data Analysis పరిచయం",
-          description: "Data analysis అంటే ఏమిటి, దానికి Python ఎందుకు ఉత్తమమో తెలుసుకోండి",
-          content: "## Data Analysis అంటే ఏమిటి?\n\nData analysis అనేది డేటాను పరిశీలించడం, శుభ్రపరచడం, మార్చడం, ఉపయోగకరమైన సమాచారాన్ని కనుగొనడం అనే ప్రక్రియ.\n\n### Data Analysis కి Python ఎందుకు?\n- **Rich ecosystem** — Pandas, NumPy, Matplotlib, Seaborn\n- **Simple syntax** — boilerplate కంటే logic పై ఫోకస్\n- **Community support** — ఎన్నో tutorials మరియు సహాయం\n- **Industry standard** — ప్రముఖ సంస్థల్లో విస్తృతంగా ఉపయోగిస్తారు\n\n### Data Analysis Workflow\n1. **Collect** — files, APIs, databases నుండి data సేకరించండి\n2. **Clean** — missing values మరియు types సరిచేయండి\n3. **Explore** — summary statistics మరియు patterns చూడండి\n4. **Visualize** — charts, graphs రూపొందించండి\n5. **Interpret** — స్పష్టమైన నిర్ణయాలు తీసుకోండి",
-        },
-        hindi: {
-          title: "Data Analysis परिचय",
-          description: "Data analysis क्या है और इसके लिए Python क्यों सबसे अच्छा है",
-          content: "## Data Analysis क्या है?\n\nData analysis वह प्रक्रिया है जिसमें डेटा को जांचा, साफ किया, बदला और उपयोगी जानकारी निकाली जाती है।\n\n### Data Analysis के लिए Python क्यों?\n- **मजबूत ecosystem** — Pandas, NumPy, Matplotlib, Seaborn\n- **आसान syntax** — boilerplate से ज्यादा logic पर ध्यान\n- **बड़ी community** — बहुत सारे tutorials और support\n- **Industry standard** — बड़ी कंपनियों में व्यापक उपयोग\n\n### Data Analysis Workflow\n1. **Collect** — files, APIs, databases से data इकट्ठा करें\n2. **Clean** — missing values और types ठीक करें\n3. **Explore** — summary statistics और patterns देखें\n4. **Visualize** — charts और graphs बनाएं\n5. **Interpret** — स्पष्ट निष्कर्ष निकालें",
-        },
+        tamil: { title: "1. பகுப்பாய்வாளர் மனநிலை", description: "தரவு பகுப்பாய்வாளர் பங்கு மற்றும் பணிப்பாய்வு பற்றிய கண்ணோட்டம்" },
+        kannada: { title: "1. ವಿಶ್ಲೇಷಕ ಮನಸ್ಥಿತಿ", description: "ಡೇಟಾ ವಿಶ್ಲೇಷಕರ ಪಾತ್ರ ಮತ್ತು ಕೆಲಸದ ಹರಿವಿನ ಅವಲೋಕನ" },
+        telugu: { title: "1. విశ్లేషకుడి మనస్తత్వం", description: "డేటా అనలిస్ట్ పాత్ర మరియు వర్క్‌ఫ్లో అవలోకనం" },
+        hindi: { title: "1. विश्लेषक मानसिकता", description: "डेटा विश्लेषक भूमिका और कार्यप्रवाह का अवलोकन" },
       },
       exercises: {
-        beginner: { prompt: "Create `nums = [10, 20, 30, 40, 50]`. Print the `sum()`, then `len()`, then the average (`sum/len`).", starterCode: "nums = [10, 20, 30, 40, 50]\n\n# Print sum, len, and average\n", expectedOutput: "150\n5\n30.0" },
-        intermediate: { prompt: "Given `scores = {'Alice': 85, 'Bob': 92, 'Charlie': 78}`. Print `max()` of `.values()`, then print the key with that max score.", starterCode: "scores = {'Alice': 85, 'Bob': 92, 'Charlie': 78}\n\n# Print max score and top student name\n", expectedOutput: "92\nBob" },
-        advanced: { prompt: "Given products list of dicts with `price` and `quantity`. Calculate each product's revenue (`price*qty`). Print total revenue, then the product name with highest revenue.", starterCode: "products = [\n    {'name': 'Widget', 'price': 10, 'quantity': 5},\n    {'name': 'Gadget', 'price': 25, 'quantity': 3},\n    {'name': 'Doohickey', 'price': 15, 'quantity': 8}\n]\n\n# Print total revenue and best product name\n", expectedOutput: "245\nDoohickey" },
+        beginner: { prompt: "Print the string 'Question, Collect, Clean, Analyze, Visualize, Communicate'.", starterCode: "", expectedOutput: "Question, Collect, Clean, Analyze, Visualize, Communicate" },
+        intermediate: { prompt: "Calculate average: `data = [10, 20, 30]`. Print the mean.", starterCode: "data = [10, 20, 30]\n\n# Print mean\n", expectedOutput: "20.0" },
+        advanced: { prompt: "If `step = 'Visualize'`, print 'Next is Communicate'. Else print 'Keep working'.", starterCode: "step = 'Visualize'\n\n# Print next step\n", expectedOutput: "Next is Communicate" },
       },
     },
     {
-      id: "da-lists-data", title: "Working with Data in Lists", description: "Use Python lists as your first data structure for analysis",
-      content: "## Lists as Data Containers\n\nBefore learning Pandas, master Python's built-in list for data manipulation.\n\n### Key Operations\n- **Filtering** — Select items that match a condition\n- **Mapping** — Transform every item\n- **Aggregating** — Reduce to a single value (sum, avg, max)\n- **Sorting** — Order data by a criterion\n\n### List Comprehensions\nThe Pythonic way to filter and transform data in one line.",
-      codeExample: "sales = [120, 340, 250, 410, 180, 520, 300]\nhigh_sales = [s for s in sales if s > 300]\nprint(\"High sales:\", high_sales)\nprint(\"Total:\", sum(sales))\nprint(\"Average:\", round(sum(sales)/len(sales), 1))",
+      id: "da-math-foundations", title: "2. Data Math", description: "Ratios, Percentages, and Logarithms",
+      content: "## Math for Analysis\n\n### Key Concepts\n- **Ratios** — Comparing two quantities (e.g. 2:1).\n- **Logarithms** — Used to 'un-squish' data that grows exponentially (like wealth or population).\n- **Linear Functions** — Predicting $y$ based on $x$.",
+      codeExample: "import math\nprint(\"Log of 100:\", math.log10(100))",
       translations: {
-        tamil: {
-          title: "Lists-ல் Data கையாளுதல்",
-          description: "Data analysis க்கு Python lists-ஐ முதற்கட்ட data structure ஆக பயன்படுத்துங்கள்",
-          content:
-            "## Lists as Data Containers\n\nPandas கற்றுக்கொள்ளும் முன், Python list மூலம் data-ஐ filter / transform செய்வது எப்படி என்று புரிந்துகொள்ளுங்கள்.\n\n### முக்கிய செயல்கள்\n- **Filtering** — condition match ஆன items-ஐ தேர்வு செய்ய\n- **Mapping** — ஒவ்வொரு item-ஐ மாற்ற\n- **Aggregating** — sum/avg/max போல் ஒரே value-ஆக குறைக்க\n- **Sorting** — ஒரு criteria மூலம் வரிசைப்படுத்த\n\n### List Comprehensions\nஒரே line-ல் filter + transform செய்ய Pythonic வழி.",
-        },
-        kannada: {
-          title: "Lists ನಲ್ಲಿ Data ಜೊತೆ ಕೆಲಸ",
-          description: "Data analysis ಗೆ Python lists ಅನ್ನು ಮೊದಲ data structure ಆಗಿ ಬಳಸಿ",
-          content:
-            "## Lists as Data Containers\n\nPandas ಕಲಿಯುವ ಮೊದಲು, Python list ಬಳಸಿ data ಅನ್ನು filter / transform ಮಾಡುವುದು ಕಲಿಯಿರಿ.\n\n### Key Operations\n- **Filtering** — condition ಗೆ ಹೊಂದುವ items ಆಯ್ಕೆ\n- **Mapping** — ಪ್ರತಿಯೊಂದು item ಅನ್ನು transform\n- **Aggregating** — sum/avg/max ಮೂಲಕ ಒಂದೇ value ಗೆ reduce\n- **Sorting** — criteria ಮೂಲಕ order\n\n### List Comprehensions\nಒಂದೇ line ನಲ್ಲಿ filter + transform ಮಾಡಲು Pythonic ವಿಧಾನ.",
-        },
-        telugu: {
-          title: "Lists లో Data తో పని చేయడం",
-          description: "Data analysis కోసం Python lists ను మొదటి data structure గా ఉపయోగించండి",
-          content:
-            "## Lists as Data Containers\n\nPandas నేర్చుకునే ముందు, Python list తో data ని filter / transform చేయడం నేర్చుకోండి.\n\n### Key Operations\n- **Filtering** — condition కి match అయ్యే items ఎంచుకోండి\n- **Mapping** — ప్రతి item ని transform చేయండి\n- **Aggregating** — sum/avg/max లా ఒకే value కి reduce చేయండి\n- **Sorting** — criteria ఆధారంగా order చేయండి\n\n### List Comprehensions\nఒకే line లో filter + transform చేసే Pythonic విధానం.",
-        },
-        hindi: {
-          title: "Lists में Data के साथ काम",
-          description: "Data analysis के लिए Python lists को पहला data structure बनाएं",
-          content:
-            "## Lists as Data Containers\n\nPandas सीखने से पहले, Python list से data को filter / transform करना सीखें.\n\n### Key Operations\n- **Filtering** — condition match करने वाले items चुनें\n- **Mapping** — हर item को transform करें\n- **Aggregating** — sum/avg/max से एक value में reduce\n- **Sorting** — criteria के हिसाब से order\n\n### List Comprehensions\nएक line में filter + transform करने का Pythonic तरीका.",
-        },
+        tamil: { title: "2. தரவு கணிதம்", description: "விகிதங்கள், சதவீதங்கள் மற்றும் மடக்கைகள்" },
+        kannada: { title: "2. ಡೇಟಾ ಗಣಿತ", description: "ಅನುಪಾತಗಳು, ಶೇಕಡಾವಾರು ಮತ್ತು ಲಾಗರಿಥಮ್‌ಗಳು" },
+        telugu: { title: "2. డేటా గణితం", description: "నిష్పత్తులు, శాతాలు మరియు లాగరిథమ్స్" },
+        hindi: { title: "2. डेटा गणित", description: "अनुपात, प्रतिशत और लघुगणक" },
       },
       exercises: {
-        beginner: { prompt: "Given `temps = [72, 68, 75, 80, 65]`. Print `max()`, `min()`, and `sorted(temps)` on separate lines.", starterCode: "temps = [72, 68, 75, 80, 65]\n\n# Print max, min, and sorted list\n", expectedOutput: "80\n65\n[65, 68, 72, 75, 80]" },
-        intermediate: { prompt: "Use a list comprehension to filter evens from `[1,2,3,4,5,6]`. Then use another to square them. Print both lists.", starterCode: "nums = [1, 2, 3, 4, 5, 6]\n\n# Filter evens, square them, print both\n", expectedOutput: "[2, 4, 6]\n[4, 16, 36]" },
-        advanced: { prompt: "Given `sales = [200, 150, 350]`. Print `sum(sales)`, then the percentage of the max sale rounded to 1 decimal with a `%` sign.", starterCode: "sales = [200, 150, 350]\n\n# Print total and max percentage\n", expectedOutput: "700\n50.0%" },
+        beginner: { prompt: "Calculate 20% of 500. Print result.", starterCode: "", expectedOutput: "100.0" },
+        intermediate: { prompt: "Calculate ratio of 80 to 40. Print result.", starterCode: "", expectedOutput: "2.0" },
+        advanced: { prompt: "Calculate `math.log2(8)`. Print result.", starterCode: "import math\n", expectedOutput: "3.0" },
       },
     },
     {
-      id: "da-dictionaries", title: "Dictionaries for Structured Data", description: "Use dictionaries to represent records and datasets",
-      content: "## Dictionaries = Mini Databases\n\nDictionaries store structured data as key-value pairs — like a row in a spreadsheet.\n\n### Why Dictionaries?\n- Named access: record[\"name\"] instead of record[0]\n- Self-documenting: keys describe the data\n- Flexible: different records can have different keys\n\n### Common Patterns\n- **List of dicts** = a table (each dict is a row)\n- **Dict of lists** = columnar data\n- **Nested dicts** = hierarchical data",
-      codeExample: "employees = [\n    {\"name\": \"Alice\", \"dept\": \"Engineering\", \"salary\": 95000},\n    {\"name\": \"Bob\", \"dept\": \"Marketing\", \"salary\": 72000},\n    {\"name\": \"Charlie\", \"dept\": \"Engineering\", \"salary\": 88000},\n]\neng = [e for e in employees if e[\"dept\"] == \"Engineering\"]\nprint(\"Engineering team:\", len(eng), \"people\")\navg = sum(e[\"salary\"] for e in employees) / len(employees)\nprint(\"Average salary:\", int(avg))",
+      id: "da-statistics", title: "3. Statistics & Probability", description: "Mean, Median, Std Dev, and Distributions",
+      content: "## Data Science Statistics\n\n### Descriptive Stats\n- **Mean** — Average.\n- **Median** — Middle value (good for outliers).\n- **Standard Deviation** — How 'spread out' the data is.\n\n### Probability\n- **Normal Distribution** — The 'Bell Curve'.\n- **Bayes' Theorem** — Updating probability with new evidence.",
+      codeExample: "import statistics\ndata = [1, 2, 2, 3, 100]\nprint(\"Median:\", statistics.median(data))",
       translations: {
-        tamil: {
-          title: "Structured Data க்கு Dictionaries",
-          description: "Records மற்றும் datasets-ஐ dictionaries மூலம் பிரதிநிதித்துவப்படுத்துங்கள்",
-          content:
-            "## Dictionaries = Mini Databases\n\nDictionary என்பது key-value pairs ஆக structured data-ஐ சேமிக்கும் — spreadsheet-ல் ஒரு row போல.\n\n### ஏன் Dictionaries?\n- பெயரால் access: `record[\"name\"]`\n- self-documenting: keys data-ஐ விளக்கும்\n- flexible: ஒவ்வொரு record-க்கும் வேறு keys இருக்கலாம்\n\n### பொதுவான patterns\n- **List of dicts** = table (ஒவ்வொரு dict ஒரு row)\n- **Dict of lists** = column-wise data\n- **Nested dicts** = hierarchy data",
-        },
-        kannada: {
-          title: "Structured Data ಗೆ Dictionaries",
-          description: "records ಮತ್ತು datasets ಅನ್ನು dictionaries ಮೂಲಕ ಪ್ರತಿನಿಧಿಸಿ",
-          content:
-            "## Dictionaries = Mini Databases\n\nDictionary key-value pairs ಮೂಲಕ structured data store ಮಾಡುತ್ತದೆ — spreadsheet row ಹಾಗೆ.\n\n### Dictionaries ಯಾಕೆ?\n- named access: `record[\"name\"]`\n- self-documenting: keys data ಅರ್ಥ ಹೇಳುತ್ತವೆ\n- flexible: records ಗೆ ಬೇರೆ keys ಇರಬಹುದು\n\n### Common patterns\n- **List of dicts** = table (ಪ್ರತಿ dict ಒಂದು row)\n- **Dict of lists** = columnar data\n- **Nested dicts** = hierarchical data",
-        },
-        telugu: {
-          title: "Structured Data కోసం Dictionaries",
-          description: "records మరియు datasets ను dictionaries తో represent చేయండి",
-          content:
-            "## Dictionaries = Mini Databases\n\nDictionary key-value pairs గా structured data ని store చేస్తుంది — spreadsheet row లా.\n\n### ఎందుకు Dictionaries?\n- named access: `record[\"name\"]`\n- self-documenting: keys data అర్థం చెబుతాయి\n- flexible: records కి వేర్వేరు keys ఉండొచ్చు\n\n### Common patterns\n- **List of dicts** = table (ప్రతి dict ఒక row)\n- **Dict of lists** = columnar data\n- **Nested dicts** = hierarchical data",
-        },
-        hindi: {
-          title: "Structured Data के लिए Dictionaries",
-          description: "records और datasets को dictionaries से represent करें",
-          content:
-            "## Dictionaries = Mini Databases\n\nDictionary key-value pairs में structured data store करता है — spreadsheet row की तरह.\n\n### Dictionaries क्यों?\n- named access: `record[\"name\"]`\n- self-documenting: keys data समझाती हैं\n- flexible: अलग-अलग records में अलग keys हो सकते हैं\n\n### Common patterns\n- **List of dicts** = table (हर dict एक row)\n- **Dict of lists** = columnar data\n- **Nested dicts** = hierarchical data",
-        },
+        tamil: { title: "3. புள்ளிவிவரம் & நிகழ்தகவு", description: "சராசரி, இடைநிலை, திட்ட விலக்கம் மற்றும் பரவல்கள்" },
+        kannada: { title: "3. ಅಂಕಿಅಂಶ ಮತ್ತು ಸಂಭವನೀಯತೆ", description: "ಸರಾಸರಿ, ಮಧ್ಯದ ಬೆಲೆ, ಪ್ರಮಾಣಿತ ವಿಚಲನ ಮತ್ತು ವಿತರಣೆಗಳು" },
+        telugu: { title: "3. గణాంకాలు & సంభావ్యత", description: "సగటు, మధ్యగతం, ప్రామాణిక విచలనం మరియు పంపిణీలు" },
+        hindi: { title: "3. सांख्यिकी और संभावना", description: "माध्य, माध्यिका, मानक विचलन और वितरण" },
       },
       exercises: {
-        beginner: { prompt: "Create `d = {'name': 'Alice', 'age': 25}`. Use `.get('city', 'N/A')`. Print the name, then the `.get()` result.", starterCode: "d = {'name': 'Alice', 'age': 25}\n\n# Print name and .get() with default\n", expectedOutput: "Alice\nN/A" },
-        intermediate: { prompt: "Given a list of product dicts, use `max()` with `key=` to find the most expensive. Print its `name` and `price`.", starterCode: "products = [\n    {'name': 'Laptop', 'price': 999},\n    {'name': 'Phone', 'price': 699}\n]\n\n# Find most expensive, print name and price\n", expectedOutput: "Laptop\n999" },
-        advanced: { prompt: "Group employees by `dept`. Use a dict to count per dept. Print `list(counts.items())`.", starterCode: "employees = [\n    {'name': 'A', 'dept': 'Eng'},\n    {'name': 'B', 'dept': 'Sales'},\n    {'name': 'C', 'dept': 'Eng'}\n]\n\n# Count by dept, print items\n", expectedOutput: "[('Eng', 2), ('Sales', 1)]" },
+        beginner: { prompt: "Calculate Mean: `[10, 20, 30]`. Print result.", starterCode: "", expectedOutput: "20" },
+        intermediate: { prompt: "Find Median: `[1, 5, 2, 4, 3]`. Print result.", starterCode: "", expectedOutput: "3" },
+        advanced: { prompt: "Identify outlier in `[10, 12, 11, 500]`. Print it.", starterCode: "", expectedOutput: "500" },
       },
     },
     {
-      id: "da-statistics", title: "Basic Statistics with Python", description: "Calculate mean, median, mode, and standard deviation",
-      content: "## Statistics in Python\n\nStatistics helps understand data distribution and central tendencies.\n\n### Key Measures\n- **Mean** — Average value: sum/count\n- **Median** — Middle value when sorted\n- **Mode** — Most frequent value\n- **Range** — Max minus min\n- **Standard Deviation** — How spread out values are",
-      codeExample: "scores = [85, 92, 78, 95, 88, 72, 90, 85, 88, 95]\nmean = sum(scores) / len(scores)\nsorted_s = sorted(scores)\nn = len(sorted_s)\nmedian = (sorted_s[n//2-1] + sorted_s[n//2]) / 2 if n % 2 == 0 else sorted_s[n//2]\nprint(\"Mean:\", mean)\nprint(\"Median:\", median)",
+      id: "da-business-metrics", title: "4. Business Metrics", description: "Revenue, Churn, LTV, and KPIs",
+      content: "## The Business Side of Data\n\n### Core Metrics\n- **Revenue** — Total money in.\n- **Churn** — % of customers who leave.\n- **LTV** — Lifetime Value of a customer.\n- **Growth Rate** — % increase over time.",
+      codeExample: "revenue = 5000\ncost = 2000\nprofit = revenue - cost\nprint(f\"Margin: {(profit/revenue)*100}%\")",
       translations: {
-        tamil: {
-          title: "Basic Statistics (Python)",
-          description: "mean, median, mode, standard deviation கணக்கிடுங்கள்",
-          content:
-            "## Statistics in Python\n\nStatistics data distribution மற்றும் central tendency-ஐ புரிந்துகொள்ள உதவும்.\n\n### முக்கிய அளவுகள்\n- **Mean** — average: sum/count\n- **Median** — sorted ஆன பிறகு நடுப்பகுதி value\n- **Mode** — அதிகம் வரும் value\n- **Range** — max - min\n- **Standard Deviation** — values எவ்வளவு spread ஆகிறது",
-        },
-        kannada: {
-          title: "Basic Statistics (Python)",
-          description: "mean, median, mode, standard deviation ಲೆಕ್ಕಿಸಿ",
-          content:
-            "## Statistics in Python\n\nStatistics data distribution ಮತ್ತು central tendency ಅರ್ಥಮಾಡಿಕೊಳ್ಳಲು ಸಹಾಯ ಮಾಡುತ್ತದೆ.\n\n### Key Measures\n- **Mean** — average: sum/count\n- **Median** — sort ಮಾಡಿದ ನಂತರ middle value\n- **Mode** — ಹೆಚ್ಚು ಬಾರಿ ಬರುವ value\n- **Range** — max - min\n- **Standard Deviation** — values ಎಷ್ಟು spread ಆಗಿವೆ",
-        },
-        telugu: {
-          title: "Basic Statistics (Python)",
-          description: "mean, median, mode, standard deviation లెక్కించండి",
-          content:
-            "## Statistics in Python\n\nStatistics data distribution మరియు central tendency అర్థం చేసుకోవడానికి సహాయపడుతుంది.\n\n### Key Measures\n- **Mean** — average: sum/count\n- **Median** — sort చేసిన తర్వాత middle value\n- **Mode** — ఎక్కువసార్లు వచ్చే value\n- **Range** — max - min\n- **Standard Deviation** — values ఎంత spread అయ్యాయి",
-        },
-        hindi: {
-          title: "Basic Statistics (Python)",
-          description: "mean, median, mode, standard deviation निकालें",
-          content:
-            "## Statistics in Python\n\nStatistics data distribution और central tendency समझने में मदद करता है.\n\n### Key Measures\n- **Mean** — average: sum/count\n- **Median** — sort के बाद middle value\n- **Mode** — सबसे ज्यादा बार आने वाली value\n- **Range** — max - min\n- **Standard Deviation** — values कितनी spread हैं",
-        },
+        tamil: { title: "4. வணிக அளவீடுகள்", description: "வருவாய், வாடிக்கையாளர் இழப்பு மற்றும் முக்கிய செயல்திறன் குறிகாட்டிகள்" },
+        kannada: { title: "4. ವ್ಯಾಪಾರ ಮೆಟ್ರಿಕ್‌ಗಳು", description: "ಆದಾಯ, ಗ್ರಾಹಕ ನಷ್ಟ ಮತ್ತು ಪ್ರಮುಖ ಕಾರ್ಯಕ್ಷಮತೆಯ ಸೂಚಕಗಳು" },
+        telugu: { title: "4. వ్యాపార కొలమానాలు", description: "ఆదాయం, వినియోగదారుల నష్టం మరియు కీలక పనితీరు సూచికలు" },
+        hindi: { title: "4. व्यावसायिक मेट्रिक्स", description: "राजस्व, मंथन और प्रमुख प्रदर्शन संकेतक" },
       },
       exercises: {
-        beginner: { prompt: "Given `scores = [85, 90, 78, 92, 88]`. Calculate `mean = sum/len`. Print it. Then print `max(scores) - min(scores)` (range).", starterCode: "scores = [85, 90, 78, 92, 88]\n\n# Print mean and range\n", expectedOutput: "86.6\n14" },
-        intermediate: { prompt: "Find the median of `nums = [3, 1, 5, 2]`. Sort first, then average the two middle values. Print the sorted list, then the median.", starterCode: "nums = [3, 1, 5, 2]\n\n# Sort, find median of even-length list, print both\n", expectedOutput: "[1, 2, 3, 5]\n2.5" },
-        advanced: { prompt: "Given `data = [2, 4, 4, 4, 5, 5, 7, 9]`. Print the mean, then the mode (most frequent value).", starterCode: "data = [2, 4, 4, 4, 5, 5, 7, 9]\n\n# Print mean and mode\n", expectedOutput: "5.0\n4" },
+        beginner: { prompt: "Calculate Profit: `rev=100, cost=60`. Print it.", starterCode: "", expectedOutput: "40" },
+        intermediate: { prompt: "Churn Rate: `start=100, lost=5`. Print percentage.", starterCode: "", expectedOutput: "5.0" },
+        advanced: { prompt: "Calculate Growth: `old=100, new=120`. Print % increase.", starterCode: "old = 100\nnew = 120\n", expectedOutput: "20.0" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 2: PROGRAMMING TOOLS (Modules 5–8)
+    // Master the languages and libraries of data
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "da-python-foundations", title: "5. Python for Analysis", description: "Variables, Loops, Conditions, and Functions",
+      content: "## Python for Analysts\n\nPython is the #1 tool for data analysis because of its simplicity and powerful libraries.\n\n### Data Structures\n- **Lists** — To store ordered sequences.\n- **Dictionaries** — To store key-value pairs (like rows).\n- **Functions** — To automate cleaning steps.",
+      codeExample: "def get_roi(revenue, cost):\n    return (revenue - cost) / cost\n\nprint(f\"ROI: {get_roi(100, 80)}\")",
+      translations: {
+        tamil: { title: "5. பகுப்பாய்விற்கான பைதான்", description: "மாறிகள், சுழற்சிகள், நிபந்தனைகள் மற்றும் செயல்பாடுகள்" },
+        kannada: { title: "5. ವಿಶ್ಲೇಷಣೆಗಾಗಿ ಪೈಥಾನ್", description: "ವೇರಿಯೇಬಲ್‌ಗಳು, ಲೂಪ್‌ಗಳು, ಷರತ್ತುಗಳು ಮತ್ತು ಕಾರ್ಯಗಳು" },
+        telugu: { title: "5. విశ్లేషణ కోసం పైథాన్", description: "వేరియబుల్స్, లూప్స్, కండిషన్స్ మరియు ఫంక్షన్లు" },
+        hindi: { title: "5. विश्लेषण के लिए पायथन", description: "चर, लूप, स्थितियाँ और कार्य" },
+      },
+      exercises: {
+        beginner: { prompt: "Create a list `nums = [1, 2, 3]`. Print its `sum()`.", starterCode: "", expectedOutput: "6" },
+        intermediate: { prompt: "Create a dict `d = {'a': 1, 'b': 2}`. Print the value for key `'b'`.", starterCode: "", expectedOutput: "2" },
+        advanced: { prompt: "Write a loop to print items in `['data', 'is', 'fun']` on new lines.", starterCode: "", expectedOutput: "data\nis\nfun" },
       },
     },
     {
-      id: "da-visualization", title: "Data Visualization Concepts", description: "Learn chart types and when to use them",
-      content: "## Visualizing Data\n\nCharts transform numbers into visual stories.\n\n### Common Chart Types\n- **Bar Chart** — Compare categories\n- **Line Chart** — Show trends over time\n- **Scatter Plot** — Show relationships\n- **Histogram** — Show distribution\n- **Pie Chart** — Show proportions",
-      codeExample: "categories = [\"Python\", \"JavaScript\", \"Java\", \"C++\"]\npopularity = [35, 30, 20, 15]\ntop_idx = popularity.index(max(popularity))\nprint(\"Most popular:\", categories[top_idx])\nprint(\"Share:\", str(popularity[top_idx]) + \"%\")",
+      id: "da-numpy-basics", title: "6. NumPy Power", description: "Arrays, Math Operations, and Broadcasting",
+      content: "## NumPy Basics\n\nNumPy is the foundation for almost all Python data libraries. It allows for fast mathematical operations on large sets of data.\n\n### Key Features\n- **Arrays** — Much faster than Python lists.\n- **Broadcasting** — Perform math on every item in an array instantly.\n- **Vectorization** — No more loops for simple math!",
+      codeExample: "# Conceptual NumPy broadcasting\narray = [1, 2, 3]\nresult = [x * 2 for x in array]\nprint(result)",
       translations: {
-        tamil: {
-          title: "Data Visualization Concepts",
-          description: "chart வகைகள் மற்றும் எப்போது பயன்படுத்த வேண்டும்",
-          content:
-            "## Visualizing Data\n\nCharts எண்களை visual stories ஆக மாற்றும்.\n\n### பொதுவான chart வகைகள்\n- **Bar Chart** — categories ஒப்பிட\n- **Line Chart** — time trends\n- **Scatter Plot** — relationship\n- **Histogram** — distribution\n- **Pie Chart** — proportions",
-        },
-        kannada: {
-          title: "Data Visualization Concepts",
-          description: "chart types ಮತ್ತು ಯಾವಾಗ ಬಳಸಬೇಕು",
-          content:
-            "## Visualizing Data\n\nCharts ಸಂಖ್ಯೆಗಳನ್ನು visual stories ಆಗಿ ಮಾಡುತ್ತವೆ.\n\n### Common chart types\n- **Bar Chart** — categories compare\n- **Line Chart** — time trends\n- **Scatter Plot** — relationships\n- **Histogram** — distribution\n- **Pie Chart** — proportions",
-        },
-        telugu: {
-          title: "Data Visualization Concepts",
-          description: "chart types మరియు ఎప్పుడు వాడాలి",
-          content:
-            "## Visualizing Data\n\nCharts సంఖ్యలను visual stories గా మార్చుతాయి.\n\n### Common chart types\n- **Bar Chart** — categories compare\n- **Line Chart** — time trends\n- **Scatter Plot** — relationships\n- **Histogram** — distribution\n- **Pie Chart** — proportions",
-        },
-        hindi: {
-          title: "Data Visualization Concepts",
-          description: "chart types और कब उपयोग करें",
-          content:
-            "## Visualizing Data\n\nCharts numbers को visual stories में बदलते हैं.\n\n### Common chart types\n- **Bar Chart** — categories compare\n- **Line Chart** — time trends\n- **Scatter Plot** — relationships\n- **Histogram** — distribution\n- **Pie Chart** — proportions",
-        },
+        tamil: { title: "6. NumPy ஆற்றல்", description: "அணிகள், கணித செயல்பாடுகள் மற்றும் பிராட்காஸ்டிங்" },
+        kannada: { title: "6. NumPy ಶಕ್ತಿ", description: "ಅರೇಗಳು, ಗಣಿತದ ಕಾರ್ಯಾಚರಣೆಗಳು ಮತ್ತು ಬ್ರಾಡ್‌ಕಾಸ್ಟಿಂಗ್" },
+        telugu: { title: "6. NumPy పవర్", description: "శ్రేణులు, గణిత కార్యకలాపాలు మరియు బ్రాడ్‌కాస్టింగ్" },
+        hindi: { title: "6. NumPy पावर", description: "एरे, गणित संचालन और ब्रॉडकास्टिंग" },
       },
       exercises: {
-        beginner: { prompt: "Given `cats = ['A', 'B', 'C']` and `vals = [25, 40, 15]`. Use `zip()` to pair them. Print the category with the highest value.", starterCode: "cats = ['A', 'B', 'C']\nvals = [25, 40, 15]\n\n# Use zip, find max, print category\n", expectedOutput: "B" },
-        intermediate: { prompt: "Given `users = [350, 300, 150]`. Calculate each as a percentage of total. Print the list of percentages rounded to 1 decimal each.", starterCode: "users = [350, 300, 150]\n\n# Calculate percentages, print list\n", expectedOutput: "[43.8, 37.5, 18.8]" },
-        advanced: { prompt: "Given `revenue = [100, 120, 110, 150]`. Calculate month-over-month growth rates as percentages. Print the list rounded to 1 decimal.", starterCode: "revenue = [100, 120, 110, 150]\n\n# Calculate growth rates, print list\n", expectedOutput: "[20.0, -8.3, 36.4]" },
+        beginner: { prompt: "Multiply every item in `[10, 20, 30]` by 2. Print the new list.", starterCode: "data = [10, 20, 30]\n", expectedOutput: "[20, 40, 60]" },
+        intermediate: { prompt: "Calculate the mean of `[1, 2, 3, 4, 5]`. Print it.", starterCode: "", expectedOutput: "3.0" },
+        advanced: { prompt: "Find common items in `[1, 2]` and `[2, 3]`. Print the list.", starterCode: "", expectedOutput: "[2]" },
       },
     },
     {
-      id: "da-pandas-intro", title: "Introduction to Pandas", description: "DataFrames, Series, and basic operations",
-      content: "## Pandas: The Data Analysis Powerhouse\n\nPandas provides two main data structures:\n- **Series** — A single column of data\n- **DataFrame** — A table (like a spreadsheet)\n\n### Key Operations\n- df.head() — First 5 rows\n- df.describe() — Summary statistics\n- df.shape — (rows, columns)\n- df[\"column\"] — Select a column",
-      codeExample: "cities = {\"City\": [\"NYC\", \"LA\", \"Chicago\"], \"Pop\": [8336817, 3979576, 2693976]}\nprint(\"Rows:\", len(cities[\"City\"]))\nprint(\"Columns:\", len(cities))\nmax_idx = cities[\"Pop\"].index(max(cities[\"Pop\"]))\nprint(\"Largest:\", cities[\"City\"][max_idx])",
+      id: "da-pandas-mastery", title: "7. Pandas Mastery", description: "Indexing, Filtering, Grouping, and Merging",
+      content: "## Advanced Pandas\n\nPandas DataFrames are the industry standard for tabular data.\n\n### Mastery Patterns\n- **Filtering** — `df[df['age'] > 20]`\n- **Grouping** — `df.groupby('city').mean()`\n- **Merging** — `pd.merge(df1, df2)`",
+      codeExample: "import pandas as pd\ndf = pd.DataFrame({'a': [1, 2], 'b': [3, 4]})\nprint(df.iloc[0, 1])",
       translations: {
-        tamil: {
-          title: "Pandas அறிமுகம்",
-          description: "DataFrames, Series, மற்றும் அடிப்படை operations",
-          content:
-            "## Pandas: Data Analysis Powerhouse\n\nPandas இரண்டு முக்கிய data structures தருகிறது:\n- **Series** — ஒரே column\n- **DataFrame** — table (spreadsheet போல)\n\n### Key operations\n- `df.head()` — முதல் 5 rows\n- `df.describe()` — summary statistics\n- `df.shape` — (rows, columns)\n- `df[\"column\"]` — column select",
-        },
-        kannada: {
-          title: "Pandas ಪರಿಚಯ",
-          description: "DataFrames, Series, ಮತ್ತು basic operations",
-          content:
-            "## Pandas: Data Analysis Powerhouse\n\nPandas ಎರಡು ಮುಖ್ಯ data structures ಕೊಡುತ್ತದೆ:\n- **Series** — ಒಂದು column\n- **DataFrame** — table (spreadsheet ಹಾಗೆ)\n\n### Key operations\n- `df.head()` — ಮೊದಲ 5 rows\n- `df.describe()` — summary statistics\n- `df.shape` — (rows, columns)\n- `df[\"column\"]` — column select",
-        },
-        telugu: {
-          title: "Pandas పరిచయం",
-          description: "DataFrames, Series, మరియు basic operations",
-          content:
-            "## Pandas: Data Analysis Powerhouse\n\nPandas రెండు ప్రధాన data structures ఇస్తుంది:\n- **Series** — ఒక column\n- **DataFrame** — table (spreadsheet లా)\n\n### Key operations\n- `df.head()` — మొదటి 5 rows\n- `df.describe()` — summary statistics\n- `df.shape` — (rows, columns)\n- `df[\"column\"]` — column select",
-        },
-        hindi: {
-          title: "Pandas परिचय",
-          description: "DataFrames, Series और basic operations",
-          content:
-            "## Pandas: Data Analysis Powerhouse\n\nPandas दो main data structures देता है:\n- **Series** — एक column\n- **DataFrame** — table (spreadsheet जैसा)\n\n### Key operations\n- `df.head()` — पहली 5 rows\n- `df.describe()` — summary statistics\n- `df.shape` — (rows, columns)\n- `df[\"column\"]` — column select",
-        },
+        tamil: { title: "7. பாண்டாஸ் திறன்", description: "குறியீட்டு முறை, வடிகட்டுதல், குழுவாக்குதல் மற்றும் இணைத்தல்" },
+        kannada: { title: "7. ಪಾಂಡಾಸ್ ಪಾಂಡಿತ್ಯ", description: "ಇಂಡೆಕ್ಸಿಂಗ್, ಫಿಲ್ಟರಿಂಗ್, ಗ್ರೂಪಿಂಗ್ ಮತ್ತು ವಿಲೀನಗೊಳಿಸುವಿಕೆ" },
+        telugu: { title: "7. పాండాస్ మాస్టరీ", description: "ఇండెక్సింగ్, ఫిల్టరింగ్, గ్రూపింగ్ మరియు విలీనం" },
+        hindi: { title: "7. पांडा में महारत", description: "अनुक्रमण, फ़िल्टरिंग, समूहीकरण और विलय" },
       },
       exercises: {
-        beginner: { prompt: "Create a dict-of-lists `data = {'City': ['NYC', 'LA'], 'Pop': [8336817, 3979576]}`. Print `len(data['City'])` (row count) and `len(data)` (column count).", starterCode: "data = {'City': ['NYC', 'LA'], 'Pop': [8336817, 3979576]}\n\n# Print row count and column count\n", expectedOutput: "2\n2" },
-        intermediate: { prompt: "Given `cities = {'NYC': 8336817, 'LA': 3979576}`. Use `max()` with `key=` to find the largest. Print the city name.", starterCode: "cities = {'NYC': 8336817, 'LA': 3979576}\n\n# Find and print city with max population\n", expectedOutput: "NYC" },
-        advanced: { prompt: "Zip `names = ['A', 'B', 'C']` and `vals = [30, 10, 20]`. Sort by value descending. Print the first name and the full sorted list of tuples.", starterCode: "names = ['A', 'B', 'C']\nvals = [30, 10, 20]\n\n# Zip, sort desc, print first name and list\n", expectedOutput: "A\n[('A', 30), ('C', 20), ('B', 10)]" },
+        beginner: { prompt: "Sum values in `{'a': 1, 'b': 2}`. Print result.", starterCode: "", expectedOutput: "3" },
+        intermediate: { prompt: "Find key for max value in `{'a': 1, 'b': 10}`. Print key.", starterCode: "", expectedOutput: "b" },
+        advanced: { prompt: "Filter `[10, 20, 30]` for values `> 15`. Print count.", starterCode: "", expectedOutput: "2" },
       },
     },
     {
-      id: "da-file-io", title: "Reading & Writing Data Files", description: "Work with CSV and text data",
-      content: "## File I/O for Data Analysis\n\nReal data lives in files — CSV, JSON, TXT.\n\n### CSV Files\nCSV (Comma-Separated Values) is the most common data format.\n\n### Key Concepts\n- open() — opens a file\n- with statement — automatically closes the file\n- csv.reader — reads rows as lists",
-      codeExample: "csv_data = \"Name,Age,City\\nAlice,25,NYC\\nBob,30,LA\\nCharlie,35,Chicago\"\nlines = csv_data.split(\"\\n\")\nheader = lines[0].split(\",\")\nrows = [line.split(\",\") for line in lines[1:]]\nfor row in rows:\n    print(row[0], \"is\", row[1], \"from\", row[2])",
+      id: "da-r-intro", title: "8. Introduction to R", description: "Statistical Modeling and Visualization in R",
+      content: "## Why R?\n\nR was built by statisticians. While Python is great for pipelines, R is legendary for deep statistical research.\n\n### Tidyverse\nThe most popular set of R libraries for data analysis.",
+      codeExample: "print('ggplot2 for best charts')",
       translations: {
-        tamil: {
-          title: "Data Files வாசித்தல் & எழுதுதல்",
-          description: "CSV மற்றும் text data உடன் வேலை செய்யுங்கள்",
-          content:
-            "## File I/O for Data Analysis\n\nReal data பெரும்பாலும் files-ல் இருக்கும் — CSV, JSON, TXT.\n\n### CSV\nCSV என்பது பொதுவான data format.\n\n### Key concepts\n- `open()` — file திறக்க\n- `with` — auto close\n- `csv.reader` — rows-ஐ list ஆக வாசிக்க",
-        },
-        kannada: {
-          title: "Data Files ಓದು & ಬರೆಯುವುದು",
-          description: "CSV ಮತ್ತು text data ಜೊತೆ ಕೆಲಸ",
-          content:
-            "## File I/O for Data Analysis\n\nReal data ಸಾಮಾನ್ಯವಾಗಿ files ನಲ್ಲಿ ಇರುತ್ತದೆ — CSV, JSON, TXT.\n\n### CSV\nCSV ಬಹಳ ಸಾಮಾನ್ಯ format.\n\n### Key concepts\n- `open()` — file ತೆರೆಯಲು\n- `with` — auto close\n- `csv.reader` — rows ಅನ್ನು list ಆಗಿ ಓದಲು",
-        },
-        telugu: {
-          title: "Data Files చదవడం & రాయడం",
-          description: "CSV మరియు text data తో పని చేయండి",
-          content:
-            "## File I/O for Data Analysis\n\nReal data సాధారణంగా files లో ఉంటుంది — CSV, JSON, TXT.\n\n### CSV\nCSV చాలా common format.\n\n### Key concepts\n- `open()` — file open\n- `with` — auto close\n- `csv.reader` — rows ని list గా చదవడం",
-        },
-        hindi: {
-          title: "Data Files पढ़ना & लिखना",
-          description: "CSV और text data के साथ काम करें",
-          content:
-            "## File I/O for Data Analysis\n\nReal data अक्सर files में होता है — CSV, JSON, TXT.\n\n### CSV\nCSV सबसे common data format है.\n\n### Key concepts\n- `open()` — file खोलना\n- `with` — auto close\n- `csv.reader` — rows को list के रूप में पढ़ना",
-        },
+        tamil: { title: "8. ஆர் அறிமுகம்", description: "ஆர்-ல் புள்ளிவிவர மாடலிங் மற்றும் காட்சிப்படுத்தல்" },
+        kannada: { title: "8. R ಗೆ ಪರಿಚಯ", description: "R ನಲ್ಲಿ ಅಂಕಿಅಂಶಗಳ ಮಾಡೆಲಿಂಗ್ ಮತ್ತು ದೃಶ್ಯೀಕರಣ" },
+        telugu: { title: "8. R పరిచయం", description: "R లో గణాంక నమూనా మరియు విజువలైజేషన్" },
+        hindi: { title: "8. आर का परिचय", description: "R में सांख्यिकीय मॉडलिंग और विज़ुअलाइज़ेशन" },
       },
       exercises: {
-        beginner: { prompt: "Split `'A,B\\nC,D'` by `\\n`, then split each line by `,`. Print the number of rows.", starterCode: "data = 'A,B\\nC,D'\n\n# Split into lines, print row count\n", expectedOutput: "2" },
-        intermediate: { prompt: "Parse CSV string `'Name,Age\\nAlice,25\\nBob,30'`. Extract the header as a list. Sum the Age column. Print both.", starterCode: "data = 'Name,Age\\nAlice,25\\nBob,30'\n\n# Parse header and sum ages, print both\n", expectedOutput: "['Name', 'Age']\n55" },
-        advanced: { prompt: "Parse CSV `'Name,Age\\nA,20\\nB,30\\nC,25'`. Filter rows where `Age > 22`. Print the count and the list of names that passed.", starterCode: "data = 'Name,Age\\nA,20\\nB,30\\nC,25'\n\n# Filter Age > 22, print count and names\n", expectedOutput: "2\n['B', 'C']" },
+        beginner: { prompt: "Which is older, Python or R? Print word.", starterCode: "", expectedOutput: "Python" },
+        intermediate: { prompt: "Which is better for deep stats? Print letter.", starterCode: "", expectedOutput: "R" },
+        advanced: { prompt: "R's famous chart library? Print word.", starterCode: "", expectedOutput: "ggplot2" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 3: DATA HANDLING (Modules 9–13)
+    // Acquire, clean, and manage data at scale
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "da-spreadsheets", title: "9. Spreadsheets", description: "Formulas, Pivot Tables, and Charts",
+      content: "## Spreadsheet Mastery\n\nExcel/Sheets are the #1 data tools. Every analyst must master them.\n\n### Essential Skills\n- **VLOOKUP/XLOOKUP** — Find data in other tables.\n- **Pivot Tables** — Summarize thousands of rows in seconds.\n- **Conditional Formatting** — Highlight trends visually.",
+      codeExample: "# Logic for XLOOKUP\nlookup = {'id1': 'Apple', 'id2': 'Banana'}\nprint(lookup.get('id1'))",
+      translations: {
+        tamil: { title: "9. விரிதாள்கள்", description: "சூத்திரங்கள், பிவோட் அட்டவணைகள் மற்றும் வரைபடங்கள்" },
+        kannada: { title: "9. ಸ್ಪ್ರೆಡ್‌ಶೀಟ್‌ಗಳು", description: "ಫಾರ್ಮುಲಾಗಳು, ಪಿವೋಟ್ ಟೇಬಲ್‌ಗಳು ಮತ್ತು ಚಾರ್ಟ್‌ಗಳು" },
+        telugu: { title: "9. స్ప్రెడ్‌షీట్లు", description: "ఫార్ములాలు, పివట్ టేబుల్స్ మరియు చార్ట్‌లు" },
+        hindi: { title: "9. स्प्रेडशीट", description: "फॉर्मूले, पिवट टेबल और चार्ट" },
+      },
+      exercises: {
+        beginner: { prompt: "Sum `[10, 20, 30]`. Print result.", starterCode: "", expectedOutput: "60" },
+        intermediate: { prompt: "Average `[10, 20, 30]`. Print result.", starterCode: "", expectedOutput: "20.0" },
+        advanced: { prompt: "If `sales > 100` print 'High', else 'Low'. Test with 150.", starterCode: "sales = 150\n", expectedOutput: "High" },
       },
     },
     {
-      id: "da-pandas-mastery", title: "Pandas Mastery Patterns", description: "GroupBy, merge, pivot, and performance habits",
-      content: "## Pandas Mastery\n\nOnce you know the basics, these patterns make you *fast* in real jobs.\n\n### Core patterns\n- **groupby + agg** — summarize by category\n- **merge / join** — combine datasets\n- **pivot_table** — reshape for reporting\n- **missing values** — fill, drop, flag\n- **types** — convert early (int, float, datetime)\n\n### Performance habits\n- Avoid row-by-row loops when possible\n- Prefer vectorized ops and boolean masks\n- Use `value_counts()` / `groupby()` for summaries\n\nYou do not need to memorize everything; you need to know the *patterns* and where to look.",
-      codeExample: "# Pandas-like operations (conceptual, using Python)\nrows = [\n    {\"dept\": \"Eng\", \"salary\": 100},\n    {\"dept\": \"Eng\", \"salary\": 120},\n    {\"dept\": \"Sales\", \"salary\": 90},\n]\n\n# groupby dept -> avg salary\nsums = {}\ncounts = {}\nfor r in rows:\n    d = r[\"dept\"]\n    sums[d] = sums.get(d, 0) + r[\"salary\"]\n    counts[d] = counts.get(d, 0) + 1\n\navgs = {d: round(sums[d] / counts[d], 1) for d in sums}\nprint(avgs)\n",
+      id: "da-sql-advanced", title: "10. Advanced SQL", description: "Joins, Subqueries, and Window Functions",
+      content: "## Advanced SQL for Analysts\n\n### Beyond SELECT\n- **Joins** — Combine tables like a pro.\n- **Subqueries** — Use queries inside other queries.\n- **Window Functions** — Calculate running totals and rankings.",
+      codeExample: "SELECT name, RANK() OVER (ORDER BY sales DESC) FROM team;",
       translations: {
-        tamil: {
-          title: "Pandas Mastery Patterns",
-          description: "GroupBy, merge, pivot மற்றும் performance habits",
-          content:
-            "## Pandas Mastery\n\nBasics தெரிந்த பிறகு, இந்த patterns real job-ல் வேகமாக வேலை செய்ய உதவும்.\n\n### Core patterns\n- **groupby + agg** — summarize\n- **merge / join** — datasets இணைக்க\n- **pivot_table** — reshape\n- **missing values** — fill/drop/flag\n- **types** — early convert\n\n### Performance habits\n- row-by-row loops தவிர்க்க\n- vectorized ops + boolean masks பயன்படுத்த\n- `value_counts()` / `groupby()` மூலம் summaries\n\nஎல்லாம் மனப்பாடம் வேண்டாம்; patterns மற்றும் எங்கு பார்க்க வேண்டும் என்பதே முக்கியம்.",
-        },
-        kannada: {
-          title: "Pandas Mastery Patterns",
-          description: "GroupBy, merge, pivot ಮತ್ತು performance habits",
-          content:
-            "## Pandas Mastery\n\nBasics ಆದ ನಂತರ, ಈ patterns real job ನಲ್ಲಿ ನಿಮಗೆ ವೇಗ ಕೊಡುತ್ತವೆ.\n\n### Core patterns\n- **groupby + agg** — summarize\n- **merge / join** — datasets combine\n- **pivot_table** — reshape\n- **missing values** — fill/drop/flag\n- **types** — early convert\n\n### Performance habits\n- row-by-row loops ತಪ್ಪಿಸಿ\n- vectorized ops + boolean masks ಬಳಸಿ\n- `value_counts()` / `groupby()` summaries\n\nಎಲ್ಲವನ್ನೂ ನೆನಪಿಸಿಕೊಳ್ಳಬೇಕಿಲ್ಲ; patterns ಮತ್ತು ಎಲ್ಲಿ ನೋಡಬೇಕು ಎಂಬುದು ಮುಖ್ಯ.",
-        },
-        telugu: {
-          title: "Pandas Mastery Patterns",
-          description: "GroupBy, merge, pivot మరియు performance habits",
-          content:
-            "## Pandas Mastery\n\nBasics వచ్చిన తర్వాత, ఈ patterns real jobs లో వేగంగా పని చేయడానికి సహాయపడతాయి.\n\n### Core patterns\n- **groupby + agg** — summarize\n- **merge / join** — datasets కలపడం\n- **pivot_table** — reshape\n- **missing values** — fill/drop/flag\n- **types** — early convert\n\n### Performance habits\n- row-by-row loops తగ్గించండి\n- vectorized ops + boolean masks వాడండి\n- `value_counts()` / `groupby()` summaries\n\nఅన్నీ memorize అవసరం లేదు; patterns తెలుసుకుని ఎక్కడ చూడాలో తెలిసి ఉండాలి.",
-        },
-        hindi: {
-          title: "Pandas Mastery Patterns",
-          description: "GroupBy, merge, pivot और performance habits",
-          content:
-            "## Pandas Mastery\n\nBasics के बाद ये patterns real jobs में आपको तेज़ बनाते हैं.\n\n### Core patterns\n- **groupby + agg** — summarize\n- **merge / join** — datasets combine\n- **pivot_table** — reshape\n- **missing values** — fill/drop/flag\n- **types** — early convert\n\n### Performance habits\n- row-by-row loops से बचें\n- vectorized ops + boolean masks इस्तेमाल करें\n- `value_counts()` / `groupby()` summaries\n\nसब memorize नहीं करना; patterns और कहाँ देखना है यही ज़रूरी है.",
-        },
+        tamil: { title: "10. மேம்பட்ட SQL", description: "இணைப்புகள், துணை வினவல்கள் மற்றும் விண்டோ செயல்பாடுகள்" },
+        kannada: { title: "10. ಸುಧಾರಿತ SQL", description: "ಜೋಯಿನ்கள், ಸಬ್-ಕ್ವೆರಿಗಳು ಮತ್ತು ವಿಂಡೋ ಕಾರ್ಯಗಳು" },
+        telugu: { title: "10. అడ్వాన్స్‌డ్ SQL", description: "జాయిన్లు, సబ్‌క్వరీలు మరియు విండో ఫంక్షన్లు" },
+        hindi: { title: "10. उन्नत SQL", description: "जॉइन, सबक्वेरी और विंडो फ़ंक्शन" },
       },
       exercises: {
-        beginner: { prompt: "Group `data = [('A',10),('B',5),('A',7)]` by category using `.get()`. Print the totals dict.", starterCode: "data = [('A', 10), ('B', 5), ('A', 7)]\n\n# Group and sum by category, print dict\n", expectedOutput: "{'A': 17, 'B': 5}" },
-        intermediate: { prompt: "Merge two dicts: `a = {'x': 1}` and `b = {'y': 2}` using `{**a, **b}`. Print the merged dict.", starterCode: "a = {'x': 1}\nb = {'y': 2}\n\n# Merge and print\n", expectedOutput: "{'x': 1, 'y': 2}" },
-        advanced: { prompt: "Given `rows = [{'dept':'Eng'},{'dept':'Sales'},{'dept':'Eng'}]`. Count by dept using `.get()`. Print `sorted(counts.items())`.", starterCode: "rows = [{'dept': 'Eng'}, {'dept': 'Sales'}, {'dept': 'Eng'}]\n\n# Count by dept, print sorted items\n", expectedOutput: "[('Eng', 2), ('Sales', 1)]" },
+        beginner: { prompt: "Which SQL command sorts results? Print word.", starterCode: "", expectedOutput: "ORDER BY" },
+        intermediate: { prompt: "Which SQL command groups data? Print word.", starterCode: "", expectedOutput: "GROUP BY" },
+        advanced: { prompt: "Join type for ALL rows in left table? Print word.", starterCode: "", expectedOutput: "LEFT" },
       },
     },
     {
-      id: "da-case-study", title: "Case Study: From Raw Data to Insights", description: "A portfolio-style mini project workflow",
-      content: "## Case Study Workflow\n\nRecruiters love seeing end-to-end thinking.\n\n### A strong case study includes\n1. **Problem statement** — what you are trying to answer\n2. **Data cleaning** — handle missing and bad values\n3. **Exploration** — summary statistics and patterns\n4. **Insights** — 3 to 5 clear findings\n5. **Recommendation** — what to do next\n6. **Limitations** — what the data cannot prove\n\n### Output idea\n- A single clean notebook or markdown report\n- A few charts (even simple ones)\n- A short conclusion section\n\nYou are practicing *storytelling*, not just code.",
-      codeExample: "# Mini case study: find top product by revenue\nsales = [\n    {\"product\": \"A\", \"price\": 10, \"qty\": 3},\n    {\"product\": \"B\", \"price\": 7, \"qty\": 6},\n    {\"product\": \"A\", \"price\": 10, \"qty\": 1},\n]\n\nrevenue = {}\nfor s in sales:\n    revenue[s[\"product\"]] = revenue.get(s[\"product\"], 0) + s[\"price\"] * s[\"qty\"]\n\ntop = max(revenue, key=revenue.get)\nprint(top, revenue[top])\n",
+      id: "da-cleaning-mastery", title: "11. Cleaning Mastery", description: "Handling Missing Values, Outliers, and Normalization",
+      content: "## Data Cleaning\n\n80% of an analyst's time is cleaning. If the data is bad, the insight is bad.\n\n### Tasks\n- **Missing Values** — Impute with mean or drop.\n- **Standardization** — Make units consistent.\n- **Outliers** — Find and remove data errors.",
+      codeExample: "data = [1, 2, None]\nclean = [x if x is not None else 0 for x in data]\nprint(clean)",
       translations: {
-        tamil: {
-          title: "Case Study: Raw Data → Insights",
-          description: "Portfolio மாதிரி mini project workflow",
-          content:
-            "## Case Study Workflow\n\nRecruiters end-to-end thinking பார்க்க விரும்புவார்கள்.\n\n### ஒரு நல்ல case study-ல் இருக்க வேண்டியது\n1. **Problem statement** — நீங்கள் பதிலளிக்க வேண்டிய கேள்வி\n2. **Data cleaning** — missing/bad values சரி செய்ய\n3. **Exploration** — summary stats + patterns\n4. **Insights** — 3 முதல் 5 தெளிவான findings\n5. **Recommendation** — அடுத்தடுத்த செயல்\n6. **Limitations** — data என்ன prove செய்ய முடியாது\n\n### Output idea\n- ஒரு clean notebook அல்லது markdown report\n- சில charts\n- short conclusion\n\nநீங்கள் code மட்டும் அல்ல; *storytelling* பயிற்சி செய்கிறீர்கள்.",
-        },
-        kannada: {
-          title: "Case Study: Raw Data → Insights",
-          description: "Portfolio ರೀತಿಯ mini project workflow",
-          content:
-            "## Case Study Workflow\n\nRecruiters end-to-end thinking ನೋಡಲು ಇಷ್ಟಪಡುತ್ತಾರೆ.\n\n### ಒಳ್ಳೆಯ case study ನಲ್ಲಿ ಇರಬೇಕಾದವು\n1. **Problem statement** — ಉತ್ತರಿಸಬೇಕಾದ ಪ್ರಶ್ನೆ\n2. **Data cleaning** — missing/bad values ಸರಿಪಡಿಸಿ\n3. **Exploration** — summary stats + patterns\n4. **Insights** — 3 ರಿಂದ 5 ಸ್ಪಷ್ಟ findings\n5. **Recommendation** — ಮುಂದಿನ ಹೆಜ್ಜೆ\n6. **Limitations** — data ಏನು prove ಮಾಡಲ್ಲ\n\n### Output idea\n- clean notebook ಅಥವಾ markdown report\n- ಕೆಲವು charts\n- short conclusion\n\nಇದು code ಮಾತ್ರವಲ್ಲ; *storytelling* ಅಭ್ಯಾಸ.",
-        },
-        telugu: {
-          title: "Case Study: Raw Data → Insights",
-          description: "Portfolio లాంటి mini project workflow",
-          content:
-            "## Case Study Workflow\n\nRecruiters end-to-end thinking చూడాలని కోరుకుంటారు.\n\n### ఒక strong case study లో ఉండాల్సింది\n1. **Problem statement** — మీరు సమాధానం ఇవ్వాలనుకునే ప్రశ్న\n2. **Data cleaning** — missing/bad values హ్యాండిల్ చేయడం\n3. **Exploration** — summary stats + patterns\n4. **Insights** — 3 నుంచి 5 clear findings\n5. **Recommendation** — next steps\n6. **Limitations** — data ఏం prove చేయలేదో\n\n### Output idea\n- clean notebook లేదా markdown report\n- కొన్ని charts\n- short conclusion\n\nఇది code మాత్రమే కాదు; *storytelling* ప్రాక్టీస్.",
-        },
-        hindi: {
-          title: "Case Study: Raw Data → Insights",
-          description: "Portfolio जैसा mini project workflow",
-          content:
-            "## Case Study Workflow\n\nRecruiters end-to-end thinking देखना पसंद करते हैं.\n\n### एक strong case study में क्या हो\n1. **Problem statement** — आप क्या answer करना चाहते हैं\n2. **Data cleaning** — missing/bad values handle करें\n3. **Exploration** — summary stats + patterns\n4. **Insights** — 3 से 5 clear findings\n5. **Recommendation** — next steps\n6. **Limitations** — data क्या prove नहीं कर सकता\n\n### Output idea\n- clean notebook या markdown report\n- कुछ charts\n- short conclusion\n\nआप सिर्फ code नहीं; *storytelling* practice कर रहे हैं.",
-        },
+        tamil: { title: "11. தூய்மைப்படுத்துதல் திறன்", description: "விடுபட்ட மதிப்புகள், வெளி மதிப்புகள் மற்றும் இயல்பாக்கம் கையாளுதல்" },
+        kannada: { title: "11. ಶುಚಿಗೊಳಿಸುವ ಪಾಂಡಿತ್ಯ", description: "ಕಾಣೆಯಾದ ಮೌಲ್ಯಗಳು, ಹೊರಗಿನವರು ಮತ್ತು ಸಾಮಾನ್ಯೀಕರಣವನ್ನು ನಿರ್ವಹಿಸುವುದು" },
+        telugu: { title: "11. క్లీనింగ్ మాస్టరీ", description: "తప్పిపోయిన విలువలు, అవుట్లైయర్లు మరియు సాధారణీకరణను నిర్వహించడం" },
+        hindi: { title: "11. सफाई में महारत", description: "गुम मानों, आउटलेर्स और सामान्यीकरण को संभालना" },
       },
       exercises: {
-        beginner: { prompt: "Given `price = 12, qty = 4`. Print revenue (`price * qty`), then print whether revenue exceeds 40 (`True`/`False`).", starterCode: "price = 12\nqty = 4\n\n# Print revenue and whether it exceeds 40\n", expectedOutput: "48\nTrue" },
-        intermediate: { prompt: "Given `rev = {'A': 40, 'B': 42, 'C': 10}`. Use `max()` with `key=rev.get` to find top key. Print the key and its value.", starterCode: "rev = {'A': 40, 'B': 42, 'C': 10}\n\n# Find top key and print key + value\n", expectedOutput: "B\n42" },
-        advanced: { prompt: "Given `nums = [10, None, 30, None, 5]`. Replace `None` with `0` using a comprehension. Print the cleaned list, then `sum()`.", starterCode: "nums = [10, None, 30, None, 5]\n\n# Clean Nones, print list and sum\n", expectedOutput: "[10, 0, 30, 0, 5]\n45" },
+        beginner: { prompt: "Remove `None` from `[1, None, 2]`. Print list.", starterCode: "", expectedOutput: "[1, 2]" },
+        intermediate: { prompt: "Convert `['10', '20']` to integers. Print list.", starterCode: "", expectedOutput: "[10, 20]" },
+        advanced: { prompt: "Filter `[1, 2, 100]` for values `< 10`. Print list.", starterCode: "", expectedOutput: "[1, 2]" },
+      },
+    },
+    {
+      id: "da-data-management", title: "12. Databases & ETL", description: "Relational vs NoSQL and ETL Pipelines",
+      content: "## Data Management\n\n- **Relational (SQL)** — Organized tables.\n- **NoSQL (MongoDB)** — Flexible JSON documents.\n- **ETL** — Extract, Transform, Load (Moving data from A to B).",
+      codeExample: "extract() >> transform() >> load()",
+      translations: {
+        tamil: { title: "12. தரவுத்தளங்கள் & ETL", description: "தொடர்பு மற்றும் NoSQL மற்றும் ETL குழாய்கள்" },
+        kannada: { title: "12. ಡೇಟಾಬೇಸ್‌ಗಳು ಮತ್ತು ETL", description: "ರಿಲೇಶನಲ್ ಮತ್ತು NoSQL ಮತ್ತು ETL ಪೈಪ್‌ಲೈನ್‌ಗಳು" },
+        telugu: { title: "12. మేనేజ్‌మెంట్: డేటాబేస్ & ETL", description: "రిలేషనల్ మరియు NoSQL మరియు ETL పైప్‌లైన్లు" },
+        hindi: { title: "12. डेटाबेस और ईटीएल", description: "रिलेशनल बनाम नोएसक्यूएल और ईटीएल पाइपलाइन" },
+      },
+      exercises: {
+        beginner: { prompt: "What is the 'E' in ETL? Print word.", starterCode: "", expectedOutput: "Extract" },
+        intermediate: { prompt: "Database with tables? Print word.", starterCode: "", expectedOutput: "Relational" },
+        advanced: { prompt: "Database with documents? Print word.", starterCode: "", expectedOutput: "NoSQL" },
+      },
+    },
+    {
+      id: "da-cloud-tools", title: "13. Cloud Data Tools", description: "BigQuery, Redshift, and Data Warehousing",
+      content: "## Cloud Data Warehouses\n\nModern analysts work in the cloud.\n\n### Tools\n- **Google BigQuery** — Serverless, fast SQL.\n- **AWS Redshift** — Massive scale SQL.\n- **Snowflake** — Multi-cloud data platform.",
+      codeExample: "SELECT * FROM `project.dataset.table` LIMIT 10",
+      translations: {
+        tamil: { title: "13. கிளவுட் தரவு கருவிகள்", description: "BigQuery, Redshift மற்றும் தரவு சேமிப்பு" },
+        kannada: { title: "13. ಕ್ಲೌಡ್ ಡೇಟಾ ಪರಿಕರಗಳು", description: "BigQuery, Redshift ಮತ್ತು ಡೇಟಾ ವೇರ್‌ಹೌಸಿಂಗ್" },
+        telugu: { title: "13. మేనేజ్‌మెంట్: క్లౌడ్ డేటా టూల్స్", description: "BigQuery, Redshift మరియు డేటా వేర్‌హౌసింగ్" },
+        hindi: { title: "13. क्लाउड डेटा टूल्स", description: "बिगक्वेरी, रेडशिफ्ट और डेटा वेयरहाउसिंग" },
+      },
+      exercises: {
+        beginner: { prompt: "Google's data tool? Print word.", starterCode: "", expectedOutput: "BigQuery" },
+        intermediate: { prompt: "Amazon's data tool? Print word.", starterCode: "", expectedOutput: "Redshift" },
+        advanced: { prompt: "Scale without servers is...? Print word.", starterCode: "", expectedOutput: "Serverless" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 4: ANALYSIS & MODELING (Modules 14–20)
+    // Extract insights and make predictions
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "da-eda-mastery", title: "14. EDA Mastery", description: "Distributions, Trends, Anomalies, and Correlations",
+      content: "## Exploratory Data Analysis\n\nEDA is the phase where you find the 'story' in the data.\n\n### Focus Areas\n- **Distributions** — Is the data skewed?\n- **Correlations** — Does $X$ affect $Y$?\n- **Anomalies** — Are there errors or rare events?",
+      codeExample: "df.corr() # The core EDA command",
+      translations: {
+        tamil: { title: "14. EDA திறன்", description: "பரவல்கள், போக்குகள், முரண்பாடுகள் மற்றும் தொடர்புகள்" },
+        kannada: { title: "14. EDA ಪಾಂಡಿತ್ಯ", description: "ವಿತರಣೆಗಳು, ಪ್ರವೃತ್ತಿಗಳು, ವೈಪರೀತ್ಯಗಳು ಮತ್ತು ಪರಸ್ಪರ ಸಂಬಂಧಗಳು" },
+        telugu: { title: "14. EDA మాస్టరీ", description: "పంపిణీలు, పోకడలు, క్రమరాహిత్యాలు మరియు సహసంబంధాలు" },
+        hindi: { title: "14. ईडीए महारत", description: "वितरण, रुझान, विसंगतियां और सहसंबंध" },
+      },
+      exercises: {
+        beginner: { prompt: "Identify repeating pattern term? Print word.", starterCode: "", expectedOutput: "Seasonality" },
+        intermediate: { prompt: "What is a 'strange spike' in data? Print word.", starterCode: "", expectedOutput: "Anomaly" },
+        advanced: { prompt: "Relationship between two vars? Print word.", starterCode: "", expectedOutput: "Correlation" },
+      },
+    },
+    {
+      id: "da-visualization-techniques", title: "15. Techniques", description: "Choosing the Right Chart for the Story",
+      content: "## Data Visualization\n\n### Techniques\n- **Bar Charts** — Comparison.\n- **Line Charts** — Trends over time.\n- **Scatter Plots** — Relationships/Correlations.\n- **Heatmaps** — Visualizing matrices.",
+      codeExample: "print('Trend = Line Chart')",
+      translations: {
+        tamil: { title: "15. நுட்பங்கள்", description: "கதைக்கு சரியான வரைபடத்தைத் தேர்ந்தெடுப்பது" },
+        kannada: { title: "15. ತಂತ್ರಗಳು", description: "ಕಥೆಗೆ ಸರಿಯಾದ ಚಾರ್ಟ್ ಆಯ್ಕೆ ಮಾಡುವುದು" },
+        telugu: { title: "15. పద్ధతులు", description: "కథ కోసం సరైన చార్ట్‌ను ఎంచుకోవడం" },
+        hindi: { title: "15. तकनीक", description: "कहानी के लिए सही चार्ट चुनना" },
+      },
+      exercises: {
+        beginner: { prompt: "Chart for trend? Print word.", starterCode: "", expectedOutput: "Line" },
+        intermediate: { prompt: "Chart for comparison? Print word.", starterCode: "", expectedOutput: "Bar" },
+        advanced: { prompt: "Chart for relationship? Print word.", starterCode: "", expectedOutput: "Scatter" },
+      },
+    },
+    {
+      id: "da-viz-libraries", title: "16. Python Libraries", description: "Matplotlib, Seaborn, and Plotly",
+      content: "## Python Viz Ecosystem\n\n- **Matplotlib** — Low level, maximum control.\n- **Seaborn** — Statistical, beautiful defaults.\n- **Plotly** — Interactive and web-ready.",
+      codeExample: "import seaborn as sns\nsns.histplot(data)",
+      translations: {
+        tamil: { title: "16. பைதான் நூலகங்கள்", description: "Matplotlib, Seaborn மற்றும் Plotly" },
+        kannada: { title: "16. ಪೈಥಾನ್ ಲೈಬ್ರರಿಗಳು", description: "Matplotlib, Seaborn ಮತ್ತು Plotly" },
+        telugu: { title: "16. పైథాన్ లైబ్రరీలు", description: "Matplotlib, Seaborn మరియు Plotly" },
+        hindi: { title: "16. पायथन लाइब्रेरी", description: "Matplotlib, Seaborn और Plotly" },
+      },
+      exercises: {
+        beginner: { prompt: "Which library is for interactive charts? Print word.", starterCode: "", expectedOutput: "Plotly" },
+        intermediate: { prompt: "Which library is for beautiful statistical plots? Print word.", starterCode: "", expectedOutput: "Seaborn" },
+        advanced: { prompt: "Which is the base library for most Python viz? Print word.", starterCode: "", expectedOutput: "Matplotlib" },
+      },
+    },
+    {
+      id: "da-bi-tools", title: "17. BI Tools", description: "Power BI, Tableau, and Dashboards",
+      content: "## Business Intelligence\n\nCompanies use BI tools for executive dashboards.\n\n### Concepts\n- **Dimensions** — Categorical data (Region, Product).\n- **Measures** — Numerical data (Sales, Profit).\n- **Slicers** — Interactive filters.",
+      codeExample: "print('Sales = Measure, Region = Dimension')",
+      translations: {
+        tamil: { title: "17. பிஐ கருவிகள்", description: "Power BI, Tableau மற்றும் டேஷ்போர்டுகள்" },
+        kannada: { title: "17. BI ಪರಿಕರಗಳು", description: "Power BI, Tableau ಮತ್ತು ಡ್ಯಾಶ್‌ಬೋರ್ಡ್‌ಗಳು" },
+        telugu: { title: "17. BI టూల్స్", description: "Power BI, Tableau మరియు డాష్‌బోర్డ్‌లు" },
+        hindi: { title: "17. बीआई टूल्स", description: "Power BI, Tableau और डैशबोर्ड" },
+      },
+      exercises: {
+        beginner: { prompt: "Is 'Year' a Dimension or Measure? Print word.", starterCode: "", expectedOutput: "Dimension" },
+        intermediate: { prompt: "Is 'Profit' a Dimension or Measure? Print word.", starterCode: "", expectedOutput: "Measure" },
+        advanced: { prompt: "Tool for interactive business reports? Print word.", starterCode: "", expectedOutput: "Dashboard" },
+      },
+    },
+    {
+      id: "da-predictive-analytics", title: "18. Predictive Analytics", description: "Regression, Classification, and Clustering",
+      content: "## Machine Learning for Analysts\n\nAnalysts use ML to predict future trends.\n\n### Models\n- **Linear Regression** — Predicting numbers.\n- **Logistic Regression** — Predicting Yes/No.\n- **K-Means Clustering** — Grouping similar customers.",
+      codeExample: "from sklearn.linear_model import LinearRegression",
+      translations: {
+        tamil: { title: "18. முன்கணிப்பு பகுப்பாய்வு", description: "பின்னடைவு, வகைப்படுத்தல் மற்றும் கிளஸ்டரிங்" },
+        kannada: { title: "18. ಮುನ್ಸೂಚಕ ವಿಶ್ಲೇಷಣೆ", description: "ರಿಗ್ರೆಷನ್, ವರ್ಗೀಕರಣ ಮತ್ತು ಕ್ಲಸ್ಟರಿಂಗ್" },
+        telugu: { title: "18. ప్రిడిక్టివ్ అనలిటిక్స్", description: "రిగ్రెషన్, వర్గీకరణ మరియు క్లస్టరింగ్" },
+        hindi: { title: "18. भविष्य कहने वाला विश्लेषण", description: "रिग्रेशन, वर्गीकरण और क्लस्टरिंग" },
+      },
+      exercises: {
+        beginner: { prompt: "Predicting a house price is...? Print word.", starterCode: "", expectedOutput: "Regression" },
+        intermediate: { prompt: "Predicting Spam or Not is...? Print word.", starterCode: "", expectedOutput: "Classification" },
+        advanced: { prompt: "Grouping similar items is...? Print word.", starterCode: "", expectedOutput: "Clustering" },
+      },
+    },
+    {
+      id: "da-hypothesis-testing", title: "19. Hypothesis Testing", description: "T-Tests, Chi-Square, and ANOVA",
+      content: "## Proving Results\n\nIs a change 'statistically significant' or just luck?\n\n### Tests\n- **T-Test** — Comparing two groups.\n- **ANOVA** — Comparing three or more groups.\n- **P-Value** — The probability that your result was luck ($p < 0.05$ is the goal).",
+      codeExample: "from scipy.stats import ttest_ind",
+      translations: {
+        tamil: { title: "19. கருதுகோள் சோதனை", description: "T-Tests, Chi-Square மற்றும் ANOVA" },
+        kannada: { title: "19. ಹೈಪೋಥೆಸಿಸ್ ಟೆಸ್ಟಿಂಗ್", description: "T-Tests, Chi-Square ಮತ್ತು ANOVA" },
+        telugu: { title: "19. పరికల్పన పరీక్ష", description: "T-Tests, Chi-Square మరియు ANOVA" },
+        hindi: { title: "19. परिकल्पना परीक्षण", description: "T-Tests, Chi-Square और ANOVA" },
+      },
+      exercises: {
+        beginner: { prompt: "If p=0.01, is it significant? Print 'Yes' or 'No'.", starterCode: "", expectedOutput: "Yes" },
+        intermediate: { prompt: "Test for 2 groups? Print word.", starterCode: "", expectedOutput: "T-Test" },
+        advanced: { prompt: "Test for 3+ groups? Print word.", starterCode: "", expectedOutput: "ANOVA" },
+      },
+    },
+    {
+      id: "da-ab-testing-mastery", title: "20. A/B Testing", description: "Experiment Design and Statistical Significance",
+      content: "## The Gold Standard\n\nA/B Testing is how top companies (Netflix, Google) make decisions.\n\n### Design\n- **Control** — The current version.\n- **Treatment** — The new version.\n- **Conversion Lift** — The improvement %.",
+      codeExample: "lift = (treatment - control) / control",
+      translations: {
+        tamil: { title: "20. ஏ/பி சோதனை", description: "பரிசோதனை வடிவமைப்பு மற்றும் புள்ளிவிவர முக்கியத்துவம்" },
+        kannada: { title: "20. A/B ಪರೀಕ್ಷೆ", description: "ಪ್ರಯೋಗ ವಿನ್ಯಾಸ ಮತ್ತು ಅಂಕಿಅಂಶಗಳ ಪ್ರಾಮುಖ್ಯತೆ" },
+        telugu: { title: "20. A/B టెస్టింగ్", description: "ప్రయోగ రూపకల్పన మరియు గణాంక ప్రాముఖ్యత" },
+        hindi: { title: "20. ए/बी टेस्टिंग", description: "प्रयोग डिजाइन और सांख्यिकीय महत्व" },
+      },
+      exercises: {
+        beginner: { prompt: "The group with NO changes? Print word.", starterCode: "", expectedOutput: "Control" },
+        intermediate: { prompt: "The group with the change? Print word.", starterCode: "", expectedOutput: "Treatment" },
+        advanced: { prompt: "Goal of an A/B test? Print word.", starterCode: "", expectedOutput: "Improvement" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 5: PROFESSIONAL SKILLS (Modules 21–24)
+    // Communicate, think critically, and land the job
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "da-soft-skills", title: "21. Communication", description: "Presenting Insights and Writing Reports",
+      content: "## The Human Side\n\nIf you can't explain your data, your analysis doesn't matter.\n\n### Principles\n- **Executive Summary** — Tell the answer first.\n- **Know your Audience** — Business leaders want ROI, not p-values.\n- **Clarity** — Remove clutter from your charts.",
+      codeExample: "print('Communication is 80% of the job')",
+      translations: {
+        tamil: { title: "21. தகவல் தொடர்பு", description: "உண்ணோக்குகளை வழங்குதல் மற்றும் அறிக்கைகளை எழுதுதல்" },
+        kannada: { title: "21. ಸಂವಹನ", description: "ಒಳನೋಟಗಳನ್ನು ಪ್ರಸ್ತುತಪಡಿಸುವುದು ಮತ್ತು ವರದಿಗಳನ್ನು ಬರೆಯುವುದು" },
+        telugu: { title: "21. కమ్యూనికేషన్", description: "అంతర్దృష్టులను ప్రదర్శించడం మరియు నివేదికలు రాయడం" },
+        hindi: { title: "21. संचार", description: "अंतर्दृष्टि प्रस्तुत करना और रिपोर्ट लिखना" },
+      },
+      exercises: {
+        beginner: { prompt: "Brief summary at the start? Print word.", starterCode: "", expectedOutput: "Executive" },
+        intermediate: { prompt: "People who use your insights? Print word.", starterCode: "stakeholders = ['CEO', 'Manager']\n", expectedOutput: "Stakeholders" },
+        advanced: { prompt: "Goal of a report? Print word.", starterCode: "goal = 'Finding meaningful information'\n", expectedOutput: "Insight" },
+      },
+    },
+    {
+      id: "da-critical-thinking", title: "22. Critical Thinking", description: "Business Questions and Avoiding Bias",
+      content: "## The Analyst Mindset\n\n- **Framing** — Turning a vague business request into a data query.\n- **Bias** — Avoiding 'cherry picking' data that fits your opinion.\n- **Skepticism** — Asking 'Why is this number so high?' before reporting it.",
+      codeExample: "print('Avoid Selection Bias')",
+      translations: {
+        tamil: { title: "22. விமர்சன சிந்தனை", description: "வணிக கேள்விகள் மற்றும் சார்புகளைத் தவிர்த்தல்" },
+        kannada: { title: "22. ವಿಮರ್ಶಾತ್ಮಕ ಚಿಂತನೆ", description: "ವ್ಯಾಪಾರ ಪ್ರಶ್ನೆಗಳು ಮತ್ತು ಪಕ್ಷಪಾತವನ್ನು ತಪ್ಪಿಸುವುದು" },
+        telugu: { title: "22. క్రిటికల్ థింకింగ్", description: "వ్యాపార ప్రశ్నలు మరియు పక్షపాతాన్ని నివారించడం" },
+        hindi: { title: "22. महत्वपूर्ण सोच", description: "व्यावसायिक प्रश्न और पूर्वाग्रह से बचना" },
+      },
+      exercises: {
+        beginner: { prompt: "Choosing only 'good' data? Print word.", starterCode: "", expectedOutput: "Bias" },
+        intermediate: { prompt: "The 'Why' behind data? Print word.", starterCode: "reasoning = 'logical thinking'\n", expectedOutput: "Reasoning" },
+        advanced: { prompt: "Step before querying? Print word.", starterCode: "step = 'Defining the problem'\n", expectedOutput: "Framing" },
+      },
+    },
+    {
+      id: "da-domain-knowledge", title: "23. Domain Expertise", description: "Finance, Marketing, and Healthcare Metrics",
+      content: "## Context is King\n\nYou must understand the industry you work in.\n\n### Domains\n- **Finance** — ROI, Cash Flow.\n- **Marketing** — CTR, CAC.\n- **SaaS** — MRR, ARR.",
+      codeExample: "mrr = sum(subscriptions)",
+      translations: {
+        tamil: { title: "23. டொமைன் நிபுணத்துவம்", description: "நிதி, சந்தைப்படுத்தல் மற்றும் சுகாதார அளவீடுகள்" },
+        kannada: { title: "23. ಡೊಮೇನ್ ಪರಿಣತಿ", description: "ಹಣಕಾಸು, ಮಾರ್ಕೆಟಿಂಗ್ ಮತ್ತು ಆರೋಗ್ಯ ರಕ್ಷಣೆಯ ಮೆಟ್ರಿಕ್‌ಗಳು" },
+        telugu: { title: "23. డొమైన్ నైపుణ్యం", description: "ఫైనాన్స్, మార్కెటింగ్ మరియు హెల్త్‌కేర్ మెట్రిక్స్" },
+        hindi: { title: "23. डोमेन विशेषज्ञता", description: "वित्त, विपणन और स्वास्थ्य सेवा मेट्रिक्स" },
+      },
+      exercises: {
+        beginner: { prompt: "Marketing: Click Through Rate acronym? Print it.", starterCode: "", expectedOutput: "CTR" },
+        intermediate: { prompt: "SaaS: Monthly Recurring Revenue acronym? Print it.", starterCode: "", expectedOutput: "MRR" },
+        advanced: { prompt: "Finance: Return on Investment acronym? Print it.", starterCode: "", expectedOutput: "ROI" },
+      },
+    },
+    {
+      id: "da-career-prep", title: "24. Career & Portfolio", description: "Building Projects and Interviewing",
+      content: "## Get the Job\n\n1. **GitHub** — Host your code.\n2. **LinkedIn** — Show your insights.\n3. **Portfolio** — Tell the stories of your 3 best projects.",
+      codeExample: "print('Hired!')",
+      translations: {
+        tamil: { title: "24. தொழில் & போர்ட்ஃபோலியோ", description: "திட்டங்களை உருவாக்குதல் மற்றும் நேர்காணல்" },
+        kannada: { title: "24. ವೃತ್ತಿ ಮತ್ತು ಪೋರ್ಟ್‌ಫೋಲಿಯೊ", description: "ಯೋಜನೆಗಳನ್ನು ನಿರ್ಮಿಸುವುದು ಮತ್ತು ಸಂದರ್ಶನ ಮಾಡುವುದು" },
+        telugu: { title: "24. కెరీర్ & పోర్ట్‌ఫోలియో", description: "ప్రాజెక్ట్‌లను నిర్మించడం మరియు ఇంటర్వ్యూ చేయడం" },
+        hindi: { title: "24. करियर और पोर्टफोलियो", description: "परियोजनाओं का निर्माण और साक्षात्कार" },
+      },
+      exercises: {
+        beginner: { prompt: "Where to host code? Print word.", starterCode: "", expectedOutput: "GitHub" },
+        intermediate: { prompt: "Most important portfolio element? Print word.", starterCode: "", expectedOutput: "Story" },
+        advanced: { prompt: "The goal of an interview? Print word.", starterCode: "print('Success')", expectedOutput: "Confidence" },
       },
     },
   ];
@@ -507,100 +591,164 @@ function wd(): CareerLesson[] {
 
 function aiml(): CareerLesson[] {
   return [
+    // ═══════════════════════════════════════════════════════
+    // PHASE 1: FOUNDATIONS & DATA (Modules 1–2)
+    // Master the core concepts and prepare data for modeling
+    // ═══════════════════════════════════════════════════════
     {
-      id: "ml-intro", title: "What is Machine Learning?", description: "Core concepts and types of ML",
-      content: "## Machine Learning Overview\n\nML teaches computers to learn from data without explicit programming.\n\n### Types of ML\n- **Supervised** — Learn from labeled data\n- **Unsupervised** — Find patterns in unlabeled data\n- **Reinforcement** — Learn by trial and error\n\n### The ML Workflow\n1. Collect & prepare data\n2. Choose a model\n3. Train the model\n4. Evaluate performance\n5. Deploy & monitor",
-      codeExample: "features = [[1500, 3], [2000, 4], [1200, 2]]\nprices = [300000, 450000, 200000]\ntotal_sqft = sum(f[0] for f in features)\navg_price_per_sqft = sum(prices) / total_sqft\nnew_house = 1800\nprint(\"Predicted:\", int(new_house * avg_price_per_sqft))",
+      id: "ml-foundations", title: "1. Foundations of AI & ML", description: "Mathematics, CS Basics, and Core ML Concepts",
+      content: "## The Building Blocks of AI\n\n### Mathematics for ML\n- **Linear Algebra**: Vectors, matrices, eigenvalues, and eigenvectors are the language of data.\n- **Calculus**: Derivatives and partial derivatives enable optimization (Gradient Descent).\n- **Probability & Statistics**: Normal distributions, Bayes' Theorem, and hypothesis testing provide the foundation for uncertainty.\n\n### CS Basics\n- **Algorithms**: Understanding complexity (Big O) and data structures is crucial for efficient model implementation.\n\n### Core ML Concepts\n- **Supervised vs Unsupervised**: Learning from labels vs. finding hidden patterns.\n- **Tradeoffs**: Understanding Overfitting vs. Underfitting and the Bias-Variance tradeoff.",
+      codeExample: "import numpy as np\n\n# Vector dot product demo\na = np.array([1, 2])\nb = np.array([3, 4])\ndot = np.dot(a, b) # 1*3 + 2*4 = 11",
       translations: {
-        tamil: { title: "Machine Learning என்றால் என்ன?", description: "ML இன் அடிப்படை கருத்துகள் மற்றும் வகைகள்" },
-        kannada: { title: "Machine Learning ಎಂದರೇನು?", description: "ML ಮೂಲಭೂತ ಕಲ್ಪನೆಗಳು ಮತ್ತು ವಿಧಗಳು" },
-        telugu: { title: "Machine Learning అంటే ఏమిటి?", description: "ML యొక్క ప్రాథమిక కాన్సెప్ట్‌లు మరియు రకాలు" },
-        hindi: { title: "Machine Learning क्या है?", description: "ML के मुख्य concepts और प्रकार" },
+        tamil: { title: "1. AI & ML இன் அடிப்படைகள்", description: "கணிதம், கணினி அறிவியல் மற்றும் ML கருத்துக்கள்" },
+        kannada: { title: "1. AI மற்றும் ML ನ ಅಡಿಪಾಯಗಳು", description: "ಗಣಿತ, CS ಮೂಲಗಳು ಮತ್ತು ML ಪರಿಕಲ್ಪನೆಗಳು" },
+        telugu: { title: "1. AI & ML పునాదులు", description: "గణితం, CS బేసిక్స్ మరియు ML కాన్సెప్ట్లకు" },
+        hindi: { title: "1. AI और ML की नींव", description: "गणित, CS बेसिक्स और ML कॉन्सेप्ट्स" },
       },
       exercises: {
-        beginner: { prompt: "Given `features = [1500, 2000, 1200]`. Print `sum()`, `len()`, and mean rounded to 1 decimal.", starterCode: "features = [1500, 2000, 1200]\n\n# Print sum, len, mean\n", expectedOutput: "4700\n3\n1566.7" },
-        intermediate: { prompt: "Calculate MAE between `pred=[300,450,200]` and `actual=[310,440,210]`. Print it.", starterCode: "pred = [300, 450, 200]\nactual = [310, 440, 210]\n\n# Calculate and print MAE\n", expectedOutput: "10.0" },
-        advanced: { prompt: "Linear model `y = mx + b`. Given `m=2, b=1`, predict for `x=[1,2,3]`. Print the predictions list and the `max()`.", starterCode: "m = 2\nb = 1\nx_values = [1, 2, 3]\n\n# Predict, print list and max\n", expectedOutput: "[3, 5, 7]\n7" },
-      },
-    },
-    {
-      id: "ml-numpy", title: "NumPy Concepts for ML", description: "Array operations for machine learning",
-      content: "## NumPy: Foundation of ML\n\nNumPy provides fast array operations.\n\n### Why NumPy?\n- 10-100x faster than Python lists\n- Vectorization — operate on entire arrays\n- Broadcasting — automatic shape alignment\n- Linear algebra built-in",
-      codeExample: "a = [1, 2, 3]\nb = [4, 5, 6]\nresult = [x + y for x, y in zip(a, b)]\nprint(\"Add:\", result)\ndot = sum(x * y for x, y in zip(a, b))\nprint(\"Dot:\", dot)\nscaled = [x * 2 for x in a]\nprint(\"Scale:\", scaled)",
-      exercises: {
-        beginner: { prompt: "Add `[1,2,3]` and `[4,5,6]` element-wise using `zip()`. Print the result list.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\n\n# Element-wise add, print\n", expectedOutput: "[5, 7, 9]" },
-        intermediate: { prompt: "Calculate dot product of `[1,2,3]` and `[4,5,6]` using `zip()` and `sum()`. Print it.", starterCode: "a = [1, 2, 3]\nb = [4, 5, 6]\n\n# Dot product, print\n", expectedOutput: "32" },
-        advanced: { prompt: "Scale `[2, 4, 6]` by `0.5` (multiply each). Print the list. Then calculate magnitude of `[3,4]` using `math.sqrt`. Print it.", starterCode: "import math\n\n# Scale list, print. Magnitude of [3,4], print.\n", expectedOutput: "[1.0, 2.0, 3.0]\n5.0" },
+        beginner: { prompt: "If a model performs great on training data but poorly on new data, what is it called? Print word.", starterCode: "", expectedOutput: "Overfitting" },
+        intermediate: { prompt: "Algorithm for finding the minimum of a function? Print words.", starterCode: "", expectedOutput: "Gradient Descent" },
+        advanced: { prompt: "Calculate dot product of [1, 3] and [2, 4]. Print the result.", starterCode: "a = [1, 3]\nb = [2, 4]\n# Compute dot product\n", expectedOutput: "14" },
       },
     },
     {
-      id: "ml-classification", title: "Classification Basics", description: "Predict categories from data",
-      content: "## Classification\n\nPredicts which category a data point belongs to.\n\n### Examples\n- Email: Spam or Not Spam\n- Image: Cat or Dog\n- Transaction: Fraud or Legit\n\n### K-Nearest Neighbors (KNN)\n1. Calculate distance to all training points\n2. Find K nearest\n3. Majority vote = prediction",
-      codeExample: "import math\ndata = [\n    [1, 2, \"A\"], [2, 3, \"A\"], [3, 1, \"A\"],\n    [6, 5, \"B\"], [7, 7, \"B\"], [8, 6, \"B\"],\n]\ndef distance(p1, p2):\n    return math.sqrt((p1[0]-p2[0])**2 + (p1[1]-p2[1])**2)\nnew_point = [5, 5]\ndists = [(distance(new_point, d[:2]), d[2]) for d in data]\ndists.sort()\nprint(\"Nearest 3:\", [d[1] for d in dists[:3]])",
+      id: "ml-data-prep", title: "2. Data Preparation & Feature Engineering", description: "Cleaning, Scaling, and Dimensionality Reduction",
+      content: "## Turning Raw Data into Intelligence\n\n### Data Cleaning\nHandling missing values (Imputation), duplicates, and outliers using Z-scores or IQR.\n\n### Feature Engineering\n- **Encoding**: Converting categorical variables to numbers using One-Hot or Label encoding.\n- **Scaling**: Normalization (Min-Max) and Standardization (Z-score scaling).\n- **Transformation**: Creating polynomial features to capture non-linear relationships.\n\n### Dimensionality Reduction\n- **PCA (Principal Component Analysis)**: Reducing feature count while preserving variance.\n- **t-SNE & LDA**: Techniques for visualization and class separation.",
+      codeExample: "data = [10, 20, 30, 40, 50]\nmn, mx = min(data), max(data)\nnormalized = [(x - mn) / (mx - mn) for x in data]\nprint(normalized)",
+      translations: {
+        tamil: { title: "2. தரவு தயாரிப்பு மற்றும் அம்ச பொறியியல்", description: "சுத்தம் செய்தல், அளவிடுதல் மற்றும் பரிமாணக் குறைப்பு" },
+        kannada: { title: "2. ಡೇಟಾ ತಯಾರಿ ಮತ್ತು ಫೀಚರ್ ಎಂಜಿನಿಯರಿಂಗ್", description: "ಶುಚಿಗೊಳಿಸುವಿಕೆ, ಸ್ಕೇಲಿಂಗ್ ಮತ್ತು ಆಯಾಮದ ಕಡಿತ" },
+        telugu: { title: "2. డేటా ప్రిపరేషన్ & ఫీచర్ ఇంజనీరింగ్", description: "క్లీనింగ్, స్కేలింగ్ మరియు డైమెన్షనాలిటీ రిడక్షన్" },
+        hindi: { title: "2. डेटा तैयारी और फ़ीचर इंजीनियरिंग", description: "सफाई, स्केलिंग और आयामी कमी" },
+      },
       exercises: {
-        beginner: { prompt: "Calculate Euclidean distance between `(0,0)` and `(3,4)` using `math.sqrt`. Print it.", starterCode: "import math\n\n# Calculate and print distance\n", expectedOutput: "5.0" },
-        intermediate: { prompt: "Find majority vote from `['A','A','B','A','B']`. Count with a dict, then use `max()` with `key=`. Print the winner and its count.", starterCode: "labels = ['A', 'A', 'B', 'A', 'B']\n\n# Count, find max, print winner and count\n", expectedOutput: "A\n3" },
-        advanced: { prompt: "Calculate accuracy: `pred=['A','B','A','A']` vs `actual=['A','B','B','A']`. Print correct count and accuracy as percentage.", starterCode: "pred = ['A', 'B', 'A', 'A']\nactual = ['A', 'B', 'B', 'A']\n\n# Count correct, print count and accuracy %\n", expectedOutput: "3\n75.0" },
+        beginner: { prompt: "Process of handling missing data? Print word.", starterCode: "", expectedOutput: "Imputation" },
+        intermediate: { prompt: "Reducing input variables while keeping info? Print acronym.", starterCode: "", expectedOutput: "PCA" },
+        advanced: { prompt: "Calculate Z-score for value 15 where mean=10, std=5. Print it.", starterCode: "v = 15\nmean = 10\nstd = 5\n# Z = (v - mean) / std\n", expectedOutput: "1.0" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 2: CORE MACHINE LEARNING (Modules 3–4)
+    // Learn standard supervised and unsupervised algorithms
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "ml-supervised", title: "3. Supervised Learning", description: "Regression, Classification, and Ensembles",
+      content: "## Predictive Modeling\n\n### Regression\n- **Linear & Polynomial**: Predicting house prices or stock trends.\n- **Regularization**: Ridge and Lasso to prevent overfitting.\n\n### Classification\n- **Logistic Regression**: Binary classification (Yes/No).\n- **SVM & Decision Trees**: Robust boundary-based classification.\n- **Random Forest**: An ensemble of trees to improve stability.\n\n### Ensemble Methods\n- **Bagging**: Parallel model training.\n- **Boosting**: Sequential training (XGBoost, AdaBoost, LightGBM) to correct errors.",
+      codeExample: "from sklearn.ensemble import RandomForestClassifier\nprint('Model Ready: Random Forest Ensemble')",
+      translations: {
+        tamil: { title: "3. மேற்பார்வையிடப்பட்ட கற்றல்", description: "ரெக்ரஷன், வகைப்படுத்தல் மற்றும் குழுக்கள்" },
+        kannada: { title: "3. ಮೇಲ್ವಿಚಾರಣೆಯ ಕಲಿಕೆ", description: "ರಿಗ್ರೆಷನ್, ವರ್ಗೀಕರಣ ಮತ್ತು ಎನ್ಸೆಂಬಲ್ಸ್" },
+        telugu: { title: "3. సూపర్వైజ్డ్ లెర్నింగ్", description: "రిగ్రెషన్, క్లాసిఫికేషన్ మరియు ఎంసెంబుల్స్" },
+        hindi: { title: "3. सुपर्वाइज्ड लर्निंग", description: "रिग्रेशन, वर्गीकरण और एन्सेम्बल्स" },
+      },
+      exercises: {
+        beginner: { prompt: "Predicting a category (Spam vs Ham) is called? Print word.", starterCode: "", expectedOutput: "Classification" },
+        intermediate: { prompt: "Combining multiple models for better accuracy? Print word.", starterCode: "", expectedOutput: "Ensemble" },
+        advanced: { prompt: "Acronym for Extreme Gradient Boosting? Print word.", starterCode: "", expectedOutput: "XGBoost" },
       },
     },
     {
-      id: "ml-regression", title: "Linear Regression", description: "Predict continuous values with regression",
-      content: "## Linear Regression\n\nPredict a continuous value from input features.\n\n### The Math\n- y = mx + b (slope-intercept)\n- m = slope (rate of change)\n- b = y-intercept\n\n### Training\n- Find m and b that minimize error\n- Cost function: Mean Squared Error\n- Gradient descent optimization\n\n### Applications\n- House price prediction\n- Stock forecasting\n- Sales estimation",
-      codeExample: "# Simple linear regression from scratch\nX = [1, 2, 3, 4, 5]\ny = [2, 4, 5, 4, 5]\n\nn = len(X)\nmean_x = sum(X) / n\nmean_y = sum(y) / n\n\nnumerator = sum((X[i] - mean_x) * (y[i] - mean_y) for i in range(n))\ndenominator = sum((X[i] - mean_x) ** 2 for i in range(n))\n\nm = numerator / denominator\nb = mean_y - m * mean_x\n\nprint(\"Slope:\", round(m, 2))\nprint(\"Intercept:\", round(b, 2))\nprint(\"Predict x=6:\", round(m * 6 + b, 2))",
+      id: "ml-unsupervised", title: "4. Unsupervised Learning", description: "Clustering, Association, and Anomaly Detection",
+      content: "## Finding Hidden Structures\n\n### Clustering\n- **K-Means**: Grouping data points into K clusters based on distance.\n- **Hierarchical Clustering**: Building a tree-like hierarchy of clusters.\n- **DBSCAN**: Density-based clustering for complex shapes.\n\n### Association Rule Learning\n- **Apriori Algorithm**: Used for market basket analysis ('Customers who bought bread also bought milk').\n- **Anomaly Detection\n- **Isolation Forest**: Detecting rare events (Fraud detection, system failure).",
+      codeExample: "print('Clusters found using K-Means: 5')",
+      translations: {
+        tamil: { title: "4. மேற்பார்வையிடப்படாத கற்றல்", description: "கிளஸ்டரிங் மற்றும் அசோசியேஷன்" },
+        kannada: { title: "4. ಮೇಲ್ವಿಚಾರಣೆಯಿಲ್ಲದ ಕಲಿಕೆ", description: "ಕ್ಲಸ್ಟರಿಂಗ್ ಮತ್ತು ಅಸೋಸಿಯೇಷನ್" },
+        telugu: { title: "4. అన్-సూపర్వైజ్డ్ లెర్నింగ్", description: "క్లస్టరింగ్ మరియు అసోసియేషన్" },
+        hindi: { title: "4. अनसुपरवाइज्ड लर्निंग", description: "क्लस्टरिंग और एसोसिएशन" },
+      },
       exercises: {
-        beginner: { prompt: "Given `y = 2x + 1`, predict for `x=5`. Print it.", starterCode: "m = 2\nb = 1\nx = 5\n\n# Calculate y and print\n", expectedOutput: "11" },
-        intermediate: { prompt: "Calculate MSE for `pred=[2,4,6]` vs `actual=[2.5,3.5,6]`. Print rounded to 2 decimals.", starterCode: "pred = [2, 4, 6]\nactual = [2.5, 3.5, 6]\n\n# Calculate MSE, print rounded\n", expectedOutput: "0.17" },
-        advanced: { prompt: "Calculate R² for `actual=[3,5,7,9]` and `pred=[2.8,5.2,6.8,9.1]`. Print rounded to 2 decimals.", starterCode: "actual = [3, 5, 7, 9]\npred = [2.8, 5.2, 6.8, 9.1]\n\n# Calculate R-squared, print\n", expectedOutput: "0.99" },
+        beginner: { prompt: "Most common clustering algorithm? Print word.", starterCode: "", expectedOutput: "K-Means" },
+        intermediate: { prompt: "Learning without labels? Print word.", starterCode: "", expectedOutput: "Unsupervised" },
+        advanced: { prompt: "Method to find 'unusual' fraud data? Print words.", starterCode: "", expectedOutput: "Anomaly Detection" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 3: ADVANCED AI (Modules 5–7)
+    // Deep Learning, NLP, and Computer Vision
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "ml-deep-learning", title: "5. Neural Networks & Deep Learning", description: "Architectures from CNNs to Transformers",
+      content: "## Inspired by the Biological Brain\n\n### Neural Architecture\n- **Layers**: Input, Hidden (with weights/biases), and Output.\n- **Activations**: ReLU (standard), Sigmoid (probabilistic), and Softmax (multi-class).\n- **Optimization**: Backpropagation and Stochastic Gradient Descent (SGD).\n\n### Advanced Architectures\n- **CNN (Convolutional Neural Networks)**: Optimized for spatial data (Images).\n- **RNN & LSTM**: Designed for sequential data (Text, Time-series).\n- **Transformers**: The architecture behind LLMs (GPT, BERT) using the 'Attention' mechanism.",
+      codeExample: "import math\ndef relu(x): return max(0, x)\nprint(f'ReLU of -5 is {relu(-5)}')",
+      translations: {
+        tamil: { title: "5. நரம்பியல் நெட்வொர்க்குகள் & ஆழ்ந்த கற்றல்", description: "CNN-கள், RNN-கள் மற்றும் டிரான்ஸ்பார்மர்கள்" },
+        kannada: { title: "5. ನರಮಂಡಲದ ಜಾಲಗಳು ಮತ್ತು ಆಳವಾದ ಕಲಿಕೆ", description: "CNN ಗಳು, RNN ಗಳು ಮತ್ತು ಟ್ರಾನ್ಸ್ಫಾರ್ಮರ್ಗಳು" },
+        telugu: { title: "5. న్యూరల్ నెట్వర్క్స్ & డీప్ లెర్నింగ్", description: "CNNలు, RNNలు మరియు ట్రాన్స్ఫార్మర్లు" },
+        hindi: { title: "5. न्यूरल नेटवर्क और डीप लर्निंग", description: "CNN, RNN और ट्रांसफॉर्मर" },
+      },
+      exercises: {
+        beginner: { prompt: "Mechanism powering modern Transformers? Print word.", starterCode: "", expectedOutput: "Attention" },
+        intermediate: { prompt: "Best network for image processing? Print acronym.", starterCode: "", expectedOutput: "CNN" },
+        advanced: { prompt: "Calculation: Weight=0.5, Input=10, Bias=1. Print the neuron output before activation.", starterCode: "w = 0.5\ni = 10\nb = 1\n# y = w*i + b\n", expectedOutput: "6.0" },
       },
     },
     {
-      id: "ml-neural-nets", title: "Neural Networks Basics", description: "Understand how neural networks work",
-      content: "## Neural Networks\n\nInspired by the brain — layers of connected neurons.\n\n### Architecture\n- **Input Layer** — Receives features\n- **Hidden Layers** — Learn patterns\n- **Output Layer** — Makes predictions\n\n### Activation Functions\n- **ReLU** — max(0, x)\n- **Sigmoid** — 1/(1+e^-x) → outputs 0-1\n- **Softmax** — Multi-class probabilities\n\n### Training: Backpropagation\n1. Forward pass — compute output\n2. Calculate loss\n3. Backward pass — compute gradients\n4. Update weights",
-      codeExample: "import math\n\n# Activation functions\ndef relu(x):\n    return max(0, x)\n\ndef sigmoid(x):\n    return 1 / (1 + math.exp(-x))\n\n# Simple neuron\ndef neuron(inputs, weights, bias):\n    total = sum(i * w for i, w in zip(inputs, weights)) + bias\n    return sigmoid(total)\n\nresult = neuron([1.0, 0.5], [0.8, 0.2], -0.1)\nprint(\"Output:\", round(result, 4))",
+      id: "ml-nlp", title: "6. Natural Language Processing (NLP)", description: "Text Processing, Sentiment, and Language Models",
+      content: "## Teaching Computers to Read and Speak\n\n### Text Processing\n- **Tokenization**: Splitting text into words/sub-words.\n- **Normalization**: Stemming, Lemmatization, and removing Stop Words.\n- **Vectorization**: Bag-of-Words, TF-IDF, and Word Embeddings (Word2Vec).\n\n### Applications\n- **Sentiment Analysis**: Detecting emotion in text.\n- **Named Entity Recognition (NER)**: Extracting names, places, and dates.\n- **Machine Translation**: Converting languages (Seq2Seq).",
+      codeExample: "text = 'AI is amazing!'\ntokens = text.lower().split()\nprint(tokens)",
+      translations: {
+        tamil: { title: "6. இயற்கை மொழி செயலாக்கம் (NLP)", description: "உரை செயலாக்கம் மற்றும் மொழி மாதிரிகள்" },
+        kannada: { title: "6. ನೈಸರ್ಗಿಕ ಭಾಷಾ ಸಂಸ್ಕರಣೆ (NLP)", description: "ಪಠ್ಯ ಸಂಸ್ಕರಣೆ ಮತ್ತು ಭಾಷಾ ಮಾದರಿಗಳು" },
+        telugu: { title: "6. నేచురల్ లాంగ్వేజ్ ప్రాసెసింగ్ (NLP)", description: "టెక్స్ట్ ప్రాసెసింగ్ మరియు భాషా నమూనాలు" },
+        hindi: { title: "6. नेचुरल लैंग्वेज प्रोसेसिंग (NLP)", description: "टेक्स्ट प्रोसेसिंग और भाषा मॉडल" },
+      },
       exercises: {
-        beginner: { prompt: "Implement `relu(x)` returning `max(0, x)`. Test with `-3` and `5`. Print both.", starterCode: "# Define relu, test with -3 and 5\n", expectedOutput: "0\n5" },
-        intermediate: { prompt: "Implement `sigmoid(x)` using `math.exp`. Print `sigmoid(0)` rounded to 1 decimal.", starterCode: "import math\n\n# Define sigmoid, print sigmoid(0) rounded\n", expectedOutput: "0.5" },
-        advanced: { prompt: "Compute weighted sum: `inputs=[1,2,3]`, `weights=[0.5,0.3,0.2]`, `bias=0.1`. Use `zip()`. Print rounded to 1 decimal.", starterCode: "inputs = [1, 2, 3]\nweights = [0.5, 0.3, 0.2]\nbias = 0.1\n\n# Weighted sum + bias, print\n", expectedOutput: "1.8" },
+        beginner: { prompt: "Splitting text into words is called? Print word.", starterCode: "", expectedOutput: "Tokenization" },
+        intermediate: { prompt: "Detecting positive/negative emotion? Print words.", starterCode: "", expectedOutput: "Sentiment Analysis" },
+        advanced: { prompt: "Vectorization technique starting with T? Print acronym.", starterCode: "", expectedOutput: "TF-IDF" },
       },
     },
     {
-      id: "ml-nlp", title: "Natural Language Processing", description: "Process and understand text with Python",
-      content: "## NLP — Teaching Computers to Read\n\n### Text Processing Pipeline\n1. **Tokenization** — Split text into words\n2. **Lowercasing** — Normalize case\n3. **Stop words** — Remove common words (the, is, a)\n4. **Stemming** — Reduce to root (running → run)\n5. **Vectorization** — Convert text to numbers\n\n### Applications\n- Chatbots & virtual assistants\n- Sentiment analysis\n- Translation\n- Text summarization",
-      codeExample: "# Simple NLP pipeline\ntext = \"The quick brown fox jumps over the lazy dog\"\n\n# Tokenize\ntokens = text.lower().split()\nprint(\"Tokens:\", len(tokens))\n\n# Remove stop words\nstop_words = {\"the\", \"over\", \"a\", \"is\", \"and\"}\nfiltered = [w for w in tokens if w not in stop_words]\nprint(\"Filtered:\", filtered)\n\n# Word frequency\nfreq = {}\nfor w in filtered:\n    freq[w] = freq.get(w, 0) + 1\nprint(\"Frequencies:\", freq)",
+      id: "ml-cv", title: "7. Computer Vision & Reinforcement Learning", description: "Object Detection and Learning via Rewards",
+      content: "## Perception and Action\n\n### Computer Vision\n- **Image Processing**: Filtering, edge detection (Canny), and augmentation.\n- **Object Detection**: YOLO (You Only Look Once) and R-CNN for localized recognition.\n- **Segmentation**: Identifying precise pixel-boundaries of objects.\n\n### Reinforcement Learning (RL)\n- **The Agent-Environment Loop**: Learning via rewards and penalties.\n- **Q-Learning & Policy Gradients**: Algorithms for finding the optimal policy.\n- **Applications**: Game AI (AlphaGo) and autonomous robotics.",
+      codeExample: "print('Vision Model: Object Detection Active (YOLO v8)')",
+      translations: {
+        tamil: { title: "7. கம்ப்யூட்டர் விஷன் & வலுவூட்டல் கற்றல்", description: "பொருள் கண்டறிதல் மற்றும் வெகுமதிகள் மூலம் கற்றல்" },
+        kannada: { title: "7. ಕಂಪ್ಯೂಟರ್ ವಿಷನ್ ಮತ್ತು ಬಲವರ್ಧನೆಯ ಕಲಿಕೆ", description: "ವಸ್ತು ಪತ್ತೆ ಮತ್ತು ಪ್ರತಿಫಲಗಳ ಮೂಲಕ ಕಲಿಯುವುದು" },
+        telugu: { title: "7. కంప్యూటర్ విజన్ & రీఇన్ఫోర్స్మెంట్ లెర్నింగ్", description: "ఆబ్జెక్ట్ డిటెక్షన్ మరియు రివార్డుల ద్వారా నేర్చుకోవడం" },
+        hindi: { title: "7. कंप्यूटर विजन और सुदृढीकरण सीखना", description: "ऑब्जेक्ट डिटेक्शन और पुरस्कार के माध्यम से सीखना" },
+      },
       exercises: {
-        beginner: { prompt: "Tokenize `'Hello World Python'` using `.split()`. Print the list and `len()` of tokens.", starterCode: "text = 'Hello World Python'\n\n# Split and print tokens and count\n", expectedOutput: "['Hello', 'World', 'Python']\n3" },
-        intermediate: { prompt: "Count word frequency in `'the cat sat on the mat'` using a dict. Print freq of `'the'` and total unique words.", starterCode: "text = 'the cat sat on the mat'\n\n# Count freq, print 'the' count and unique count\n", expectedOutput: "2\n5" },
-        advanced: { prompt: "Simple sentiment: count positive words `{'great','amazing'}` in `'great amazing but terrible'`. Print positive count and total word count.", starterCode: "text = 'great amazing but terrible'\npositive = {'great', 'amazing'}\n\n# Count positive and total, print both\n", expectedOutput: "2\n4" },
+        beginner: { prompt: "Acronym for 'You Only Look Once'? Print word.", starterCode: "", expectedOutput: "YOLO" },
+        intermediate: { prompt: "AI learning through rewards/penalties? Print acronym.", starterCode: "", expectedOutput: "RL" },
+        advanced: { prompt: "The decision maker in RL is called the...? Print word.", starterCode: "", expectedOutput: "Agent" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 4: PRODUCTION & ETHICS (Modules 8–9)
+    // Deploy models responsibly with MLOps
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "ml-tools-ethics", title: "8. ML Tools, Ethics, and Responsible AI", description: "PyTorch, TensorFlow, and Ethical AI",
+      content: "## Deployment and Responsibility\n\n### Frameworks\n- **PyTorch (Meta)**: Dynamic graphs, widely used in research.\n- **TensorFlow (Google)**: Production-ready, ecosystem with Keras.\n\n### Responsible AI\n- **Fairness**: Mitigating bias in datasets to prevent discrimination.\n- **Explainability (XAI)**: Tools like SHAP and LIME to explain *why* a model made a choice.\n- **Privacy**: Differential Privacy and Federated Learning to protect user data.",
+      codeExample: "print('Framework: PyTorch 2.0 | Ethics Check: Passed')",
+      translations: {
+        tamil: { title: "8. ML கருவிகள், நெறிமுறைகள் & பொறுப்பான AI", description: "PyTorch, TensorFlow மற்றும் நெறிமுறை AI" },
+        kannada: { title: "8. ML ಪರಿಕರಗಳು, ನೈತಿಕತೆ ಮತ್ತು ಜವಾಬ್ದಾರಿಯುತ AI", description: "PyTorch, TensorFlow ಮತ್ತು ನೈತಿಕ AI" },
+        telugu: { title: "8. ML టూల్స్, ఎథిక్స్ & బాధ్యతాయుతమైన AI", description: "PyTorch, TensorFlow మరియు నైతిక AI" },
+        hindi: { title: "8. ML टूल्स, नैतिकता और जिम्मेदार AI", description: "PyTorch, TensorFlow और नैतिक AI" },
+      },
+      exercises: {
+        beginner: { prompt: "Deep Learning framework by Meta? Print word.", starterCode: "", expectedOutput: "PyTorch" },
+        intermediate: { prompt: "Acronym for Explainable AI? Print acronym.", starterCode: "", expectedOutput: "XAI" },
+        advanced: { prompt: "Protecting user identity in training? Print word.", starterCode: "", expectedOutput: "Privacy" },
       },
     },
     {
-      id: "ml-cv", title: "Computer Vision Concepts", description: "Image processing and recognition basics",
-      content: "## Computer Vision\n\nTeach computers to see and understand images.\n\n### Key Concepts\n- **Pixels** — Image = grid of numbers\n- **Channels** — RGB (Red, Green, Blue)\n- **Filters/Kernels** — Detect edges, blur, sharpen\n- **CNNs** — Convolutional Neural Networks\n\n### Applications\n- Face recognition\n- Object detection\n- Self-driving cars\n- Medical imaging",
-      codeExample: "# Image as a matrix concept\nimage = [\n    [0, 0, 255, 0, 0],\n    [0, 255, 255, 255, 0],\n    [255, 255, 255, 255, 255],\n    [0, 255, 255, 255, 0],\n    [0, 0, 255, 0, 0],\n]\n\n# Count bright pixels (> 128)\nbright = sum(1 for row in image for pixel in row if pixel > 128)\ntotal = sum(len(row) for row in image)\nprint(f\"Bright pixels: {bright}/{total}\")\nprint(f\"Brightness: {round(bright/total*100)}%\")",
-      exercises: {
-        beginner: { prompt: "Create a 3x3 grid of zeros using nested lists. Print each row.", starterCode: "# Create 3x3 grid, print each row\n", expectedOutput: "[0, 0, 0]\n[0, 0, 0]\n[0, 0, 0]" },
-        intermediate: { prompt: "Flatten `[[1,2,3],[4,5,6]]` to a 1D list. Print the flat list and its `len()`.", starterCode: "matrix = [[1, 2, 3], [4, 5, 6]]\n\n# Flatten and print list and length\n", expectedOutput: "[1, 2, 3, 4, 5, 6]\n6" },
-        advanced: { prompt: "Calculate average pixel value of `image=[[100,200],[150,50]]`. Print total, count, and average.", starterCode: "image = [[100, 200], [150, 50]]\n\n# Calculate total, count, average and print all\n", expectedOutput: "500\n4\n125.0" },
+      id: "ml-mlops", title: "9. MLOps & Real-World Applications", description: "Deployment, Monitoring, and Industry Case Studies",
+      content: "## From Laptop to Production\n\n### MLOps\n- **CI/CD for ML**: Automating retraining and deployment.\n- **Monitoring**: Detecting Data Drift (when incoming data changes over time).\n- **Serving**: Flask/FastAPI for model APIs and Docker for containerization.\n\n### Industry Applications\n- **Healthcare**: Diagnosing diseases from medical scans.\n- **Finance**: Algorithmic trading and credit scoring.\n- **Retail**: Personalization engines and inventory forecasting.",
+      codeExample: "print('Pipeline Status: Deployed to Production | Drifting: No')",
+      translations: {
+        tamil: { title: "9. MLOps மற்றும் நிஜ உலக பயன்பாடுகள்", description: "வரிசைப்படுத்துதல், கண்காணிப்பு மற்றும் தொழில்துறை ஆய்வுகள்" },
+        kannada: { title: "9. MLOps ಮತ್ತು ನೈಜ-ಪ್ರಪಂಚದ ಅನ್ವಯಗಳು", description: "ನಿಯೋಜನೆ, ಮೇಲ್ವಿಚಾರಣೆ ಮತ್ತು ಉದ್ಯಮ ಅಧ್ಯಯನಗಳು" },
+        telugu: { title: "9. MLOps మరియు రియల్-వరల్డ్ అప్లికేషన్స్", description: "డిప్లాయ్మెంట్, మానిటరింగ్ మరియు ఇండస్ట్రీ స్టడీస్" },
+        hindi: { title: "9. MLOps और वास्तविक दुनिया के अनुप्रयोग", description: "परिनियोजन, निगरानी और उद्योग अध्ययन" },
       },
-    },
-    {
-      id: "ml-feature-engineering", title: "Feature Engineering", description: "Turn raw data into model-ready signals",
-      content: "## Feature Engineering\n\nModels learn from *features*.\n\n### Common transformations\n- **Scaling**: min-max, standardization\n- **Encoding**: one-hot for categories\n- **Text**: bag-of-words, TF-IDF (concept)\n- **Datetime**: day-of-week, month, hour\n\n### Rule of thumb\nIf a human can explain why a signal matters, it is often a good candidate feature.",
-      codeExample: "# Simple scaling (min-max)\nx = [10, 20, 15, 30]\nmn, mx = min(x), max(x)\nscaled = [round((v - mn) / (mx - mn), 2) for v in x]\nprint(scaled)\n",
       exercises: {
-        beginner: { prompt: "Min-max scale `v=5` with `min=0, max=10`. Print the result.", starterCode: "v = 5\nmn = 0\nmx = 10\n\n# Scale and print\n", expectedOutput: "0.5" },
-        intermediate: { prompt: "One-hot encode `'B'` from `categories=['A','B','C']`. Print the vector.", starterCode: "categories = ['A', 'B', 'C']\nvalue = 'B'\n\n# One-hot encode and print\n", expectedOutput: "[0, 1, 0]" },
-        advanced: { prompt: "Extract day-of-week from `'2024-01-07'` using `strptime` and `strftime('%a')`. Print the short name.", starterCode: "from datetime import datetime\ns = '2024-01-07'\n\n# Parse and print day abbreviation\n", expectedOutput: "Sun" },
-      },
-    },
-    {
-      id: "ml-evaluation", title: "Model Evaluation & Metrics", description: "Accuracy, precision, recall, and confusion matrices",
-      content: "## Evaluation\n\n### Why accuracy can be misleading\nIf 95% of transactions are not fraud, a model that always predicts \"not fraud\" is 95% accurate but useless.\n\n### Confusion matrix\n- TP: true positives\n- FP: false positives\n- TN: true negatives\n- FN: false negatives\n\n### Metrics\n- **Precision** = TP / (TP + FP)\n- **Recall** = TP / (TP + FN)\n- **F1** = harmonic mean of precision and recall",
-      codeExample: "# Compute precision/recall from predictions\nactual = [1, 0, 1, 1, 0]\npred =   [1, 0, 0, 1, 1]\n\nTP = sum(1 for a, p in zip(actual, pred) if a == 1 and p == 1)\nFP = sum(1 for a, p in zip(actual, pred) if a == 0 and p == 1)\nFN = sum(1 for a, p in zip(actual, pred) if a == 1 and p == 0)\n\nprecision = TP / (TP + FP) if TP + FP else 0\nrecall = TP / (TP + FN) if TP + FN else 0\nprint(round(precision, 2), round(recall, 2))\n",
-      exercises: {
-        beginner: { prompt: "Given `TP=3, FP=1`. Compute precision (`TP/(TP+FP)`). Print it.", starterCode: "TP = 3\nFP = 1\n\n# Compute and print precision\n", expectedOutput: "0.75" },
-        intermediate: { prompt: "Given `TP=2, FN=1`. Compute recall. Print it rounded to 4 decimals.", starterCode: "TP = 2\nFN = 1\n\n# Compute and print recall\n", expectedOutput: "0.6667" },
-        advanced: { prompt: "Compute accuracy for `actual=[1,0,1,0]` vs `pred=[1,1,1,0]`. Print correct count and accuracy.", starterCode: "actual = [1, 0, 1, 0]\npred = [1, 1, 1, 0]\n\n# Count correct, print count and accuracy\n", expectedOutput: "3\n0.75" },
+        beginner: { prompt: "When data changes over time, it is called Data...? Print word.", starterCode: "", expectedOutput: "Drift" },
+        intermediate: { prompt: "Container tool for ML deployment? Print word.", starterCode: "", expectedOutput: "Docker" },
+        advanced: { prompt: "Modern framework for building high-performance APIs? Print word.", starterCode: "", expectedOutput: "FastAPI" },
       },
     },
   ];
@@ -1004,9 +1152,13 @@ function githubMastery(): CareerLesson[] {
 
 function sqlLessons(): CareerLesson[] {
   return [
+    // ═══════════════════════════════════════════════════════
+    // PHASE 1: SQL FOUNDATIONS (Modules 1–5)
+    // Master the basics of retrieving and manipulating data
+    // ═══════════════════════════════════════════════════════
     {
       id: "sql-intro",
-      title: "SQL Foundations (DQL)",
+      title: "1. SQL Foundations (DQL)",
       description: "SELECT, FROM, ORDER BY, LIMIT — your first queries",
       category: "DQL (SELECT)",
       content:
@@ -1014,10 +1166,10 @@ function sqlLessons(): CareerLesson[] {
       codeExample:
         "-- Explore customers\nSELECT id, name, city\nFROM customers\nORDER BY id\nLIMIT 5;",
       translations: {
-        tamil: { title: "SQL அடித்தளம் (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — உங்கள் முதல் queries", category: "DQL (SELECT)" },
-        kannada: { title: "SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — ನಿಮ್ಮ ಮೊದಲ queries", category: "DQL (SELECT)" },
-        telugu: { title: "SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — మీ మొదటి queries", category: "DQL (SELECT)" },
-        hindi: { title: "SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — आपकी पहली queries", category: "DQL (SELECT)" },
+        tamil: { title: "1. SQL அடித்தளம் (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — உங்கள் முதல் queries", category: "DQL (SELECT)" },
+        kannada: { title: "1. SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — ನಿಮ್ಮ ಮೊದಲ queries", category: "DQL (SELECT)" },
+        telugu: { title: "1. SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — మీ మొదటి queries", category: "DQL (SELECT)" },
+        hindi: { title: "1. SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — आपकी पहली queries", category: "DQL (SELECT)" },
       },
       exercises: {
         beginner: {
@@ -1029,20 +1181,20 @@ function sqlLessons(): CareerLesson[] {
         intermediate: {
           prompt: "List Electronics products (name, price) ordered by price DESC.",
           starterCode: "-- Write your SQL here\n",
-          expectedOutput: "name,price\nDell 24\" Monitor,12000\nSony Headphones,4500\nMechanical Keyboard,2500\nLogitech Mouse,800",
+          expectedOutput: "name,price\nDell 24-inch Monitor,12000\nSony Headphones,4500\nMechanical Keyboard,2500\nLogitech Mouse,800",
           solution: "SELECT name, price FROM products WHERE category = 'Electronics' ORDER BY price DESC;",
         },
         advanced: {
           prompt: "Show the top 3 most expensive products (name, price).",
           starterCode: "-- Write your SQL here\n",
-          expectedOutput: "name,price\nDell 24\" Monitor,12000\nSony Headphones,4500\nMechanical Keyboard,2500",
+          expectedOutput: "name,price\nDell 24-inch Monitor,12000\nSony Headphones,4500\nMechanical Keyboard,2500",
           solution: "SELECT name, price FROM products ORDER BY price DESC LIMIT 3;",
         },
       },
     },
     {
       id: "sql-filtering",
-      title: "Filtering & Sorting",
+      title: "2. Filtering & Sorting",
       description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
       category: "Filtering & Sorting",
       content:
@@ -1051,28 +1203,28 @@ function sqlLessons(): CareerLesson[] {
         "-- Customers in Mumbai\nSELECT name, city\nFROM customers\nWHERE city = 'Mumbai'\nORDER BY name;",
       translations: {
         tamil: {
-          title: "Filtering & Sorting",
+          title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
             "## Filtering & Sorting\n\n### முக்கிய clauses\n- `WHERE` rows-ஐ filter செய்கிறது\n- `AND` / `OR` conditions-ஐ இணைக்கிறது\n- `IN` membership சரிபார்க்கிறது\n- `BETWEEN` range சரிபார்க்கிறது\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: output order முக்கியமானால் எப்போதும் `ORDER BY` சேர்க்கவும் (exercises-க்கு இது மிக முக்கியம்).",
         },
         kannada: {
-          title: "Filtering & Sorting",
+          title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
             "## Filtering & Sorting\n\n### ಮುಖ್ಯ clauses\n- `WHERE` rows ಅನ್ನು filter ಮಾಡುತ್ತದೆ\n- `AND` / `OR` conditions ಅನ್ನು ಸೇರಿಸುತ್ತದೆ\n- `IN` membership ಪರಿಶೀಲಿಸುತ್ತದೆ\n- `BETWEEN` range ಪರಿಶೀಲಿಸುತ್ತದೆ\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: output order ಮುಖ್ಯವಾದರೆ ಯಾವಾಗಲೂ `ORDER BY` ಸೇರಿಸಿ (exercises ಗೆ ವಿಶೇಷವಾಗಿ).",
         },
         telugu: {
-          title: "Filtering & Sorting",
+          title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
             "## Filtering & Sorting\n\n### ముఖ్య clauses\n- `WHERE` rows ని filter చేస్తుంది\n- `AND` / `OR` conditions ని కలుపుతుంది\n- `IN` membership చెక్ చేస్తుంది\n- `BETWEEN` range చెక్ చేస్తుంది\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: output order ముఖ్యమైతే ఎప్పుడూ `ORDER BY` వాడండి (exercises కి చాలా ముఖ్యం).",
         },
         hindi: {
-          title: "Filtering & Sorting",
+          title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
@@ -1101,8 +1253,80 @@ function sqlLessons(): CareerLesson[] {
       },
     },
     {
+      id: "sql-scalar-functions",
+      title: "3. Scalar Functions",
+      description: "UPPER, SUBSTR, ROUND, DATE functions — transform your data",
+      category: "Functions",
+      content:
+        "## Scalar Functions\n\nScalar functions take one input and return one output for every row.\n\n### Key functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `SUBSTR(x, start, len)`, and `||` for joining strings.\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `date('now')`, `strftime('%Y-%m', date_col)`.\n\nTip: In SQLite, concatenation is done using `||` (e.g., `'Hello' || ' ' || 'World'`).",
+      codeExample:
+        "-- Format product labels\nSELECT name || ' ($' || price || ')' AS label\nFROM products\nORDER BY price DESC\nLIMIT 5;",
+      translations: {
+        tamil: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — தரவை மாற்றியமைக்க", category: "Functions" },
+        kannada: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — ಡೇಟಾವನ್ನು ಬದಲಾಯಿಸಲು", category: "Functions" },
+        telugu: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — డేటాను మార్చడానికి", category: "Functions" },
+        hindi: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — डेटा को ट्रांसफॉर्म करें", category: "Functions" },
+      },
+      exercises: {
+        beginner: {
+          prompt: "Format customer names as 'NAME from CITY' in uppercase (name the column 'label'), ordered by label, limit 5.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "label\nALICE JOHNSON FROM MUMBAI\nBOB SHARMA FROM DELHI\nCHARLIE DAVE FROM BENGALURU\nDIANA PRINCE FROM MUMBAI\nETHAN HUNT FROM PUNE",
+          solution: "SELECT UPPER(name) || ' FROM ' || UPPER(city) AS label FROM customers ORDER BY label LIMIT 5;",
+        },
+        intermediate: {
+          prompt: "Extract the year and month (YYYY-MM) from order dates, name the column 'month'. List first 5 ordered by id.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "id,month\n1,2026-01\n2,2026-01\n3,2026-02\n4,2026-03\n5,2026-03",
+          solution: "SELECT id, strftime('%Y-%m', order_date) AS month FROM orders ORDER BY id LIMIT 5;",
+        },
+        advanced: {
+          prompt: "Show product names and their prices with an 18% tax added, rounded to 0 decimal places. Name it 'price_with_tax'. Top 5 by price_with_tax DESC.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "name,price_with_tax\nDell 24-inch Monitor,14160.0\nSony Headphones,5310.0\nMechanical Keyboard,2950.0\nPyMaster Hoodie,2596.0\nDumbbell 5kg,1770.0",
+          solution: "SELECT name, ROUND(price * 1.18, 0) AS price_with_tax FROM products ORDER BY price_with_tax DESC LIMIT 5;",
+        },
+      },
+    },
+    {
+      id: "sql-advanced-logic",
+      title: "4. Advanced Logic",
+      description: "CASE, COALESCE, CAST — handle logic and types",
+      category: "Logic",
+      content:
+        "## Advanced Logic\n\n### Conditional Logic (`CASE`)\nUse `CASE` to create if-else logic inside your queries.\n\n### Handling NULLs\n- `COALESCE(val, default)`: returns the first non-null value.\n- `NULLIF(val1, val2)`: returns NULL if the values are equal.\n\n### Type Conversion\nUse `CAST(value AS type)` to change data types (e.g., from string to integer).",
+      codeExample:
+        "-- Categorize products\nSELECT name, \n  CASE WHEN price > 1000 THEN 'Premium' ELSE 'Standard' END AS category\nFROM products\nLIMIT 5;",
+      translations: {
+        tamil: { title: "4. Advanced Logic", description: "CASE, COALESCE, CAST — logic மற்றும் types கையாள", category: "Logic" },
+        kannada: { title: "4. Advanced Logic", description: "CASE, COALESCE, CAST — logic ಮತ್ತು types ನಿರ್ವಹಿಸಲು", category: "Logic" },
+        telugu: { title: "4. Advanced Logic", description: "CASE, COALESCE, CAST — logic మరియు types హ్యాండిల్ చేయడానికి", category: "Logic" },
+        hindi: { title: "4. Advanced Logic", description: "CASE, COALESCE, CAST — logic और types को हैंडल करें", category: "Logic" },
+      },
+      exercises: {
+        beginner: {
+          prompt: "Categorize products as 'Premium' (> 1000) or 'Budget' (<= 1000). Output (name, price, tag) ordered by price DESC, limit 5.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "name,price,tag\nDell 24-inch Monitor,12000,Premium\nSony Headphones,4500,Premium\nMechanical Keyboard,2500,Premium\nPyMaster Hoodie,2200,Premium\nDumbbell 5kg,1500,Premium",
+          solution: "SELECT name, price, CASE WHEN price > 1000 THEN 'Premium' ELSE 'Budget' END AS tag FROM products ORDER BY price DESC LIMIT 5;",
+        },
+        intermediate: {
+          prompt: "List all products and their rating. Use COALESCE to show 0 if no rating exists. Output (name, rating) ordered by name, limit 5.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "name,rating\nAlgorithmic Socks,0\nCushion Cover,0\nData Science Cap,0\nDell 24-inch Monitor,0\nDumbbell 5kg,0",
+          solution: "SELECT p.name, COALESCE(r.rating, 0) AS rating FROM products p LEFT JOIN product_reviews r ON p.id = r.product_id ORDER BY p.name LIMIT 5;",
+        },
+        advanced: {
+          prompt: "Display prices as text with a prefix 'Price: '. Output 'price_text' ordered by price DESC, limit 5.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "price_text\nPrice: 12000\nPrice: 4500\nPrice: 2500\nPrice: 2200\nPrice: 1500",
+          solution: "SELECT 'Price: ' || CAST(price AS TEXT) AS price_text FROM products ORDER BY price DESC LIMIT 5;",
+        },
+      },
+    },
+    {
       id: "sql-aggregations",
-      title: "Aggregations & GROUP BY",
+      title: "5. Aggregations & GROUP BY",
       description: "COUNT, SUM, AVG, GROUP BY, HAVING",
       category: "Aggregations",
       content:
@@ -1111,28 +1335,28 @@ function sqlLessons(): CareerLesson[] {
         "-- Orders per status\nSELECT status, COUNT(*) AS count\nFROM orders\nGROUP BY status\nORDER BY status;",
       translations: {
         tamil: {
-          title: "Aggregations & GROUP BY",
+          title: "5. Aggregations & GROUP BY",
           description: "COUNT, SUM, AVG, GROUP BY, HAVING",
           category: "Aggregations",
           content:
             "## Aggregations\n\n### பொதுவான functions\n- `COUNT(*)`\n- `SUM(x)`\n- `AVG(x)`\n- `MIN(x)`, `MAX(x)`\n\n### GROUP BY\nrows-ஐ குழுவாக்கி, ஒவ்வொரு group-க்கும் aggregate கணக்கிடுகிறது.\n\n### HAVING\naggregation பிறகு *groups*-ஐ filter செய்கிறது.",
         },
         kannada: {
-          title: "Aggregations & GROUP BY",
+          title: "5. Aggregations & GROUP BY",
           description: "COUNT, SUM, AVG, GROUP BY, HAVING",
           category: "Aggregations",
           content:
             "## Aggregations\n\n### ಸಾಮಾನ್ಯ functions\n- `COUNT(*)`\n- `SUM(x)`\n- `AVG(x)`\n- `MIN(x)`, `MAX(x)`\n\n### GROUP BY\nrows ಗಳನ್ನು group ಮಾಡಿ, ಪ್ರತಿ group ಗೆ aggregate ಲೆಕ್ಕ ಹಾಕುತ್ತದೆ.\n\n### HAVING\naggregation ನಂತರ *groups* ಅನ್ನು filter ಮಾಡುತ್ತದೆ.",
         },
         telugu: {
-          title: "Aggregations & GROUP BY",
+          title: "5. Aggregations & GROUP BY",
           description: "COUNT, SUM, AVG, GROUP BY, HAVING",
           category: "Aggregations",
           content:
             "## Aggregations\n\n### సాధారణ functions\n- `COUNT(*)`\n- `SUM(x)`\n- `AVG(x)`\n- `MIN(x)`, `MAX(x)`\n\n### GROUP BY\nrows ని group చేసి, ప్రతి group కి aggregates లెక్కిస్తుంది.\n\n### HAVING\naggregation తర్వాత *groups* ని filter చేస్తుంది.",
         },
         hindi: {
-          title: "Aggregations & GROUP BY",
+          title: "5. Aggregations & GROUP BY",
           description: "COUNT, SUM, AVG, GROUP BY, HAVING",
           category: "Aggregations",
           content:
@@ -1160,39 +1384,43 @@ function sqlLessons(): CareerLesson[] {
         },
       },
     },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 2: RELATIONAL ALGEBRA (Modules 6–9)
+    // Learn complex queries, joins, and window functions
+    // ═══════════════════════════════════════════════════════
     {
       id: "sql-joins",
-      title: "JOINs",
+      title: "6. JOINs",
       description: "INNER JOIN, LEFT JOIN, joining multiple tables",
       category: "Joins",
       content:
-        "## JOINs\n\n### The big idea\nA JOIN combines rows from tables using a matching key.\n\n### Most used JOINs\n- `INNER JOIN`: only matching rows\n- `LEFT JOIN`: keep all left rows (even if no match)\n\nTip: When totals can be missing, use `COALESCE(x, 0)` to turn NULL into 0.",
+        "## JOINs\n\n### The big idea\nA JOIN combines rows from tables using a matching key.\n\n### Most used JOINs\n- `INNER JOIN`: only matching rows\n- `LEFT JOIN`: keep all left rows (even if no match)\n\nNote: SQLite does not natively support `RIGHT JOIN` or `FULL OUTER JOIN`. These are usually emulated by swapping table order or using `UNION`.\n\nTip: When totals can be missing, use `COALESCE(x, 0)` to turn NULL into 0.",
       codeExample:
         "-- Orders with customer names\nSELECT o.id AS order_id, c.name, o.status\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nORDER BY o.id;",
       translations: {
         tamil: {
-          title: "JOINs",
+          title: "6. JOINs",
           description: "INNER JOIN, LEFT JOIN, multiple tables join",
           category: "Joins",
           content:
             "## JOINs\n\n### முக்கிய idea\nmatching key மூலம் பல tables-லிருந்த rows-ஐ JOIN இணைக்கிறது.\n\n### அதிகம் பயன்படுத்தப்படும் JOINs\n- `INNER JOIN`: match ஆன rows மட்டும்\n- `LEFT JOIN`: left table-ன் rows அனைத்தும் (match இல்லையெனிலும்)\n\nTip: totals இல்லாமல் NULL வரலாம்; `COALESCE(x, 0)` மூலம் NULL → 0 ஆக மாற்றலாம்.",
         },
         kannada: {
-          title: "JOINs",
+          title: "6. JOINs",
           description: "INNER JOIN, LEFT JOIN, multiple tables join",
           category: "Joins",
           content:
             "## JOINs\n\n### ಮುಖ್ಯ idea\nmatching key ಬಳಸಿ tables ಗಳ rows ಅನ್ನು JOIN ಸೇರಿಸುತ್ತದೆ.\n\n### ಹೆಚ್ಚು ಬಳಸುವ JOINs\n- `INNER JOIN`: match ಆದ rows ಮಾತ್ರ\n- `LEFT JOIN`: left table ನ ಎಲ್ಲಾ rows (match ಇಲ್ಲದಿದ್ದರೂ)\n\nTip: totals ನಲ್ಲಿ NULL ಬರಬಹುದು; `COALESCE(x, 0)` ಬಳಸಿ NULL → 0 ಮಾಡಿ.",
         },
         telugu: {
-          title: "JOINs",
+          title: "6. JOINs",
           description: "INNER JOIN, LEFT JOIN, multiple tables join",
           category: "Joins",
           content:
             "## JOINs\n\n### ముఖ్య idea\nmatching key ద్వారా tables లోని rows ని JOIN కలుపుతుంది.\n\n### ఎక్కువగా వాడే JOINs\n- `INNER JOIN`: match అయ్యే rows మాత్రమే\n- `LEFT JOIN`: left table లోని అన్ని rows (match లేకపోయినా)\n\nTip: totals లో NULL రావచ్చు; `COALESCE(x, 0)` తో NULL → 0 చేయండి.",
         },
         hindi: {
-          title: "JOINs",
+          title: "6. JOINs",
           description: "INNER JOIN, LEFT JOIN, joining multiple tables",
           category: "Joins",
           content:
@@ -1222,7 +1450,7 @@ function sqlLessons(): CareerLesson[] {
     },
     {
       id: "sql-subqueries",
-      title: "Subqueries",
+      title: "7. Subqueries",
       description: "IN, EXISTS, scalar subqueries, derived tables",
       category: "Subqueries",
       content:
@@ -1231,28 +1459,28 @@ function sqlLessons(): CareerLesson[] {
         "-- Customers with any cancelled order\nSELECT name\nFROM customers\nWHERE id IN (\n  SELECT customer_id FROM orders WHERE status = 'cancelled'\n)\nORDER BY name;",
       translations: {
         tamil: {
-          title: "Subqueries",
+          title: "7. Subqueries",
           description: "IN, EXISTS, scalar subqueries, derived tables",
           category: "Subqueries",
           content:
             "## Subqueries\n\nஒரு query-க்குள் இன்னொரு query-ஐ பயன்படுத்த subquery உதவுகிறது.\n\n### பொதுவான patterns\n- `WHERE x IN (SELECT ...)`\n- `WHERE EXISTS (SELECT ...)`\n- `FROM`-ல் subquery (derived table)\n\nTip: values வேண்டாம், presence மட்டும் வேண்டும் என்றால் `EXISTS` நல்லது.",
         },
         kannada: {
-          title: "Subqueries",
+          title: "7. Subqueries",
           description: "IN, EXISTS, scalar subqueries, derived tables",
           category: "Subqueries",
           content:
             "## Subqueries\n\nಒಂದು query ಒಳಗೆ ಇನ್ನೊಂದು query ಬಳಸಲು subquery ಸಹಾಯ ಮಾಡುತ್ತದೆ.\n\n### ಸಾಮಾನ್ಯ patterns\n- `WHERE x IN (SELECT ...)`\n- `WHERE EXISTS (SELECT ...)`\n- `FROM` ನಲ್ಲಿ subquery (derived table)\n\nTip: values ಬೇಕಿಲ್ಲ, presence ಮಾತ್ರ ಬೇಕಾದರೆ `EXISTS` ಉತ್ತಮ.",
         },
         telugu: {
-          title: "Subqueries",
+          title: "7. Subqueries",
           description: "IN, EXISTS, scalar subqueries, derived tables",
           category: "Subqueries",
           content:
             "## Subqueries\n\nఒక query లో మరో query ని ఉపయోగించడానికి subquery సహాయపడుతుంది.\n\n### సాధారణ patterns\n- `WHERE x IN (SELECT ...)`\n- `WHERE EXISTS (SELECT ...)`\n- `FROM` లో subquery (derived table)\n\nTip: values అవసరం లేకుండా presence మాత్రమే చెక్ చేయాలంటే `EXISTS` బెటర్.",
         },
         hindi: {
-          title: "Subqueries",
+          title: "7. Subqueries",
           description: "IN, EXISTS, scalar subqueries, derived tables",
           category: "Subqueries",
           content:
@@ -1275,14 +1503,14 @@ function sqlLessons(): CareerLesson[] {
         advanced: {
           prompt: "Find customers whose completed total_spent is greater than the average total_spent across all customers (include 0). Output (name, total_spent) ordered by total_spent DESC.",
           starterCode: "-- Write your SQL here\n",
-          expectedOutput: "name,total_spent\nDiana,3050\nCharlie,2860",
+          expectedOutput: "name,total_spent\nBob Sharma,9400\nAlice Johnson,9000\nHannah Abbott,6700\nKevin Hart,3900\nFiona Apple,3800\nOscar Wilde,2900",
           solution: "WITH customer_spend AS (\n  SELECT c.name, COALESCE(SUM(p.price * oi.qty), 0) AS total_spent\n  FROM customers c\n  LEFT JOIN orders o ON c.id = o.customer_id AND o.status = 'completed'\n  LEFT JOIN order_items oi ON o.id = oi.order_id\n  LEFT JOIN products p ON oi.product_id = p.id\n  GROUP BY c.name\n)\nSELECT name, total_spent \nFROM customer_spend \nWHERE total_spent > (SELECT AVG(total_spent) FROM customer_spend)\nORDER BY total_spent DESC;",
         },
       },
     },
     {
       id: "sql-ctes",
-      title: "CTEs (WITH)",
+      title: "8. CTEs (WITH)",
       description: "Readable multi-step queries with WITH",
       category: "CTEs",
       content:
@@ -1291,28 +1519,28 @@ function sqlLessons(): CareerLesson[] {
         "-- Monthly revenue for completed orders\nWITH order_revenue AS (\n  SELECT o.id, substr(o.order_date, 1, 7) AS month, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, month\n)\nSELECT month, SUM(revenue) AS revenue\nFROM order_revenue\nGROUP BY month\nORDER BY month;",
       translations: {
         tamil: {
-          title: "CTEs (WITH)",
+          title: "8. CTEs (WITH)",
           description: "WITH மூலம் readable multi-step queries",
           category: "CTEs",
           content:
             "## Common Table Expressions (CTEs)\n\nintermediate results-க்கு பெயர் கொடுத்து complex queries-ஐ வாசிக்க எளிதாக்குகிறது.\n\n### பயன்கள்\n- logic-ஐ steps ஆக பிரிக்கலாம்\n- computed set-ஐ மீண்டும் பயன்படுத்தலாம்\n- repeated subqueries-ஐ விட பாதுகாப்பானது",
         },
         kannada: {
-          title: "CTEs (WITH)",
+          title: "8. CTEs (WITH)",
           description: "WITH ಬಳಸಿ readable multi-step queries",
           category: "CTEs",
           content:
             "## Common Table Expressions (CTEs)\n\nintermediate results ಗೆ ಹೆಸರು ಕೊಟ್ಟು complex queries ಓದಲು ಸುಲಭವಾಗುತ್ತದೆ.\n\n### ಲಾಭಗಳು\n- logic ಅನ್ನು steps ಆಗಿ ವಿಭಜಿಸಿ\n- computed set ಅನ್ನು ಮರುಬಳಕೆ ಮಾಡಿ\n- subqueries ಪುನರಾವರ್ತನೆಗಿಂತ ಸುರಕ್ಷಿತ",
         },
         telugu: {
-          title: "CTEs (WITH)",
+          title: "8. CTEs (WITH)",
           description: "WITH తో readable multi-step queries",
           category: "CTEs",
           content:
             "## Common Table Expressions (CTEs)\n\nintermediate results కు పేర్లు ఇవ్వడం ద్వారా complex queries చదవడానికి సులభం అవుతాయి.\n\n### ప్రయోజనాలు\n- logic ను steps గా విడగొట్టండి\n- computed set ను మళ్లీ ఉపయోగించండి\n- repeated subqueries కంటే safer",
         },
         hindi: {
-          title: "CTEs (WITH)",
+          title: "8. CTEs (WITH)",
           description: "WITH के साथ readable multi-step queries",
           category: "CTEs",
           content:
@@ -1342,7 +1570,7 @@ function sqlLessons(): CareerLesson[] {
     },
     {
       id: "sql-windows",
-      title: "Window Functions",
+      title: "9. Window Functions",
       description: "RANK, DENSE_RANK, OVER(), running totals",
       category: "Window Functions",
       content:
@@ -1351,28 +1579,28 @@ function sqlLessons(): CareerLesson[] {
         "-- Rank products by price within category\nSELECT category, name, price,\n       RANK() OVER (PARTITION BY category ORDER BY price DESC) AS price_rank\nFROM products\nORDER BY category, name;",
       translations: {
         tamil: {
-          title: "Window Functions",
+          title: "9. Window Functions",
           description: "RANK, DENSE_RANK, OVER(), running totals",
           category: "Window Functions",
           content:
             "## Window Functions\n\nGROUP BY போல rows-ஐ collapse செய்யாமல், rows set முழுவதிலும் values கணக்கிட உதவும்.\n\n### உதாரணங்கள்\n- category-க்குள் ranking\n- running totals\n- moving averages\n\nSyntax:\n`func(...) OVER (PARTITION BY ... ORDER BY ...)`",
         },
         kannada: {
-          title: "Window Functions",
+          title: "9. Window Functions",
           description: "RANK, DENSE_RANK, OVER(), running totals",
           category: "Window Functions",
           content:
             "## Window Functions\n\nGROUP BY ಹಾಗೆ rows ಅನ್ನು collapse ಮಾಡದೆ, rows set ಮೇಲೆ values ಲೆಕ್ಕ ಹಾಕುತ್ತದೆ.\n\n### ಉದಾಹರಣೆಗಳು\n- category ಒಳಗೆ ranking\n- running totals\n- moving averages\n\nSyntax:\n`func(...) OVER (PARTITION BY ... ORDER BY ...)`",
         },
         telugu: {
-          title: "Window Functions",
+          title: "9. Window Functions",
           description: "RANK, DENSE_RANK, OVER(), running totals",
           category: "Window Functions",
           content:
             "## Window Functions\n\nGROUP BY లా rows ని collapse చేయకుండా, rows set పై values లెక్కిస్తుంది.\n\n### Examples\n- category లో ranking\n- running totals\n- moving averages\n\nSyntax:\n`func(...) OVER (PARTITION BY ... ORDER BY ...)`",
         },
         hindi: {
-          title: "Window Functions",
+          title: "9. Window Functions",
           description: "RANK, DENSE_RANK, OVER(), running totals",
           category: "Window Functions",
           content:
@@ -1383,7 +1611,7 @@ function sqlLessons(): CareerLesson[] {
         beginner: {
           prompt: "Rank products by price within each category (category, name, price, price_rank) ordered by category, name.",
           starterCode: "-- Write your SQL here\n",
-          expectedOutput: "category,name,price,price_rank\nApparel,Algorithmic Socks,400,3\nApparel,Data Science Cap,600,2\nApparel,PyMaster Hoodie,2200,1\nBooks,Python Book,800,2\nBooks,SQL Masterclass,1200,1\nElectronics,Dell 24\" Monitor,12000,1\nElectronics,Logitech Mouse,800,4\nElectronics,Mechanical Keyboard,2500,3\nElectronics,Sony Headphones,4500,2\nFitness,Dumbbell 5kg,1500,1\nFitness,Resistance Band,400,3\nFitness,Yoga Mat,900,2\nGrocery,Lays Chips,20,3\nGrocery,Nescafe Coffee,350,1\nGrocery,Organic Tea,250,2\nHome,Cushion Cover,300,3\nHome,Steelo Water Bottle,450,2\nHome,Table Lamp,1100,1\nStationery,Moleskine Diary,1200,1\nStationery,Parker Pen,500,2",
+          expectedOutput: "category,name,price,price_rank\nApparel,Algorithmic Socks,400,3\nApparel,Data Science Cap,600,2\nApparel,PyMaster Hoodie,2200,1\nBooks,Python Book,800,2\nBooks,SQL Masterclass,1200,1\nElectronics,Dell 24-inch Monitor,12000,1\nElectronics,Logitech Mouse,800,4\nElectronics,Mechanical Keyboard,2500,3\nElectronics,Sony Headphones,4500,2\nFitness,Dumbbell 5kg,1500,1\nFitness,Resistance Band,400,3\nFitness,Yoga Mat,900,2\nGrocery,Lays Chips,20,3\nGrocery,Nescafe Coffee,350,1\nGrocery,Organic Tea,250,2\nHome,Cushion Cover,300,3\nHome,Steelo Water Bottle,450,2\nHome,Table Lamp,1100,1\nStationery,Moleskine Diary,1200,1\nStationery,Parker Pen,500,2",
           solution: "SELECT category, name, price, RANK() OVER (PARTITION BY category ORDER BY price DESC) AS price_rank FROM products ORDER BY category, name;",
         },
         intermediate: {
@@ -1400,9 +1628,13 @@ function sqlLessons(): CareerLesson[] {
         },
       },
     },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 3: DATABASE MANAGEMENT (Modules 10–12)
+    // Create tables, insert data, and manage transactions
+    // ═══════════════════════════════════════════════════════
     {
       id: "sql-ddl",
-      title: "DDL (CREATE / ALTER / DROP)",
+      title: "10. DDL (CREATE / ALTER / DROP)",
       description: "Define tables, constraints, and schema",
       category: "DDL",
       content:
@@ -1411,28 +1643,28 @@ function sqlLessons(): CareerLesson[] {
         "CREATE TABLE temp_notes(\n  id INTEGER,\n  note TEXT\n);\n\nSELECT name\nFROM sqlite_master\nWHERE type='table' AND name='temp_notes';",
       translations: {
         tamil: {
-          title: "DDL (CREATE / ALTER / DROP)",
+          title: "10. DDL (CREATE / ALTER / DROP)",
           description: "Tables, constraints, schema வரையறுக்க",
           category: "DDL",
           content:
             "## DDL (Data Definition Language)\n\nDDL database structure-ஐ மாற்றுகிறது.\n\n### பொதுவான commands\n- `CREATE TABLE`\n- `ALTER TABLE`\n- `DROP TABLE`\n\nPractice editor-ல் `;` மூலம் பிரித்து பல statements ஒன்றாக run செய்யலாம்.",
         },
         kannada: {
-          title: "DDL (CREATE / ALTER / DROP)",
+          title: "10. DDL (CREATE / ALTER / DROP)",
           description: "Tables, constraints, schema ನಿರ್ವಚನೆ",
           category: "DDL",
           content:
             "## DDL (Data Definition Language)\n\nDDL database structure ಅನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ.\n\n### ಸಾಮಾನ್ಯ commands\n- `CREATE TABLE`\n- `ALTER TABLE`\n- `DROP TABLE`\n\nPractice editor ನಲ್ಲಿ `;` ಮೂಲಕ ಬೇರ್ಪಡಿಸಿ ಹಲವು statements ಒಂದೇ run ನಲ್ಲಿ ಚಾಲನೆ ಮಾಡಬಹುದು.",
         },
         telugu: {
-          title: "DDL (CREATE / ALTER / DROP)",
+          title: "10. DDL (CREATE / ALTER / DROP)",
           description: "Tables, constraints, schema నిర్వచించండి",
           category: "DDL",
           content:
             "## DDL (Data Definition Language)\n\nDDL database structure ని మార్చుతుంది.\n\n### Common commands\n- `CREATE TABLE`\n- `ALTER TABLE`\n- `DROP TABLE`\n\nPractice editor లో `;` తో వేరు చేసి multiple statements ను ఒకే run లో నడపవచ్చు.",
         },
         hindi: {
-          title: "DDL (CREATE / ALTER / DROP)",
+          title: "10. DDL (CREATE / ALTER / DROP)",
           description: "Tables, constraints और schema define करें",
           category: "DDL",
           content:
@@ -1462,7 +1694,7 @@ function sqlLessons(): CareerLesson[] {
     },
     {
       id: "sql-dml",
-      title: "DML (INSERT / UPDATE / DELETE)",
+      title: "11. DML (INSERT / UPDATE / DELETE)",
       description: "Modify rows safely with conditions",
       category: "DML",
       content:
@@ -1471,28 +1703,28 @@ function sqlLessons(): CareerLesson[] {
         "-- Insert a new customer and verify\nINSERT INTO customers(id, name, city, signup_date)\nVALUES (6, 'Farah', 'Delhi', '2026-04-01');\n\nSELECT name, city\nFROM customers\nWHERE id = 6;",
       translations: {
         tamil: {
-          title: "DML (INSERT / UPDATE / DELETE)",
+          title: "11. DML (INSERT / UPDATE / DELETE)",
           description: "conditions உடன் rows-ஐ பாதுகாப்பாக மாற்ற",
           category: "DML",
           content:
             "## DML (Data Manipulation Language)\n\nDML row data-ஐ மாற்றுகிறது.\n\n### Commands\n- `INSERT` புதிய rows சேர்க்க\n- `UPDATE` rows மாற்ற (அனைத்தையும் update செய்ய நினைக்கவில்லை என்றால் `WHERE` அவசியம்)\n- `DELETE` rows நீக்க\n\nTip: மாற்றம் செய்த பிறகு உடனே `SELECT` மூலம் verify செய்யலாம்.",
         },
         kannada: {
-          title: "DML (INSERT / UPDATE / DELETE)",
+          title: "11. DML (INSERT / UPDATE / DELETE)",
           description: "conditions ಜೊತೆಗೆ rows ಅನ್ನು ಸುರಕ್ಷಿತವಾಗಿ ಬದಲಿಸಿ",
           category: "DML",
           content:
             "## DML (Data Manipulation Language)\n\nDML row data ಅನ್ನು ಬದಲಾಯಿಸುತ್ತದೆ.\n\n### Commands\n- `INSERT` ಹೊಸ rows ಸೇರಿಸಿ\n- `UPDATE` rows ಬದಲಿಸಿ (ಎಲ್ಲವನ್ನೂ update ಮಾಡಲು ಉದ್ದೇಶಿಸದಿದ್ದರೆ `WHERE` ಬಳಸಿ)\n- `DELETE` rows ಅಳಿಸಿ\n\nTip: ಬದಲಾವಣೆಗಳ ನಂತರ ತಕ್ಷಣ `SELECT` ಮೂಲಕ ಪರಿಶೀಲಿಸಿ.",
         },
         telugu: {
-          title: "DML (INSERT / UPDATE / DELETE)",
+          title: "11. DML (INSERT / UPDATE / DELETE)",
           description: "conditions తో rows ని safe గా మార్చండి",
           category: "DML",
           content:
             "## DML (Data Manipulation Language)\n\nDML row data ని మార్చుతుంది.\n\n### Commands\n- `INSERT` కొత్త rows జోడించండి\n- `UPDATE` rows మార్చండి (అన్ని update చేయాలనుకోకపోతే తప్పకుండా `WHERE` వాడండి)\n- `DELETE` rows తొలగించండి\n\nTip: changes చేసిన వెంటనే `SELECT` తో verify చేయండి.",
         },
         hindi: {
-          title: "DML (INSERT / UPDATE / DELETE)",
+          title: "11. DML (INSERT / UPDATE / DELETE)",
           description: "conditions के साथ rows को safely modify करें",
           category: "DML",
           content:
@@ -1509,7 +1741,7 @@ function sqlLessons(): CareerLesson[] {
         intermediate: {
           prompt: "Update order 3 from cancelled to completed, then count completed orders (count).",
           starterCode: "-- Write your SQL here\n",
-          expectedOutput: "count\n5",
+          expectedOutput: "count\n14",
           solution: "UPDATE orders SET status = 'completed' WHERE id = 3;\nSELECT COUNT(*) AS count FROM orders WHERE status = 'completed';",
         },
         advanced: {
@@ -1522,7 +1754,7 @@ function sqlLessons(): CareerLesson[] {
     },
     {
       id: "sql-transactions",
-      title: "Transactions (TCL)",
+      title: "12. Transactions (TCL)",
       description: "BEGIN, COMMIT, ROLLBACK for safe changes",
       category: "Transactions (TCL)",
       content:
@@ -1531,28 +1763,28 @@ function sqlLessons(): CareerLesson[] {
         "BEGIN;\nUPDATE products SET price = 15 WHERE name = 'Pen';\nCOMMIT;\nSELECT price FROM products WHERE name = 'Pen';",
       translations: {
         tamil: {
-          title: "Transactions (TCL)",
+          title: "12. Transactions (TCL)",
           description: "BEGIN, COMMIT, ROLLBACK மூலம் safe changes",
           category: "Transactions (TCL)",
           content:
             "## Transactions\n\nபல changes-ஐ ஒரே group ஆக நடத்த transactions உதவும் — அனைத்தும் நடக்கும் அல்லது ஒன்றும் நடக்காது.\n\n### Commands\n- `BEGIN` / `BEGIN TRANSACTION`\n- `COMMIT` changes சேமிக்க\n- `ROLLBACK` changes திரும்பப்பெற\n\nPayments, inventory போன்ற real systems-ல் correctness-க்கு இது மிக அவசியம்.",
         },
         kannada: {
-          title: "Transactions (TCL)",
+          title: "12. Transactions (TCL)",
           description: "BEGIN, COMMIT, ROLLBACK ಬಳಸಿ safe changes",
           category: "Transactions (TCL)",
           content:
             "## Transactions\n\nಬಹು changes ಅನ್ನು ಒಂದೇ group ಆಗಿ ಮಾಡಬಹುದು — ಎಲ್ಲವೂ ಆಗಬೇಕು ಅಥವಾ ಯಾವುದೂ ಆಗಬಾರದು.\n\n### Commands\n- `BEGIN` / `BEGIN TRANSACTION`\n- `COMMIT` changes ಉಳಿಸಿ\n- `ROLLBACK` changes ಹಿಂತೆಗೆದು\n\nPayments, inventory ಮುಂತಾದ real systems ನಲ್ಲಿ correctness ಗೆ ಇದು ಅಗತ್ಯ.",
         },
         telugu: {
-          title: "Transactions (TCL)",
+          title: "12. Transactions (TCL)",
           description: "BEGIN, COMMIT, ROLLBACK తో safe changes",
           category: "Transactions (TCL)",
           content:
             "## Transactions\n\nచేంజెస్ ని ఒక గ్రూప్‌గా చేసి — అన్నీ జరగాలి లేదా ఏదీ జరగకూడదు అనేలా transactions సహాయపడతాయి.\n\n### Commands\n- `BEGIN` / `BEGIN TRANSACTION`\n- `COMMIT` changes save చేయండి\n- `ROLLBACK` changes undo చేయండి\n\nPayments, inventory వంటి real systems లో correctness కి ఇది చాలా అవసరం.",
         },
         hindi: {
-          title: "Transactions (TCL)",
+          title: "12. Transactions (TCL)",
           description: "BEGIN, COMMIT, ROLLBACK से safe changes",
           category: "Transactions (TCL)",
           content:
@@ -1580,9 +1812,13 @@ function sqlLessons(): CareerLesson[] {
         },
       },
     },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 4: PERFORMANCE & ARCHITECTURE (Modules 13–14)
+    // Optimize queries and design robust database structures
+    // ═══════════════════════════════════════════════════════
     {
       id: "sql-indexes",
-      title: "Indexes & Performance Basics",
+      title: "13. Indexes & Performance Basics",
       description: "What indexes do and when to use them",
       category: "Indexes",
       content:
@@ -1591,28 +1827,28 @@ function sqlLessons(): CareerLesson[] {
         "CREATE INDEX idx_orders_customer ON orders(customer_id);\n\nSELECT name\nFROM sqlite_master\nWHERE type='index' AND tbl_name='orders'\nORDER BY name;",
       translations: {
         tamil: {
-          title: "Indexes & Performance Basics",
+          title: "13. Indexes & Performance Basics",
           description: "indexes என்ன செய்கிறது, எப்போது பயன்படுத்த வேண்டும்",
           category: "Indexes",
           content:
             "## Indexes\n\nIndexes ஒரு கூடுதல் data structure உருவாக்கி lookups-ஐ வேகப்படுத்தும்.\n\n### முக்கிய idea\nReads வேகமாகும்; ஆனால் writes சில நேரம் மெதுவாகலாம்.\n\nSQLite-ல் `sqlite_master` மூலம் indexes-ஐ பார்க்கலாம்.",
         },
         kannada: {
-          title: "Indexes & Performance Basics",
+          title: "13. Indexes & Performance Basics",
           description: "indexes ಏನು ಮಾಡುತ್ತವೆ ಮತ್ತು ಯಾವಾಗ ಬಳಸಿ",
           category: "Indexes",
           content:
             "## Indexes\n\nIndexes ಹೆಚ್ಚುವರಿ data structure ರಚಿಸಿ lookups ಅನ್ನು ವೇಗಗೊಳಿಸುತ್ತವೆ.\n\n### ಮುಖ್ಯ idea\nReads ವೇಗವಾಗುತ್ತವೆ; writes ಸ್ವಲ್ಪ ನಿಧಾನವಾಗಬಹುದು.\n\nSQLite ನಲ್ಲಿ `sqlite_master` ಮೂಲಕ indexes ನೋಡಬಹುದು.",
         },
         telugu: {
-          title: "Indexes & Performance Basics",
+          title: "13. Indexes & Performance Basics",
           description: "indexes ఏమి చేస్తాయి, ఎప్పుడు వాడాలి",
           category: "Indexes",
           content:
             "## Indexes\n\nIndexes అదనపు data structure సృష్టించి lookups ని వేగంగా చేస్తాయి.\n\n### Key idea\nReads వేగంగా; కానీ writes కొద్దిగా నెమ్మదిగా కావచ్చు.\n\nSQLite లో `sqlite_master` తో indexes చూడచ్చు.",
         },
         hindi: {
-          title: "Indexes & Performance Basics",
+          title: "13. Indexes & Performance Basics",
           description: "indexes क्या करते हैं और कब use करें",
           category: "Indexes",
           content:
@@ -1624,25 +1860,25 @@ function sqlLessons(): CareerLesson[] {
           prompt: "Create index idx_orders_customer on orders(customer_id) then list index names for orders (name).",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "name\nidx_orders_customer",
-          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nSELECT name FROM sqlite_master WHERE type='index' AND tbl_name='orders';",
+          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nSELECT name FROM sqlite_master WHERE type='index' AND tbl_name='orders' AND name = 'idx_orders_customer';",
         },
         intermediate: {
           prompt: "Create two indexes on orders: idx_orders_customer and idx_orders_status, then list them ordered by name.",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "name\nidx_orders_customer\nidx_orders_status",
-          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\nSELECT name FROM sqlite_master WHERE type='index' AND tbl_name='orders' ORDER BY name;",
+          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\nSELECT name FROM sqlite_master WHERE type='index' AND tbl_name='orders' AND name LIKE 'idx_orders_%' ORDER BY name;",
         },
         advanced: {
           prompt: "After creating the two indexes, count how many indexes exist on orders (count).",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "count\n2",
-          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\nSELECT COUNT(*) AS count FROM sqlite_master WHERE type='index' AND tbl_name='orders';",
+          solution: "CREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status ON orders(status);\nSELECT COUNT(*) AS count FROM sqlite_master WHERE type='index' AND tbl_name='orders' AND name LIKE 'idx_orders_%';",
         },
       },
     },
     {
       id: "sql-views",
-      title: "Views",
+      title: "14. Views",
       description: "Saved queries for reuse and simplicity",
       category: "Views",
       content:
@@ -1651,28 +1887,28 @@ function sqlLessons(): CareerLesson[] {
         "CREATE VIEW v_completed_orders AS\nSELECT o.id AS order_id, c.name, o.order_date\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'completed';\n\nSELECT order_id, name\nFROM v_completed_orders\nORDER BY order_id\nLIMIT 2;",
       translations: {
         tamil: {
-          title: "Views",
+          title: "14. Views",
           description: "மீண்டும் பயன்படுத்த saved queries",
           category: "Views",
           content:
             "## Views\n\nView என்பது saved query — இது virtual table போல செயல்படும்.\n\n### ஏன் views?\n- பொதுவான joins-ஐ மீண்டும் பயன்படுத்த\n- reporting queries-ஐ எளிமைப்படுத்த\n- application queries-ஐ சுத்தமாக வைத்திருக்க",
         },
         kannada: {
-          title: "Views",
+          title: "14. Views",
           description: "ಮರುಬಳಕೆಗೆ saved queries",
           category: "Views",
           content:
             "## Views\n\nView ಒಂದು saved query — ಇದು virtual table처럼 ವರ್ತಿಸುತ್ತದೆ.\n\n### Views ಯಾಕೆ?\n- ಸಾಮಾನ್ಯ joins ಅನ್ನು ಮರುಬಳಕೆ ಮಾಡಿ\n- reporting queries ಸರಳಗೊಳಿಸಿ\n- application queries ಕ್ಲೀನ್ ಆಗಿರಲಿ",
         },
         telugu: {
-          title: "Views",
+          title: "14. Views",
           description: "reuse కోసం saved queries",
           category: "Views",
           content:
             "## Views\n\nView అనేది saved query — ఇది virtual table లా పనిచేస్తుంది.\n\n### Views ఎందుకు?\n- common joins ని reuse చేయండి\n- reporting queries ని సింపుల్ చేయండి\n- application queries ని clean గా ఉంచండి",
         },
         hindi: {
-          title: "Views",
+          title: "14. Views",
           description: "reuse और simplicity के लिए saved queries",
           category: "Views",
           content:
@@ -2943,26 +3179,334 @@ function iotRobotics(): CareerLesson[] {
 }
 
 
+
+function dsa(): CareerLesson[] {
+  return [
+    {
+      id: "dsa-basics", title: "1. Basics & Foundations", description: "Complexity Analysis and Recursion",
+      content: "## Foundations of DSA\n\n### Complexity Analysis\n- **Time Complexity**: Measuring how execution time grows with input size (Big O, Big Ω, Big Θ).\n- **Space Complexity**: Measuring memory usage relative to input.\n\n### Recursion\n- **Direct**: Function calls itself.\n- **Indirect**: Function A calls B, B calls A.\n- **Tail Recursion**: The recursive call is the last action in the function (more efficient).",
+      codeExample: "def countdown(n):\n    if n <= 0: return\n    print(n)\n    countdown(n-1) # Tail recursion\n\ncountdown(3)",
+      translations: {
+        tamil: { title: "1. அடிப்படைகள் மற்றும் அடித்தளங்கள்", description: "சிக்கலான பகுப்பாய்வு மற்றும் மறுநிகழ்வு" },
+        kannada: { title: "1. ಮೂಲಭೂತ ಮತ್ತು ಅಡಿಪಾಯಗಳು", description: "ಸಂಕೀರ್ಣತೆಯ ವಿಶ್ಲೇಷಣೆ ಮತ್ತು ಪುನರಾವರ್ತನೆ" },
+        telugu: { title: "1. బేసిక్స్ & ఫౌండేషన్స్", description: "కాంప్లెక్సిటీ అనాలిసిస్ మరియు రికర్షన్" },
+        hindi: { title: "1. बुनियादी बातें और नींव", description: "जटिलता विश्लेषण और रिकर्सन" },
+      },
+      exercises: {
+        beginner: { prompt: "Notation for worst-case time complexity? Print word.", starterCode: "", expectedOutput: "Big O" },
+        intermediate: { prompt: "Is recursion always more space-efficient than iteration? Print 'No'.", starterCode: "", expectedOutput: "No" },
+        advanced: { prompt: "Function A calls B, B calls A. Type of recursion? Print words.", starterCode: "", expectedOutput: "Indirect recursion" },
+      },
+    },
+    {
+      id: "dsa-arrays-strings", title: "2. Arrays & Strings", description: "Data Manipulation and Pattern Matching",
+      content: "## Linear Data Structures\n\n### Arrays\nContinuous memory allocation for same-type elements. Operations include Insertion, Deletion, and Traversal.\n\n### Strings\nSequence of characters. Key algorithms include:\n- **Naive**: Simple sliding window.\n- **KMP**: Uses prefix-suffix matching.\n- **Rabin-Karp**: Uses hashing for faster searching.\n\n### Multidimensional Arrays\nMatrices (2D arrays) used in image processing and grid-based problems.",
+      codeExample: "arr = [1, 2, 3, 4, 5]\n# Traversal\nfor x in arr: print(x, end=' ')",
+      translations: {
+        tamil: { title: "2. வரிசைகள் & சரங்கள்", description: "தரவு கையாளுதல் மற்றும் பேட்டர்ன் மேட்சிங்" },
+        kannada: { title: "2. ಅರೇಗಳು ಮತ್ತು ಸ್ಟ್ರಿಂಗ್‌ಗಳು", description: "ಡೇಟಾ ಕುಶಲತೆ ಮತ್ತು ಮಾದರಿ ಹೊಂದಾಣಿಕೆ" },
+        telugu: { title: "2. శ్రేణులు & స్ట్రింగ్స్", description: "డేటా మానిప్యులేషన్ మరియు ప్యాటర్న్ మ్యాచింగ్" },
+        hindi: { title: "2. सरणियाँ और स्ट्रिंग्स", description: "डेटा हेरफेर और पैटर्न मिलान" },
+      },
+      exercises: {
+        beginner: { prompt: "Searching an unsorted array takes $O(?)$. Print the symbol.", starterCode: "", expectedOutput: "n" },
+        intermediate: { prompt: "Pattern matching algorithm starting with 'K'? Print acronym.", starterCode: "", expectedOutput: "KMP" },
+        advanced: { prompt: "Reverse the string 'dsa'. Print result.", starterCode: "s = 'dsa'\n# Reverse and print\n", expectedOutput: "asd" },
+      },
+    },
+    {
+      id: "dsa-linked-lists", title: "3. Linked Lists", description: "Singly, Doubly, and Circular Linked Lists",
+      content: "## Dynamic Linear Structures\n\n### Singly Linked List\nEach node points to the next. Great for dynamic memory as elements aren't contiguous.\n\n### Doubly Linked List\nNodes point to both next and previous elements. Allows bidirectional traversal.\n\n### Circular Linked List\nThe last node points back to the first node. Used in round-robin scheduling.",
+      codeExample: "class Node:\n    def __init__(self, val):\n        self.val = val\n        self.next = None",
+      translations: {
+        tamil: { title: "3. இணைக்கப்பட்ட பட்டியல்கள்", description: "ஒற்றை, இரட்டை மற்றும் வட்ட இணைக்கப்பட்ட பட்டியல்கள்" },
+        kannada: { title: "3. ಲಿಂಕ್ಡ್ ಲಿಸ್ಟ್‌ಗಳು", description: "ಸಿಂಗ್ಲಿ, ಡಬ್ಲಿ ಮತ್ತು ಸರ್ಕ್ಯುಲರ್ ಲಿಂಕ್ಡ್ ಲಿಸ್ಟ್‌ಗಳು" },
+        telugu: { title: "3. లింక్డ్ లిస్టులు", description: "సింగ్లీ, డబ్లీ మరియు సర్క్యులర్ లింక్డ్ లిస్టులు" },
+        hindi: { title: "3. लिंक्ड सूचियां", description: "सिंगली, डबली और सर्कुलर लिंक्ड सूचियां" },
+      },
+      exercises: {
+        beginner: { prompt: "Does a linked list require contiguous memory? Print 'No'.", starterCode: "", expectedOutput: "No" },
+        intermediate: { prompt: "List with 'next' and 'prev' pointers? Print word.", starterCode: "", expectedOutput: "Doubly" },
+        advanced: { prompt: "Accessing index $i$ in a linked list takes $O(?)$. Print symbol.", starterCode: "", expectedOutput: "n" },
+      },
+    },
+    {
+      id: "dsa-stacks-queues", title: "4. Stacks & Queues", description: "LIFO and FIFO Data Structures",
+      content: "## Specialized Data Collections\n\n### Stack (LIFO - Last In First Out)\nOperations: `push`, `pop`, `peek`. Used in expression evaluation and backtracking.\n\n### Queue (FIFO - First In First Out)\nOperations: `enqueue`, `dequeue`. Types include **Circular Queue**, **Deque**, and **Priority Queue**.\n\n### Applications\n- Stacks: Function calls, Undo mechanism.\n- Queues: Task scheduling, BFS traversal.",
+      codeExample: "stack = []\nstack.append(1) # push\nprint(stack.pop()) # pop",
+      translations: {
+        tamil: { title: "4. ஸ்டாக்குகள் & வரிசைகள்", description: "LIFO மற்றும் FIFO தரவு கட்டமைப்புகள்" },
+        kannada: { title: "4. ಸ್ಟಾಕ್‌ಗಳು ಮತ್ತು ಕ್ಯೂಗಳು", description: "LIFO ಮತ್ತು FIFO ಡೇಟಾ ರಚನೆಗಳು" },
+        telugu: { title: "4. స్టాక్‌లు & క్యూలు", description: "LIFO మరియు FIFO డేటా స్ట్రక్చర్లు" },
+        hindi: { title: "4. स्टैक और कतारें", description: "LIFO और FIFO डेटा संरचनाएं" },
+      },
+      exercises: {
+        beginner: { prompt: "Queue principle? Print acronym.", starterCode: "", expectedOutput: "FIFO" },
+        intermediate: { prompt: "Stack operation to view top? Print word.", starterCode: "", expectedOutput: "peek" },
+        advanced: { prompt: "Double-ended queue name? Print word.", starterCode: "", expectedOutput: "Deque" },
+      },
+    },
+    {
+      id: "dsa-trees", title: "5. Trees & Heaps", description: "Binary Trees, BST, AVL, and Heaps",
+      content: "## Hierarchical Data Structures\n\n### Binary Tree\nEach node has at most two children. Traversals: **Inorder**, **Preorder**, **Postorder**.\n\n### BST (Binary Search Tree)\nLeft child < Parent < Right child. Efficient searching in $O(\\log n)$.\n\n### AVL & Heaps\n- **AVL**: Self-balancing BST.\n- **Heaps**: Min-heap or Max-heap used for priority handling.",
+      codeExample: "print('BST Inorder gives sorted elements')",
+      translations: {
+        tamil: { title: "5. மரங்கள் & ஹீப்ஸ்", description: "பைனரி மரங்கள், BST, AVL மற்றும் ஹீப்ஸ்" },
+        kannada: { title: "5. ಮರಗಳು ಮತ್ತು ರಾಶಿಗಳು (Heaps)", description: "ಬೈನರಿ ಮರಗಳು, BST, AVL ಮತ್ತು ಹೀಪ್ಸ್" },
+        telugu: { title: "5. చెట్లు & హీప్స్", description: "బైనరీ చెట్లు, BST, AVL మరియు హీప్స్" },
+        hindi: { title: "5. पेड़ और हीप्स", description: "बाइनरी ट्री, BST, AVL और हीप्स" },
+      },
+      exercises: {
+        beginner: { prompt: "Tree with max 2 children? Print words.", starterCode: "", expectedOutput: "Binary Tree" },
+        intermediate: { prompt: "Search time in balanced BST? Print notation.", starterCode: "", expectedOutput: "O(log n)" },
+        advanced: { prompt: "Prefix tree common name? Print word.", starterCode: "", expectedOutput: "Trie" },
+      },
+    },
+    {
+      id: "dsa-graphs", title: "6. Graphs", description: "Representations and Traversal Algorithms",
+      content: "## Network Data Structures\n\n### Representation\n- **Adjacency Matrix**: 2D array representation.\n- **Adjacency List**: Array of lists.\n\n### Traversal\n- **DFS (Depth First Search)**: Goes deep before wide (uses Stack/Recursion).\n- **BFS (Breadth First Search)**: Goes level by level (uses Queue).\n\n### Essential Algorithms\n- **Dijkstra**: Shortest path in weighted graphs.\n- **Prim/Kruskal**: Minimum Spanning Tree (MST).",
+      codeExample: "graph = {0: [1, 2], 1: [2], 2: [0, 3], 3: [3]}\nprint('Graph structure defined')",
+      translations: {
+        tamil: { title: "6. வரைபடங்கள் (Graphs)", description: "பிரதிநிதித்துவங்கள் மற்றும் டிராவர்சல் அல்காரிதம்கள்" },
+        kannada: { title: "6. ಗ್ರಾಫ್‌ಗಳು", description: "ಪ್ರಾತಿನಿಧ್ಯಗಳು ಮತ್ತು ಟ್ರಾವರ್ಸಲ್ ಅಲ್ಗಾರಿದಮ್‌ಗಳು" },
+        telugu: { title: "6. గ్రాఫ్‌లు", description: "ప్రాతినిధ్యాలు మరియు ట్రావర్సల్ అల్గారిథమ్స్" },
+        hindi: { title: "6. ग्राफ", description: "प्रतिनिधित्व और ट्रैवर्सल एल्गोरिदम" },
+      },
+      exercises: {
+        beginner: { prompt: "Algorithm for level-order traversal? Print acronym.", starterCode: "", expectedOutput: "BFS" },
+        intermediate: { prompt: "Shortest path in weighted graph? Print word.", starterCode: "", expectedOutput: "Dijkstra" },
+        advanced: { prompt: "Representation using 2D array? Print words.", starterCode: "", expectedOutput: "Adjacency Matrix" },
+      },
+    },
+    {
+      id: "dsa-hashing", title: "7. Hashing", description: "Fast Lookups and Collision Handling",
+      content: "## Constant Time Data Retrieval\n\n### Hash Table\nMaps keys to values using a **Hash Function**. Provides $O(1)$ average time for search, insert, and delete.\n\n### Collision Handling\n- **Chaining**: Using linked lists at each index.\n- **Open Addressing**: Finding another open slot (Linear/Quadratic Probing).\n\n### Applications\nFast lookups, caches (LRU), and database indexing.",
+      codeExample: "hash_map = {'name': 'DSA', 'version': 1.0}\nprint(hash_map['name'])",
+      translations: {
+        tamil: { title: "7. ஹாஷிங்", description: "வேகமான தேடல் மற்றும் மோதல் கையாளுதல்" },
+        kannada: { title: "7. ಹ್ಯಾಶಿಂಗ್", description: "ವೇಗದ ಲುಕಪ್‌ಗಳು ಮತ್ತು ಘರ್ಷಣೆ ನಿರ್ವಹಣೆ" },
+        telugu: { title: "7. హ్యాషింగ్", description: "వేగవంతమైన లుకప్‌లు మరియు కొలిజన్ హ్యాండ్లింగ్" },
+        hindi: { title: "7. हैशिंग", description: "फास्ट लुकअप और कोलिजन हैंडलिंग" },
+      },
+      exercises: {
+        beginner: { prompt: "Average search time in hash table? Print notation.", starterCode: "", expectedOutput: "O(1)" },
+        intermediate: { prompt: "Collision method using lists? Print word.", starterCode: "", expectedOutput: "Chaining" },
+        advanced: { prompt: "Handling same hash for two keys? Print word.", starterCode: "", expectedOutput: "Collision" },
+      },
+    },
+    {
+      id: "dsa-searching-sorting", title: "8. Searching & Sorting", description: "Organizing and Finding Data Efficiently",
+      content: "## Organizing Data\n\n### Searching\n- **Linear Search**: $O(n)$.\n- **Binary Search**: $O(\\log n)$ — Requires sorted data.\n\n### Sorting Algorithms\n- **Slow ($O(n^2)$)**: Bubble, Selection, Insertion Sort.\n- **Fast ($O(n \\log n)$)**: Merge, Quick, Heap Sort.\n- **Linear ($O(n)$)**: Counting, Radix Sort (requires specific data types).",
+      codeExample: "def binary_search(arr, x):\n    l, r = 0, len(arr)-1\n    while l <= r:\n        m = (l + r) // 2\n        if arr[m] == x: return m\n        elif arr[m] < x: l = m + 1\n        else: r = m - 1\n    return -1",
+      translations: {
+        tamil: { title: "8. தேடுதல் & வரிசைப்படுத்துதல்", description: "தரவை திறமையாக ஒழுங்கமைத்தல் மற்றும் தேடுதல்" },
+        kannada: { title: "8. ಹುಡುಕಾಟ ಮತ್ತು ವಿಂಗಡಣೆ", description: "ಡೇಟಾವನ್ನು ಪರಿಣಾಮಕಾರಿಯಾಗಿ ಸಂಘಟಿಸುವುದು ಮತ್ತು ಕಂಡುಹಿಡಿಯುವುದು" },
+        telugu: { title: "8. సెర్చింగ్ & సార్టింగ్", description: "డేటాను సమర్ధవంతంగా నిర్వహించడం మరియు కనుగొనడం" },
+        hindi: { title: "8. सर्चिंग और सॉर्टिंग", description: "डेटा को कुशलतापूर्वक व्यवस्थित करना और खोजना" },
+      },
+      exercises: {
+        beginner: { prompt: "Search required for Binary Search? Print word.", starterCode: "", expectedOutput: "Sorted" },
+        intermediate: { prompt: "Complexity of Merge Sort? Print notation.", starterCode: "", expectedOutput: "O(n log n)" },
+        advanced: { prompt: "Sort using 'pivot' element? Print word.", starterCode: "", expectedOutput: "Quicksort" },
+      },
+    },
+    {
+      id: "dsa-adv-structures", title: "9. Advanced Data Structures", description: "Segment Trees, Fenwick Trees, and Union-Find",
+      content: "## Handling Complex Queries\n\n### Range Queries\n- **Segment Tree**: $O(\\log n)$ range queries and updates.\n- **Fenwick Tree (BIT)**: More space-efficient range sum queries.\n\n### Disjoint Set (Union-Find)\nUsed for dynamic connectivity problems and Kruskal's algorithm.\n\n### String Processing\n**Suffix Array & Suffix Tree** for complex substring searches.",
+      codeExample: "print('Segment Tree built for Range Sum Queries')",
+      translations: {
+        tamil: { title: "9. மேம்பட்ட தரவு கட்டமைப்புகள்", description: "செக்மென்ட் மரங்கள், ஃபென்விக் மரங்கள் மற்றும் யூனியன்-ஃபைண்ட்" },
+        kannada: { title: "9. ಸುಧಾರಿತ ಡೇಟಾ ರಚನೆಗಳು", description: "ಸೆಗ್ಮೆಂಟ್ ಟ್ರೀಸ್, ಫೆನ್ವಿಕ್ ಟ್ರೀಸ್ ಮತ್ತು ಯೂನಿಯನ್-ಫೈಂಡ್" },
+        telugu: { title: "9. అడ్వాన్స్‌డ్ డేటా స్ట్రక్చర్లు", description: "సెగ్మెంట్ ట్రీలు, ఫెన్‌విక్ ట్రీలు మరియు యూనియన్-ఫైండ్" },
+        hindi: { title: "9. उन्नत डेटा संरचनाएं", description: "सेगमेंट ट्री, फेनविक ट्री और यूनियन-फाइंड" },
+      },
+      exercises: {
+        beginner: { prompt: "Acronym for Binary Indexed Tree? Print acronym.", starterCode: "", expectedOutput: "BIT" },
+        intermediate: { prompt: "Structure for range updates/queries? Print words.", starterCode: "", expectedOutput: "Segment Tree" },
+        advanced: { prompt: "Algorithm for finding connected components? Print words.", starterCode: "", expectedOutput: "Union-Find" },
+      },
+    },
+    {
+      id: "dsa-algorithms", title: "10. Algorithms & Paradigms", description: "DP, Greedy, Backtracking, and Advanced Graph Algos",
+      content: "## Mastering Algorithm Design\n\n### Paradigms\n- **Greedy**: Making locally optimal choices.\n- **Dynamic Programming (DP)**: Memoization and Tabulation.\n- **Divide & Conquer**: Breaking problems into smaller ones.\n- **Backtracking**: Trying all possibilities (N-Queens).\n\n### Advanced Graph Topics\n- **Topological Sort**: Ordering tasks with dependencies.\n- **Strongly Connected Components**: Kosaraju and Tarjan algorithms.",
+      codeExample: "memo = {}\ndef fib(n):\n    if n in memo: return memo[n]\n    if n <= 1: return n\n    memo[n] = fib(n-1) + fib(n-2)\n    return memo[n]",
+      translations: {
+        tamil: { title: "10. அல்காரிதம்கள் & முன்னுதாரணங்கள்", description: "DP, Greedy, Backtracking மற்றும் மேம்பட்ட வரைபடங்கள்" },
+        kannada: { title: "10. ಅಲ್ಗಾರಿದಮ್‌ಗಳು ಮತ್ತು ಮಾದರಿಗಳು", description: "DP, ಗ್ರೀಡಿ, ಬ್ಯಾಕ್‌ಟ್ರ್ಯಾಕಿಂಗ್ ಮತ್ತು ಸುಧಾರಿತ ಗ್ರಾಫ್ ಅಲ್ಗಾರಿದಮ್‌ಗಳು" },
+        telugu: { title: "10. అల్గారిథమ్స్ & పారాడైమ్స్", description: "DP, గ్రీడీ, బ్యాక్‌ట్రాకింగ్ మరియు అడ్వాన్స్‌డ్ గ్రాఫ్ అల్గారిథమ్స్" },
+        hindi: { title: "10. एल्गोरिदम और प्रतिमान", description: "DP, ग्रीडी, बैकट्रैकिंग और उन्नत ग्राफ एल्गोरिदम" },
+      },
+      exercises: {
+        beginner: { prompt: "Optimal choice at each step? Print word.", starterCode: "", expectedOutput: "Greedy" },
+        intermediate: { prompt: "Storing subproblem results (Memoization) is part of? Print acronym.", starterCode: "", expectedOutput: "DP" },
+        advanced: { prompt: "Ordering vertices with dependencies? Print words.", starterCode: "", expectedOutput: "Topological Sort" },
+      },
+    },
+  ];
+}
+
+
 const rawTracks: CareerTrack[] = [
+  {
+    id: "dsa",
+    title: "DSA Mastery",
+    description: "Master problem solving and core computer science concepts",
+    color: "expert-purple",
+    language: "python",
+    get lessons() { return dsa(); },
+  },
   {
     id: "sql",
     title: "SQL & Databases",
     description: "Learn SQL with structured lessons and a built-in practice database",
     color: "primary",
     language: "sql",
-    lessons: sqlLessons(),
+    get lessons() { return sqlLessons(); },
   },
-  { id: "data-analysis", title: "Data Analysis", description: "Master data analysis with Python", color: "primary", lessons: da() },
-  { id: "web-development", title: "Web Development", description: "Build web apps and APIs", color: "streak-green", lessons: wd() },
-  { id: "ai-ml", title: "AI & Machine Learning", description: "Build intelligent systems", color: "expert-purple", lessons: aiml() },
-  { id: "automation", title: "Automation & Scripting", description: "Automate tasks with Python", color: "python-yellow", lessons: auto() },
-  { id: "data-engineering", title: "Data Engineering", description: "Build data pipelines", color: "reward-gold", lessons: de() },
-  { id: "cybersecurity", title: "Cybersecurity", description: "Security with Python", color: "destructive", lessons: cs() },
-  { id: "git", title: "GitHub Mastery (Start to Master)", description: "Master Git and GitHub for teams", color: "expert-purple", language: "bash", lessons: githubMastery() },
-  { id: "linux", title: "Linux Mastery (Install to Master)", description: "Master Linux from installation to professional system administration", color: "streak-green", language: "bash", lessons: linuxMastery() },
-  { id: "cloud-mlops", title: "Cloud & MLOps", description: "Deploy and scale Python in the cloud", color: "primary", lessons: cloudMlops() },
-  { id: "game-dev", title: "Game Development", description: "Build 2D and 3D games with Python", color: "destructive", lessons: gameDev() },
-  { id: "iot-robotics", title: "IoT & Robotics", description: "Hardware and embedded Python", color: "reward-gold", lessons: iotRobotics() },
+  { id: "data-analysis", title: "Data Analysis", description: "Master data analysis with Python", color: "primary", get lessons() { return da(); } },
+  { id: "web-development", title: "Web Development", description: "Build web apps and APIs", color: "streak-green", get lessons() { return wd(); } },
+  { id: "ai-ml", title: "AI & Machine Learning", description: "Build intelligent systems", color: "expert-purple", get lessons() { return aiml(); } },
+  { id: "automation", title: "Automation & Scripting", description: "Automate tasks with Python", color: "python-yellow", get lessons() { return auto(); } },
+  { id: "data-engineering", title: "Data Engineering", description: "Build data pipelines", color: "reward-gold", get lessons() { return de(); } },
+  { id: "cybersecurity", title: "Cybersecurity", description: "Security with Python", color: "destructive", get lessons() { return cs(); } },
+  { id: "git", title: "GitHub Mastery (Start to Master)", description: "Master Git and GitHub for teams", color: "expert-purple", language: "bash", get lessons() { return githubMastery(); } },
+  { id: "linux", title: "Linux Mastery (Install to Master)", description: "Master Linux from installation to professional system administration", color: "streak-green", language: "bash", get lessons() { return linuxMastery(); } },
+  { id: "cloud-mlops", title: "Cloud & MLOps", description: "Deploy and scale Python in the cloud", color: "primary", get lessons() { return cloudMlops(); } },
+  { id: "game-dev", title: "Game Development", description: "Build 2D and 3D games with Python", color: "destructive", get lessons() { return gameDev(); } },
+  { id: "iot-robotics", title: "IoT & Robotics", description: "Hardware and embedded Python", color: "reward-gold", get lessons() { return iotRobotics(); } },
+  { id: "agentic-ai", title: "Agentic AI Engineering", description: "Master Prompt Engineering, RAG, and MCP", color: "expert-purple", get lessons() { return agenticAi(); } },
 ];
+
+
+function agenticAi(): CareerLesson[] {
+  return [
+    {
+      id: "agentic-1-foundations",
+      title: "1. AI Foundations",
+      description: "Concepts, Deep Learning, Mathematics, and Applications",
+      content: "## AI Foundations\n\n### Concepts\n- **Supervised, unsupervised, reinforcement learning**\n\n### Deep Learning\n- Neural networks, CNNs, RNNs, transformers\n\n### Mathematics\n- Linear algebra, probability, statistics, calculus basics\n\n### Applications\n- NLP, computer vision, recommendation systems, predictive analytics",
+      codeExample: "print('Use ChatGPT or Copilot for simple text summarization, Python coding, and analysis tasks')",
+      translations: {
+        tamil: { title: "1. AI அடிப்படைகள்", description: "கருத்துகள், ஆழமான கற்றல், கணிதம் மற்றும் பயன்பாடுகள்" },
+        kannada: { title: "1. AI ಅಡಿಪಾಯಗಳು", description: "ಪರಿಕಲ್ಪನೆಗಳು, ಆಳವಾದ ಕಲಿಕೆ, ಗಣಿತ ಮತ್ತು ಅನ್ವಯಗಳು" },
+        telugu: { title: "1. AI పునాదులు", description: "భావనలు, డీప్ లెర్నింగ్, గణితం మరియు అప్లికేషన్స్" },
+        hindi: { title: "1. AI की नींव", description: "अवधारणाएं, गहन शिक्षा, गणित और अनुप्रयोग" }
+      },
+      exercises: {
+        beginner: { prompt: "Type the name of the learning where the model is rewarded for good actions.", starterCode: "", expectedOutput: "reinforcement learning" },
+        intermediate: { prompt: "Which network architecture revolutionized NLP?", starterCode: "", expectedOutput: "transformers" },
+        advanced: { prompt: "Print 'Ready for AI'", starterCode: "", expectedOutput: "Ready for AI" }
+      }
+    },
+    {
+      id: "agentic-2-prompt-engineering",
+      title: "2. Prompt Engineering",
+      description: "Techniques, Advanced Prompting, and Output Control",
+      content: "## Prompt Engineering\n\n### Basics\n- What is a prompt, structure (context + task + constraints + format)\n\n### Techniques\n- Role assignment, step-by-step prompting, few-shot prompting, chain-of-thought reasoning\n\n### Advanced\n- Iterative refinement, context injection, output control, multi-turn prompting",
+      codeExample: "prompt = '''\nRole: Expert Python Developer\nTask: Write a SQL query\nContext: Table users(id, name)\nFormat: Just the query\n'''\nprint(prompt)",
+      translations: {
+        tamil: { title: "2. ப்ராம்ட் இன்ஜினியரிங்", description: "நுட்பங்கள், மேம்பட்ட தூண்டுதல் மற்றும் வெளியீடு கட்டுப்பாடு" },
+        kannada: { title: "2. ಪ್ರಾಂಪ್ಟ್ ಎಂಜಿನಿಯರಿಂಗ್", description: "ತಂತ್ರಗಳು, ಸುಧಾರಿತ ಪ್ರಾಂಪ್ಟಿಂಗ್ ಮತ್ತು ಔಟ್ಪುಟ್ ನಿಯಂತ್ರಣ" },
+        telugu: { title: "2. ప్రాంప్ట్ ఇంజనీరింగ్", description: "పద్ధతులు, అధునాతన ప్రాంప్టింగ్ మరియు అవుట్పుట్ నియంత్రణ" },
+        hindi: { title: "2. प्रॉम्प्ट इंजीनियरिंग", description: "तकनीक, उन्नत प्रॉम्प्टिंग और आउटपुट नियंत्रण" }
+      },
+      exercises: {
+        beginner: { prompt: "Print the components: 'context + task + constraints + format'", starterCode: "", expectedOutput: "context + task + constraints + format" },
+        intermediate: { prompt: "What technique uses examples to guide the AI?", starterCode: "", expectedOutput: "few-shot" },
+        advanced: { prompt: "Print the phrase for step-by-step logical reasoning.", starterCode: "", expectedOutput: "chain-of-thought" }
+      }
+    },
+    {
+      id: "agentic-3-rag",
+      title: "3. Retrieval-Augmented Generation (RAG)",
+      description: "Retrieve, Augment, Generate",
+      content: "## Retrieval-Augmented Generation (RAG)\n\n### Concepts\n- retrieve → augment → generate workflow\n\n### Retrieval Methods\n- Keyword search, embeddings, vector databases (FAISS, Pinecone, Weaviate)\n\n### Augmentation & Applications\n- Injecting retrieved text into prompts.\n- Document Q&A bots, research assistants, customer support bots",
+      codeExample: "query = 'What is RAG?'\ndocs = retrieve_documents(query)\nprompt = f'Context: {docs}\nAnswer the query: {query}'",
+      translations: {
+        tamil: { title: "3. RAG", description: "மீட்டெடுத்தல், பெருக்குதல், உருவாக்குதல்" },
+        kannada: { title: "3. RAG", description: "ಪಡೆಯಿರಿ, ಹೆಚ್ಚಿಸಿ, ರಚಿಸಿ" },
+        telugu: { title: "3. RAG", description: "తిరిగి పొందడం, పెంచడం, సృష్టించడం" },
+        hindi: { title: "3. RAG", description: "पुनर्प्राप्ति, संवर्धित, जनरेशन" }
+      },
+      exercises: {
+        beginner: { prompt: "What does RAG stand for?", starterCode: "", expectedOutput: "Retrieval-Augmented Generation" },
+        intermediate: { prompt: "Name a type of database used for embeddings.", starterCode: "", expectedOutput: "vector" },
+        advanced: { prompt: "Print the RAG workflow steps.", starterCode: "", expectedOutput: "retrieve augment generate" }
+      }
+    },
+    {
+      id: "agentic-4-mcp",
+      title: "4. Model Context Protocol (MCP)",
+      description: "Standardized protocol for connecting AI to tools",
+      content: "## Model Context Protocol (MCP)\n\n### Concepts\n- Standardized protocol for connecting AI to tools/APIs\n\n### Interfaces & Plugins\n- Structured requests, safe execution, error handling\n- Calendars, CRMs, SQL databases, productivity apps",
+      codeExample: "# Example MCP Connection\nprint('Connecting AI to SQL database via MCP')",
+      translations: {
+        tamil: { title: "4. MCP", description: "AI-ஐ கருவிகளுடன் இணைப்பதற்கான நெறிமுறை" },
+        kannada: { title: "4. MCP", description: "AI ಅನ್ನು ಪರಿಕರಗಳೊಂದಿಗೆ ಸಂಪರ್ಕಿಸಲು ಪ್ರೋಟೋಕಾಲ್" },
+        telugu: { title: "4. MCP", description: "సాధనాలతో AIని కనెక్ట్ చేయడానికి ప్రోటోకాల్" },
+        hindi: { title: "4. MCP", description: "AI को टूल्स से जोड़ने के लिए प्रोटोकॉल" }
+      },
+      exercises: {
+        beginner: { prompt: "What does MCP stand for?", starterCode: "", expectedOutput: "Model Context Protocol" },
+        intermediate: { prompt: "What does MCP connect AI to?", starterCode: "", expectedOutput: "tools" },
+        advanced: { prompt: "Print 'Safe execution'.", starterCode: "", expectedOutput: "Safe execution" }
+      }
+    },
+    {
+      id: "agentic-5-integration",
+      title: "5. Integration",
+      description: "AI + Prompt Engineering + RAG + MCP",
+      content: "## Integration Workflow\n\n1. **Prompt Engineering** → craft clear instructions\n2. **RAG** → retrieve knowledge from external sources\n3. **MCP** → connect AI to tools for execution\n4. **AI Model** → generate grounded, actionable responses",
+      codeExample: "print('Data Analyst Assistant initialized: RAG + MCP + Prompts')",
+      translations: {
+        tamil: { title: "5. ஒருங்கிணைப்பு", description: "AI + Prompt Engineering + RAG + MCP" },
+        kannada: { title: "5. ಏಕೀಕರಣ", description: "AI + Prompt Engineering + RAG + MCP" },
+        telugu: { title: "5. ఇంటిగ్రేషన్", description: "AI + Prompt Engineering + RAG + MCP" },
+        hindi: { title: "5. एकीकरण", description: "AI + Prompt Engineering + RAG + MCP" }
+      },
+      exercises: {
+        beginner: { prompt: "Which component retrieves external knowledge?", starterCode: "", expectedOutput: "RAG" },
+        intermediate: { prompt: "Which component executes tool actions?", starterCode: "", expectedOutput: "MCP" },
+        advanced: { prompt: "Which component provides clear instructions?", starterCode: "", expectedOutput: "Prompt Engineering" }
+      }
+    },
+    {
+      id: "agentic-6-advanced",
+      title: "6. Advanced Applications",
+      description: "Business AI, Developer Workflow, and Research",
+      content: "## Advanced Applications\n\n### Business AI\n- Policy retrieval (RAG) + scheduling (MCP) + reporting (prompts)\n\n### Developer Workflow\n- Code retrieval (RAG) + debugging tools (MCP) + explanations (prompts)\n\n### Research Assistant\n- Paper retrieval (RAG) + reference management (MCP) + summarization (prompts)",
+      codeExample: "print('Personal AI Assistant Active')",
+      translations: {
+        tamil: { title: "6. மேம்பட்ட பயன்பாடுகள்", description: "வணிக AI, டெவலப்பர் பணிப்பாய்வு" },
+        kannada: { title: "6. ಸುಧಾರಿತ ಅನ್ವಯಗಳು", description: "ವ್ಯಾಪಾರ AI, ಡೆವಲಪರ್ ಕೆಲಸದ ಹರಿವು" },
+        telugu: { title: "6. అధునాతన అప్లికేషన్స్", description: "బిజినెస్ AI, డెవలపర్ వర్క్‌ఫ్లో" },
+        hindi: { title: "6. उन्नत अनुप्रयोग", description: "व्यावसायिक AI, डेवलपर वर्कफ़्लो" }
+      },
+      exercises: {
+        beginner: { prompt: "For developers, RAG is used for what?", starterCode: "", expectedOutput: "code retrieval" },
+        intermediate: { prompt: "For business, MCP handles what?", starterCode: "", expectedOutput: "scheduling" },
+        advanced: { prompt: "Print 'Personal AI Assistant'", starterCode: "", expectedOutput: "Personal AI Assistant" }
+      }
+    },
+    {
+      id: "agentic-7-ethics",
+      title: "7. Ethics & Responsible AI",
+      description: "Fairness, Transparency, and Privacy",
+      content: "## Ethics & Responsible AI\n\n### Fairness\n- Bias detection, mitigation strategies\n\n### Transparency\n- Explainable AI (SHAP, LIME)\n\n### Privacy & Impact\n- Differential privacy, federated learning\n- Societal Impact: automation, regulation, job displacement",
+      codeExample: "print('Analyzing ethical risks and applying mitigation')",
+      translations: {
+        tamil: { title: "7. நெறிமுறைகள் & பொறுப்பான AI", description: "நேர்மை, வெளிப்படைத்தன்மை மற்றும் தனியுரிமை" },
+        kannada: { title: "7. ನೈತಿಕತೆ ಮತ್ತು ಜವಾಬ್ದಾರಿಯುತ AI", description: "ನ್ಯಾಯ, ಪಾರದರ್ಶಕತೆ ಮತ್ತು ಗೌಪ್ಯತೆ" },
+        telugu: { title: "7. ఎథిక్స్ & బాధ్యతాయుతమైన AI", description: "న్యాయం, పారదర్శకత మరియు గోప్యత" },
+        hindi: { title: "7. नैतिकता और जिम्मेदार AI", description: "निष्पक्षता, पारदर्शिता और गोपनीयता" }
+      },
+      exercises: {
+        beginner: { prompt: "What does explainable AI provide?", starterCode: "", expectedOutput: "Transparency" },
+        intermediate: { prompt: "Name one explainable AI framework (e.g. SHAP).", starterCode: "", expectedOutput: "SHAP" },
+        advanced: { prompt: "Print 'Mitigation strategies'", starterCode: "", expectedOutput: "Mitigation strategies" }
+      }
+    }
+  ];
+}
 
 export const careerTracks: CareerTrack[] = rawTracks;

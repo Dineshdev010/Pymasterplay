@@ -73,6 +73,31 @@ export default defineConfig(({ mode }) => {
                 },
               },
             },
+            {
+              urlPattern: ({ request }) => 
+                request.destination === "style" || 
+                request.destination === "script" || 
+                request.destination === "worker",
+              handler: "StaleWhileRevalidate",
+              options: {
+                cacheName: "assets-cache",
+                expiration: {
+                  maxEntries: 50,
+                  maxAgeSeconds: 60 * 60 * 24 * 7, // 1 week
+                },
+              },
+            },
+            {
+              urlPattern: ({ request }) => request.destination === "image",
+              handler: "CacheFirst",
+              options: {
+                cacheName: "image-cache",
+                expiration: {
+                  maxEntries: 100,
+                  maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
+                },
+              },
+            },
           ],
         },
         // Avoid a persistent dev service worker so local UI changes are not masked by stale caches.

@@ -1,0 +1,118 @@
+SQL TITLES:
+  SQL Foundations (DQL)
+  SQL அடித்தளம் (DQL)
+  SQL Foundations (DQL)
+  SQL Foundations (DQL)
+  SQL Foundations (DQL)
+  Filtering & Sorting
+  Filtering & Sorting
+  Filtering & Sorting
+  Filtering & Sorting
+  Filtering & Sorting
+  Scalar Functions
+  Scalar Functions
+  Scalar Functions
+  Scalar Functions
+  Scalar Functions
+  Advanced Logic
+  Advanced Logic
+  Advanced Logic
+  Advanced Logic
+  Advanced Logic
+  Aggregations & GROUP BY
+  Aggregations & GROUP BY
+  Aggregations & GROUP BY
+  Aggregations & GROUP BY
+  Aggregations & GROUP BY
+  JOINs
+  JOINs
+  JOINs
+  JOINs
+  JOINs
+  Subqueries
+  Subqueries
+  Subqueries
+  Subqueries
+  Subqueries
+  CTEs (WITH)
+  CTEs (WITH)
+  CTEs (WITH)
+  CTEs (WITH)
+  CTEs (WITH)
+  Window Functions
+  Window Functions
+  Window Functions
+  Window Functions
+  Window Functions
+  DDL (CREATE / ALTER / DROP)
+  DDL (CREATE / ALTER / DROP)
+  DDL (CREATE / ALTER / DROP)
+  DDL (CREATE / ALTER / DROP)
+  DDL (CREATE / ALTER / DROP)
+  DML (INSERT / UPDATE / DELETE)
+  DML (INSERT / UPDATE / DELETE)
+  DML (INSERT / UPDATE / DELETE)
+  DML (INSERT / UPDATE / DELETE)
+  DML (INSERT / UPDATE / DELETE)
+  Transactions (TCL)
+  Transactions (TCL)
+  Transactions (TCL)
+  Transactions (TCL)
+  Transactions (TCL)
+  Indexes & Performance Basics
+  Indexes & Performance Basics
+  Indexes & Performance Basics
+  Indexes & Performance Basics
+  Indexes & Performance Basics
+  Views
+  Views
+  Views
+  Views
+  Views
+
+AIML TITLES:
+  1. Foundations of AI & ML
+  1. AI & ML இன் அடிப்படைகள்
+  1. AI மற்றும் ML ನ ಅಡಿಪಾಯಗಳು
+  1. AI & ML పునాదులు
+  1. AI और ML की नींव
+  2. Data Preparation & Feature Engineering
+  2. தரவு தயாரிப்பு மற்றும் அம்ச பொறியியல்
+  2. ಡೇಟಾ ತಯಾರಿ ಮತ್ತು ಫೀಚರ್ ಎಂಜಿನಿಯರಿಂಗ್
+  2. డేటా ప్రిపరేషన్ & ఫీచర్ ఇంజనీరింగ్
+  2. डेटा तैयारी और फ़ीचर इंजीनियरिंग
+  3. Supervised Learning
+  3. மேற்பார்வையிடப்பட்ட கற்றல்
+  3. ಮೇಲ್ವಿಚಾರಣೆಯ ಕಲಿಕೆ
+  3. సూపర్వైజ్డ్ లెర్నింగ్
+  3. सुपर्वाइज्ड लर्निंग
+  4. Unsupervised Learning
+  4. மேற்பார்வையிடப்படாத கற்றல்
+  4. ಮೇಲ್ವಿಚಾರಣೆಯಿಲ್ಲದ ಕಲಿಕೆ
+  4. అన్-సూపర్వైజ్డ్ లెర్నింగ్
+  4. अनसुपरवाइज्ड लर्निंग
+  5. Neural Networks & Deep Learning
+  5. நரம்பியல் நெட்வொர்க்குகள் & ஆழ்ந்த கற்றல்
+  5. ನರಮಂಡಲದ ಜಾಲಗಳು ಮತ್ತು ಆಳವಾದ ಕಲಿಕೆ
+  5. న్యూరల్ నెట్వర్క్స్ & డీప్ లెర్నింగ్
+  5. न्यूरल नेटवर्क और डीप लर्निंग
+  6. Natural Language Processing (NLP)
+  6. இயற்கை மொழி செயலாக்கம் (NLP)
+  6. ನೈಸರ್ಗಿಕ ಭಾಷಾ ಸಂಸ್ಕರಣೆ (NLP)
+  6. నేచురల్ లాంగ్వేజ్ ప్రాసెసింగ్ (NLP)
+  6. नेचुरल लैंग्वेज प्रोसेसिंग (NLP)
+  7. Computer Vision & Reinforcement Learning
+  7. கம்ப்யூட்டர் விஷன் & வலுவூட்டல் கற்றல்
+  7. ಕಂಪ್ಯೂಟರ್ ವಿಷನ್ ಮತ್ತು ಬಲವರ್ಧನೆಯ ಕಲಿಕೆ
+  7. కంప్యూటర్ విజన్ & రీఇన్ఫోర్స్మెంట్ లెర్నింగ్
+  7. कंप्यूटर विजन और सुदृढीकरण सीखना
+  8. ML Tools, Ethics, and Responsible AI
+  8. ML கருவிகள், நெறிமுறைகள் & பொறுப்பான AI
+  8. ML ಪರಿಕರಗಳು, ನೈತಿಕತೆ ಮತ್ತು ಜವಾಬ್ದಾರಿಯುತ AI
+  8. ML టూల్స్, ఎథిక్స్ & బాధ్యతాయుతమైన AI
+  8. ML टूल्स, नैतिकता और जिम्मेदार AI
+  9. MLOps & Real-World Applications
+  9. MLOps மற்றும் நிஜ உலக பயன்பாடுகள்
+  9. MLOps ಮತ್ತು ನೈಜ-ಪ್ರಪಂಚದ ಅನ್ವಯಗಳು
+  9. MLOps మరియు రియల్-వరల్డ్ అప్లికేషన్స్
+  9. MLOps और वास्तविक दुनिया के अनुप्रयोग

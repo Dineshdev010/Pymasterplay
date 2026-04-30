@@ -1,13 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Editor from "@monaco-editor/react";
 import confetti from "canvas-confetti";
 import { Exercise } from "@/data/lessons";
 import { useProgress } from "@/contexts/ProgressContext";
-import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
+import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs, preloadPyodide, subscribePythonRuntimeStatus, type PythonRuntimeStatus } from "@/lib/piston";
 import { executeSql } from "@/lib/sqlRunner";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square, Terminal } from "lucide-react";
+import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square, Terminal, Loader2 } from "lucide-react";
 
 interface ExerciseEditorProps {
   exercise: Exercise;
@@ -52,12 +52,29 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
   const [isRunning, setIsRunning] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const [pyStatus, setPyStatus] = useState<PythonRuntimeStatus>("idle");
   const { progress, completeExercise, addWallet, unlockSolution } = useProgress();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
   const exerciseKey = `${lessonId}:${level}`;
   const alreadyCompleted = progress.completedExercises.includes(exerciseKey);
   const solutionUnlocked = progress.unlockedSolutions.includes(exerciseKey);
+
+  // Preload Pyodide as soon as any exercise is opened
+  useEffect(() => {
+    if (isOpen && language === "python") {
+      preloadPyodide();
+    }
+  }, [isOpen, language]);
+
+  // Subscribe to Pyodide runtime status for indicator
+  useEffect(() => {
+    if (language !== "python") return;
+    const unsubscribe = subscribePythonRuntimeStatus((status) => {
+      setPyStatus(status);
+    });
+    return unsubscribe;
+  }, [language]);
 
   useEffect(() => {
     setIsOpen(false);
@@ -186,6 +203,12 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
               theme="vs-dark"
               value={code}
               onChange={(v) => setCode(v || "")}
+              loading={
+                <div className="flex flex-col items-center justify-center h-full bg-[#1e1e1e] gap-2">
+                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                  <span className="text-xs text-muted-foreground">Loading editor...</span>
+                </div>
+              }
               options={{
                 fontSize: 13,
                 fontFamily: "'JetBrains Mono', monospace",
@@ -235,8 +258,27 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
 
           <div className="border-t border-border">
             <div className="flex items-center justify-between px-4 py-2 bg-surface-1 gap-2 flex-wrap">
-              <div className="text-xs text-muted-foreground font-mono">
-                Expected: <span className="text-foreground">{exercise.expectedOutput.split("\n")[0]}{exercise.expectedOutput.includes("\n") ? "..." : ""}</span>
+              <div className="flex items-center gap-3">
+                <div className="text-xs text-muted-foreground font-mono">
+                  Expected: <span className="text-foreground">{exercise.expectedOutput.split("\n")[0]}{exercise.expectedOutput.includes("\n") ? "..." : ""}</span>
+                </div>
+                {language === "python" && pyStatus !== "ready" && (
+                  <div className="flex items-center gap-1.5 text-[10px] font-medium">
+                    {pyStatus === "loading" ? (
+                      <><Loader2 className="w-3 h-3 animate-spin text-primary" /><span className="text-primary">Python loading...</span></>
+                    ) : pyStatus === "error" ? (
+                      <span className="text-destructive">⚠ Runtime error</span>
+                    ) : (
+                      <span className="text-muted-foreground/50">Python idle</span>
+                    )}
+                  </div>
+                )}
+                {language === "python" && pyStatus === "ready" && (
+                  <div className="flex items-center gap-1 text-[10px] font-medium text-streak-green">
+                    <span className="w-1.5 h-1.5 rounded-full bg-streak-green animate-pulse" />
+                    Ready
+                  </div>
+                )}
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">
                 <Button

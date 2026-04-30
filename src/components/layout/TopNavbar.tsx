@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
   Check, ChevronDown, Clock, HeartHandshake, Languages, LogIn, LogOut, Menu, Moon, Settings, Sun, 
-  User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw
+  Target, User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -217,7 +217,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
       completionTitle="Thanks for supporting PyMaster"
       completionDescription="You can keep learning while we grow the platform."
     />
-    <header className="h-16 sm:h-14 border-b border-border bg-card/80 backdrop-blur-md fixed top-0 left-0 right-0 z-[999] flex items-center px-2 sm:px-4 justify-between shrink-0">
+    <header className="h-[calc(4rem+env(safe-area-inset-top,0px))] sm:h-[calc(3.5rem+env(safe-area-inset-top,0px))] pt-[env(safe-area-inset-top,0px)] border-b border-border bg-card/80 backdrop-blur-md fixed top-0 left-0 right-0 z-[999] flex items-center px-2 sm:px-4 justify-between shrink-0 transition-all duration-300">
       <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-3">
         <button
           onClick={onMenuToggle}
@@ -248,15 +248,15 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                 <motion.span
                   key={index}
                   animate={{
-                    y: [0, -10, 0, 15, 0], 
-                    rotate: [0, 0, 0, 25, 0], 
-                    opacity: [1, 1, 1, 0.4, 1], 
+                    y: [0, -4, 0, 4, 0], 
+                    rotate: [0, 0, 0, 8, 0], 
+                    opacity: [1, 1, 1, 0.8, 1], 
                   }}
                   transition={{
-                    duration: 2.5,
+                    duration: 3,
                     repeat: Infinity,
-                    repeatDelay: 3, 
-                    delay: index * 0.08, 
+                    repeatDelay: 4, 
+                    delay: index * 0.1, 
                     times: [0, 0.2, 0.4, 0.6, 1], 
                     ease: "easeInOut"
                   }}
@@ -293,7 +293,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               title={navLabel}
             >
               <span className="shrink-0 text-base">{item.emoji}</span>
-              <span className="whitespace-nowrap text-[11px] hidden 2xl:inline font-medium">{navLabel}</span>
+              <span className="whitespace-nowrap text-[11px] hidden lg:inline font-medium">{navLabel}</span>
             </Link>
           );
           })}
@@ -349,7 +349,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
       </div>
       <div className="ml-2 flex shrink-0 items-center gap-1 sm:gap-2">
         {/* Smooth Real-Time Study Clock */}
-        <div className="hidden lg:block">
+        <div className="hidden xl:block">
           <TimeTracker />
         </div>
         
@@ -380,16 +380,16 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <Link
-          to="/contact"
-          className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
+        <button
+          onClick={() => window.dispatchEvent(new CustomEvent("pymaster-show-support-tip"))}
+          className="hidden lg:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
           title={t("common.support")}
         >
           <HeartHandshake className="w-3.5 h-3.5" />
           <span>{t("common.support")}</span>
-        </Link>
+        </button>
 
-        <div className="hidden sm:flex items-center gap-1">
+        <div className="hidden xl:flex items-center gap-1">
           {!user && (
             <button
               onClick={toggleTheme}
@@ -413,15 +413,15 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         </div>
         <Link
           to="/dashboard"
-          className="hidden lg:flex items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_0_14px_rgba(251,191,36,0.14)] transition-all duration-300 hover:scale-105 hover:bg-amber-400/15"
+          className="hidden 2xl:flex items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-3 py-1.5 text-[11px] font-semibold text-amber-200 shadow-[0_0_14px_rgba(251,191,36,0.14)] transition-all duration-300 hover:scale-105 hover:bg-amber-400/15"
           title={`Wallet balance: $${progress.wallet}`}
-        
-        <div className="hidden 2xl:flex">
-          <WalletBalance />
-        </div>
+        >
+          <Wallet className="h-3.5 w-3.5 text-amber-300" />
+          <span className="font-mono tracking-tight">${progress.wallet}</span>
+        </Link>
 
         <button
-          onClick={toggleFocusMode}
+          onClick={() => setShowFocusSettings(true)}
           className={`hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm ${
             isActive 
               ? "bg-primary/10 border-primary/40 text-primary animate-pulse" 
@@ -458,8 +458,8 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         {user ? (
           <DropdownMenu open={profileMenuOpen} onOpenChange={setProfileMenuOpen}>
             <DropdownMenuTrigger asChild>
-              <button id="tour-nav-profile" className="flex items-center gap-2 px-2 py-1.5 rounded-md bg-secondary/50 hover:bg-secondary transition-colors outline-none cursor-pointer shrink-0">
-                <Avatar className="h-7 w-7 shrink-0 border border-primary/25 ring-2 ring-primary/10 shadow-sm">
+              <button id="tour-nav-profile" className="flex items-center gap-2 px-2 py-1.5 rounded-full bg-secondary/30 hover:bg-secondary/50 border border-border/40 transition-all duration-300 outline-none cursor-pointer shrink-0 hover:shadow-md group">
+                <Avatar className="h-7 w-7 shrink-0 border-2 border-primary/30 ring-2 ring-primary/5 shadow-sm transition-transform group-hover:scale-105">
                   {localStorage.getItem("pymaster_avatar") ? (
                     <AvatarImage
                       src={localStorage.getItem("pymaster_avatar") || ""}
@@ -467,21 +467,20 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                       className="object-cover"
                     />
                   ) : null}
-                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-python-yellow/20 text-xs font-bold text-primary">
+                  <AvatarFallback className="bg-gradient-to-br from-primary/20 to-python-yellow/20 text-[10px] font-black text-primary">
                     {(localStorage.getItem("pymaster_name") || user.displayName || user.email || "U")[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="hidden 2xl:block text-xs text-foreground font-medium truncate max-w-[80px]">
+                <span className="text-xs font-bold bg-gradient-to-r from-primary to-python-yellow bg-clip-text text-transparent truncate max-w-[70px] sm:max-w-[120px] drop-shadow-sm animate-in fade-in slide-in-from-right-2 duration-500">
                   {localStorage.getItem("pymaster_name") || user.displayName || user.email?.split("@")[0] || "User"}
                 </span>
-                <Settings className="w-3.5 h-3.5 text-muted-foreground hidden sm:block" />
-                <ChevronDown className="w-4 h-4 text-primary animate-bounce origin-top" />
+                <ChevronDown className="w-3.5 h-3.5 text-primary transition-transform group-hover:translate-y-0.5" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 mt-2">
               <DropdownMenuLabel className="flex flex-col">
                 <span className="truncate font-semibold">{localStorage.getItem("pymaster_name") || user.displayName || "User"}</span>
-                <span className="text-xs text-muted-foreground truncate font-normal">{user.email}</span>
+                <span className="truncate text-[10px] text-muted-foreground font-normal">{user.email}</span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
@@ -490,8 +489,8 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                   <span>{t("common.profileDashboard")}</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleHardRefresh} className="cursor-pointer">
-                <RefreshCw className="mr-2 h-4 w-4" />
+              <DropdownMenuItem onClick={handleHardRefresh} className="cursor-pointer text-primary font-medium">
+                <RefreshCw className="mr-2 h-4 w-4 animate-spin-slow" />
                 <span>Refresh & Update</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
@@ -512,7 +511,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         ) : (
           <Link
             to="/auth"
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-primary to-blue-600 text-white hover:scale-105 transition-all duration-300 shadow-[0_4px_10px_rgba(59,130,246,0.3)] hover:shadow-[0_6px_15px_rgba(59,130,246,0.4)] active:scale-95 shrink-0"
           >
             <LogIn className="w-3.5 h-3.5" />
             <span>{t("common.signIn")}</span>

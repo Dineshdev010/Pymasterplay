@@ -1,6 +1,6 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence, type Easing } from "framer-motion";
+import { motion, AnimatePresence, type Easing, useMotionValue, useSpring, useTransform } from "framer-motion";
 import {
   BarChart3, Globe, Bot, Database, Briefcase, Server,
   ArrowRight, ChevronRight, BookOpen, Code, Zap,
@@ -34,6 +34,31 @@ const careerPaths = [
       { label: "DB Design & Normalization", tier: "master" },
     ],
     projects: ["Sales Dashboard Data", "Social Media Schema", "Inventory Optimization"],
+  },
+  {
+    id: "dsa",
+    title: "DSA Mastery",
+    icon: Code,
+    color: "from-expert-purple to-expert-purple/60",
+    borderColor: "border-expert-purple/40",
+    bgColor: "bg-expert-purple/10",
+    textColor: "text-expert-purple",
+    salary: "Top Tech Skill",
+    description: "Master Data Structures, Algorithms, and complexity analysis for top-tier interviews.",
+    skills: ["Time/Space Complexity", "Advanced Trees & Graphs", "Dynamic Programming", "Recursion Mastery"],
+    tools: ["Python", "Unit Testing", "Debugging", "Big O Analysis"],
+    lessons: [
+      { label: "Basics & Recursion", tier: "beginner" },
+      { label: "Arrays & Strings", tier: "beginner" },
+      { label: "Linked Lists", tier: "beginner" },
+      { label: "Stacks & Queues", tier: "advanced" },
+      { label: "Trees & BST", tier: "advanced" },
+      { label: "Heaps & Sorting", tier: "advanced" },
+      { label: "Graph Algorithms", tier: "master" },
+      { label: "Dynamic Programming", tier: "master" },
+      { label: "Advanced Structures", tier: "master" },
+    ],
+    projects: ["Algorithm Visualizer", "Search Engine Core", "Graph Network Solver"],
   },
   {
     id: "data-analysis",
@@ -310,6 +335,29 @@ const careerPaths = [
     ],
     projects: ["Backup Automator", "Server Health Monitor", "Secured SSH Bastion"],
   },
+  {
+    id: "agentic-ai",
+    title: "Agentic AI Engineering",
+    icon: Bot,
+    color: "from-expert-purple to-expert-purple/60",
+    borderColor: "border-expert-purple/40",
+    bgColor: "bg-expert-purple/10",
+    textColor: "text-expert-purple",
+    salary: "$110K — $180K",
+    description: "Build autonomous AI agents using Prompt Engineering, RAG, and the Model Context Protocol (MCP).",
+    skills: ["Prompt Engineering", "RAG & Vector DBs", "MCP Integration", "LLM Orchestration"],
+    tools: ["OpenAI/Anthropic APIs", "Pinecone/FAISS", "LangChain", "Python"],
+    lessons: [
+      { label: "AI Foundations", tier: "beginner" },
+      { label: "Prompt Engineering", tier: "beginner" },
+      { label: "Retrieval-Augmented Gen", tier: "advanced" },
+      { label: "Model Context Protocol", tier: "advanced" },
+      { label: "Agent Integration", tier: "master" },
+      { label: "Advanced Applications", tier: "master" },
+      { label: "Ethics & Responsible AI", tier: "master" },
+    ],
+    projects: ["PDF Q&A Bot", "SQL Assistant via MCP", "Autonomous Researcher"],
+  },
 ];
 
 const chainFadeIn = {
@@ -323,7 +371,8 @@ const chainFadeIn = {
 
 function getRoadmapWallpaper(pathId?: string) {
   if (pathId === "web-development") return "linear-gradient(130deg, rgba(14, 23, 42, 0.92), rgba(30, 58, 138, 0.36))";
-  if (pathId === "ai-ml") return "linear-gradient(130deg, rgba(17, 24, 39, 0.92), rgba(126, 34, 206, 0.32))";
+    if (pathId === "agentic-ai") return "linear-gradient(130deg, rgba(17, 24, 39, 0.92), rgba(126, 34, 206, 0.42))";
+if (pathId === "ai-ml") return "linear-gradient(130deg, rgba(17, 24, 39, 0.92), rgba(126, 34, 206, 0.32))";
   if (pathId === "linux") return "linear-gradient(130deg, rgba(10, 20, 16, 0.94), rgba(22, 101, 52, 0.3))";
   if (pathId === "data-engineering") return "linear-gradient(130deg, rgba(32, 26, 12, 0.92), rgba(180, 120, 22, 0.32))";
   if (pathId === "cybersecurity") return "linear-gradient(130deg, rgba(36, 10, 14, 0.92), rgba(185, 28, 28, 0.32))";
@@ -354,6 +403,24 @@ const roadmapThemeByPathId: Record<string, {
     sectionGlowC: "bg-[radial-gradient(ellipse_at_50%_80%,hsl(180_62%_40%_/_0.08),transparent_50%)]",
     cardIdleClass: "hover:border-cyan-500/40 hover:shadow-cyan-500/10",
     detailPanelClass: "bg-gradient-to-br from-card via-card to-cyan-500/5",
+  },
+  "agentic-ai": {
+    badgeClass: "bg-expert-purple/10 border-expert-purple/30 text-expert-purple",
+    pulseClass: "bg-expert-purple",
+    sectionGlowA: "bg-[radial-gradient(ellipse_at_20%_50%,hsl(268_62%_54%_/_0.15),transparent_60%)]",
+    sectionGlowB: "bg-[radial-gradient(ellipse_at_80%_20%,hsl(230_82%_56%_/_0.09),transparent_50%)]",
+    sectionGlowC: "bg-[radial-gradient(ellipse_at_50%_80%,hsl(280_65%_46%_/_0.08),transparent_50%)]",
+    cardIdleClass: "hover:border-expert-purple/40 hover:shadow-expert-purple/10",
+    detailPanelClass: "bg-gradient-to-br from-card via-card to-expert-purple/5",
+  },
+  dsa: {
+    badgeClass: "bg-expert-purple/10 border-expert-purple/30 text-expert-purple",
+    pulseClass: "bg-expert-purple",
+    sectionGlowA: "bg-[radial-gradient(ellipse_at_20%_50%,hsl(268_62%_54%_/_0.15),transparent_60%)]",
+    sectionGlowB: "bg-[radial-gradient(ellipse_at_80%_20%,hsl(230_82%_56%_/_0.09),transparent_50%)]",
+    sectionGlowC: "bg-[radial-gradient(ellipse_at_50%_80%,hsl(280_65%_46%_/_0.08),transparent_50%)]",
+    cardIdleClass: "hover:border-expert-purple/40 hover:shadow-expert-purple/10",
+    detailPanelClass: "bg-gradient-to-br from-card via-card to-expert-purple/5",
   },
   "data-analysis": {
     badgeClass: "bg-primary/10 border-primary/30 text-primary",
@@ -465,6 +532,54 @@ const roadmapThemeByPathId: Record<string, {
   },
 };
 
+function TiltCard({ children, className, onClick, isSelected, activeTheme, path }: any) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = event.clientX - rect.left;
+    const mouseY = event.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.button
+      style={{
+        rotateX,
+        rotateY,
+        transformStyle: "preserve-3d",
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onClick={onClick}
+      className={className}
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+    >
+      <div style={{ transform: "translateZ(50px)", transformStyle: "preserve-3d" }}>
+        {children}
+      </div>
+    </motion.button>
+  );
+}
+
 export function CareerRoadmap() {
   const { language } = useLanguage();
   const [selected, setSelected] = useState<string | null>(null);
@@ -493,20 +608,44 @@ export function CareerRoadmap() {
   };
 
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative py-24 overflow-hidden min-h-[90vh]">
+      {/* Dynamic Animated Mesh Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div 
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 5, 0],
+          }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className={`absolute -top-[20%] -left-[10%] w-[60%] h-[60%] rounded-full opacity-30 blur-[80px] ${activeTheme.sectionGlowA}`} 
+        />
+        <motion.div 
+          animate={{
+            scale: [1, 1.2, 1],
+            rotate: [0, -8, 0],
+          }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className={`absolute top-[10%] -right-[10%] w-[50%] h-[50%] rounded-full opacity-30 blur-[80px] ${activeTheme.sectionGlowB}`} 
+        />
+        <motion.div 
+          animate={{
+            scale: [1, 1.15, 1],
+            y: [0, 20, 0],
+          }}
+          transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+          className={`absolute -bottom-[10%] left-[20%] w-[70%] h-[50%] rounded-full opacity-20 blur-[80px] ${activeTheme.sectionGlowC}`} 
+        />
+      </div>
+
       <div
-        className="absolute inset-0 transition-all duration-500"
+        className="absolute inset-0 transition-all duration-700 pointer-events-none"
         style={{
           backgroundImage: activeWallpaper,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          opacity: 0.6,
+          opacity: selected ? 0.35 : 0.25,
         }}
       />
-      {/* Animated mesh gradient bg */}
-      <div className={`absolute inset-0 transition-all duration-500 ${activeTheme.sectionGlowA}`} />
-      <div className={`absolute inset-0 transition-all duration-500 ${activeTheme.sectionGlowB}`} />
-      <div className={`absolute inset-0 transition-all duration-500 ${activeTheme.sectionGlowC}`} />
 
       <div className="relative max-w-6xl mx-auto px-6">
         <motion.div
@@ -550,21 +689,17 @@ export function CareerRoadmap() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 relative z-10">
             {careerPaths.map((path, i) => (
-              <motion.button
+              <TiltCard
                 key={path.id}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                variants={chainFadeIn}
-                custom={i}
                 onClick={() => handleSelect(path.id)}
+                isSelected={selected === path.id}
+                activeTheme={activeTheme}
+                path={path}
                 className={`group relative text-left rounded-2xl p-5 md:p-6 border transition-all duration-300 cursor-pointer ${
                   selected === path.id
                     ? `${path.borderColor} bg-card shadow-lg shadow-primary/5 -translate-y-1`
                     : `border-border bg-card/60 backdrop-blur-sm hover:bg-card hover:-translate-y-1 hover:shadow-md ${activeTheme.cardIdleClass}`
                 }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
               >
                 {/* Pulsing ring indicator for un-selected cards */}
                 {selected !== path.id && (
@@ -611,7 +746,7 @@ export function CareerRoadmap() {
                   <span>{t.tapToExplore}</span>
                   <ArrowRight className="w-2.5 h-2.5" />
                 </div>
-              </motion.button>
+              </TiltCard>
             ))}
           </div>
         </div>
@@ -687,10 +822,16 @@ export function CareerRoadmap() {
                       <Code className="w-4 h-4 text-primary" /> {t.tools}
                     </h4>
                     <div className="flex flex-wrap gap-2">
-                      {selectedPath.tools.map((tool) => (
-                        <span key={tool} className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border text-xs text-muted-foreground font-mono">
+                      {selectedPath.tools.map((tool, k) => (
+                        <motion.span 
+                          key={tool}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.3 + (k * 0.04) }}
+                          className="px-2.5 py-1 rounded-lg bg-surface-2 border border-border text-xs text-muted-foreground font-mono hover:border-primary/40 hover:text-foreground transition-colors cursor-default"
+                        >
                           {tool}
-                        </span>
+                        </motion.span>
                       ))}
                     </div>
                   </div>
@@ -744,9 +885,9 @@ export function CareerRoadmap() {
                       ))}
                     </div>
 
-                    <Button asChild className={`w-full gap-2`}>
+                    <Button asChild className={`w-full gap-2 font-bold h-12 shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all`}>
                       <Link to={selectedPath.id === 'linux' ? '/linux-learn' : `/career/${selectedPath.id}`}>
-                        {t.masterPath} <ArrowRight className="w-4 h-4" />
+                        {t.masterPath} <Rocket className="w-4 h-4 animate-pulse" />
                       </Link>
                     </Button>
                   </div>

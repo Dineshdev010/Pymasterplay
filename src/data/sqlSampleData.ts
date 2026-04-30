@@ -73,7 +73,7 @@ INSERT INTO products (id, name, category, price) VALUES
   (1, 'Logitech Mouse', 'Electronics', 800),
   (2, 'Mechanical Keyboard', 'Electronics', 2500),
   (3, 'Sony Headphones', 'Electronics', 4500),
-  (4, 'Dell 24" Monitor', 'Electronics', 12000),
+  (4, 'Dell 24-inch Monitor', 'Electronics', 12000),
   (5, 'Parker Pen', 'Stationery', 500),
   (6, 'Moleskine Diary', 'Stationery', 1200),
   (7, 'Steelo Water Bottle', 'Home', 450),
