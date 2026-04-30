@@ -16,7 +16,7 @@ import { StreakFire } from "@/components/StreakFire";
 import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp, Brain, Volume2, VolumeX } from "lucide-react";
+import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp, Brain, Volume2, VolumeX, RefreshCw } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { getPublicUrl } from "@/lib/public-url";
@@ -717,6 +717,37 @@ export default function DashboardPage() {
         <p className="text-xs text-muted-foreground leading-relaxed">
           <strong>PyMaster Dashboard:</strong> Track your coding progress, view activity heatmaps, and manage your Python learning profile. Monitor your XP, streaks, and achievements as you advance through the curriculum. This personalized hub helps you stay consistent and visualize your growth as a developer.
         </p>
+      </div>
+
+      {/* PWA Recovery Banner - Temporary */}
+      <div className="mb-6 rounded-2xl border border-blue-500/30 bg-blue-500/5 p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/10 text-blue-500">
+            <RefreshCw className="h-5 w-5 animate-spin" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold text-foreground">Navbar not updating?</h3>
+            <p className="text-xs text-muted-foreground">If you can't see the new Menu dropdown, click the button to force a hard refresh.</p>
+          </div>
+        </div>
+        <Button 
+          variant="outline" 
+          size="sm" 
+          onClick={async () => {
+            if ("serviceWorker" in navigator) {
+              const regs = await navigator.serviceWorker.getRegistrations();
+              for (const r of regs) await r.unregister();
+            }
+            if ("caches" in window) {
+              const keys = await caches.keys();
+              for (const k of keys) await caches.delete(k);
+            }
+            window.location.reload();
+          }}
+          className="shrink-0 bg-blue-500 text-white hover:bg-blue-600 border-none shadow-lg shadow-blue-500/20"
+        >
+          Force Update Now
+        </Button>
       </div>
 
       <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 rounded-none md:rounded-[2rem] ${selectedTheme.shell}`}>
