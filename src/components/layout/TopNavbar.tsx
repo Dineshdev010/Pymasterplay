@@ -229,21 +229,21 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             decoding="async"
             fetchPriority="high"
           />
-          <span className="font-bold text-lg text-foreground hidden sm:flex relative z-10 overflow-hidden">
+          <span className="font-bold text-lg text-foreground flex relative z-10 overflow-hidden">
             {"PyMaster".split("").map((char, index) => (
               <motion.span
                 key={index}
                 animate={{
-                  y: [0, -10, 0, 15, 0], // Jump, snap back, fall down (break), regain
-                  rotate: [0, 0, 0, 25, 0], // Twist when breaking
-                  opacity: [1, 1, 1, 0.4, 1], // Fade slightly when broken
+                  y: [0, -10, 0, 15, 0], 
+                  rotate: [0, 0, 0, 25, 0], 
+                  opacity: [1, 1, 1, 0.4, 1], 
                 }}
                 transition={{
                   duration: 2.5,
                   repeat: Infinity,
-                  repeatDelay: 3, // Sit still for 3 seconds before next loop
-                  delay: index * 0.08, // Stagger each letter
-                  times: [0, 0.2, 0.4, 0.6, 1], // Keyframe timing
+                  repeatDelay: 3, 
+                  delay: index * 0.08, 
+                  times: [0, 0.2, 0.4, 0.6, 1], 
                   ease: "easeInOut"
                 }}
                 style={{ display: "inline-block" }}
@@ -253,7 +253,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             ))}
           </span>
         </Link>
-        <nav id="tour-nav-links" className="ml-1 hidden min-w-0 flex-1 items-center gap-1 overflow-x-auto sm:flex xl:ml-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <nav id="tour-nav-links" className="ml-1 hidden min-w-0 items-center gap-1 sm:flex xl:ml-2">
           <div className="flex shrink-0 items-center gap-0.5">
           {primaryNavItems.map((item) => {
             const navLabel = item.to === "/quick-prep"
@@ -283,55 +283,53 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           );
           })}
           </div>
-          {secondaryNavItems.length > 0 && (
-            <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
-              <DropdownMenuTrigger asChild>
-                <button
-                  className={`relative ml-1 flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-3 xl:text-xs border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                    secondaryNavItems.some((item) => isRouteActive(item.to))
-                      ? "bg-secondary text-foreground font-semibold border-primary/30 shadow-sm"
-                      : "bg-secondary/40 border-border/60 text-foreground/90 hover:bg-secondary hover:border-primary/30 hover:shadow-sm"
-                  }`}
-                  aria-label="Open more navigation links"
-                >
-                  {showMenuHint && !menuOpen ? (
-                    <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary text-primary-foreground px-3 py-1 text-[10px] font-semibold shadow-md border border-primary/30">
-                      {t("common.morePages")}
-                      <span className="absolute left-1/2 top-full -translate-x-1/2 h-2 w-2 rotate-45 bg-primary border-r border-b border-primary/30" />
-                    </span>
-                  ) : null}
-                  {t("common.menu")}
-                  <ChevronDown className="h-3.5 w-3.5" />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="mt-2 w-52">
-                {groupedMenuItems.map((group, groupIndex) => (
-                  <div key={group.label}>
-                    <DropdownMenuLabel className={groupIndex === 0 ? "px-2 py-1.5 text-xs" : "px-2 py-1.5 text-xs mt-1"}>
-                      {group.label}
-                    </DropdownMenuLabel>
-                    {group.items.map((item) => (
-                      <DropdownMenuItem key={item.to} asChild>
-                        <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
-                          <span className="text-sm">{item.emoji}</span>
-                          <span>{t(item.labelKey)}</span>
-                        </Link>
-                      </DropdownMenuItem>
-                    ))}
-                    {groupIndex < groupedMenuItems.length - 1 || ungroupedMenuItems.length > 0 ? <DropdownMenuSeparator /> : null}
-                  </div>
-                ))}
-                {ungroupedMenuItems.map((item) => (
-                  <DropdownMenuItem key={item.to} asChild>
-                    <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
-                      <span className="text-sm">{item.emoji}</span>
-                      <span>{t(item.labelKey)}</span>
-                    </Link>
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+          <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
+            <DropdownMenuTrigger asChild>
+              <button
+                className={`relative ml-1 flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-3 xl:text-xs border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                  secondaryNavItems.some((item) => isRouteActive(item.to))
+                    ? "bg-secondary text-foreground font-semibold border-primary/30 shadow-sm"
+                    : "bg-secondary/40 border-border/60 text-foreground/90 hover:bg-secondary hover:border-primary/30 hover:shadow-sm"
+                }`}
+                aria-label="Open more navigation links"
+              >
+                {showMenuHint && !menuOpen ? (
+                  <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary text-primary-foreground px-3 py-1 text-[10px] font-semibold shadow-md border border-primary/30">
+                    {t("common.morePages")}
+                    <span className="absolute left-1/2 top-full -translate-x-1/2 h-2 w-2 rotate-45 bg-primary border-r border-b border-primary/30" />
+                  </span>
+                ) : null}
+                {t("common.menu")}
+                <ChevronDown className="h-3.5 w-3.5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="start" className="mt-2 w-52">
+              {groupedMenuItems.map((group, groupIndex) => (
+                <div key={group.label}>
+                  <DropdownMenuLabel className={groupIndex === 0 ? "px-2 py-1.5 text-xs" : "px-2 py-1.5 text-xs mt-1"}>
+                    {group.label}
+                  </DropdownMenuLabel>
+                  {group.items.map((item) => (
+                    <DropdownMenuItem key={item.to} asChild>
+                      <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
+                        <span className="text-sm">{item.emoji}</span>
+                        <span>{t(item.labelKey)}</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                  {groupIndex < groupedMenuItems.length - 1 || ungroupedMenuItems.length > 0 ? <DropdownMenuSeparator /> : null}
+                </div>
+              ))}
+              {ungroupedMenuItems.map((item) => (
+                <DropdownMenuItem key={item.to} asChild>
+                  <Link to={item.to} className="flex w-full cursor-pointer items-center gap-2">
+                    <span className="text-sm">{item.emoji}</span>
+                    <span>{t(item.labelKey)}</span>
+                  </Link>
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </nav>
       </div>
       <div className="ml-2 flex shrink-0 items-center gap-2 sm:gap-3">
@@ -482,7 +480,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <div className="px-2 py-1.5 text-[9px] text-muted-foreground/50 font-mono text-right">
-                v1.2.6-forced
+                v1.3.0-final-fix
               </div>
             </DropdownMenuContent>
           </DropdownMenu>
