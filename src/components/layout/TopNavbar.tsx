@@ -196,6 +196,12 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const xpLevel = getXpLevel(progress.xp);
   const isHighRank = xpLevel.level >= 13;
 
+  const isPWA = typeof window !== "undefined" && (
+    window.matchMedia("(display-mode: standalone)").matches || 
+    (window.navigator as any).standalone || 
+    document.referrer.includes("android-app://")
+  );
+
   return (
     <>
     <style>{`
@@ -219,16 +225,23 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         >
           <Menu className="w-5 h-5 sm:w-5 sm:h-5" />
         </button>
-        <Link to="/" className="flex items-center gap-2 group relative overflow-hidden">
-          <motion.img 
-            src="/logo.png" 
-            alt="PyMaster" 
-            className="w-12 h-12 rounded-xl relative z-10 shadow-lg brightness-110 saturate-[1.7] contrast-110" 
-            animate={{ y: [0, -3, 0] }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-            decoding="async"
-            fetchPriority="high"
-          />
+        <Link to="/" className="flex items-center gap-2 group relative">
+          <div className="relative shrink-0">
+            <motion.img 
+              src="/logo.png" 
+              alt="PyMaster" 
+              className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl relative z-10 shadow-lg brightness-110 saturate-[1.7] contrast-110" 
+              animate={{ y: [0, -2, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              decoding="async"
+              fetchPriority="high"
+            />
+            {isPWA && (
+              <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white ring-2 ring-background z-20 shadow-sm animate-pulse">
+                PWA
+              </div>
+            )}
+          </div>
           <span className="font-bold text-lg text-foreground flex relative z-10 overflow-hidden">
             {"PyMaster".split("").map((char, index) => (
               <motion.span
