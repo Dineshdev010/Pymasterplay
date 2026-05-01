@@ -288,7 +288,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               title={navLabel}
             >
               <span className="shrink-0 text-base">{item.emoji}</span>
-              <span className="whitespace-nowrap text-[11px] hidden lg:inline font-medium">{navLabel}</span>
+              <span className="whitespace-nowrap text-[11px] hidden xl:inline font-medium">{navLabel}</span>
             </Link>
           );
           })}
@@ -344,14 +344,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
       </div>
       <div className="ml-2 flex shrink-0 items-center gap-1 sm:gap-2">
         {/* Smooth Real-Time Study Clock */}
-        <div className="hidden 2xl:block">
+        <div className="hidden md:block">
           <TimeTracker />
         </div>
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="hidden 2xl:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium bg-secondary/50 text-foreground hover:bg-secondary transition-colors shrink-0 border border-border/60"
+              className="hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium bg-secondary/50 text-foreground hover:bg-secondary transition-colors shrink-0 border border-border/60"
               aria-label="Select language"
               title={`Language: ${selectedLanguageLabel}`}
             >
@@ -377,14 +377,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("pymaster-show-support-tip"))}
-          className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
+          className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
           title={t("common.support")}
         >
           <HeartHandshake className="w-3.5 h-3.5" />
-          <span>{t("common.support")}</span>
+          <span className="hidden xl:inline">{t("common.support")}</span>
         </button>
 
-        <div className="hidden 2xl:flex items-center gap-1">
+        <div className="hidden md:flex items-center gap-1">
           {!user && (
             <button
               onClick={toggleTheme}
@@ -417,7 +417,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
         <button
           onClick={() => setShowFocusSettings(true)}
-          className={`hidden 2xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm ${
+          className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm ${
             isActive 
               ? "bg-primary/10 border-primary/40 text-primary animate-pulse" 
               : "bg-secondary/40 border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
@@ -426,11 +426,11 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         >
           <Target className={`w-3.5 h-3.5 ${isActive ? "animate-spin-slow" : "group-hover:rotate-12"}`} />
           <span className="font-bold tracking-tight text-[11px] font-mono">
-            {isActive ? formatTime(timeLeft) : <span className="hidden 2xl:inline">Focus</span>}
+            {isActive ? formatTime(timeLeft) : <span className="hidden xl:inline">Focus</span>}
           </span>
         </button>
         <div 
-          className={`hidden xl:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
+          className={`hidden sm:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
           title={`${Math.round(xpLevel.progressPercentage)}% to level ${xpLevel.level + 1}`}
         >
           {isHighRank && (
@@ -439,8 +439,8 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             </div>
           )}
           <Medal className={`w-3.5 h-3.5 ${isHighRank ? "animate-pulse" : ""}`} />
-          <span className="hidden 2xl:inline font-bold tracking-tight">{xpLevel.title} <span className="opacity-30 mx-0.5">•</span> Lv {xpLevel.level}</span>
-          <span className="2xl:hidden font-bold tracking-tight">Lv {xpLevel.level}</span>
+          <span className="hidden xl:inline font-bold tracking-tight">{xpLevel.title} <span className="opacity-30 mx-0.5">•</span> Lv {xpLevel.level}</span>
+          <span className="xl:hidden font-bold tracking-tight">Lv {xpLevel.level}</span>
           
           {/* Micro Progress Bar */}
           <div className="absolute bottom-0 left-0 h-[1.5px] bg-current opacity-20 w-full" />
