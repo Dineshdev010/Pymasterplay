@@ -377,11 +377,11 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("pymaster-show-support-tip"))}
-          className="hidden md:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
+          className="hidden md:flex items-center justify-center w-8 h-8 rounded-md text-green-600 dark:text-green-500 bg-green-600/10 hover:bg-green-600/20 transition-colors shrink-0"
           title={t("common.support")}
+          aria-label={t("common.support")}
         >
-          <HeartHandshake className="w-3.5 h-3.5" />
-          <span className="hidden xl:inline">{t("common.support")}</span>
+          <HeartHandshake className="w-4 h-4" />
         </button>
 
         <div className="hidden md:flex items-center gap-1">
@@ -417,17 +417,31 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
         <button
           onClick={() => setShowFocusSettings(true)}
-          className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm ${
+          className={`hidden md:flex relative items-center justify-center backdrop-blur-md transition-all duration-500 hover:scale-125 active:scale-95 group overflow-hidden ${
             isActive 
-              ? "bg-primary/10 border-primary/40 text-primary animate-pulse" 
-              : "bg-secondary/40 border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              ? "gap-1.5 px-3 py-1.5 rounded-full bg-violet-500/20 border border-violet-500/50 text-violet-600 dark:text-violet-400 shadow-[0_0_20px_rgba(139,92,246,0.4)] animate-pulse" 
+              : "w-8 h-8 rounded-full bg-gradient-to-br from-violet-600 via-fuchsia-500 to-orange-500 text-white shadow-[0_0_20px_rgba(217,70,239,0.6)] hover:shadow-[0_0_30px_rgba(217,70,239,0.8)] border border-white/30"
           }`}
           title={isActive ? "Focus Mode Active" : "Start Focus Mode"}
+          aria-label="Focus Mode"
         >
-          <Target className={`w-3.5 h-3.5 ${isActive ? "animate-spin-slow" : "group-hover:rotate-12"}`} />
-          <span className="font-bold tracking-tight text-[11px] font-mono">
-            {isActive ? formatTime(timeLeft) : <span className="hidden xl:inline">Focus</span>}
-          </span>
+          {/* Background Glow Effect on Hover */}
+          <div className="absolute inset-0 bg-white/20 scale-0 group-hover:scale-150 transition-transform duration-700 blur-xl opacity-0 group-hover:opacity-100" />
+          
+          {isActive && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-[25deg] animate-[nav-shimmer_2s_infinite]" />
+          )}
+          {!isActive && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -skew-x-[25deg] animate-[nav-shimmer_1.5s_infinite] group-hover:animate-[nav-shimmer_0.8s_infinite]" />
+          )}
+          
+          <Target className={`relative z-10 ${isActive ? "w-3.5 h-3.5 animate-spin-slow drop-shadow-md" : "w-4 h-4 group-hover:rotate-[360deg] transition-all duration-1000 ease-in-out drop-shadow-lg"}`} />
+          
+          {isActive && (
+            <span className="relative z-10 font-bold tracking-tight text-[11px] font-mono drop-shadow-md">
+              {formatTime(timeLeft)}
+            </span>
+          )}
         </button>
         <div 
           className={`hidden sm:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
