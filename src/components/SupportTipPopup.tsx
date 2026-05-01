@@ -97,7 +97,7 @@ export function SupportTipPopup() {
                 <div className="relative group shrink-0">
                   <div className="absolute -inset-1 bg-gradient-to-r from-primary to-python-yellow rounded-lg blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
                   <img 
-                    src="/gpay-qr.jpg" 
+                    src="/gpay-qr.jpg?v=1" 
                     alt="Support QR" 
                     className="relative h-16 w-16 rounded-lg border border-border shadow-sm"
                   />

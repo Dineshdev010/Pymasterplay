@@ -60,7 +60,7 @@ export default defineConfig(({ mode }) => {
           skipWaiting: true,
           navigateFallbackDenylist: [/^\/api\//],
           globIgnores: ["**/pyodide/**"],
-          globPatterns: ["**/*.{js,css,html,ico,png,svg}"],
+          globPatterns: ["**/*.{js,css,html,ico,png,svg,jpg,jpeg,webp}"],
           runtimeCaching: [
             {
               urlPattern: ({ url }) => url.pathname.startsWith("/pyodide/"),

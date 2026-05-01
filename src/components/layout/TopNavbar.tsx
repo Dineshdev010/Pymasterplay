@@ -409,11 +409,38 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         </div>
         <Link
           to="/dashboard"
-          className="hidden sm:flex items-center gap-1 sm:gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-semibold text-amber-200 shadow-[0_0_14px_rgba(251,191,36,0.14)] transition-all duration-300 hover:scale-105 hover:bg-amber-400/15 shrink-0"
-          title={`Wallet balance: $${progress.wallet}`}
+          className="hidden sm:flex relative items-center rounded-full border border-white/10 bg-secondary/20 backdrop-blur-md shadow-lg transition-all duration-500 hover:scale-105 group overflow-hidden shrink-0 h-9"
+          title={`${xpLevel.title} Lv ${xpLevel.level} • Wallet: $${progress.wallet.toLocaleString()}`}
         >
-          <Wallet className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-300 shrink-0" />
-          <span className="font-mono tracking-tight shrink-0">${progress.wallet}</span>
+          {/* Shared Shimmer Effect */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-[25deg] animate-[nav-shimmer_5s_infinite] pointer-events-none" />
+
+          {/* XP Level Section */}
+          <div className={`flex items-center gap-1.5 px-3 h-full ${xpLevel.color} ${xpLevel.bg} border-r border-white/10 relative`}>
+            {isHighRank && (
+              <div className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
+                <div className="w-[150%] h-full bg-gradient-to-r from-transparent via-white to-transparent -skew-x-[25deg] animate-[nav-shimmer_3s_infinite]" />
+              </div>
+            )}
+            <Medal className={`w-3.5 h-3.5 ${isHighRank ? "animate-pulse" : ""}`} />
+            <span className="font-bold tracking-tight text-[11px] whitespace-nowrap">
+              <span className="hidden xl:inline mr-1">{xpLevel.title}</span>Lv {xpLevel.level}
+            </span>
+            {/* Micro Progress Bar */}
+            <div className="absolute bottom-0 left-0 h-[1.5px] bg-current opacity-10 w-full" />
+            <div 
+              className="absolute bottom-0 left-0 h-[1.5px] bg-current shadow-[0_0_4px_currentColor] transition-all duration-1000 ease-out" 
+              style={{ width: `${xpLevel.progressPercentage}%` }} 
+            />
+          </div>
+
+          {/* Wallet Section */}
+          <div className="flex items-center gap-1.5 px-3 h-full bg-amber-500/10 text-amber-200">
+            <Wallet className="h-3.5 w-3.5 text-amber-400 shrink-0 group-hover:rotate-12 transition-transform duration-300 drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+            <span className="font-mono tracking-tighter shrink-0 font-black text-[11px]">
+              ${progress.wallet.toLocaleString()}
+            </span>
+          </div>
         </Link>
 
         <button
@@ -444,26 +471,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             </span>
           )}
         </button>
-        <div 
-          className={`hidden sm:flex relative items-center gap-1.5 text-[10px] px-3 py-1.5 rounded-full border backdrop-blur-md overflow-hidden transition-all duration-500 hover:scale-105 active:scale-95 group cursor-default shadow-sm ${xpLevel.color} ${xpLevel.bg} ${xpLevel.border}`}
-          title={`${Math.round(xpLevel.progressPercentage)}% to level ${xpLevel.level + 1}`}
-        >
-          {isHighRank && (
-            <div className="absolute inset-0 w-full h-full pointer-events-none opacity-40">
-              <div className="w-[150%] h-full bg-gradient-to-r from-transparent via-white to-transparent -skew-x-[25deg] animate-[nav-shimmer_5s_infinite]" />
-            </div>
-          )}
-          <Medal className={`w-3.5 h-3.5 ${isHighRank ? "animate-pulse" : ""}`} />
-          <span className="hidden xl:inline font-bold tracking-tight">{xpLevel.title} <span className="opacity-30 mx-0.5">•</span> Lv {xpLevel.level}</span>
-          <span className="xl:hidden font-bold tracking-tight">Lv {xpLevel.level}</span>
-          
-          {/* Micro Progress Bar */}
-          <div className="absolute bottom-0 left-0 h-[1.5px] bg-current opacity-20 w-full" />
-          <div 
-            className="absolute bottom-0 left-0 h-[1.5px] bg-current shadow-[0_0_4px_currentColor] transition-all duration-1000 ease-out" 
-            style={{ width: `${xpLevel.progressPercentage}%` }} 
-          />
-        </div>
+
 
         {user ? (
           <DropdownMenu open={profileMenuOpen} onOpenChange={setProfileMenuOpen}>
