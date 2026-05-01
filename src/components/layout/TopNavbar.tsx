@@ -236,11 +236,6 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               decoding="async"
               fetchPriority="high"
             />
-            {isPWA && (
-              <div className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[8px] font-bold text-white ring-2 ring-background z-20 shadow-sm animate-pulse">
-                PWA
-              </div>
-            )}
           </div>
           <span className="font-bold text-base sm:text-lg text-foreground flex relative z-10 shrink-0">
             <span className="hidden sm:inline-flex">
@@ -349,14 +344,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
       </div>
       <div className="ml-2 flex shrink-0 items-center gap-1 sm:gap-2">
         {/* Smooth Real-Time Study Clock */}
-        <div className="hidden xl:block">
+        <div className="hidden 2xl:block">
           <TimeTracker />
         </div>
         
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <button
-              className="hidden xl:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium bg-secondary/50 text-foreground hover:bg-secondary transition-colors shrink-0 border border-border/60"
+              className="hidden 2xl:flex items-center gap-1 px-2 py-1.5 rounded-md text-xs font-medium bg-secondary/50 text-foreground hover:bg-secondary transition-colors shrink-0 border border-border/60"
               aria-label="Select language"
               title={`Language: ${selectedLanguageLabel}`}
             >
@@ -382,14 +377,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("pymaster-show-support-tip"))}
-          className="hidden lg:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
+          className="hidden 2xl:flex items-center gap-1 px-2.5 py-1.5 rounded-md text-xs font-medium bg-green-600 text-white hover:bg-green-700 transition-colors shrink-0"
           title={t("common.support")}
         >
           <HeartHandshake className="w-3.5 h-3.5" />
           <span>{t("common.support")}</span>
         </button>
 
-        <div className="hidden xl:flex items-center gap-1">
+        <div className="hidden 2xl:flex items-center gap-1">
           {!user && (
             <button
               onClick={toggleTheme}
@@ -422,7 +417,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
         <button
           onClick={() => setShowFocusSettings(true)}
-          className={`hidden xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm ${
+          className={`hidden 2xl:flex items-center gap-1.5 px-3 py-1.5 rounded-full border backdrop-blur-md transition-all duration-300 hover:scale-105 active:scale-95 group shadow-sm ${
             isActive 
               ? "bg-primary/10 border-primary/40 text-primary animate-pulse" 
               : "bg-secondary/40 border-border/60 text-muted-foreground hover:bg-secondary hover:text-foreground"
