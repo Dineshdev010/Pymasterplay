@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
   Check, ChevronDown, Clock, HeartHandshake, Languages, LogIn, LogOut, Menu, Moon, Settings, Sun, 
-  Target, User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw
+  Target, User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw, LayoutGrid
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -296,21 +296,23 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                className={`relative ml-1 flex shrink-0 items-center gap-1 rounded-full px-3 py-1.5 text-[11px] transition-all duration-200 xl:gap-1.5 xl:px-3 xl:text-xs border focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                className={`relative ml-1 flex shrink-0 items-center gap-2 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all duration-500 group overflow-hidden border border-white/5 hover:border-white/20 ${
                   secondaryNavItems.some((item) => isRouteActive(item.to))
-                    ? "bg-secondary text-foreground font-semibold border-primary/30 shadow-sm"
-                    : "bg-secondary/40 border-border/60 text-foreground/90 hover:bg-secondary hover:border-primary/30 hover:shadow-sm"
+                    ? "bg-violet-500/20 text-violet-300 border-violet-500/40 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
+                    : "bg-secondary/40 text-muted-foreground hover:text-violet-300 hover:bg-secondary/60 hover:shadow-lg"
                 }`}
                 aria-label="Open more navigation links"
               >
-                {showMenuHint && !menuOpen ? (
-                  <span className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-primary text-primary-foreground px-3 py-1 text-[10px] font-semibold shadow-md border border-primary/30">
-                    {t("common.morePages")}
-                    <span className="absolute left-1/2 top-full -translate-x-1/2 h-2 w-2 rotate-45 bg-primary border-r border-b border-primary/30" />
-                  </span>
-                ) : null}
-                {t("common.menu")}
-                <ChevronDown className="h-3.5 w-3.5" />
+                {/* Subtle Shimmer */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-[25deg] animate-[nav-shimmer_6s_infinite] pointer-events-none" />
+
+                <div className="relative flex items-center justify-center">
+                  {/* Subtle pulsing background behind icon */}
+                  <div className="absolute inset-0 bg-violet-400 rounded-full animate-ping opacity-20 group-hover:opacity-40" />
+                  <LayoutGrid className="relative w-3.5 h-3.5 text-violet-400 group-hover:rotate-90 group-hover:scale-110 transition-all duration-500" />
+                </div>
+
+                <span className="relative z-10">{t("common.menu")}</span>
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="mt-2 w-52">
