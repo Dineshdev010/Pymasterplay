@@ -377,11 +377,12 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
         <button
           onClick={() => window.dispatchEvent(new CustomEvent("pymaster-show-support-tip"))}
-          className="hidden md:flex items-center justify-center w-8 h-8 rounded-md text-green-600 dark:text-green-500 bg-green-600/10 hover:bg-green-600/20 transition-colors shrink-0"
+          className="hidden md:flex items-center justify-center w-8 h-8 rounded-full text-emerald-600 dark:text-emerald-400 bg-emerald-500/5 border border-emerald-500/20 hover:bg-emerald-500/10 hover:border-emerald-500/40 hover:shadow-[0_0_15px_rgba(16,185,129,0.2)] transition-all duration-500 shrink-0 group relative overflow-hidden"
           title={t("common.support")}
           aria-label={t("common.support")}
         >
-          <HeartHandshake className="w-4 h-4" />
+          <div className="absolute inset-0 bg-emerald-400/0 group-hover:bg-emerald-400/5 transition-colors duration-500" />
+          <HeartHandshake className="w-4 h-4 relative z-10 group-hover:scale-125 group-hover:animate-pulse transition-transform duration-500" />
         </button>
 
         <div className="hidden md:flex items-center gap-1">
