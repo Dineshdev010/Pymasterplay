@@ -7,6 +7,7 @@ export interface Exercise {
   correctOption?: number;
   blanks?: string[];
   solution?: string;
+  hint?: string; 
 }
 
 export interface Lesson {

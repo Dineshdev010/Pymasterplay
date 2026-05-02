@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { motion } from "framer-motion";
 import Editor from "@monaco-editor/react";
 import confetti from "canvas-confetti";
 import { Exercise } from "@/data/lessons";
@@ -145,7 +146,7 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
       setIsRunning(true);
       setOutput("🎤 Listening... Please speak into your microphone.");
       
-      const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
       
       if (!SpeechRecognition) {
         setOutput("❌ Speech recognition is not supported in your browser. Please try Chrome or Edge.");

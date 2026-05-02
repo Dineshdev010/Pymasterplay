@@ -33,7 +33,7 @@ interface ExecutionOptions {
   timeoutMs?: number;
 }
 
-export type PythonRuntimeStatus = "idle" | "loading" | "ready" | "error";
+export type PythonRuntimeStatus = "idle" | "loading" | "ready" | "error" | "busy";
 
 const DEFAULT_TIMEOUT_MS = 60000;
 const INIT_TIMEOUT_MS = 120000;
@@ -142,6 +142,9 @@ function runPythonExecution(code: string, options?: ExecutionOptions): Promise<E
     const requestId = nextRequestId++;
     const timeoutMs = options?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
 
+    const previousStatus = runtimeStatus;
+    setRuntimeStatus("busy");
+    
     (async () => {
       try {
         const activeWorker = await ensureWorkerReady();
@@ -163,6 +166,7 @@ function runPythonExecution(code: string, options?: ExecutionOptions): Promise<E
           cleanup();
           window.clearTimeout(activeExecution.timeoutId);
           activeExecution = null;
+          setRuntimeStatus(previousStatus === "error" ? "ready" : previousStatus);
           resolve(result);
         };
 

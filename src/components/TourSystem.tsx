@@ -201,6 +201,7 @@ export const TourSystem: React.FC = () => {
 
   return (
     <Joyride
+      // @ts-ignore
       callback={handleJoyrideCallback}
       continuous
       hideBackButton

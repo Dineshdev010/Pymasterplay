@@ -147,7 +147,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     );
   }
 
-  const hint = exercise.hint || generateHint(exercise);
+  const hint = exercise.hint  || generateHint(exercise);
   const solution = generateSolution(exercise);
 
   return (
