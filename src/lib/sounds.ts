@@ -20,7 +20,7 @@ function isSoundMuted(): boolean {
 
 function getAudioContext(): AudioContext {
   if (!sharedAudioCtx || sharedAudioCtx.state === "closed") {
-    const Ctor = window.AudioContext || window.webkitAudioContext;
+    const Ctor = window.AudioContext || (window as any).webkitAudioContext;
     sharedAudioCtx = new Ctor();
   }
   // Resume if suspended by browser autoplay policy
@@ -79,42 +79,39 @@ export function playCelebrationSound() {
 }
 
 /**
- * Play a simulated applause sound using filtered noise.
- * Used when a lesson is completed.
+ * Play a sparkly musical chime.
+ * Used when a problem is solved to provide a premium, rewarding feel.
  */
 export function playApplauseSound() {
   try {
     if (isSoundMuted()) return;
     const audioCtx = getAudioContext();
 
-    const duration = 1.5;
-    const bufferSize = audioCtx.sampleRate * duration;
-    // Create an audio buffer and fill it with custom noise
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
+    // High-pitched "sparkle" chime: G6, B6, D7 (G Major triad)
+    const notes = [1567.98, 1975.53, 2349.32];
+    let startTime = audioCtx.currentTime;
 
-    for (let i = 0; i < bufferSize; i++) {
-      const t = i / audioCtx.sampleRate;
-      // Envelope: volume rises then falls over the duration (bell curve)
-      const envelope = Math.sin(Math.PI * t / duration) * 0.15;
-      // Clapping rhythm: creates pulsing effect
-      const clap = Math.sin(t * 12) > 0.3 ? 1 : 0.3;
-      // Random noise × envelope × clapping rhythm
-      data[i] = (Math.random() * 2 - 1) * envelope * clap;
-    }
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
 
-    // Apply a bandpass filter to make noise sound more like clapping
-    const source = audioCtx.createBufferSource();
-    source.buffer = buffer;
+      osc.type = "sine"; // Pure, clean tone
+      osc.frequency.value = freq;
 
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = "bandpass"; // Only let mid-range frequencies through
-    filter.frequency.value = 2000;
-    filter.Q.value = 0.5;
+      const dur = 0.15;
+      // Quick attack and smooth decay for a "plucked" or "sparkle" effect
+      gain.gain.setValueAtTime(0, startTime);
+      gain.gain.linearRampToValueAtTime(0.6, startTime + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, startTime + dur);
 
-    source.connect(filter);
-    filter.connect(audioCtx.destination);
-    source.start();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(startTime);
+      osc.stop(startTime + dur);
+
+      startTime += 0.05; // Play notes in rapid succession
+    });
   } catch {
     // Audio not supported
   }
@@ -142,7 +139,7 @@ export function playLevelUpSound() {
       osc.frequency.value = freq;
 
       const dur = 0.12;
-      gain.gain.setValueAtTime(0.2, startTime);
+      gain.gain.setValueAtTime(0.4, startTime);
       gain.gain.exponentialRampToValueAtTime(0.01, startTime + dur);
 
       osc.connect(gain);

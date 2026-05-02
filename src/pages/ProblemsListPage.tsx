@@ -52,6 +52,22 @@ export default function ProblemsListPage() {
     expert: problems.filter(p => p.difficulty === "expert").length,
   };
 
+  const solvedCounts = {
+    basic: problems.filter(p => p.difficulty === "basic" && progress.solvedProblems.includes(p.id)).length,
+    junior: problems.filter(p => p.difficulty === "junior" && progress.solvedProblems.includes(p.id)).length,
+    intermediate: problems.filter(p => p.difficulty === "intermediate" && progress.solvedProblems.includes(p.id)).length,
+    advanced: problems.filter(p => p.difficulty === "advanced" && progress.solvedProblems.includes(p.id)).length,
+    expert: problems.filter(p => p.difficulty === "expert" && progress.solvedProblems.includes(p.id)).length,
+  };
+
+  const masteryStats = [
+    { key: "basic", label: "Basic", solved: solvedCounts.basic, total: filterCounts.basic, color: "bg-primary", textColor: "text-primary" },
+    { key: "junior", label: "Junior", solved: solvedCounts.junior, total: filterCounts.junior, color: "bg-streak-green", textColor: "text-streak-green" },
+    { key: "intermediate", label: "Intermediate", solved: solvedCounts.intermediate, total: filterCounts.intermediate, color: "bg-python-yellow", textColor: "text-python-yellow" },
+    { key: "advanced", label: "Advanced", solved: solvedCounts.advanced, total: filterCounts.advanced, color: "bg-destructive", textColor: "text-destructive" },
+    { key: "expert", label: "Expert", solved: solvedCounts.expert, total: filterCounts.expert, color: "bg-expert-purple", textColor: "text-expert-purple" },
+  ];
+
   const text = {
     english: {
       title: "Coding Challenges",
@@ -139,6 +155,39 @@ export default function ProblemsListPage() {
           Prepare for technical interviews with company-specific question sets from major tech firms. 
           Filter by difficulty—Basic, Junior, Intermediate, Advanced, and Expert—to find the perfect match for your current skill level and track your consistency with our streak system.
         </p>
+      </div>
+
+      {/* Mastery Distribution Chart */}
+      <div className="mb-8 p-5 sm:p-6 rounded-2xl border border-border/60 bg-card/50 backdrop-blur-sm shadow-xl">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Mastery Progress</span>
+            <div className="flex items-end gap-2">
+              <span className="text-4xl font-black text-foreground leading-none">{progress.solvedProblems.length}</span>
+              <span className="text-lg font-bold text-muted-foreground leading-none mb-1">/ {problems.length}</span>
+              <span className="ml-2 text-xs font-bold text-streak-green bg-streak-green/10 px-2 py-0.5 rounded-full">
+                {Math.round((progress.solvedProblems.length / problems.length) * 100)}% Solved
+              </span>
+            </div>
+          </div>
+          
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-4">
+            {masteryStats.map((stat) => (
+              <div key={stat.key} className="flex flex-col gap-1.5">
+                <div className="flex justify-between items-center px-0.5">
+                  <span className="text-[10px] font-bold uppercase tracking-tight text-muted-foreground">{stat.label}</span>
+                  <span className={`text-[10px] font-mono font-bold ${stat.textColor}`}>{stat.solved}/{stat.total}</span>
+                </div>
+                <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full ${stat.color} transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(var(--primary-rgb),0.3)]`} 
+                    style={{ width: `${(stat.solved / stat.total) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
