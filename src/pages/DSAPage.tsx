@@ -6,7 +6,7 @@
 // ============================================================
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { BookOpen, Brain, Search, Zap, ArrowRight, ArrowLeft, CheckCircle2, Code, Target, Lightbulb, TrendingUp, ExternalLink, PlayCircle, AlertTriangle, CheckCheck, HelpCircle } from "lucide-react";
 import type { Easing } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -70,7 +70,7 @@ function getLocalizedDSATopic(topic: DSATopic | undefined, language: LearnLangua
   };
 }
 
-const dsaTopics: DSATopic[] = [
+export const dsaTopics: DSATopic[] = [
   // FUNDAMENTALS
   {
     id: "arrays", title: "Arrays & Lists", emoji: "📦", category: "fundamentals", difficulty: "Easy",
@@ -1945,8 +1945,25 @@ function getTopicPlaybook(topic: DSATopic) {
 
 export default function DSAPage() {
   const canonical = "https://pymaster.pro/dsa";
+  const [searchParams, setSearchParams] = useSearchParams();
+  const topicFromUrl = searchParams.get("topic");
+  const [selectedTopic, setSelectedTopic] = useState<string | null>(topicFromUrl);
+
   const { language } = useLanguage();
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
+
+  // Update selectedTopic if URL param changes
+  useEffect(() => {
+    if (topicFromUrl && topicFromUrl !== selectedTopic) {
+      setSelectedTopic(topicFromUrl);
+    }
+  }, [topicFromUrl, selectedTopic]);
+
+  // Sync URL param when selectedTopic changes
+  useEffect(() => {
+    if (selectedTopic && selectedTopic !== topicFromUrl) {
+      setSearchParams({ topic: selectedTopic }, { replace: true });
+    }
+  }, [selectedTopic, topicFromUrl, setSearchParams]);
   const [visualInput, setVisualInput] = useState("1,2,3,4,5");
   const [windowStart, setWindowStart] = useState(0);
   const [windowSize, setWindowSize] = useState(3);

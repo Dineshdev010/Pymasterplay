@@ -1,0 +1,232 @@
+﻿diff --git a/src/pages/LearnPage.tsx b/src/pages/LearnPage.tsx
+index f41e26d..ba92f71 100644
+--- a/src/pages/LearnPage.tsx
++++ b/src/pages/LearnPage.tsx
+@@ -18,9 +18,22 @@ import { toast } from "sonner";
+ import { Helmet } from "react-helmet-async";
+ import { useLanguage } from "@/contexts/LanguageContext";
+ import { useCallback } from "react";
++import { motion } from "framer-motion";
+ 
+ const categoryOrder = ["Beginner", "Intermediate", "Advanced", "Expert"] as const;
+ 
++// Define Learning Modules for better curriculum structure
++const moduleDefinitions = [
++  { id: "m1", title: "Python Basics", lessonIds: ["fundamentals", "variables", "input_output", "numbers", "strings"] },
++  { id: "m2", title: "Logic & Control", lessonIds: ["control_flow", "loops", "itertools"] },
++  { id: "m3", title: "Data Structures", lessonIds: ["lists", "tuples", "sets", "dictionaries", "list_comprehensions"] },
++  { id: "m4", title: "Functional Programming", lessonIds: ["functions", "recursion", "decorators", "lambdas", "functional_tools"] },
++  { id: "m5", title: "File Handling & Modules", lessonIds: ["modules", "imports", "files", "json_data"] },
++  { id: "m6", title: "Object Oriented Python", lessonIds: ["classes", "inheritance", "dunder_methods"] },
++  { id: "m7", title: "Intermediate Skills", lessonIds: ["exceptions", "regex", "testing", "debugging"] },
++  { id: "m8", title: "Advanced Topics", lessonIds: ["concurrency", "apis", "web_scraping"] },
++];
++
+ const categoryTone: Record<string, { label: string; heading: string; badge: string; bg: string }> = {
+   Beginner: {
+     label: "text-streak-green",
+@@ -1583,73 +1596,148 @@ export default function LearnPage() {
+         <nav className="p-2">
+           {categories.map(cat => {
+             const catLessons = getLessonsByCategory(cat);
++            const useModules = ["Beginner", "Intermediate", "Advanced", "Expert"].includes(cat);
++            
+             return (
+-              <div key={cat} className="mb-3">
+-                <div className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider ${categoryTone[cat].label}`}>
+-                  {categoryTone[cat].heading}
++              <div key={cat} className="mb-6">
++                <div className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] mb-3 flex items-center justify-between ${categoryTone[cat].label}`}>
++                  <span>{categoryTone[cat].heading}</span>
++                  <span className="text-[9px] opacity-60 font-mono">{catLessons.length} Topics</span>
+                 </div>
+-                {catLessons.map((lesson) => {
+-                  const localizedLesson = getLocalizedLesson(lesson, language) ?? lesson;
+-                  const globalIndex = lessons.indexOf(lesson);
+-                  const unlocked = isLessonUnlocked(globalIndex);
+-                  const exercisesDone = getLessonProgress(lesson.id);
+-                  const allDone = exercisesDone === 3;
+-                  return (
+-                    <button
+-                      key={lesson.id}
+-                      onClick={() => handleSelectLesson(lesson.id, globalIndex, unlocked)}
+-                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors mb-0.5 ${
+-                        !unlocked
+-                          ? "text-muted-foreground/60 hover:bg-surface-2 cursor-pointer"
+-                          : selectedId === lesson.id
+-                          ? "bg-secondary text-foreground"
+-                          : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+-                      }`}
+-                    >
+-                      <div className="flex items-center gap-2">
+-                        {!unlocked ? (
+-                          <Lock className="w-3.5 h-3.5 text-muted-foreground/60 shrink-0" />
+-                        ) : allDone ? (
+-                          <CheckCircle2 className="w-4 h-4 text-streak-green shrink-0" />
+-                        ) : (
+-                          <span className="w-4 h-4 rounded-full border border-border text-[10px] flex items-center justify-center shrink-0">
+-                            {globalIndex + 1}
+-                          </span>
+-                        )}
+-                        <span className="truncate flex-1">{localizedLesson.title}</span>
+-                        {!unlocked && (
+-                          <span className="text-[10px] text-primary flex items-center gap-0.5"><Play className="w-3 h-3" />Sponsor / $100</span>
+-                        )}
+-                      </div>
+-                      {/* Progress bar for unlocked lessons */}
+-                      {unlocked && (
+-                        <div className="mt-1.5 flex items-center gap-2">
+-                          <div className="flex-1 h-1.5 bg-surface-2 rounded-full overflow-hidden">
+-                            <div 
+-                              className={`h-full transition-all duration-300 ${
+-                                allDone ? "bg-streak-green" : exercisesDone > 0 ? "bg-python-yellow" : "bg-muted-foreground/20"
+-                              }`}
+-                              style={{ width: `${(exercisesDone / 3) * 100}%` }}
++
++                {useModules ? (
++                  <div className="space-y-6 ml-1 border-l border-border/50">
++                    {moduleDefinitions.map((mod) => {
++                      const modLessons = catLessons.filter(l => mod.lessonIds.includes(l.id));
++                      if (modLessons.length === 0) return null;
++                      
++                      const completedCount = modLessons.filter(l => getLessonProgress(l.id) === 3).length;
++                      const progress = (completedCount / modLessons.length) * 100;
++
++                      return (
++                        <div key={mod.id} className="pl-3 relative">
++                          <div className="absolute left-[-5px] top-1.5 w-2 h-2 rounded-full bg-border border border-background shadow-sm" />
++                          
++                          <div className="flex items-center justify-between mb-2">
++                            <span className="text-[10px] font-extrabold text-foreground/60 uppercase tracking-widest">{mod.title}</span>
++                            <span className="text-[9px] font-bold text-primary tabular-nums">{completedCount}/{modLessons.length}</span>
++                          </div>
++
++                          <div className="h-0.5 w-full bg-white/5 rounded-full overflow-hidden mb-3">
++                            <motion.div 
++                              initial={{ width: 0 }}
++                              animate={{ width: `${progress}%` }}
++                              className="h-full bg-primary/60"
+                             />
+                           </div>
+-                          <span className={`text-[10px] tabular-nums ${
+-                            allDone ? "text-streak-green" : exercisesDone > 0 ? "text-python-yellow" : "text-muted-foreground"
+-                          }`}>
+-                            {exercisesDone}/3
+-                          </span>
++
++                          <div className="space-y-1">
++                            {modLessons.map((lesson) => {
++                              const localizedLesson = getLocalizedLesson(lesson, language) ?? lesson;
++                              const globalIndex = lessons.indexOf(lesson);
++                              const unlocked = isLessonUnlocked(globalIndex);
++                              const exercisesDone = getLessonProgress(lesson.id);
++                              const allDone = exercisesDone === 3;
++                              return (
++                                <button
++                                  key={lesson.id}
++                                  onClick={() => handleSelectLesson(lesson.id, globalIndex, unlocked)}
++                                  className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all group relative ${
++                                    !unlocked
++                                      ? "text-muted-foreground/40 hover:bg-white/5 cursor-pointer"
++                                      : selectedId === lesson.id
++                                      ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
++                                      : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
++                                  }`}
++                                >
++                                  <div className="flex items-center gap-2">
++                                    {!unlocked ? (
++                                      <Lock className="w-3 h-3 text-muted-foreground/40 shrink-0" />
++                                    ) : allDone ? (
++                                      <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${selectedId === lesson.id ? "text-primary-foreground" : "text-streak-green"}`} />
++                                    ) : (
++                                      <div className={`w-3.5 h-3.5 rounded-full border text-[9px] flex items-center justify-center shrink-0 ${selectedId === lesson.id ? "border-primary-foreground/50" : "border-border"}`}>
++                                        {globalIndex + 1}
++                                      </div>
++                                    )}
++                                    <span className="truncate flex-1 font-medium text-xs tracking-tight">{localizedLesson.title}</span>
++                                    {unlocked && exercisesDone > 0 && exercisesDone < 3 && (
++                                      <div className={`h-1 w-4 rounded-full ${selectedId === lesson.id ? "bg-primary-foreground/40" : "bg-python-yellow/40"}`} />
++                                    )}
++                                  </div>
++                                </button>
++                              );
++                            })}
++                          </div>
+                         </div>
+-                      )}
+-                    </button>
+-                  );
+-                })}
++                      );
++                    })}
++                  </div>
++                ) : (
++                  <div className="space-y-1">
++                    {catLessons.map((lesson) => {
++                      const localizedLesson = getLocalizedLesson(lesson, language) ?? lesson;
++                      const globalIndex = lessons.indexOf(lesson);
++                      const unlocked = isLessonUnlocked(globalIndex);
++                      const exercisesDone = getLessonProgress(lesson.id);
++                      const allDone = exercisesDone === 3;
++                      return (
++                        <button
++                          key={lesson.id}
++                          onClick={() => handleSelectLesson(lesson.id, globalIndex, unlocked)}
++                          className={`w-full text-left px-3 py-2 rounded-xl text-sm transition-all group relative ${
++                            !unlocked
++                              ? "text-muted-foreground/40 hover:bg-white/5 cursor-pointer"
++                              : selectedId === lesson.id
++                              ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
++                              : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
++                          }`}
++                        >
++                          <div className="flex items-center gap-2">
++                            {!unlocked ? (
++                              <Lock className="w-3 h-3 text-muted-foreground/40 shrink-0" />
++                            ) : allDone ? (
++                              <CheckCircle2 className={`w-3.5 h-3.5 shrink-0 ${selectedId === lesson.id ? "text-primary-foreground" : "text-streak-green"}`} />
++                            ) : (
++                              <div className={`w-3.5 h-3.5 rounded-full border text-[9px] flex items-center justify-center shrink-0 ${selectedId === lesson.id ? "border-primary-foreground/50" : "border-border"}`}>
++                                {globalIndex + 1}
++                              </div>
++                            )}
++                            <span className="truncate flex-1 font-medium text-xs tracking-tight">{localizedLesson.title}</span>
++                          </div>
++                        </button>
++                      );
++                    })}
++                  </div>
++                )}
+               </div>
+             );
+           })}
+         </nav>
+       </aside>
+ 
+-      {/* Content */}
+-      <div className="flex-1 overflow-y-auto">
++      {/* Content Feed Section */}
++      <div className="flex-1 min-w-0 max-w-4xl mx-auto py-6 px-4 md:px-8 pb-32">
++        {/* Guest Progress Banner */}
++        {!user && (
++          <div className="mb-8 p-4 rounded-2xl border border-primary/20 bg-primary/5 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4">
++            <div className="flex items-center gap-3">
++              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary">
++                <Sparkles className="w-5 h-5" />
++              </div>
++              <div>
++                <h4 className="text-sm font-bold text-foreground">Guest Progress Enabled</h4>
++                <p className="text-xs text-muted-foreground">Your progress is saved locally. Sign in to sync it across devices! Γÿü∩╕Å</p>
++              </div>
++            </div>
++            <Link to="/auth">
++              <Button size="sm" className="rounded-full px-6 bg-primary font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
++                Sign In
++              </Button>
++            </Link>
++          </div>
++        )}
++
+         {selectedLesson ? (
+           <div id="tour-learn-lesson" className="w-full max-w-none px-4 sm:px-6 py-6 md:py-8">
+             {/* Mobile back button */}

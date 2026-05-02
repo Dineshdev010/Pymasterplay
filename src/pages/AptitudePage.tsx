@@ -135,9 +135,10 @@ export default function AptitudePage() {
   });
   const [currentStreak, setCurrentStreak] = useState(0);
   const [searchParams, setSearchParams] = useSearchParams();
+  const typeFromUrl = searchParams.get("type");
   const didApplyUrlTrack = useRef(false);
   const [revealedAnswers, setRevealedAnswers] = useState<Record<string, boolean>>({});
-  const [activeType, setActiveType] = useState(aptitudeTypes[0].title);
+  const [activeType, setActiveType] = useState(typeFromUrl || aptitudeTypes[0].title);
   const [pageMode, setPageMode] = useState<PageMode>("learning");
   const [activeDifficulty, setActiveDifficulty] = useState<DifficultyFilter>("all");
   const [activeCompany, setActiveCompany] = useState<(typeof companySetLabels)[number]>("All Companies");
@@ -152,6 +153,20 @@ export default function AptitudePage() {
   useEffect(() => { localStorage.setItem("pymaster_apt_hints", JSON.stringify(hintsUsed)); }, [hintsUsed]);
   useEffect(() => { localStorage.setItem("pymaster_apt_ans", JSON.stringify(selectedAnswers)); }, [selectedAnswers]);
   useEffect(() => { localStorage.setItem("pymaster_apt_sub", JSON.stringify(submittedTests)); }, [submittedTests]);
+
+  // Update activeType if URL param changes
+  useEffect(() => {
+    if (typeFromUrl && typeFromUrl !== activeType) {
+      setActiveType(typeFromUrl);
+    }
+  }, [typeFromUrl, activeType]);
+
+  // Sync URL param when activeType changes
+  useEffect(() => {
+    if (activeType && activeType !== typeFromUrl) {
+      setSearchParams({ type: activeType }, { replace: true });
+    }
+  }, [activeType, typeFromUrl, setSearchParams]);
 
   const resetAllProgress = () => setShowResetModal(true);
   const confirmReset = () => {

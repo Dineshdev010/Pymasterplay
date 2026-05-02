@@ -2,7 +2,10 @@ export interface Exercise {
   prompt: string;
   starterCode: string;
   expectedOutput: string;
-  hint?: string;
+  type?: 'code' | 'quiz' | 'fill-in-the-blank' | 'speaking';
+  options?: string[];
+  correctOption?: number;
+  blanks?: string[];
   solution?: string;
 }
 

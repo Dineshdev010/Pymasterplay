@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { 
   Check, ChevronDown, Clock, HeartHandshake, Languages, LogIn, LogOut, Menu, Moon, Settings, Sun, 
-  Target, User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw, LayoutGrid
+  Target, User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw, LayoutGrid, Search, Command as CommandIcon
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -66,7 +66,7 @@ function TimeTracker() {
 
   return (
     <div className="hidden lg:flex items-center">
-      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-mono px-2 py-1 rounded-md bg-secondary/50 border border-border/50 shadow-[0_0_10px_rgba(59,130,246,0.1)]" title="Total Code Time">
+      <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground font-mono px-2 py-1 rounded-md bg-secondary/50 border border-border/50 shadow-sm" title="Total Code Time">
         <Clock className="w-3.5 h-3.5 text-primary animate-pulse" />
         <span className="text-foreground tracking-wider font-semibold">{displayTime}</span>
       </div>
@@ -296,7 +296,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
           <DropdownMenu open={menuOpen} onOpenChange={setMenuOpen}>
             <DropdownMenuTrigger asChild>
               <button
-                className={`relative ml-1 flex shrink-0 items-center gap-2 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all duration-500 group overflow-hidden border border-white/5 hover:border-white/20 ${
+                className={`relative ml-1 flex shrink-0 items-center gap-2 rounded-lg px-3 py-1.5 text-[11px] font-bold uppercase tracking-wide transition-all duration-500 group overflow-hidden border border-border/50 hover:border-primary/50 ${
                   secondaryNavItems.some((item) => isRouteActive(item.to))
                     ? "bg-violet-500/20 text-violet-300 border-violet-500/40 shadow-[0_0_15px_rgba(139,92,246,0.2)]"
                     : "bg-secondary/40 text-muted-foreground hover:text-violet-300 hover:bg-secondary/60 hover:shadow-lg"
@@ -304,7 +304,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                 aria-label="Open more navigation links"
               >
                 {/* Subtle Shimmer */}
-                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -skew-x-[25deg] animate-[nav-shimmer_6s_infinite] pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent -skew-x-[25deg] animate-[nav-shimmer_6s_infinite] pointer-events-none" />
 
                 <div className="relative flex items-center justify-center">
                   {/* Subtle pulsing background behind icon */}
@@ -411,14 +411,14 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
         </div>
         <Link
           to="/dashboard"
-          className="hidden sm:flex relative items-center rounded-full border border-white/10 bg-secondary/20 backdrop-blur-md shadow-lg transition-all duration-500 hover:scale-105 group overflow-hidden shrink-0 h-9"
+          className="hidden sm:flex relative items-center rounded-full border border-border bg-secondary/20 backdrop-blur-md shadow-sm transition-all duration-500 hover:scale-105 group overflow-hidden shrink-0 h-9"
           title={`${xpLevel.title} Lv ${xpLevel.level} • Wallet: $${progress.wallet.toLocaleString()}`}
         >
           {/* Shared Shimmer Effect */}
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -skew-x-[25deg] animate-[nav-shimmer_5s_infinite] pointer-events-none" />
 
           {/* XP Level Section */}
-          <div className={`flex items-center gap-1.5 px-3 h-full ${xpLevel.color} ${xpLevel.bg} border-r border-white/10 relative`}>
+          <div className={`flex items-center gap-1.5 px-3 h-full ${xpLevel.color} ${xpLevel.bg} border-r border-border relative`}>
             {isHighRank && (
               <div className="absolute inset-0 w-full h-full pointer-events-none opacity-20">
                 <div className="w-[150%] h-full bg-gradient-to-r from-transparent via-white to-transparent -skew-x-[25deg] animate-[nav-shimmer_3s_infinite]" />

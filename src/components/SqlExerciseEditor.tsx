@@ -7,6 +7,7 @@ import { cancelActivePythonExecution, getPythonExecutionTimeoutMs } from "@/lib/
 import { executeSql } from "@/lib/sqlRunner";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
+import { useTheme } from "@/components/ThemeProvider";
 import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square } from "lucide-react";
 
 interface SqlExerciseEditorProps {
@@ -42,6 +43,7 @@ function generateSolution(exercise: Exercise): string {
 }
 
 export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExerciseEditorProps) {
+  const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [sql, setSql] = useState(exercise.starterCode);
   const [output, setOutput] = useState("");
@@ -176,7 +178,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
             <Editor
               height="100%"
               language="sql"
-              theme="vs-dark"
+              theme={theme === "dark" ? "vs-dark" : "light"}
               value={sql}
               onChange={(v) => setSql(v || "")}
               options={editorOptions}

@@ -4,7 +4,7 @@
 // AI/ML, etc.) with sequential lesson unlocking.
 // ============================================================
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useNavigate, useParams, Link, useSearchParams } from "react-router-dom";
 import { careerTracks } from "@/data/careerLessons";
 import { useProgress } from "@/contexts/ProgressContext";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -16,7 +16,7 @@ import Editor from "@monaco-editor/react";
 import { SQL_PRACTICE_DB_NAME, SQL_PRACTICE_DB_SETUP_SQL, SQL_PRACTICE_DB_TABLES } from "@/data/sqlSampleData";
 import { executeSql } from "@/lib/sqlRunner";
 import { cancelActivePythonExecution, getPythonExecutionTimeoutMs, preloadPyodide } from "@/lib/piston";
-import { BookOpen, CheckCircle2, ChevronRight, Lock, ArrowLeft, Terminal as TerminalIcon, Database, Play, RotateCcw, Square, Trophy, Star } from "lucide-react";
+import { BookOpen, CheckCircle2, ChevronRight, Lock, ArrowLeft, Terminal as TerminalIcon, Database, Play, RotateCcw, Square, Trophy, Star, Volume2, Languages, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -75,15 +75,25 @@ function getLessonWallpaper(trackId: string, lessonTitle?: string, category?: st
   if (topic.includes("security") || topic.includes("cyber")) {
     return `radial-gradient(circle at 20% 20%, rgba(239, 68, 68, 0.35), transparent 50%), radial-gradient(circle at 80% 80%, rgba(185, 28, 28, 0.3), transparent 50%), linear-gradient(140deg, rgba(38, 12, 16, 0.95), rgba(10, 2, 4, 0.98))`;
   }
+  if (topic.includes("english") || topic.includes("grammar") || topic.includes("vocab")) {
+    return `radial-gradient(circle at 30% 30%, rgba(16, 185, 129, 0.2), transparent 50%), radial-gradient(circle at 70% 70%, rgba(14, 165, 233, 0.2), transparent 50%), linear-gradient(140deg, rgba(17, 24, 39, 0.95), rgba(10, 15, 25, 0.98))`;
+  }
   return `radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.25), transparent 60%), linear-gradient(140deg, rgba(10, 18, 35, 0.95), rgba(2, 6, 23, 0.98))`;
+}
+
+function buildLanguagePattern(strokeHex: string) {
+  const svg = `<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'><g fill='none' stroke='${strokeHex}' stroke-width='0.5' opacity='0.3' font-family='serif' font-size='12'><text x='10' y='20'>A</text><text x='140' y='30'>Z</text><text x='80' y='80'>&amp;</text><text x='20' y='140'>abc</text><circle cx='130' cy='120' r='10'/><path d='M0 80h160M80 0v160'/></g></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
 export default function CareerLearnPage() {
   const { trackId } = useParams<{ trackId: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const lessonIdFromUrl = searchParams.get("lesson");
   const { language } = useLanguage();
   const { user } = useAuth();
   const track = careerTracks.find(t => t.id === trackId);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(lessonIdFromUrl);
   const [sqlPlayground, setSqlPlayground] = useState("");
   const [sqlOutput, setSqlOutput] = useState("");
   const [isSqlRunning, setIsSqlRunning] = useState(false);
@@ -92,9 +102,29 @@ export default function CareerLearnPage() {
   const navigate = useNavigate();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
+  const [isPageLoading, setIsPageLoading] = useState(true);
+
+  useEffect(() => {
+    setIsPageLoading(true);
+    const timer = setTimeout(() => setIsPageLoading(false), 600);
+    return () => clearTimeout(timer);
+  }, [trackId]);
+
   // Derive track type flags unconditionally (before any early return)
-  const isSqlTrack = (track?.language ?? "python") === "sql" || track?.id === "sql";
-  const isBashTrack = (track?.language ?? "python") === "bash" || track?.id === "git";
+  const isSqlTrack = track?.id === "sql";
+  const isBashTrack = track?.language === "bash";
+  const isEnglishTrack = track?.id === "english-mastery";
+
+  const handleSpeak = (text: string) => {
+    if (!window.speechSynthesis) {
+      toast.error("Speech synthesis not supported in this browser.");
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
 
   // Eagerly preload Pyodide for Python tracks so it's ready by the time the user opens an exercise
   useEffect(() => {
@@ -123,12 +153,38 @@ export default function CareerLearnPage() {
 
   // Auto-open the first lesson so the page never feels empty on first visit.
   useEffect(() => {
-    if (!track) return;
     if (selectedId) return;
     if (track.lessons.length === 0) return;
 
-    setSelectedId(track.lessons[0].id);
+    // Only auto-open on large screens to show the dashboard/list on mobile
+    if (window.innerWidth >= 768) {
+      setSelectedId(track.lessons[0].id);
+    }
   }, [selectedId, track]);
+
+  // Update selectedId if URL param changes
+  useEffect(() => {
+    if (lessonIdFromUrl && lessonIdFromUrl !== selectedId) {
+      setSelectedId(lessonIdFromUrl);
+    }
+  }, [lessonIdFromUrl, selectedId]);
+
+  // Sync URL param when selectedId changes
+  useEffect(() => {
+    if (selectedId && selectedId !== lessonIdFromUrl) {
+      setSearchParams({ lesson: selectedId }, { replace: true });
+    }
+  }, [selectedId, lessonIdFromUrl, setSearchParams]);
+
+  // Reset selectedId if it doesn't belong to the current track
+  useEffect(() => {
+    if (track && selectedId) {
+      const isValid = track.lessons.some(l => l.id === selectedId);
+      if (!isValid && !lessonIdFromUrl) {
+        setSelectedId(track.lessons[0]?.id || null);
+      }
+    }
+  }, [track, selectedId, lessonIdFromUrl]);
 
   useEffect(() => {
     if (!isSqlTrack) return;
@@ -212,19 +268,46 @@ export default function CareerLearnPage() {
       }
     }
   }, [selectedLesson?.id, progress.completedExercises]);
+  if (isPageLoading) {
+    return (
+      <div className="flex min-h-[calc(100dvh-3.5rem)] items-center justify-center bg-background/50 backdrop-blur-sm">
+        <div className="text-center space-y-4 animate-in fade-in zoom-in duration-500">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
+          <h2 className="text-2xl font-bold text-foreground">Initializing {track?.title || "Track"}...</h2>
+          <p className="text-muted-foreground text-sm">Preparing your learning environment</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-[calc(100dvh-3.5rem)] flex-col md:flex-row overflow-hidden">
       {/* Sidebar */}
       <aside className="w-72 border-r border-white/5 bg-black/40 backdrop-blur-2xl overflow-y-auto shrink-0 hidden md:block z-20 shadow-2xl">
-        <div className="p-4 border-b border-border">
-          <Button asChild variant="ghost" size="sm" className="h-7 text-xs gap-1 mb-2 -ml-2">
-            <Link to="/"><ArrowLeft className="w-3 h-3" /> Home</Link>
-          </Button>
-          <h2 className="font-semibold text-foreground flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-primary" /> {track.title}
-          </h2>
-          <p className="text-xs text-muted-foreground mt-1">{track.description}</p>
+        <div className="p-4 border-b border-border space-y-4">
+          <div>
+            <Button asChild variant="ghost" size="sm" className="h-7 text-xs gap-1 mb-2 -ml-2">
+              <Link to="/"><ArrowLeft className="w-3 h-3" /> Home</Link>
+            </Button>
+            <h2 className="font-semibold text-foreground flex items-center gap-2">
+              <BookOpen className="w-4 h-4 text-primary" /> {track.title}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-1">{track.description}</p>
+          </div>
+          
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">
+              <span>Goal: Next Badge</span>
+              <span>{trackProgress}%</span>
+            </div>
+            <div className="h-2 w-full bg-secondary/50 rounded-full overflow-hidden border border-white/5">
+              <motion.div 
+                initial={{ width: 0 }}
+                animate={{ width: `${trackProgress}%` }}
+                className="h-full bg-gradient-to-r from-primary to-indigo-400 rounded-full"
+              />
+            </div>
+          </div>
         </div>
         <nav className="p-2">
           {track.lessons.map((lesson, i) => {
@@ -264,7 +347,72 @@ export default function CareerLearnPage() {
       </aside>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto relative scroll-smooth">
+      <div className="flex-1 overflow-y-auto relative scroll-smooth bg-background/20">
+        {!selectedId ? (
+          <div className="max-w-4xl mx-auto p-6 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4">
+            <div className="space-y-2">
+              <h1 className="text-4xl font-black tracking-tight flex items-center gap-3">
+                <Trophy className="w-10 h-10 text-reward-gold" /> {track.title}
+              </h1>
+              <p className="text-lg text-muted-foreground">{track.description}</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {track.lessons.map((lesson, i) => {
+                const unlocked = isLessonUnlocked(i);
+                const progressCount = getLessonProgress(lesson.id);
+                const isCurrent = unlocked && progressCount < 3;
+                
+                return (
+                  <button
+                    key={lesson.id}
+                    onClick={() => {
+                      if (!unlocked) return;
+                      setSelectedId(lesson.id);
+                    }}
+                    disabled={!unlocked}
+                    className={`p-6 rounded-[2rem] border-2 text-left transition-all relative overflow-hidden group ${
+                      !unlocked ? "bg-muted/30 border-border/50 opacity-60 cursor-not-allowed" 
+                        : isCurrent ? "bg-primary/5 border-primary/40 shadow-xl shadow-primary/5 scale-[1.02]" 
+                        : "bg-card border-border hover:border-primary/30"
+                    }`}
+                  >
+                    {progressCount === 3 && (
+                      <div className="absolute top-4 right-4 bg-streak-green/20 text-streak-green p-1 rounded-full">
+                        <CheckCircle2 className="w-4 h-4" />
+                      </div>
+                    )}
+                    <div className="space-y-4">
+                      <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-black text-xl ${
+                        !unlocked ? "bg-muted text-muted-foreground" : "bg-primary/10 text-primary"
+                      }`}>
+                        {i + 1}
+                      </div>
+                      <div className="space-y-1">
+                        <h3 className="font-bold text-lg">{lesson.title}</h3>
+                        <p className="text-sm text-muted-foreground line-clamp-2">{lesson.description}</p>
+                      </div>
+                      
+                      <div className="pt-2">
+                        <div className="flex justify-between text-[10px] font-black uppercase tracking-widest mb-1.5">
+                          <span>Progress</span>
+                          <span>{progressCount}/3 Exercises</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                          <div 
+                            className={`h-full transition-all duration-1000 ${progressCount === 3 ? "bg-streak-green" : "bg-primary"}`}
+                            style={{ width: `${(progressCount / 3) * 100}%` }}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1">
         {/* Track Progress Sticky Bar */}
         <div className="sticky top-0 z-50 w-full bg-black/30 backdrop-blur-2xl border-b border-white/10 px-4 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           <div className="max-w-3xl mx-auto flex items-center gap-4">
@@ -281,6 +429,48 @@ export default function CareerLearnPage() {
         </div>
 
         <div className="relative min-h-full">
+          <div 
+            className="flex-1 overflow-y-auto p-4 md:p-8 relative"
+            style={{ 
+              backgroundImage: isEnglishTrack ? buildLanguagePattern("#3b82f6") : buildLessonPattern("#3b82f6"),
+              backgroundSize: "400px 400px"
+            }}
+          >
+            <div className="max-w-4xl mx-auto space-y-8">
+              {isEnglishTrack && (
+                <motion.div 
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="p-6 rounded-[2rem] bg-gradient-to-br from-primary/10 via-background to-background border border-primary/20 shadow-xl relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-8 opacity-10">
+                    <Languages className="w-32 h-32" />
+                  </div>
+                  <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-primary mb-2">
+                        <Trophy className="w-5 h-5 text-reward-gold animate-bounce" />
+                        <span className="text-xs font-black uppercase tracking-widest">Level Objective</span>
+                      </div>
+                      <h1 className="text-3xl font-black tracking-tight text-foreground">{selectedLesson?.title}</h1>
+                      <p className="text-muted-foreground font-medium">{selectedLesson?.description}</p>
+                    </div>
+                    <div className="flex items-center gap-4 bg-background/50 backdrop-blur-md p-4 rounded-2xl border border-white/10">
+                      <div className="text-center">
+                        <div className="text-2xl font-black text-primary">{progress.wallet.toLocaleString()}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-tighter opacity-50">Points</div>
+                      </div>
+                      <div className="w-[1px] h-10 bg-white/10" />
+                      <div className="text-center">
+                        <div className="text-2xl font-black text-streak-green">{progress.streak}</div>
+                        <div className="text-[10px] font-bold uppercase tracking-tighter opacity-50">Streak</div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </div>
           <motion.div
             className="pointer-events-none absolute inset-0 transition-all duration-1000"
             initial={{ opacity: 0 }}
@@ -382,20 +572,39 @@ export default function CareerLearnPage() {
               })}
             </div>
 
-            {/* Code Example */}
+            {/* Code Example / Pronunciation */}
             {!isSqlTrack && (
-              <div className="code-block mb-8">
-                <div className="flex items-center justify-between px-4 py-2 border-b border-border">
-                  <span className="text-xs text-muted-foreground font-mono">{isBashTrack ? "terminal" : "example.py"}</span>
-                  {isBashTrack ? null : (
-                    <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
-                      <Link to={`/compiler?code=${encodeURIComponent(selectedLesson.codeExample)}`}>
-                        <TerminalIcon className="w-3 h-3" /> Try in Compiler
-                      </Link>
-                    </Button>
-                  )}
+              <div className="code-block mb-8 relative group/card">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card/40">
+                  <span className="text-xs text-muted-foreground font-mono">
+                    {isEnglishTrack ? "Pronunciation Guide" : isBashTrack ? "terminal" : "example.py"}
+                  </span>
+                  <div className="flex items-center gap-2">
+                    {isEnglishTrack && (
+                      <div className="px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-[9px] font-black uppercase text-primary tracking-widest hidden sm:block">
+                        Interactive
+                      </div>
+                    )}
+                    {isEnglishTrack && (
+                      <Button 
+                        size="sm" 
+                        variant="ghost" 
+                        className="h-7 text-xs gap-1 text-primary hover:bg-primary/10"
+                        onClick={() => handleSpeak(selectedLesson.codeExample.split("\n")[0] || selectedLesson.codeExample)}
+                      >
+                        <Volume2 className="w-3 h-3" /> Listen
+                      </Button>
+                    )}
+                    {!isBashTrack && !isEnglishTrack && (
+                      <Button asChild size="sm" variant="outline" className="h-7 text-xs gap-1">
+                        <Link to={`/compiler?code=${encodeURIComponent(selectedLesson.codeExample)}`}>
+                          <TerminalIcon className="w-3 h-3" /> Try in Compiler
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
                 </div>
-                <pre className="p-4 text-sm font-mono text-foreground overflow-x-auto leading-relaxed">
+                <pre className="p-4 text-sm font-mono text-foreground overflow-x-auto leading-relaxed bg-black/20">
                   {selectedLesson.codeExample}
                 </pre>
               </div>
@@ -514,7 +723,7 @@ export default function CareerLearnPage() {
                       level={level}
                       lessonId={selectedLesson.id}
                       locked={!isExerciseUnlocked(selectedLesson.id, level)}
-                      language={track.language || "python"}
+                      language={isEnglishTrack ? "english" : (track.language || "python")}
                     />
                   )
                 ))}
@@ -555,51 +764,14 @@ export default function CareerLearnPage() {
                 </div>
               );
             })()}
+            {/* End of content */}
             </motion.div>
-          ) : (
-            <motion.div 
-              key="fallback"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="flex flex-col items-center text-center px-6 py-6 overflow-y-auto max-h-[calc(100dvh-3.5rem)]"
-            >
-            <BookOpen className="w-12 h-12 text-muted-foreground/30 mb-4" />
-            <h2 className="text-xl font-semibold text-foreground mb-2">{track.title}</h2>
-            <p className="text-muted-foreground mb-6">Select a lesson from the sidebar to start learning</p>
-            {/* Mobile lesson list */}
-            <div className="md:hidden w-full max-w-md space-y-2">
-              {track.lessons.map((lesson, i) => {
-                const localizedLesson = getLocalizedCareerLesson(lesson, language) ?? lesson;
-                const unlocked = isLessonUnlocked(i);
-                return (
-                  <button
-                    key={lesson.id}
-                    onClick={() => {
-                      if (!unlocked) return;
-                      if (!ensureAuthForLessonIndex(i)) return;
-                      setSelectedId(lesson.id);
-                    }}
-                    disabled={!unlocked}
-                    className={`w-full flex items-center justify-between px-4 py-3 bg-card border border-border rounded-lg transition-colors ${unlocked ? "hover:border-primary/40" : "opacity-40 cursor-not-allowed"}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {unlocked ? <BookOpen className="w-4 h-4 text-primary" /> : <Lock className="w-4 h-4 text-muted-foreground" />}
-                      <div className="text-left">
-                        <div className="text-sm font-medium text-foreground">{localizedLesson.title}</div>
-                        <div className="text-xs text-muted-foreground">{localizedLesson.description}</div>
-                      </div>
-                    </div>
-                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                  </button>
-                );
-              })}
-            </div>
-          </motion.div>
-        )}
-        </AnimatePresence>
+          ) : null}
+          </AnimatePresence>
+          </div>
         </div>
         </div>
+      )}
       </div>
     </div>
   );

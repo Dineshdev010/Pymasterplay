@@ -5,9 +5,11 @@ import { Exercise } from "@/data/lessons";
 import { useProgress } from "@/contexts/ProgressContext";
 import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs, preloadPyodide, subscribePythonRuntimeStatus, type PythonRuntimeStatus } from "@/lib/piston";
 import { executeSql } from "@/lib/sqlRunner";
+import { playSuccessSound, playErrorSound } from "@/lib/sounds";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square, Terminal, Loader2 } from "lucide-react";
+import { useTheme } from "@/components/ThemeProvider";
+import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square, Terminal, Loader2, Volume2 } from "lucide-react";
 
 interface ExerciseEditorProps {
   exercise: Exercise;
@@ -45,6 +47,7 @@ function generateSolution(exercise: Exercise): string {
 }
 
 export function ExerciseEditor({ exercise, level, lessonId, locked, language = "python" }: ExerciseEditorProps) {
+  const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [code, setCode] = useState(exercise.starterCode);
   const [output, setOutput] = useState("");
@@ -53,8 +56,19 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
   const [showHint, setShowHint] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   const [pyStatus, setPyStatus] = useState<PythonRuntimeStatus>("idle");
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const { progress, completeExercise, addWallet, unlockSolution } = useProgress();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
+  const isEnglish = language === "english";
+  const exerciseType = exercise.type || "code";
+
+  const handleSpeak = (text: string) => {
+    if (!window.speechSynthesis) return;
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = "en-US";
+    utterance.rate = 0.9;
+    window.speechSynthesis.speak(utterance);
+  };
 
   const exerciseKey = `${lessonId}:${level}`;
   const alreadyCompleted = progress.completedExercises.includes(exerciseKey);
@@ -84,6 +98,7 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
     setIsRunning(false);
     setShowHint(false);
     setShowSolution(false);
+    setSelectedOption(null);
   }, [exerciseKey, exercise.starterCode]);
 
   const levelColors = {
@@ -93,6 +108,94 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
   };
 
   const runAndCheck = async () => {
+    if (exerciseType === "quiz") {
+      if (selectedOption === null) {
+        toast({ title: "Please select an option", variant: "destructive" });
+        return;
+      }
+      setIsRunning(true);
+      setTimeout(() => {
+        const isCorrect = selectedOption === exercise.correctOption;
+        if (isCorrect) {
+          setPassed(true);
+          playSuccessSound();
+          setOutput("✅ Correct! You've mastered this concept.");
+          if (!alreadyCompleted) {
+            completeExercise(exerciseKey);
+            addWallet(20);
+            confetti({
+              particleCount: 100,
+              spread: 70,
+              origin: { y: 0.6 },
+              colors: ["#3b82f6", "#22c55e", "#eab308"]
+            });
+            toast({ title: "Goal Reached! 🎯", description: "You earned 20 XP and coins!" });
+          }
+        } else {
+          setPassed(false);
+          playErrorSound();
+          setOutput("❌ Not quite. Try reviewing the lesson and try again.");
+        }
+        setIsRunning(false);
+      }, 800);
+      return;
+    }
+
+    if (exerciseType === "speaking") {
+      setIsRunning(true);
+      setOutput("🎤 Listening... Please speak into your microphone.");
+      
+      const SpeechRecognition = window.SpeechRecognition || (window as any).webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+        setOutput("❌ Speech recognition is not supported in your browser. Please try Chrome or Edge.");
+        playErrorSound();
+        setIsRunning(false);
+        return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-US';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.start();
+
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript.toLowerCase();
+        const expectedText = exercise.starterCode.toLowerCase().replace(/[.,!?;:]/g, '');
+        const cleanTranscript = transcript.replace(/[.,!?;:]/g, '');
+        
+        if (cleanTranscript.includes(expectedText) || expectedText.includes(cleanTranscript) || (cleanTranscript.length > 5 && expectedText.length > 5 && (cleanTranscript.substring(0, 5) === expectedText.substring(0, 5)))) {
+          setPassed(true);
+          playSuccessSound();
+          setOutput(`✅ You said: "${event.results[0][0].transcript}"\nGreat pronunciation!`);
+          if (!alreadyCompleted) {
+            completeExercise(exerciseKey);
+            addWallet(30);
+            confetti({ particleCount: 150, spread: 100 });
+            toast({ title: "Badge Earned: Silver Tongue 🥈", description: "Your pronunciation is spot on!" });
+          }
+        } else {
+          setPassed(false);
+          playErrorSound();
+          setOutput(`❌ You said: "${event.results[0][0].transcript}"\nExpected: "${exercise.starterCode}"\nTry again!`);
+        }
+      };
+
+      recognition.onerror = (event: any) => {
+        setOutput(`❌ Microphone error: ${event.error}`);
+        playErrorSound();
+        setIsRunning(false);
+      };
+
+      recognition.onend = () => {
+        setIsRunning(false);
+      };
+      
+      return;
+    }
+
     const userCode = code.trim();
     const starterCode = exercise.starterCode.trim();
     const hasNewCode = userCode.length > starterCode.length + 3;
@@ -179,48 +282,98 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
         className="w-full flex items-center justify-between px-4 py-3 hover:bg-surface-1/50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          {alreadyCompleted ? (
-            <CheckCircle2 className="w-4 h-4 text-streak-green" />
-          ) : (
-            <div className="w-4 h-4 rounded-full border border-border" />
+          <div className={`p-1.5 rounded-md ${levelColors[level]}`}>
+            <CheckCircle2 className="w-4 h-4" />
+          </div>
+          <div>
+            <h4 className="text-sm font-semibold capitalize">{level} Level Exercise</h4>
+            <p className="text-xs text-muted-foreground text-left">{exercise.prompt}</p>
+          </div>
+          {isEnglish && (
+            <Button size="icon" variant="ghost" className="h-8 w-8 ml-auto text-primary" onClick={() => handleSpeak(exercise.prompt)}>
+              <Volume2 className="w-4 h-4" />
+            </Button>
           )}
-          <span className={`text-xs px-2 py-0.5 rounded-full border capitalize ${levelColors[level]}`}>{level}</span>
-          <span className="text-sm text-foreground">{exercise.prompt}</span>
         </div>
         {isOpen ? <ChevronUp className="w-4 h-4 text-muted-foreground" /> : <ChevronDown className="w-4 h-4 text-muted-foreground" />}
       </button>
 
       {isOpen && (
-        <div className="border-t border-border">
-          <div className="h-48 relative">
-            <div className="absolute top-2 right-4 z-10 flex items-center gap-1.5 px-2 py-1 bg-background/50 backdrop-blur-sm border border-border rounded-md pointer-events-none">
-              <Terminal className="w-3 h-3 text-muted-foreground" />
-              <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{language}</span>
+        <div className="border-t border-border bg-surface-1">
+          {exerciseType === "code" ? (
+            <div className="h-48 relative">
+              <div className="absolute top-2 right-4 z-10 flex items-center gap-1.5 px-2 py-1 bg-background/50 backdrop-blur-sm border border-border rounded-md pointer-events-none">
+                <Terminal className="w-3 h-3 text-muted-foreground" />
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{language}</span>
+              </div>
+              <Editor
+                height="100%"
+                language={language === "bash" ? "shell" : language}
+                theme={theme === "dark" ? "vs-dark" : "light"}
+                value={code}
+                onChange={(v) => setCode(v || "")}
+                loading={
+                  <div className="flex flex-col items-center justify-center h-full bg-background gap-2">
+                    <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                    <span className="text-xs text-muted-foreground">Loading editor...</span>
+                  </div>
+                }
+                options={{
+                  fontSize: 13,
+                  fontFamily: "'JetBrains Mono', monospace",
+                  minimap: { enabled: false },
+                  padding: { top: 12 },
+                  scrollBeyondLastLine: false,
+                  wordWrap: "on",
+                  lineNumbers: "on",
+                  automaticLayout: true,
+                }}
+              />
             </div>
-            <Editor
-              height="100%"
-              language={language === "bash" ? "shell" : language}
-              theme="vs-dark"
-              value={code}
-              onChange={(v) => setCode(v || "")}
-              loading={
-                <div className="flex flex-col items-center justify-center h-full bg-[#1e1e1e] gap-2">
-                  <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                  <span className="text-xs text-muted-foreground">Loading editor...</span>
+          ) : exerciseType === "quiz" ? (
+            <div className="p-6 space-y-4 bg-muted/20">
+              <div className="grid grid-cols-1 gap-3">
+                {exercise.options?.map((option, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setSelectedOption(idx)}
+                    className={`flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                      selectedOption === idx 
+                        ? "border-primary bg-primary/10 shadow-[0_0_15px_rgba(var(--primary),0.2)]" 
+                        : "border-border bg-background hover:border-border-hover"
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${selectedOption === idx ? "border-primary bg-primary" : "border-muted-foreground"}`}>
+                      {selectedOption === idx && <div className="w-2 h-2 rounded-full bg-white" />}
+                    </div>
+                    <span className="text-sm font-medium">{option}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : exerciseType === "speaking" ? (
+            <div className="p-8 flex flex-col items-center justify-center text-center space-y-6 bg-gradient-to-b from-primary/5 to-transparent">
+              <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center shadow-inner relative">
+                {isRunning && (
+                  <motion.div 
+                    animate={{ scale: [1, 1.5, 1], opacity: [0.3, 0.1, 0.3] }}
+                    transition={{ duration: 1.5, repeat: Infinity }}
+                    className="absolute inset-0 rounded-full bg-primary/20"
+                  />
+                )}
+                <Volume2 className={`w-8 h-8 text-primary ${isRunning ? "animate-pulse" : ""}`} />
+              </div>
+              <div className="space-y-2">
+                <p className="text-lg font-bold text-foreground">Speak the following clearly:</p>
+                <div className="p-4 rounded-lg bg-background border border-primary/20 italic text-xl font-serif text-primary/80">
+                  "{exercise.starterCode}"
                 </div>
-              }
-              options={{
-                fontSize: 13,
-                fontFamily: "'JetBrains Mono', monospace",
-                minimap: { enabled: false },
-                padding: { top: 12 },
-                scrollBeyondLastLine: false,
-                wordWrap: "on",
-                lineNumbers: "on",
-                automaticLayout: true,
-              }}
-            />
-          </div>
+              </div>
+              <p className="text-xs text-muted-foreground max-w-xs">
+                Click "Check Answer" and read the text above. Make sure your microphone is working!
+              </p>
+            </div>
+          ) : null}
 
           {/* Hint & Solution panels */}
           {(showHint || showSolution) && (
@@ -258,25 +411,15 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
 
           <div className="border-t border-border">
             <div className="flex items-center justify-between px-4 py-2 bg-surface-1 gap-2 flex-wrap">
-              <div className="flex items-center gap-3">
-                <div className="text-xs text-muted-foreground font-mono">
-                  Expected: <span className="text-foreground">{exercise.expectedOutput.split("\n")[0]}{exercise.expectedOutput.includes("\n") ? "..." : ""}</span>
-                </div>
-                {language === "python" && pyStatus !== "ready" && (
-                  <div className="flex items-center gap-1.5 text-[10px] font-medium">
-                    {pyStatus === "loading" ? (
-                      <><Loader2 className="w-3 h-3 animate-spin text-primary" /><span className="text-primary">Python loading...</span></>
-                    ) : pyStatus === "error" ? (
-                      <span className="text-destructive">⚠ Runtime error</span>
-                    ) : (
-                      <span className="text-muted-foreground/50">Python idle</span>
-                    )}
-                  </div>
-                )}
-                {language === "python" && pyStatus === "ready" && (
-                  <div className="flex items-center gap-1 text-[10px] font-medium text-streak-green">
-                    <span className="w-1.5 h-1.5 rounded-full bg-streak-green animate-pulse" />
-                    Ready
+              <div className="flex items-center gap-2">
+                <Terminal className="w-3 h-3 text-muted-foreground" />
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {isEnglish ? "Language Lab" : language === "sql" ? "SQL Console" : "Python Console"}
+                </span>
+                {!isEnglish && language === "python" && (
+                  <div className="flex items-center gap-1.5 ml-2">
+                    <div className={`w-1.5 h-1.5 rounded-full ${pyStatus === "ready" ? "bg-streak-green shadow-[0_0_8px_rgba(34,197,94,0.5)]" : pyStatus === "busy" ? "bg-python-yellow animate-pulse" : "bg-muted-foreground"}`} />
+                    <span className="text-[9px] text-muted-foreground capitalize">{pyStatus}</span>
                   </div>
                 )}
               </div>

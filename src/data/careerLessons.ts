@@ -3375,7 +3375,252 @@ const rawTracks: CareerTrack[] = [
   { id: "game-dev", title: "Game Development", description: "Build 2D and 3D games with Python", color: "destructive", get lessons() { return gameDev(); } },
   { id: "iot-robotics", title: "IoT & Robotics", description: "Hardware and embedded Python", color: "reward-gold", get lessons() { return iotRobotics(); } },
   { id: "agentic-ai", title: "Agentic AI Engineering", description: "Master Prompt Engineering, RAG, and MCP", color: "expert-purple", get lessons() { return agenticAi(); } },
+  { id: "english-mastery", title: "English Mastery", description: "Master Grammar, Vocabulary, and Professional Communication", color: "primary", get lessons() { return englishMastery(); } },
+  { id: "system-design", title: "System Design & Architecture", description: "Design scalable and distributed backend systems", color: "expert-purple", get lessons() { return systemDesign(); } },
+  { id: "software-testing", title: "Software Testing & QA", description: "Master PyTest, Selenium, and Test-Driven Development", color: "streak-green", get lessons() { return softwareTesting(); } },
 ];
+
+
+function englishMastery(): CareerLesson[] {
+  return [
+    {
+      id: "eng-1-grammar",
+      title: "Level 1: Present Simple Tense 🧩",
+      description: "Master the basics of how we talk about habits and facts.",
+      content: "## Welcome to Level 1! 🎉\n\nThe **Present Simple** is your most important tool in English. We use it to talk about things that happen every day, general facts, and regular habits. As a developer, you will use this constantly to describe what your code *does*.\n\n### The Golden Rule\n- **I / You / We / They**: Use the base verb. (e.g., *I write code every day.*)\n- **He / She / It**: Add an **-s** or **-es** to the verb. (e.g., *The script runs automatically.*)\n\n### Developer Context\nWhen explaining a bug or a feature, the Present Simple is your best friend:\n- \"The server **crashes** when the payload is too large.\"\n- \"Our API **returns** a JSON object.\"\n- \"We **deploy** new updates every Friday.\"\n\n### Common Pitfalls ⚠️\nDon't forget the **-s** for third-person singular (He/She/It). Saying \"The function *return* a string\" is incorrect. It must be \"The function *returns* a string.\"",
+      codeExample: "Sentence: The server crashes when the payload is too large.\n\nPhonetics: /ðə ˈsɜrvər ˈkræʃɪz wɛn ðə ˈpeɪˌloʊd ɪz tu lɑrʤ/\n\nFocus: Emphasize the '-es' in 'crashes'.",
+      translations: {
+        tamil: { title: "நிலை 1: நிகழ்காலம் 🧩", description: "பழக்கவழக்கங்கள் மற்றும் உண்மைகளைப் பற்றி பேசுவது எப்படி என்று கற்றுக்கொள்ளுங்கள்." },
+        hindi: { title: "स्तर 1: वर्तमान काल 🧩", description: "सीखें कि हम आदतों और तथ्यों के बारे में कैसे बात करते हैं।" }
+      },
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "Mini-Game: Pick the correct word!",
+          options: ["He go to work.", "He goes to work.", "He going to work."],
+          correctOption: 1,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Speak this sentence aloud! 🎤",
+          starterCode: "The script runs automatically.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Quiz: Write code to print 'She loves coding.'",
+          starterCode: "print('___')",
+          expectedOutput: "She loves coding."
+        }
+      }
+    },
+    {
+      id: "eng-2-vocab",
+      title: "Level 2: Essential Vocabulary 🎒",
+      description: "Learn the words you need for your daily developer life.",
+      content: "## Level 2 Unlocked! 🎒\n\nVocabulary is like your developer toolbox. The more precise your words are, the better your team will understand you. Let's master the core terms of web development.\n\n### Key Tech Terminology\n- **Framework**: A structured set of tools to build software (e.g., React, Django).\n  *Usage*: \"We are using a modern JavaScript *framework*.\"\n- **Database**: A structured set of data held in a computer.\n  *Usage*: \"The user data is safely stored in the *database*.\"\n- **Frontend vs Backend**: Frontend is what the user sees (UI/UX). Backend is the server logic and databases.\n  *Usage*: \"Our *frontend* is built with React, and the *backend* uses Python.\"\n\n### Developer Context\nWhen communicating in daily stand-ups, using the right vocabulary shows professionalism. Instead of saying \"I made the screen look good,\" say \"I improved the frontend UI.\"\n\n### Common Pitfalls ⚠️\nBe careful not to confuse 'Library' (a collection of code you call) with 'Framework' (a structure that calls your code).",
+      codeExample: "Sentence: Our frontend is built with React, and the backend uses Python.\n\nPhonetics: /aʊər ˈfrʌnˌtɛnd ɪz bɪlt wɪθ riˈækt, ænd ðə ˈbækˌɛnd ˈjuzɪz ˈpaɪθɑn/\n\nFocus: Stress 'frontend' and 'backend'.",
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "What is a 'Database' used for?",
+          options: ["Eating food", "Storing information", "Playing music"],
+          correctOption: 1,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Practice saying this: 🎤",
+          starterCode: "I am a Full Stack Developer.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Print the word for 'What the user sees'.",
+          starterCode: "print('___')",
+          expectedOutput: "Frontend"
+        }
+      }
+    },
+    {
+      id: "eng-3-listening",
+      title: "Level 3: Active Listening 🎧",
+      description: "Learn to catch every word in a technical meeting.",
+      content: "## Level 3: Ears Open! 🎧\n\nIn natural spoken English, especially in fast-paced tech meetings, native speakers rarely pronounce every single letter clearly. They use **Connected Speech**.\n\n### Connected Speech Rules\nWords often merge together to create a smoother, faster flow:\n- **Going to** becomes **Gonna** (*\"I'm gonna push the code.\"*)\n- **Want to** becomes **Wanna** (*\"Do you wanna pair program?\"*)\n- **Have to** becomes **Hafta** (*\"We hafta fix this bug today.\"*)\n- **Got to** becomes **Gotta** (*\"I gotta go to a meeting.\"*)\n\n### Developer Context\nDuring a daily stand-up, a colleague might say: *\"I'm gonna review your PR after lunch, but we gotta make sure the tests pass first.\"*\n\n### Common Pitfalls ⚠️\nWhile it is crucial to *understand* connected speech when listening, you do not always have to speak this way yourself. However, using these forms in casual conversation will make you sound much more natural.",
+      codeExample: "Sentence: I am going to master this language.\n\nSpoken as: I'm gonna master this language.\n\nFocus: Combine 'going to' into 'gonna' for a natural flow.",
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "What does 'Gonna' mean?",
+          options: ["Going to", "Gone to", "Got to"],
+          correctOption: 0,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Say it like a native! 🎤",
+          starterCode: "I'm gonna master this language.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Convert 'Got to' to its spoken form.",
+          starterCode: "print('Got to'.replace('ot to', '___'))",
+          expectedOutput: "Gotta"
+        }
+      }
+    },
+    {
+      id: "eng-4-speaking",
+      title: "Level 4: Fluency & Flow 🌊",
+      description: "Stop thinking about grammar and start talking!",
+      content: "## Level 4: The Flow State 🌊\n\nFluency isn't about having perfect grammar; it's about speaking without long, awkward pauses. When you need a second to think about what to say next, use **Filler Words** instead of staying silent.\n\n### Professional Fillers\nInstead of saying \"Umm\" or \"Uhh\", use these words to buy yourself time:\n- **Well...**: Use this at the beginning of a sentence. (*\"Well, I think we should use Python for this.\"*)\n- **Actually...**: Use this to correct something or add surprising information. (*\"Actually, the bug is in the database.\"*)\n- **To be honest...**: Use this when giving a direct or slightly negative opinion. (*\"To be honest, the current architecture won't scale.\"*)\n- **Basically...**: Use this to summarize a complex idea. (*\"Basically, the API acts as a bridge.\"*)\n\n### Developer Context\nIf someone asks you a tough question during a code review, don't freeze! Start with: *\"Well, to be honest, I haven't thought of that edge case yet.\"*\n\n### Common Pitfalls ⚠️\nDon't overuse fillers! Saying \"actually\" five times in one minute will distract your listeners.",
+      codeExample: "Sentence: To be honest, actually, I need more practice.\n\nFocus: Use 'To be honest' and 'actually' as filler words to pause without stopping the flow.",
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "Which word helps you summarize a complex idea?",
+          options: ["Basically", "Run", "Print"],
+          correctOption: 0,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Use a filler and speak! 🎤",
+          starterCode: "Well, to be honest, I love Python.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Print 'To be honest, I am learning.'",
+          starterCode: "",
+          expectedOutput: "To be honest, I am learning."
+        }
+      }
+    },
+    {
+      id: "eng-5-writing",
+      title: "Level 5: Email Mastery 📧",
+      description: "Write professional emails that get results.",
+      content: "## Level 5: Professional Pro 📧\n\nWriting emails in a corporate environment requires a balance of politeness and clarity. Your emails should be concise and easy to read.\n\n### The Email Structure\n1. **Salutation**: *\"Hi Team,\"* or *\"Dear Sarah,\"*\n2. **The Hook**: State the purpose immediately. *\"I'm writing to update you on the project.\"*\n3. **The Body**: Keep it brief. Use bullet points for multiple items.\n4. **The Call to Action (CTA)**: What do you need from them? *\"Could you please review the attached document by Friday?\"*\n5. **The Sign-off**: End professionally.\n\n### Sign-offs Explained\n- **Formal**: *Sincerely* (Use for external clients you don't know well)\n- **Semi-formal**: *Best regards*, *Kind regards* (Safe for almost any corporate email)\n- **Informal**: *Thanks*, *Best*, *Cheers* (Use for close colleagues)\n\n### Developer Context\nWhen sending a status update: *\"Hi Team, I have resolved the database latency issue. Please see the attached PR for review. Best regards, [Your Name]\"*",
+      codeExample: "Sentence: I look forward to hearing from you soon.\n\nPhonetics: /aɪ lʊk ˈfɔrwərd tu ˈhɪrɪŋ frʌm ju sun/\n\nFocus: This is a polite and professional way to end an email.",
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "Which sign-off is the most universally safe for corporate emails?",
+          options: ["Cheers", "Best regards", "Bye"],
+          correctOption: 1,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Read your sign-off! 🎤",
+          starterCode: "I look forward to hearing from you. Best regards.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Complete the closing: 'Best ____'.",
+          starterCode: "print('Best ___')",
+          expectedOutput: "Best regards"
+        }
+      }
+    },
+    {
+      id: "eng-6-fluency",
+      title: "Level 6: Idioms & Mastery 🏆",
+      description: "The secret language of native speakers.",
+      content: "## Level 6: Idioms 🏆\n\nIdioms are phrases where the meaning of the phrase is entirely different from the literal meaning of the individual words. Native speakers use them constantly in the workplace.\n\n### Common Corporate Idioms\n- **Break the ice**: To start a conversation or relieve tension in a meeting.\n  *Usage*: \"Let's break the ice by introducing ourselves.\"\n- **Piece of cake**: Something that is very easy to do.\n  *Usage*: \"Migrating that server was a piece of cake.\"\n- **Hit the nail on the head**: To be exactly right about something.\n  *Usage*: \"You hit the nail on the head with that bug diagnosis.\"\n- **Get the ball rolling**: To start a project or process.\n  *Usage*: \"Let's get the ball rolling on the new feature.\"\n- **On the same page**: To have a shared understanding.\n  *Usage*: \"Before we code, let's make sure we are on the same page.\"\n\n### Common Pitfalls ⚠️\nDon't translate idioms directly into your native language; they usually won't make sense! Memorize them as complete phrases.",
+      codeExample: "Sentence: You really hit the nail on the head with that bug fix.\n\nPhonetics: /ju ˈrɪli hɪt ðə neɪl ɑn ðə hɛd/\n\nFocus: This idiom means you did something perfectly.",
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "What does 'On the same page' mean?",
+          options: ["Reading a book", "Having a shared understanding", "Writing documentation"],
+          correctOption: 1,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Practice your idiom! 🎤",
+          starterCode: "Let's get the ball rolling on this project.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Print the idiom for 'exactly right'.",
+          starterCode: "print('___')",
+          expectedOutput: "hit the nail on the head"
+        }
+      }
+    },
+    {
+      id: "eng-7-interviews",
+      title: "Level 7: Tech Interviews 💼",
+      description: "Ace your next technical interview in English.",
+      content: "## Level 7: Interview Ready 💼\n\nTechnical interviews in English test both your coding skills and your communication skills. The most effective way to answer behavioral questions is using the **STAR Method**.\n\n### The STAR Method\n- **S - Situation**: Describe the context. (*\"In my last role, we had a major memory leak.\"*)\n- **T - Task**: What was your specific responsibility? (*\"I was tasked with finding and fixing the leak before the weekend.\"*)\n- **A - Action**: What steps did you take? (*\"I used a profiler to track the memory usage, identified the rogue array, and refactored the garbage collection logic.\"*)\n- **R - Result**: What was the outcome? Use numbers if possible! (*\"The memory leak was resolved, and our server uptime improved by 99%.\"*)\n\n### Powerful Verbs\nInstead of saying *\"I made\"* or *\"I did\"*, use strong action verbs:\n- **Architected** (I architected the database)\n- **Optimized** (I optimized the loading speed)\n- **Spearheaded** (I spearheaded the migration)\n\n### Common Pitfalls ⚠️\nDon't say \"We\" too much when describing a success. Interviewers want to know what *YOU* did. Say \"I\" when describing your specific actions.",
+      codeExample: "Sentence: I optimized the database and improved the speed by fifty percent.\n\nPhonetics: /aɪ ˈɑptəˌmaɪzd ðə ˈdeɪtəˌbeɪs ænd ɪmˈpruvd ðə spid baɪ ˈfɪfti pərˈsɛnt/\n\nFocus: Speak clearly and emphasize the results (fifty percent).",
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "What does the 'R' in the STAR method stand for?",
+          options: ["Run", "Result", "React"],
+          correctOption: 1,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Practice your interview answer! 🎤",
+          starterCode: "I optimized the database and improved the speed.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Print the word 'Result'",
+          starterCode: "print('___')",
+          expectedOutput: "Result"
+        }
+      }
+    },
+    {
+      id: "eng-8-presentations",
+      title: "Final Level: Tech Talks 🎤",
+      description: "Deliver powerful presentations and demos.",
+      content: "## Final Level: The Stage is Yours! 🎤\n\nWhether you are presenting a new architecture to your team or giving a talk at a conference, your ability to guide the audience is critical. This requires smooth **Transitions**.\n\n### Structuring Your Presentation\n1. **The Hook**: Grab their attention. (*\"Have you ever wondered why our API is so slow? Today, I'll show you how to fix it.\"*)\n2. **The Agenda**: Tell them what to expect. (*\"First, we'll look at the problem. Then, I'll demonstrate the new code.\"*)\n3. **Transitions**: Move smoothly between topics.\n   - *\"Moving on to the next point...\"*\n   - *\"As you can see in this diagram...\"*\n   - *\"Now, let's dive into the live demo...\"*\n4. **The Conclusion**: Summarize and take questions. (*\"To wrap up, this new architecture saves us money. Are there any questions?\"*)\n\n### Handling Questions\nIf you don't know the answer, don't panic! Use this professional phrase:\n*\"That's a great question. I don't have the exact data in front of me right now, but I can look into it and get back to you.\"*\n\n### Common Pitfalls ⚠️\nDon't read directly from your slides. Your slides should contain summaries, and you should provide the detail verbally.",
+      codeExample: "Sentence: As you can see in this demo, the application is highly scalable.\n\nPhonetics: /æz ju kæn si ɪn ðɪs ˈdɛmoʊ, ði ˌæpləˈkeɪʃən ɪz ˈhaɪli ˈskeɪləbəl/\n\nFocus: Pause slightly after 'demo' to let the audience digest.",
+      exercises: {
+        beginner: { 
+          type: "quiz",
+          prompt: "Which phrase is a good transition?",
+          options: ["Moving on to...", "I don't know...", "What's this..."],
+          correctOption: 0,
+          starterCode: "",
+          expectedOutput: ""
+        },
+        intermediate: { 
+          type: "speaking",
+          prompt: "Challenge: Introduce your demo! 🎤",
+          starterCode: "Let's dive into the live demo.",
+          expectedOutput: ""
+        },
+        advanced: { 
+          type: "code",
+          prompt: "Print the word 'demo'.",
+          starterCode: "print('___')",
+          expectedOutput: "demo"
+        }
+      }
+    }
+  ];
+}
 
 
 function agenticAi(): CareerLesson[] {
@@ -3506,6 +3751,340 @@ function agenticAi(): CareerLesson[] {
         advanced: { prompt: "Print 'Mitigation strategies'", starterCode: "", expectedOutput: "Mitigation strategies" }
       }
     }
+  ];
+}
+
+function systemDesign(): CareerLesson[] {
+  return [
+    {
+      id: "sd-1-foundations",
+      title: "Module 1: Foundations",
+      description: "Core concepts: Scalability, Reliability, and Availability.",
+      content: "## Foundations of System Design 🏗️\n\nSystem design is the process of defining the architecture, components, and interfaces for a system to satisfy specific requirements.\n\n### Key Metrics (The 'ilities')\n- **Scalability**: The ability to handle increased load (Horizontal vs Vertical).\n- **Reliability**: The system's ability to remain functional even in the face of component failures.\n- **Availability**: The percentage of time the system is operational.\n- **Maintainability**: How easy it is to evolve and repair the system.\n\n### Client-Server Architecture\nThe basic model where a 'client' (browser/app) requests resources or services from a 'server'.",
+      codeExample: "print('Measuring System Availability: 99.9% uptime')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which metric measures the percentage of time a system is functional?", options: ["Scalability", "Availability", "Reliability"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Define horizontal scaling in one sentence.", starterCode: "", expectedOutput: "Adding more machines to a system." },
+        advanced: { type: "code", prompt: "Print 'High Availability'", starterCode: "print('___')", expectedOutput: "High Availability" }
+      }
+    },
+    {
+      id: "sd-2-networking",
+      title: "Module 2: Networking Basics",
+      description: "HTTP, DNS, Load Balancers, and Reverse Proxies.",
+      content: "## Networking for Systems 🌐\n\nTo design distributed systems, you must understand how data moves.\n\n### Key Protocols\n- **HTTP/HTTPS**: The foundation of web data exchange.\n- **DNS**: Maps human-readable names (google.com) to IP addresses.\n- **TCP/IP**: Ensures reliable delivery of packets.\n\n### Load Balancers & Proxies\n- **Load Balancer**: Distributes traffic across multiple servers.\n- **Reverse Proxy**: Acts as a gateway, providing security and caching (e.g., Nginx).",
+      codeExample: "import requests\nresponse = requests.get('https://dns.google/resolve?name=example.com')\nprint(response.json())",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What maps domain names to IP addresses?", options: ["HTTP", "DNS", "TCP"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What tool distributes traffic across servers?", starterCode: "", expectedOutput: "Load Balancer" },
+        advanced: { type: "code", prompt: "Print the acronym for Domain Name System", starterCode: "print('___')", expectedOutput: "DNS" }
+      }
+    },
+    {
+      id: "sd-3-databases",
+      title: "Module 3: Databases",
+      description: "SQL vs NoSQL, Sharding, and Consistency.",
+      content: "## Data Storage 🗄️\n\nChoosing the right database is one of the most critical decisions in system design.\n\n### SQL vs NoSQL\n- **SQL (Relational)**: Structured, ACID compliant, good for complex queries (e.g., PostgreSQL).\n- **NoSQL (Non-Relational)**: Flexible schema, horizontal scaling, good for large data (e.g., MongoDB, Cassandra).\n\n### Advanced Concepts\n- **Indexing**: Speeds up read operations.\n- **Sharding**: Splitting data across multiple database instances.\n- **Replication**: Copying data across multiple servers for redundancy.",
+      codeExample: "import sqlite3\nconn = sqlite3.connect(':memory:')\nconn.execute('CREATE TABLE users (id INT, name TEXT)')\nprint('SQL Database Ready')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which type of database is typically ACID compliant?", options: ["SQL", "NoSQL", "Neither"], correctOption: 0, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What is splitting data across database instances called?", starterCode: "", expectedOutput: "Sharding" },
+        advanced: { type: "code", prompt: "Print 'ACID'", starterCode: "print('___')", expectedOutput: "ACID" }
+      }
+    },
+    {
+      id: "sd-4-storage",
+      title: "Module 4: Storage Systems",
+      description: "File systems, Object storage, and Partitioning.",
+      content: "## Distributed Storage 📦\n\nHow do we store massive amounts of unstructured data (images, videos)?\n\n### Storage Types\n- **File Systems**: Hierarchical (e.g., HDFS).\n- **Object Storage**: Flat structure, highly scalable (e.g., AWS S3).\n- **Block Storage**: High performance (e.g., EBS).\n\n### Data Partitioning\nBreaking a large dataset into smaller, more manageable parts called partitions to improve performance and scalability.",
+      codeExample: "print('Simulating S3 Object Upload...')\nprint('Object: profile_pic.jpg, Size: 2MB')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which storage type is best for large scale flat data like images?", options: ["File System", "Object Storage", "Block Storage"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What is HDFS commonly used for?", starterCode: "", expectedOutput: "Big Data" },
+        advanced: { type: "code", prompt: "Print 'Object Storage'", starterCode: "print('___')", expectedOutput: "Object Storage" }
+      }
+    },
+    {
+      id: "sd-5-caching",
+      title: "Module 5: Caching",
+      description: "Redis, Memcached, and Invalidation strategies.",
+      content: "## The Speed Layer ⚡\n\nCaching is the most effective way to improve performance by keeping frequent data in RAM.\n\n### Tools\n- **Redis**: Key-value store, supports complex data types.\n- **Memcached**: Simple, high-speed key-value store.\n\n### Invalidation Strategies\n- **TTL (Time To Live)**: Data expires after a certain time.\n- **Write-Through**: Data is updated in cache and DB simultaneously.\n- **Cache Aside**: Application checks cache first, then DB.",
+      codeExample: "cache = {'user:123': 'John Doe'}\nprint(f'Fetching from cache: {cache.get(\"user:123\")}')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which tool is a common key-value store for caching?", options: ["PostgreSQL", "Redis", "Kafka"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does TTL stand for?", starterCode: "", expectedOutput: "Time To Live" },
+        advanced: { type: "code", prompt: "Print 'Cache Hit'", starterCode: "print('___')", expectedOutput: "Cache Hit" }
+      }
+    },
+    {
+      id: "sd-6-messaging",
+      title: "Module 6: Messaging & Queues",
+      description: "Kafka, RabbitMQ, and Event-driven architecture.",
+      content: "## Decoupling Systems 📬\n\nMessage queues allow different parts of a system to communicate asynchronously.\n\n### Core Components\n- **Producer**: Sends messages to the queue.\n- **Queue/Broker**: Stores messages (e.g., Kafka, RabbitMQ).\n- **Consumer**: Retrieves and processes messages.\n\n### Benefits\n- **Async Processing**: Tasks like sending emails can be handled later.\n- **Load Leveling**: Handle spikes in traffic without crashing.\n- **Decoupling**: Services don't need to know about each other.",
+      codeExample: "print('Producer: Sending order_created event to Kafka...')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which component retrieves and processes messages from a queue?", options: ["Producer", "Consumer", "Broker"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Name one popular message broker.", starterCode: "", expectedOutput: "Kafka" },
+        advanced: { type: "code", prompt: "Print 'Message Queue'", starterCode: "print('___')", expectedOutput: "Message Queue" }
+      }
+    },
+    {
+      id: "sd-7-concurrency",
+      title: "Module 7: Concurrency & Parallelism",
+      description: "Threads, Processes, and Async I/O.",
+      content: "## Doing More at Once 🧵\n\nUnderstanding how Python handles multiple tasks is vital for high-performance systems.\n\n### Key Concepts\n- **Threads**: Shared memory, good for I/O bound tasks.\n- **Processes**: Separate memory, good for CPU bound tasks (overcomes the GIL).\n- **Async I/O**: Single-threaded concurrent execution (e.g., `asyncio`).\n\n### Common Issues\n- **Race Conditions**: Two threads accessing the same data simultaneously.\n- **Deadlocks**: Two threads waiting for each other to release a lock.",
+      codeExample: "import asyncio\nasync def main():\n    print('Hello')\n    await asyncio.sleep(1)\n    print('World')\nasyncio.run(main())",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which Python module is used for single-threaded concurrent execution?", options: ["threading", "multiprocessing", "asyncio"], correctOption: 2, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does GIL stand for?", starterCode: "", expectedOutput: "Global Interpreter Lock" },
+        advanced: { type: "code", prompt: "Print 'Deadlock'", starterCode: "print('___')", expectedOutput: "Deadlock" }
+      }
+    },
+    {
+      id: "sd-8-microservices",
+      title: "Module 8: Microservices & APIs",
+      description: "REST, GraphQL, gRPC, and Gateways.",
+      content: "## Distributed Services 🏗️\n\nBreaking a monolith into smaller, independent services.\n\n### API Technologies\n- **REST**: Standard HTTP verbs, JSON (most common).\n- **GraphQL**: Client requests exactly what data it needs.\n- **gRPC**: High performance, uses Protocol Buffers.\n\n### Service Infrastructure\n- **API Gateway**: Single entry point for all clients.\n- **Service Discovery**: How services find each other's IP addresses.",
+      codeExample: "print('Gateway: Routing request to /auth-service...')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which technology allows clients to request exactly the data they need?", options: ["REST", "GraphQL", "gRPC"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What is a single entry point for all API clients called?", starterCode: "", expectedOutput: "API Gateway" },
+        advanced: { type: "code", prompt: "Print 'Microservices'", starterCode: "print('___')", expectedOutput: "Microservices" }
+      }
+    },
+    {
+      id: "sd-9-dist-systems",
+      title: "Module 9: Distributed Systems",
+      description: "CAP theorem, Consensus, and Leader election.",
+      content: "## The Distributed Reality 🌍\n\nWhen systems are distributed, failures are inevitable.\n\n### CAP Theorem\nIn a distributed system, you can only have two of the following:\n- **Consistency**: All nodes see the same data at the same time.\n- **Availability**: Every request receives a response.\n- **Partition Tolerance**: The system continues to operate despite network failures.\n\n### Consensus Algorithms\nHow nodes agree on a single value (e.g., Raft, Paxos). Used for leader election.",
+      codeExample: "print('Leader Election: Node 3 is now the leader.')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "According to CAP theorem, if you prioritize Consistency and Availability, what must you sacrifice during a network partition?", options: ["Consistency", "Availability", "Partition Tolerance"], correctOption: 2, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Name one consensus algorithm.", starterCode: "", expectedOutput: "Raft" },
+        advanced: { type: "code", prompt: "Print 'CAP Theorem'", starterCode: "print('___')", expectedOutput: "CAP Theorem" }
+      }
+    },
+    {
+      id: "sd-10-security",
+      title: "Module 10: Security & Authentication",
+      description: "OAuth, JWT, and Rate Limiting.",
+      content: "## Protecting the System 🛡️\n\nSecurity must be built in from the start, not added as an afterthought.\n\n### Authentication & Authorization\n- **JWT (JSON Web Tokens)**: Stateless authentication.\n- **OAuth 2.0**: The industry standard for authorization.\n\n### System Protection\n- **Rate Limiting**: Preventing abuse by limiting requests from a single user.\n- **Hashing**: Storing passwords securely using algorithms like Argon2 or bcrypt.",
+      codeExample: "import hashlib\npassword = 'secure_pass'\nhash_obj = hashlib.sha256(password.encode())\nprint(f'Password Hash: {hash_obj.hexdigest()}')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which standard is used for stateless authentication in modern web apps?", options: ["JWT", "Session Cookies", "SAML"], correctOption: 0, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What prevents abuse by limiting user requests?", starterCode: "", expectedOutput: "Rate Limiting" },
+        advanced: { type: "code", prompt: "Print 'JWT'", starterCode: "print('___')", expectedOutput: "JWT" }
+      }
+    },
+    {
+      id: "sd-11-monitoring",
+      title: "Module 11: Monitoring & Logging",
+      description: "Observability, Alerting, and SLA/SLO.",
+      content: "## System Health 🩺\n\nYou can't fix what you can't see. Monitoring is essential for maintaining a healthy system.\n\n### The Pillars of Observability\n- **Metrics**: Quantitative data (CPU usage, request count).\n- **Logging**: Detailed records of events (Errors, info messages).\n- **Tracing**: Tracking a request's path through multiple services.\n\n### Reliability Targets\n- **SLA (Service Level Agreement)**: A contract with users about uptime.\n- **SLO (Service Level Objective)**: Internal target for reliability.\n- **SLI (Service Level Indicator)**: Current measurement of reliability.",
+      codeExample: "print('Monitoring: API Latency is 120ms (Within SLO)')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which pillar of observability tracks a request's path through services?", options: ["Metrics", "Logging", "Tracing"], correctOption: 2, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does SLA stand for?", starterCode: "", expectedOutput: "Service Level Agreement" },
+        advanced: { type: "code", prompt: "Print 'Observability'", starterCode: "print('___')", expectedOutput: "Observability" }
+      }
+    },
+    {
+      id: "sd-12-scalability",
+      title: "Module 12: Scalability Patterns",
+      description: "Sharding, Replication, and Statelessness.",
+      content: "## Growth Strategies 📈\n\nHow do we scale a system to support millions of users?\n\n### Scaling the Database\n- **Replication**: Master-Slave (Master for writes, Slaves for reads) or Multi-Master.\n- **Sharding**: Partitioning data by a key (e.g., User ID).\n\n### Scaling the Application\n- **Stateless Services**: Storing session data in a database/cache instead of the server's memory. This allows any server to handle any request.",
+      codeExample: "print('Routing request to instance_4 (Stateless Layer)')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "In a Master-Slave replication setup, which node typically handles write operations?", options: ["Master", "Slave", "Both"], correctOption: 0, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What is splitting data across multiple DBs called?", starterCode: "", expectedOutput: "Sharding" },
+        advanced: { type: "code", prompt: "Print 'Stateless'", starterCode: "print('___')", expectedOutput: "Stateless" }
+      }
+    },
+    {
+      id: "sd-13-high-availability",
+      title: "Module 13: High Availability & Fault Tolerance",
+      description: "Failover, Redundancy, and Disaster Recovery.",
+      content: "## Never Going Down 🛡️\n\nHigh Availability (HA) ensures a system is available as much as possible.\n\n### Key Techniques\n- **Redundancy**: Having multiple copies of everything (servers, databases, power supplies).\n- **Failover**: Automatically switching to a backup instance when the primary fails.\n- **Health Checks**: Constantly monitoring if a service is 'alive' and 'healthy'.",
+      codeExample: "print('Failover Triggered: Primary server down, switching to Secondary...')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What is the process of automatically switching to a backup server called?", options: ["Redundancy", "Failover", "Sharding"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does HA stand for?", starterCode: "", expectedOutput: "High Availability" },
+        advanced: { type: "code", prompt: "Print 'Redundancy'", starterCode: "print('___')", expectedOutput: "Redundancy" }
+      }
+    },
+    {
+      id: "sd-14-cloud",
+      title: "Module 14: Cloud & Deployment",
+      description: "Docker, Kubernetes, and CI/CD.",
+      content: "## Modern Infrastructure ☁️\n\nThe cloud has changed how we deploy and manage systems.\n\n### Containerization\n- **Docker**: Packaging an application and its dependencies into a single container.\n- **Kubernetes (K8s)**: Orchestrating and managing thousands of containers.\n\n### CI/CD\n- **Continuous Integration**: Automatically building and testing code.\n- **Continuous Deployment**: Automatically deploying tested code to production.",
+      codeExample: "print('Deploying to Kubernetes Cluster: v2.1.0 Ready')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which tool is commonly used for container orchestration?", options: ["Docker", "Kubernetes", "Nginx"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does CI stand for?", starterCode: "", expectedOutput: "Continuous Integration" },
+        advanced: { type: "code", prompt: "Print 'Kubernetes'", starterCode: "print('___')", expectedOutput: "Kubernetes" }
+      }
+    },
+    {
+      id: "sd-15-case-studies",
+      title: "Module 15: Case Studies & Projects",
+      description: "Designing Twitter, Uber, and YouTube.",
+      content: "## Real-world Design 🌍\n\nLet's apply everything we've learned to design massive systems.\n\n### Project: Design a Twitter Feed\n- **Requirements**: Fast reads, eventual consistency.\n- **Architecture**: Fan-out on write (pushing tweets to followers' timelines).\n\n### Project: Design YouTube\n- **Requirements**: Handle massive video uploads, global delivery.\n- **Architecture**: CDN for video delivery, transcoding workers, blob storage.",
+      codeExample: "print('Case Study: Designing a high-throughput feed system...')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "For a high-traffic video site like YouTube, what is essential for fast global delivery?", options: ["A single big DB", "A CDN", "Synchronous processing"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What is pushing a tweet to all followers called?", starterCode: "", expectedOutput: "Fan-out" },
+        advanced: { type: "code", prompt: "Print 'Case Study'", starterCode: "print('___')", expectedOutput: "Case Study" }
+      }
+    },
+  ];
+}
+
+function softwareTesting(): CareerLesson[] {
+  return [
+    {
+      id: "qa-1-intro",
+      title: "Module 1: Introduction to Testing",
+      description: "Why testing matters, QA vs QC, and SDLC/STLC.",
+      content: "## The Importance of Quality 🛡️\n\nSoftware testing is the process of evaluating and verifying that a software product or application does what it is supposed to do.\n\n### Core Concepts\n- **QA (Quality Assurance)**: Process-oriented. Focuses on preventing defects.\n- **QC (Quality Control)**: Product-oriented. Focuses on identifying defects.\n- **Testing**: The actual execution of finding bugs.\n\n### Life Cycles\n- **SDLC**: Software Development Life Cycle.\n- **STLC**: Software Testing Life Cycle (Requirement Analysis -> Test Planning -> Test Case Development -> Environment Setup -> Test Execution -> Test Closure).",
+      codeExample: "def calculate_total(price, tax):\n    return price + tax\n\n# A simple test to ensure logic is correct\nassert calculate_total(100, 10) == 110\nprint('Logic Verified!')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which of these is process-oriented and focuses on preventing defects?", options: ["QA", "QC", "Testing"], correctOption: 0, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does STLC stand for?", starterCode: "", expectedOutput: "Software Testing Life Cycle" },
+        advanced: { type: "code", prompt: "Write an assert statement that checks if 5 + 5 is 10.", starterCode: "___ 5 + 5 == 10", expectedOutput: "assert" }
+      }
+    },
+    {
+      id: "qa-2-fundamentals",
+      title: "Module 2: Testing Fundamentals",
+      description: "Manual vs Auto, Levels of testing, and Box models.",
+      content: "## Testing Strategies 🔍\n\nHow we test depends on the level and the access we have to the code.\n\n### Manual vs Automated\n- **Manual**: Human execution of test cases without tools.\n- **Automated**: Using tools (like pytest or Selenium) to execute tests automatically.\n\n### Levels of Testing\n1. **Unit**: Smallest components (functions).\n2. **Integration**: Modules working together.\n3. **System**: Complete integrated system.\n4. **Acceptance**: Validating against user requirements (UAT).\n\n### Box Models\n- **Black-box**: Testing without knowing internal code structure.\n- **White-box**: Testing with full knowledge of internal code.",
+      codeExample: "import unittest\n\nclass TestSum(unittest.TestCase):\n    def test_list_int(self):\n        self.assertEqual(sum([1, 2, 3]), 6)\n\nprint('Running Unit Tests...')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Testing without knowing the internal code structure is called...", options: ["White-box", "Grey-box", "Black-box"], correctOption: 2, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What level of testing checks the smallest components?", starterCode: "", expectedOutput: "Unit Testing" },
+        advanced: { type: "code", prompt: "Print 'Unit Testing'", starterCode: "print('___')", expectedOutput: "Unit Testing" }
+      }
+    },
+    {
+      id: "qa-3-documentation",
+      title: "Module 3: Test Planning & Documentation",
+      description: "Test plans, strategies, and traceability.",
+      content: "## Organizing the Search 📝\n\nGood testing requires rigorous documentation to ensure nothing is missed.\n\n### Key Documents\n- **Test Plan**: High-level document outlining the strategy, resources, and schedule.\n- **Test Case**: Specific conditions or variables to determine if a feature works.\n- **Traceability Matrix (RTM)**: A map that links requirements to the test cases that verify them.\n\n### Test Scenario vs Case\n- **Scenario**: 'Check Login functionality' (High level).\n- **Case**: 'Enter valid email and wrong password' (Detailed steps).",
+      codeExample: "# Test Case ID: TC001\n# Scenario: Login Validation\n# Input: email='test@dev.com', pass='123'\n# Expected: Error Message shown",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which document links requirements to test cases?", options: ["Test Plan", "RTM", "Checklist"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does RTM stand for?", starterCode: "", expectedOutput: "Requirement Traceability Matrix" },
+        advanced: { type: "code", prompt: "Print 'Test Case'", starterCode: "print('___')", expectedOutput: "Test Case" }
+      }
+    },
+    {
+      id: "qa-4-functional",
+      title: "Module 4: Functional Testing",
+      description: "Smoke, Sanity, Regression, and Exploratory.",
+      content: "## Ensuring it Works ⚙️\n\nFunctional testing verifies that the software performs as expected.\n\n### Key Types\n- **Smoke Testing**: Quick check to see if the main features work (Initial build).\n- **Sanity Testing**: Deep check of specific new features or bug fixes.\n- **Regression Testing**: Re-testing everything to ensure new changes didn't break old features.\n- **Exploratory Testing**: Informal, manual testing where testers 'explore' the app for bugs.",
+      codeExample: "print('Executing Smoke Test...')\nprint('Step 1: App Launch - OK')\nprint('Step 2: Login - OK')\nprint('Smoke Test Passed!')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which test ensures that new changes didn't break existing functionality?", options: ["Smoke", "Regression", "Sanity"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What is informal, creative testing called?", starterCode: "", expectedOutput: "Exploratory Testing" },
+        advanced: { type: "code", prompt: "Print 'Regression Test'", starterCode: "print('___')", expectedOutput: "Regression Test" }
+      }
+    },
+    {
+      id: "qa-5-non-functional",
+      title: "Module 5: Non-Functional Testing",
+      description: "Performance, Security, and Accessibility.",
+      content: "## Beyond Functionality 🚀\n\nNon-functional testing checks the quality of the system, not just what it does.\n\n### Key Areas\n- **Performance Testing**: Checks speed, scalability, and stability under load (Stress vs Load testing).\n- **Security Testing**: Finds vulnerabilities and ensures data protection.\n- **Usability Testing**: Evaluates how user-friendly the application is.\n- **Accessibility (a11y)**: Ensures the app is usable by people with disabilities.",
+      codeExample: "print('Running Load Test: Simulating 10,000 concurrent users...')\nprint('Average Response Time: 150ms')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which type of testing checks the system under extreme load to see when it fails?", options: ["Load Testing", "Stress Testing", "Usability Testing"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What is the common abbreviation for Accessibility?", starterCode: "", expectedOutput: "a11y" },
+        advanced: { type: "code", prompt: "Print 'Performance Testing'", starterCode: "print('___')", expectedOutput: "Performance Testing" }
+      }
+    },
+    {
+      id: "qa-6-automation",
+      title: "Module 6: Automation Testing",
+      description: "Frameworks, Selenium, and Playwright.",
+      content: "## The Power of Scripting 🤖\n\nAutomation saves time and reduces human error in repetitive testing tasks.\n\n### Popular Frameworks\n- **Selenium**: The industry standard for web browser automation.\n- **Playwright/Cypress**: Modern, faster alternatives with better developer experience.\n- **Appium**: For mobile application automation.\n\n### Why Automate?\n- Faster execution of regression suites.\n- Ability to run tests on multiple browsers/OS simultaneously.",
+      codeExample: "from selenium import webdriver\n\ndriver = webdriver.Chrome()\ndriver.get('https://www.google.com')\nprint(f'Title: {driver.title}')\ndriver.quit()",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which tool is the long-standing industry standard for web browser automation?", options: ["Postman", "Selenium", "JIRA"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Name one modern alternative to Selenium.", starterCode: "", expectedOutput: "Playwright" },
+        advanced: { type: "code", prompt: "Print 'Automation'", starterCode: "print('___')", expectedOutput: "Automation" }
+      }
+    },
+    {
+      id: "qa-7-api-backend",
+      title: "Module 7: API & Backend Testing",
+      description: "REST, GraphQL, and Postman.",
+      content: "## Testing the Engine ⚙️\n\nAPI testing focuses on the business logic layer without the UI.\n\n### Tools & Techniques\n- **Postman**: A powerful GUI tool for testing APIs.\n- **Newman**: Command-line runner for Postman collections.\n- **Response Validation**: Checking status codes (200, 404), headers, and JSON payloads.\n\n### Key Status Codes\n- **2xx**: Success.\n- **4xx**: Client Error (e.g., 401 Unauthorized).\n- **5xx**: Server Error.",
+      codeExample: "import requests\n\nresponse = requests.get('https://api.github.com/zen')\nprint(f'Status: {response.status_code}')\nassert response.status_code == 200",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What HTTP status code indicates a successful request?", options: ["200", "404", "500"], correctOption: 0, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Which library is commonly used in Python for API testing?", starterCode: "", expectedOutput: "requests" },
+        advanced: { type: "code", prompt: "Print 'API Testing'", starterCode: "print('___')", expectedOutput: "API Testing" }
+      }
+    },
+    {
+      id: "qa-8-devops",
+      title: "Module 8: Continuous Testing & DevOps",
+      description: "CI/CD, Pipelines, and Shift-left.",
+      content: "## Testing at the Speed of Code ⚡\n\nIn modern DevOps, testing is integrated directly into the deployment pipeline.\n\n### Concepts\n- **CI/CD**: Continuous Integration and Continuous Deployment.\n- **Pipelines**: Automated workflows (GitHub Actions, Jenkins) that run tests on every commit.\n- **Shift-left Testing**: Moving testing earlier in the development process to catch bugs sooner.",
+      codeExample: "print('CI Pipeline: Running Unit Tests...')\nprint('CI Pipeline: Running Linting...')\nprint('Build Successful!')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What is the practice of moving testing earlier in the development process called?", options: ["Shift-right", "Shift-left", "Waterfall"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does CI stand for?", starterCode: "", expectedOutput: "Continuous Integration" },
+        advanced: { type: "code", prompt: "Print 'Pipeline'", starterCode: "print('___')", expectedOutput: "Pipeline" }
+      }
+    },
+    {
+      id: "qa-9-bug-tracking",
+      title: "Module 9: Bug Tracking & Reporting",
+      description: "Defect lifecycle, JIRA, and Bug reports.",
+      content: "## Managing Defects 🐞\n\nA bug is only useful if it's reported clearly and tracked until it's fixed.\n\n### Defect Lifecycle\nNew -> Assigned -> Open -> Fixed -> Pending Retest -> Verified -> Closed.\n\n### Writing a Great Bug Report\n- **Summary**: Concise description.\n- **Steps to Reproduce**: Detailed list of actions.\n- **Expected vs Actual Result**: What happened vs what should have happened.\n- **Severity/Priority**: How bad is it? How soon does it need a fix?",
+      codeExample: "# Bug ID: BUG-402\n# Title: App crashes on empty login\n# Severity: Critical\n# Steps: 1. Clear fields, 2. Click Login\n# Actual: Crash",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What is the correct final state of a successfully fixed and verified bug?", options: ["Fixed", "Closed", "Verified"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Name one popular bug tracking tool.", starterCode: "", expectedOutput: "JIRA" },
+        advanced: { type: "code", prompt: "Print 'Bug Report'", starterCode: "print('___')", expectedOutput: "Bug Report" }
+      }
+    },
+    {
+      id: "qa-10-advanced",
+      title: "Module 10: Advanced Topics",
+      description: "Mocking, Stubbing, and Virtualization.",
+      content: "## Mastering the Environment 🧪\n\nAdvanced testing involves simulating external systems to ensure isolated tests.\n\n### Key Techniques\n- **Mocking**: Creating objects that simulate the behavior of real objects (e.g., `unittest.mock`).\n- **Stubbing**: Providing pre-defined data to a function during testing.\n- **Virtualization**: Simulating complex environments (Service Virtualization) so you don't need the real system to be online.",
+      codeExample: "from unittest.mock import MagicMock\n\n# Mocking a database call\ndb = MagicMock()\ndb.get_user.return_value = {'name': 'Mock User'}\nprint(db.get_user(123))",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What technique involves creating objects that simulate the behavior of real dependencies?", options: ["Mocking", "Tracing", "Profiling"], correctOption: 0, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What Python module is used for mocking?", starterCode: "", expectedOutput: "unittest.mock" },
+        advanced: { type: "code", prompt: "Print 'Mock Object'", starterCode: "print('___')", expectedOutput: "Mock Object" }
+      }
+    },
+    {
+      id: "qa-11-metrics",
+      title: "Module 11: QA Metrics & Quality Gates",
+      description: "Code coverage and Release readiness.",
+      content: "## Measuring Quality 📊\n\nMetrics help teams decide if a product is ready for release.\n\n### Key Metrics\n- **Code Coverage**: The percentage of code executed by tests.\n- **Defect Density**: Number of bugs per size of the module.\n- **Pass/Fail Rate**: Percentage of test cases that passed.\n\n### Quality Gates\nA set of criteria that must be met (e.g., >80% coverage, 0 critical bugs) before the code can move to the next stage.",
+      codeExample: "print('Quality Gate Check...')\nprint('Code Coverage: 85% (PASS)')\nprint('Critical Bugs: 0 (PASS)')\nprint('Ready for Release!')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What metric measures the percentage of code executed by your test suite?", options: ["Defect Density", "Code Coverage", "SLA"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What are criteria for moving code forward called?", starterCode: "", expectedOutput: "Quality Gates" },
+        advanced: { type: "code", prompt: "Print 'Quality Gate'", starterCode: "print('___')", expectedOutput: "Quality Gate" }
+      }
+    },
+    {
+      id: "qa-12-case-studies",
+      title: "Module 12: Case Studies & Projects",
+      description: "E2E Web testing and API regression.",
+      content: "## Real-world QA 🌎\n\nApplying your skills to build a complete quality strategy.\n\n### Project: Web App E2E\n- **Task**: Automate the checkout flow of an e-commerce site using Playwright.\n- **Focus**: Handling dynamic elements, assertions, and reporting.\n\n### Project: API Regression Suite\n- **Task**: Create a collection of Postman tests for a REST API.\n- **Focus**: Validating JSON schemas and chaining requests.",
+      codeExample: "print('Running Final Project: E2E Regression Suite...')\nprint('Total Tests: 50, Passed: 50')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which tool is great for automating web app checkout flows?", options: ["Postman", "Playwright", "JIRA"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "What does E2E stand for?", starterCode: "", expectedOutput: "End-to-End" },
+        advanced: { type: "code", prompt: "Print 'Final Project'", starterCode: "print('___')", expectedOutput: "Final Project" }
+      }
+    },
   ];
 }
 

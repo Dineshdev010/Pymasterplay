@@ -14,6 +14,7 @@ import { CompanyBadge } from "@/components/CompanyBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 
 export default function ProblemsListPage() {
   const { progress } = useProgress();
@@ -157,35 +158,82 @@ export default function ProblemsListPage() {
         </p>
       </div>
 
-      {/* Mastery Distribution Chart */}
-      <div className="mb-8 p-5 sm:p-6 rounded-2xl border border-border/60 bg-card/50 backdrop-blur-sm shadow-xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex flex-col">
-            <span className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-1">Mastery Progress</span>
-            <div className="flex items-end gap-2">
-              <span className="text-4xl font-black text-foreground leading-none">{progress.solvedProblems.length}</span>
-              <span className="text-lg font-bold text-muted-foreground leading-none mb-1">/ {problems.length}</span>
-              <span className="ml-2 text-xs font-bold text-streak-green bg-streak-green/10 px-2 py-0.5 rounded-full">
-                {Math.round((progress.solvedProblems.length / problems.length) * 100)}% Solved
+      {/* Mastery Distribution Hub */}
+      <div className="mb-10 p-6 sm:p-8 rounded-[2rem] border border-primary/20 bg-gradient-to-br from-card/80 to-background/40 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
+        {/* Background glow */}
+        <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/10 rounded-full blur-[100px] group-hover:bg-primary/20 transition-colors duration-700" />
+        
+        <div className="relative flex flex-col lg:flex-row lg:items-center gap-10">
+          {/* Radial Progress Score */}
+          <div className="flex flex-col items-center justify-center text-center shrink-0">
+            <div className="relative w-36 h-36 flex items-center justify-center">
+              <svg className="w-full h-full -rotate-90 transform">
+                <circle
+                  cx="72"
+                  cy="72"
+                  r="64"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                  fill="transparent"
+                  className="text-secondary/50"
+                />
+                <motion.circle
+                  initial={{ strokeDasharray: "0 402" }}
+                  animate={{ strokeDasharray: `${(progress.solvedProblems.length / problems.length) * 402} 402` }}
+                  transition={{ duration: 1.5, ease: "easeOut" }}
+                  cx="72"
+                  cy="72"
+                  r="64"
+                  stroke="currentColor"
+                  strokeWidth="8"
+                  strokeLinecap="round"
+                  fill="transparent"
+                  className="text-primary shadow-[0_0_15px_rgba(var(--primary),0.5)]"
+                />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-4xl font-black text-foreground">{progress.solvedProblems.length}</span>
+                <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Solved</span>
+              </div>
+            </div>
+            <div className="mt-4 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
+              <span className="text-xs font-bold text-primary">
+                {Math.round((progress.solvedProblems.length / problems.length) * 100)}% Complete
               </span>
             </div>
           </div>
-          
-          <div className="flex-1 grid grid-cols-2 sm:grid-cols-5 gap-4">
-            {masteryStats.map((stat) => (
-              <div key={stat.key} className="flex flex-col gap-1.5">
-                <div className="flex justify-between items-center px-0.5">
-                  <span className="text-[10px] font-bold uppercase tracking-tight text-muted-foreground">{stat.label}</span>
-                  <span className={`text-[10px] font-mono font-bold ${stat.textColor}`}>{stat.solved}/{stat.total}</span>
+
+          {/* Detailed Distribution Grid */}
+          <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+            {masteryStats.map((stat) => {
+              const percentage = (stat.solved / stat.total) * 100;
+              return (
+                <div key={stat.key} className="flex flex-col gap-3 p-4 rounded-2xl border border-white/5 bg-white/5 hover:bg-white/[0.08] transition-all duration-300 group/stat">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[10px] font-black uppercase tracking-[0.15em] text-muted-foreground group-hover/stat:text-foreground transition-colors">{stat.label}</span>
+                    <span className={`text-[11px] font-mono font-bold ${stat.textColor} bg-background/40 px-2 py-0.5 rounded-md`}>
+                      {stat.solved}<span className="opacity-40 ml-1">/ {stat.total}</span>
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
+                      <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${percentage}%` }}
+                        transition={{ duration: 1, delay: 0.5 }}
+                        className={`h-full ${stat.color} shadow-[0_0_12px_rgba(0,0,0,0.2)]`} 
+                      />
+                    </div>
+                    {/* Tiny micro-stat */}
+                    <div className="flex justify-between items-center opacity-0 group-hover/stat:opacity-100 transition-opacity">
+                      <span className="text-[9px] text-muted-foreground">Accuracy</span>
+                      <span className="text-[9px] font-bold text-foreground">{Math.round(percentage)}%</span>
+                    </div>
+                  </div>
                 </div>
-                <div className="h-1.5 w-full bg-secondary rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full ${stat.color} transition-all duration-1000 ease-out shadow-[0_0_8px_rgba(var(--primary-rgb),0.3)]`} 
-                    style={{ width: `${(stat.solved / stat.total) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

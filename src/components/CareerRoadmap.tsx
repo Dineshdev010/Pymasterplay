@@ -358,6 +358,72 @@ const careerPaths = [
     ],
     projects: ["PDF Q&A Bot", "SQL Assistant via MCP", "Autonomous Researcher"],
   },
+  {
+    id: "english-mastery",
+    title: "English Mastery",
+    icon: Globe,
+    color: "from-primary to-primary/60",
+    borderColor: "border-primary/40",
+    bgColor: "bg-primary/10",
+    textColor: "text-primary",
+    salary: "Global Reach",
+    description: "Master grammar, professional writing, and fluent speaking with interactive gamified lessons.",
+    skills: ["Grammar Foundations", "Business Writing", "Phonetics & Accents", "Public Speaking"],
+    tools: ["Interactive Exercises", "Audio Feedback", "Progress Tracking", "Daily Streaks"],
+    lessons: [
+      { label: "Grammar Essentials", tier: "beginner" },
+      { label: "Vocabulary Builder", tier: "beginner" },
+      { label: "Active Listening", tier: "advanced" },
+      { label: "Fluent Speaking", tier: "advanced" },
+      { label: "Professional Writing", tier: "master" },
+      { label: "Advanced Fluency", tier: "master" },
+    ],
+    projects: ["Resume Polishing", "Elevator Pitch", "Article Writing"],
+  },
+  {
+    id: "system-design",
+    title: "System Design",
+    icon: Server,
+    color: "from-violet-600 to-violet-500",
+    borderColor: "border-violet-500/40",
+    bgColor: "bg-violet-500/10",
+    textColor: "text-violet-400",
+    salary: "$120K — $200K",
+    description: "Design scalable, fault-tolerant distributed systems from load balancers to microservices.",
+    skills: ["Scalability Patterns", "Load Balancing", "Caching Strategies", "CAP Theorem"],
+    tools: ["Redis", "Kafka", "Nginx", "PostgreSQL", "Kubernetes"],
+    lessons: [
+      { label: "Distributed Systems Intro", tier: "beginner" },
+      { label: "Load Balancing & Caching", tier: "beginner" },
+      { label: "Database Sharding", tier: "advanced" },
+      { label: "Message Queues", tier: "advanced" },
+      { label: "Microservices Architecture", tier: "master" },
+      { label: "CAP Theorem & Trade-offs", tier: "master" },
+    ],
+    projects: ["URL Shortener Design", "Twitter Feed System", "Distributed File Store"],
+  },
+  {
+    id: "software-testing",
+    title: "Software Testing & QA",
+    icon: CheckCircle2,
+    color: "from-streak-green to-streak-green/60",
+    borderColor: "border-streak-green/40",
+    bgColor: "bg-streak-green/10",
+    textColor: "text-streak-green",
+    salary: "$65K — $115K",
+    description: "Master Test-Driven Development, PyTest, and end-to-end browser automation with Selenium.",
+    skills: ["TDD Principles", "PyTest & Fixtures", "Mocking & Patching", "E2E Automation"],
+    tools: ["pytest", "Selenium", "Playwright", "coverage.py", "Allure"],
+    lessons: [
+      { label: "Intro to Automated Testing", tier: "beginner" },
+      { label: "PyTest & Fixtures", tier: "beginner" },
+      { label: "Mocking with unittest.mock", tier: "advanced" },
+      { label: "API Testing with requests", tier: "advanced" },
+      { label: "Selenium E2E Testing", tier: "master" },
+      { label: "CI/CD Test Pipelines", tier: "master" },
+    ],
+    projects: ["Full Test Suite", "Selenium Web Scraper Test", "TDD REST API"],
+  },
 ];
 
 const chainFadeIn = {
@@ -383,6 +449,8 @@ if (pathId === "ai-ml") return "linear-gradient(130deg, rgba(17, 24, 39, 0.92), 
   if (pathId === "sql") return "linear-gradient(130deg, rgba(11, 24, 29, 0.92), rgba(8, 145, 178, 0.3))";
   if (pathId === "data-analysis") return "linear-gradient(130deg, rgba(16, 21, 35, 0.92), rgba(59, 130, 246, 0.3))";
   if (pathId === "git") return "linear-gradient(130deg, rgba(26, 19, 38, 0.92), rgba(124, 58, 237, 0.3))";
+  if (pathId === "system-design") return "linear-gradient(130deg, rgba(20, 15, 40, 0.92), rgba(109, 40, 217, 0.35))";
+  if (pathId === "software-testing") return "linear-gradient(130deg, rgba(12, 28, 20, 0.92), rgba(22, 101, 52, 0.3))";
   return "linear-gradient(130deg, rgba(10, 18, 35, 0.92), rgba(59, 130, 246, 0.22))";
 }
 
@@ -520,6 +588,24 @@ const roadmapThemeByPathId: Record<string, {
     sectionGlowC: "bg-[radial-gradient(ellipse_at_50%_80%,hsl(280_65%_46%_/_0.08),transparent_50%)]",
     cardIdleClass: "hover:border-expert-purple/40 hover:shadow-expert-purple/10",
     detailPanelClass: "bg-gradient-to-br from-card via-card to-expert-purple/5",
+  },
+  "system-design": {
+    badgeClass: "bg-violet-500/10 border-violet-500/30 text-violet-400",
+    pulseClass: "bg-violet-500",
+    sectionGlowA: "bg-[radial-gradient(ellipse_at_20%_50%,hsl(270_72%_54%_/_0.16),transparent_60%)]",
+    sectionGlowB: "bg-[radial-gradient(ellipse_at_80%_20%,hsl(250_82%_56%_/_0.10),transparent_50%)]",
+    sectionGlowC: "bg-[radial-gradient(ellipse_at_50%_80%,hsl(280_65%_46%_/_0.09),transparent_50%)]",
+    cardIdleClass: "hover:border-violet-500/40 hover:shadow-violet-500/10",
+    detailPanelClass: "bg-gradient-to-br from-card via-card to-violet-500/5",
+  },
+  "software-testing": {
+    badgeClass: "bg-streak-green/10 border-streak-green/30 text-streak-green",
+    pulseClass: "bg-streak-green",
+    sectionGlowA: "bg-[radial-gradient(ellipse_at_20%_50%,hsl(142_72%_29%_/_0.18),transparent_60%)]",
+    sectionGlowB: "bg-[radial-gradient(ellipse_at_80%_20%,hsl(160_65%_40%_/_0.10),transparent_50%)]",
+    sectionGlowC: "bg-[radial-gradient(ellipse_at_50%_80%,hsl(140_55%_32%_/_0.09),transparent_50%)]",
+    cardIdleClass: "hover:border-streak-green/40 hover:shadow-streak-green/10",
+    detailPanelClass: "bg-gradient-to-br from-card via-card to-streak-green/5",
   },
   default: {
     badgeClass: "bg-expert-purple/10 border-expert-purple/20 text-expert-purple",

@@ -69,6 +69,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.add(theme);
     localStorage.setItem(THEME_KEY, theme);
     localStorage.setItem(THEME_MODE_KEY, themeMode);
+
+    // Update meta theme-color for mobile browser status bar
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      metaThemeColor.setAttribute("content", theme === "dark" ? "#0a0c10" : "#f8fafc");
+    }
   }, [theme, themeMode]);
 
   useEffect(() => {

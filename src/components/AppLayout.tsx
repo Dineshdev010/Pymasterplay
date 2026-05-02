@@ -20,6 +20,7 @@ import { CustomCursor } from "@/components/CustomCursor";
 import { SupportTipPopup } from "@/components/SupportTipPopup";
 import { PwaInstallModal } from "@/components/PwaInstallModal";
 import { FloatingFocusTimer } from "@/components/FloatingFocusTimer";
+import { CommandPalette } from "@/components/CommandPalette";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -214,6 +215,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Global Focus Timer */}
       <FloatingFocusTimer />
+
+      {/* Global Command Palette (Ctrl+K) */}
+      <CommandPalette />
     </div>
   );
 }
