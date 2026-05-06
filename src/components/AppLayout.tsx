@@ -21,6 +21,7 @@ import { SupportTipPopup } from "@/components/SupportTipPopup";
 import { PwaInstallModal } from "@/components/PwaInstallModal";
 import { FloatingFocusTimer } from "@/components/FloatingFocusTimer";
 import { CommandPalette } from "@/components/CommandPalette";
+import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -184,20 +185,26 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
       {/* Floating feedback button (bottom-right corner) */}
       <FeedbackForm />
       
-      {/* Global custom cursor effect */}
-      <CustomCursor />
+      {/* Global utility effects and modals - Wrapped in ErrorBoundary to prevent app-wide crashes */}
+      <SectionErrorBoundary section="Custom Cursor">
+        <CustomCursor />
+      </SectionErrorBoundary>
       
-      {/* Global PWA Install Modal */}
-      <PwaInstallModal />
+      <SectionErrorBoundary section="PWA Modal">
+        <PwaInstallModal />
+      </SectionErrorBoundary>
       
-      {/* Support Tip & QR Popup */}
-      <SupportTipPopup />
+      <SectionErrorBoundary section="Support Popup">
+        <SupportTipPopup />
+      </SectionErrorBoundary>
 
-      {/* Global Focus Timer */}
-      <FloatingFocusTimer />
+      <SectionErrorBoundary section="Focus Timer">
+        <FloatingFocusTimer />
+      </SectionErrorBoundary>
 
-      {/* Global Command Palette (Ctrl+K) */}
-      <CommandPalette />
+      <SectionErrorBoundary section="Command Palette">
+        <CommandPalette />
+      </SectionErrorBoundary>
     </div>
   );
 }
