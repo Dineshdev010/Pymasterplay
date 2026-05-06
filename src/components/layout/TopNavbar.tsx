@@ -124,11 +124,17 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
 
   const handleSignOut = async () => {
     try {
+      // Force immediate sync before clearing session and local storage
+      await syncNow();
       await logout();
       toast({ title: "Signed out", description: "You've been signed out successfully." });
       navigate("/");
-    } catch {
-      toast({ title: "Error", description: "Failed to sign out.", variant: "destructive" });
+    } catch (err) {
+      console.error("Sign out error", err);
+      // Even if sync fails, we should probably allow logout, but let's warn
+      await logout();
+      toast({ title: "Signed out", description: "Progress sync failed, but you were signed out." });
+      navigate("/");
     }
   };
 

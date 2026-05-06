@@ -51,6 +51,7 @@ interface ProgressContextType {
   celebrationData: { title: string; subtitle: string; emoji: string; reward?: string } | null;
   dismissCelebration: () => void;        // Close the celebration modal
   resetLesson: (lessonId: string) => void; // Reset a specific lesson's progress
+  syncNow: () => Promise<void>;          // Force immediate cloud sync
 }
 
 // Create the context (null by default — must be inside Provider)
@@ -135,6 +136,37 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     };
   }, [user]);
 
+  // 1.5 Real-time Sync: Listen for changes from other tabs/devices
+  useEffect(() => {
+    if (!user || !hydratedUserId || hydratedUserId !== user.uid) return;
+
+    const channel = supabase
+      .channel(`profile-sync-${user.uid}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "profiles",
+          filter: `id=eq.${user.uid}`,
+        },
+        (payload) => {
+          const remoteProgress = profileRowToProgress(payload.new);
+          setProgress((prev) => {
+            const merged = mergeProgress(prev, remoteProgress);
+            // Update snapshot to prevent this incoming change from triggering a re-sync
+            lastCloudSnapshotRef.current = JSON.stringify(progressToProfileUpdate(merged));
+            return merged;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user, hydratedUserId]);
+
   // 2. Auto-save progress to local storage whenever it changes (State → LocalStorage)
   useEffect(() => {
     if (user && hydratedUserId !== user.uid) {
@@ -186,6 +218,36 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     
     return () => clearTimeout(handler);
   }, [hydratedUserId, progress, user]);
+
+  // 4. Manual Sync Trigger (e.g. for logout)
+  const syncNow = useCallback(async () => {
+    if (!user || hydratedUserId !== user.uid) return;
+
+    const payload = progressToProfileUpdate(progress);
+    const { error } = await supabase.from("profiles").upsert({
+      id: user.uid,
+      ...payload,
+    });
+
+    if (error) {
+      console.error("Manual Sync Error", error);
+      throw error;
+    }
+    lastCloudSnapshotRef.current = JSON.stringify(payload);
+  }, [hydratedUserId, progress, user]);
+
+  // 5. Browser Close Guard: Try to sync one last time
+  useEffect(() => {
+    if (!user || hydratedUserId !== user.uid) return;
+
+    const handleBeforeUnload = () => {
+      // Note: This is a "best effort" as async calls in beforeunload are unreliable
+      syncNow().catch(() => {});
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [user, hydratedUserId, syncNow]);
 
   // ---------- Celebration trigger ----------
   const triggerCelebration = useCallback((title: string, subtitle: string, emoji: string, reward?: string) => {
@@ -435,6 +497,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     celebrationData,
     dismissCelebration,
     resetLesson,
+    syncNow,
   };
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
