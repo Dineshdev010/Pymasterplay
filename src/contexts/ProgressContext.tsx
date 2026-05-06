@@ -87,8 +87,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     let active = true;
 
     if (!user) {
-      // Fallback to defaults if not logged in
-      setProgress(defaultProgress);
+      // Don't reset to defaults here, as it wipes localStorage progress for guests
+      // The initial state already loads from getProgress()
       setHydratedUserId(null);
       lastCloudSnapshotRef.current = "";
       return;

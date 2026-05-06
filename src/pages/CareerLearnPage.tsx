@@ -3,7 +3,7 @@
 // Individual career track learning page (Data Science, Web Dev,
 // AI/ML, etc.) with sequential lesson unlocking.
 // ============================================================
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { useNavigate, useParams, Link, useSearchParams } from "react-router-dom";
 import { careerTracks } from "@/data/careerLessons";
 import { useProgress } from "@/contexts/ProgressContext";
@@ -89,11 +89,12 @@ function buildLanguagePattern(strokeHex: string) {
 export default function CareerLearnPage() {
   const { trackId } = useParams<{ trackId: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const lessonIdFromUrl = searchParams.get("lesson");
   const { language } = useLanguage();
   const { user } = useAuth();
   const track = careerTracks.find(t => t.id === trackId);
-  const [selectedId, setSelectedId] = useState<string | null>(lessonIdFromUrl);
+  const [selectedId, setSelectedId] = useState<string | null>(searchParams.get("lesson"));
+  const scrollRef = useRef<HTMLDivElement>(null);
+  
   const [sqlPlayground, setSqlPlayground] = useState("");
   const [sqlOutput, setSqlOutput] = useState("");
   const [isSqlRunning, setIsSqlRunning] = useState(false);
@@ -109,6 +110,28 @@ export default function CareerLearnPage() {
     const timer = setTimeout(() => setIsPageLoading(false), 600);
     return () => clearTimeout(timer);
   }, [trackId]);
+
+  useEffect(() => {
+    const id = searchParams.get("lesson");
+    if (id && id !== selectedId) {
+      setSelectedId(id);
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (selectedId && scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [selectedId]);
+
+  const handleLessonSelect = (id: string | null) => {
+    setSelectedId(id);
+    if (id) {
+      setSearchParams({ lesson: id }, { replace: true });
+    } else {
+      setSearchParams({}, { replace: true });
+    }
+  };
 
   // Derive track type flags unconditionally (before any early return)
   const isSqlTrack = track?.id === "sql";
@@ -154,37 +177,23 @@ export default function CareerLearnPage() {
   // Auto-open the first lesson so the page never feels empty on first visit.
   useEffect(() => {
     if (selectedId) return;
-    if (track.lessons.length === 0) return;
+    if (track?.lessons.length === 0) return;
 
     // Only auto-open on large screens to show the dashboard/list on mobile
-    if (window.innerWidth >= 768) {
+    if (window.innerWidth >= 768 && track) {
       setSelectedId(track.lessons[0].id);
     }
   }, [selectedId, track]);
-
-  // Update selectedId if URL param changes
-  useEffect(() => {
-    if (lessonIdFromUrl && lessonIdFromUrl !== selectedId) {
-      setSelectedId(lessonIdFromUrl);
-    }
-  }, [lessonIdFromUrl, selectedId]);
-
-  // Sync URL param when selectedId changes
-  useEffect(() => {
-    if (selectedId && selectedId !== lessonIdFromUrl) {
-      setSearchParams({ lesson: selectedId }, { replace: true });
-    }
-  }, [selectedId, lessonIdFromUrl, setSearchParams]);
 
   // Reset selectedId if it doesn't belong to the current track
   useEffect(() => {
     if (track && selectedId) {
       const isValid = track.lessons.some(l => l.id === selectedId);
-      if (!isValid && !lessonIdFromUrl) {
+      if (!isValid) {
         setSelectedId(track.lessons[0]?.id || null);
       }
     }
-  }, [track, selectedId, lessonIdFromUrl]);
+  }, [track, selectedId]);
 
   useEffect(() => {
     if (!isSqlTrack) return;
@@ -323,7 +332,7 @@ export default function CareerLearnPage() {
                 onClick={() => {
                   if (!unlocked) return;
                   if (!ensureAuthForLessonIndex(i)) return;
-                  setSelectedId(lesson.id);
+                  handleLessonSelect(lesson.id);
                 }}
                 disabled={!unlocked}
                 className={`w-full text-left px-3 py-2.5 rounded-md text-sm flex items-center gap-2 transition-colors mb-0.5 ${
@@ -347,7 +356,10 @@ export default function CareerLearnPage() {
       </aside>
 
       {/* Content */}
-      <div className="flex-1 overflow-y-auto relative scroll-smooth bg-background/20">
+      <div 
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto relative scroll-smooth bg-background/20"
+      >
         {!selectedId ? (
           <div className="max-w-4xl mx-auto p-6 md:p-12 space-y-8 animate-in fade-in slide-in-from-bottom-4">
             <div className="space-y-2">
@@ -368,7 +380,7 @@ export default function CareerLearnPage() {
                     key={lesson.id}
                     onClick={() => {
                       if (!unlocked) return;
-                      setSelectedId(lesson.id);
+                      handleLessonSelect(lesson.id);
                     }}
                     disabled={!unlocked}
                     className={`p-6 rounded-[2rem] border-2 text-left transition-all relative overflow-hidden group ${
@@ -494,7 +506,7 @@ export default function CareerLearnPage() {
           >
             {/* Mobile back button */}
             <button 
-              onClick={() => setSelectedId(null)} 
+              onClick={() => handleLessonSelect(null)} 
               className="md:hidden flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
             >
               <ArrowLeft className="w-4 h-4" /> All Lessons
@@ -550,7 +562,7 @@ export default function CareerLearnPage() {
                         if (!first) return;
                         const firstIndex = track.lessons.findIndex((l) => l.id === first.id);
                         if (firstIndex >= 0 && isLessonUnlocked(firstIndex)) {
-                          setSelectedId(first.id);
+                          handleLessonSelect(first.id);
                         }
                       }}
                     >
@@ -754,7 +766,7 @@ export default function CareerLearnPage() {
                         if (!next) return;
                         const nextIndex = track.lessons.findIndex((l) => l.id === next.id);
                         if (nextIndex >= 0 && !ensureAuthForLessonIndex(nextIndex)) return;
-                        setSelectedId(next.id);
+                        handleLessonSelect(next.id);
                       }}
                       className="gap-1"
                     >
