@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
 import { useTheme } from "@/components/ThemeProvider";
 import { Play, CheckCircle2, ChevronDown, ChevronUp, Lock, RotateCcw, Lightbulb, Eye, Square } from "lucide-react";
+import { SqlTableView } from "@/components/SqlTableView";
 
 interface SqlExerciseEditorProps {
   exercise: Exercise;
@@ -51,6 +52,8 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
   const [isRunning, setIsRunning] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
+  const [viewMode, setViewMode] = useState<"text" | "table">("table");
+  const [rawSqlResult, setRawSqlResult] = useState("");
   const { progress, completeExercise, addWallet, unlockSolution } = useProgress();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
 
@@ -105,6 +108,8 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     const result = await executeSql(userSql);
     const actualOutput = result.output.trim();
     const expected = exercise.expectedOutput.trim();
+
+    setRawSqlResult(result.output);
 
     if (result.error && !result.output) {
       setOutput(`Error:\n${result.error}`);
@@ -231,6 +236,23 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
                 <Button
                   size="sm"
                   variant="ghost"
+                  className={`h-7 text-[10px] gap-1 uppercase tracking-tight ${viewMode === "table" ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}
+                  onClick={() => setViewMode("table")}
+                >
+                  <Eye className="w-3 h-3" /> Table
+                </Button>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className={`h-7 text-[10px] gap-1 uppercase tracking-tight ${viewMode === "text" ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}
+                  onClick={() => setViewMode("text")}
+                >
+                  <Square className="w-3 h-3" /> Raw
+                </Button>
+                <div className="w-px h-4 bg-border mx-1" />
+                <Button
+                  size="sm"
+                  variant="ghost"
                   className="h-7 text-xs gap-1 text-python-yellow/70 hover:text-python-yellow"
                   onClick={() => {
                     setShowHint(!showHint);
@@ -270,6 +292,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
                   onClick={() => {
                     setSql(exercise.starterCode);
                     setOutput("");
+                    setRawSqlResult("");
                     setPassed(false);
                   }}
                 >
@@ -287,9 +310,15 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
               </div>
             </div>
             {output && (
-              <pre className={`px-4 py-3 text-xs font-mono whitespace-pre-wrap ${passed ? "text-streak-green" : "text-foreground"}`}>
-                {output}
-              </pre>
+              <div className="border-t border-border bg-background/50">
+                {viewMode === "table" && rawSqlResult ? (
+                  <SqlTableView csvOutput={rawSqlResult} />
+                ) : (
+                  <pre className={`px-4 py-3 text-xs font-mono whitespace-pre-wrap ${passed ? "text-streak-green" : "text-foreground"}`}>
+                    {output}
+                  </pre>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -297,3 +326,5 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     </div>
   );
 }
+
+// Removed local helper functions in favor of shared SqlTableView component

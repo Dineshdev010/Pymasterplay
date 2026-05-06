@@ -50,14 +50,12 @@ export function PwaUpdater() {
     window.addEventListener("focus", handleVisibilityOrFocus);
     window.addEventListener("online", handleVisibilityOrFocus);
     document.addEventListener("visibilitychange", handleVisibilityOrFocus);
-    navigator.serviceWorker.addEventListener("controllerchange", handleControllerChange);
 
     return () => {
       if (intervalId) window.clearInterval(intervalId);
       window.removeEventListener("focus", handleVisibilityOrFocus);
       window.removeEventListener("online", handleVisibilityOrFocus);
       document.removeEventListener("visibilitychange", handleVisibilityOrFocus);
-      navigator.serviceWorker.removeEventListener("controllerchange", handleControllerChange);
     };
   }, []);
 

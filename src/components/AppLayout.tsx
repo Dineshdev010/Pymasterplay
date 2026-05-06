@@ -88,27 +88,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     });
   }, [location.pathname]);
 
-  // Auto-recover from occasional blank-screen states (reload once per route).
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    const recoveryKey = `pymaster_blank_recovery_${location.pathname}`;
-
-    const timer = window.setTimeout(() => {
-      const routeRoot = document.querySelector("[data-route-content]");
-      if (!routeRoot) return;
-
-      const rect = (routeRoot as HTMLElement).getBoundingClientRect();
-      const hasContent = (routeRoot as HTMLElement).innerText.trim().length > 0 || routeRoot.querySelector("img,canvas,svg,button,input,textarea,pre,code");
-      const seemsBlank = rect.height < 120 || !hasContent;
-
-      if (seemsBlank && sessionStorage.getItem(recoveryKey) !== "done") {
-        sessionStorage.setItem(recoveryKey, "done");
-        window.location.reload();
-      }
-    }, 1800);
-
-    return () => window.clearTimeout(timer);
-  }, [location.pathname]);
+  // Auto-recover from occasional blank-screen states is disabled because it causes data loss while working.
 
   // Log activity on first visit of the day to update streak counter
   useEffect(() => {

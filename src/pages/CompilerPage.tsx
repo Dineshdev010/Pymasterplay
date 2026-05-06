@@ -31,6 +31,7 @@ import {
   type PythonRuntimeStatus,
 } from "@/lib/piston";
 import { executeSql } from "@/lib/sqlRunner";
+import { SqlTableView } from "@/components/SqlTableView";
 import { GitSimulator } from "@/lib/gitSimulator";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { playClickSound, playSuccessSound, playErrorSound } from "@/lib/sounds";
@@ -88,105 +89,7 @@ const TEMPLATES: Record<LangMode, Record<string, string>> = {
 };
 
 // ---------- SQL Table View Component ----------
-function downloadCsv(csvText: string, filename = "query_result.csv") {
-  const blob = new Blob([csvText], { type: "text/csv;charset=utf-8;" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-function splitCsvLine(line: string): string[] {
-  const result: string[] = [];
-  let cell = "";
-  let inQuotes = false;
-  for (let i = 0; i < line.length; i++) {
-    const char = line[i];
-    if (char === '"') {
-      inQuotes = !inQuotes;
-    } else if (char === "," && !inQuotes) {
-      result.push(cell.trim());
-      cell = "";
-    } else {
-      cell += char;
-    }
-  }
-  result.push(cell.trim());
-  return result;
-}
-
-function SqlTableView({ csvOutput }: { csvOutput: string }) {
-  const lines = csvOutput.trim().split("\n");
-  if (lines.length === 0 || !csvOutput.includes(",")) {
-    return <pre className="p-4 text-sm font-mono text-foreground whitespace-pre-wrap">{csvOutput}</pre>;
-  }
-
-  const headers = splitCsvLine(lines[0]);
-  const rows = lines.slice(1).map(line => splitCsvLine(line));
-
-  return (
-    <div className="flex flex-col flex-1 min-h-0 w-full overflow-hidden px-3 pb-2 pt-2">
-      <div className="flex-1 min-h-0 overflow-auto border border-border rounded-lg bg-surface-1 shadow-md custom-scrollbar">
-        <table className="w-full text-left border-collapse table-auto">
-          <thead className="sticky top-0 z-30 shadow-sm bg-surface-1 ring-1 ring-border">
-            <tr>
-              {headers.map((h, i) => (
-                <th
-                  key={i}
-                  className={`px-4 py-2.5 text-[11px] font-bold text-python-blue uppercase tracking-widest whitespace-nowrap bg-surface-1 ${
-                    i === 0 ? "sticky left-0 z-40 border-r border-border shadow-[2px_0_5px_rgba(0,0,0,0.1)]" : ""
-                  }`}
-                >
-                  {h.replace(/^"|"$/g, '')}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {rows.map((row, i) => (
-              <tr key={i} className="hover:bg-surface-2 transition-colors duration-150 group">
-                {row.map((cell, j) => {
-                  const cleanCell = cell.replace(/^"|"$/g, '').replace(/""/g, '"');
-                  return (
-                    <td
-                      key={j}
-                      className={`px-4 py-2 text-xs font-mono text-foreground/90 group-hover:text-foreground whitespace-nowrap ${
-                        j === 0 ? "sticky left-0 z-10 bg-surface-1 group-hover:bg-surface-2 border-r border-border shadow-[2px_0_5px_rgba(0,0,0,0.1)]" : ""
-                      }`}
-                    >
-                      {cleanCell === "NULL" ? (
-                        <span className="text-muted-foreground/50 italic font-sans text-[10px]">null</span>
-                      ) : (
-                        cleanCell
-                      )}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      <div className="shrink-0 flex items-center justify-between pt-1.5 text-[10px] text-muted-foreground font-mono uppercase tracking-tighter">
-        <span>SQL · Query Executed</span>
-        <div className="flex items-center gap-2">
-          <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full font-semibold">
-            {rows.length} {rows.length === 1 ? 'row' : 'rows'} returned
-          </span>
-          <button
-            onClick={() => downloadCsv(csvOutput)}
-            title="Download as CSV"
-            className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-streak-green/10 text-streak-green border border-streak-green/20 hover:bg-streak-green/20 transition-colors font-semibold text-[10px] uppercase tracking-tighter"
-          >
-            ⬇ CSV
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
+// Shared SqlTableView component is now used for SQL results
 
 const DEFAULT_CODE: Record<LangMode, string> = {
   python: TEMPLATES.python["Hello World"],

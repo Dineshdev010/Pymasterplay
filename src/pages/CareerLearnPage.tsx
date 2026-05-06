@@ -15,6 +15,7 @@ import { GitTerminalEditor } from "@/components/GitTerminalEditor";
 import Editor from "@monaco-editor/react";
 import { SQL_PRACTICE_DB_NAME, SQL_PRACTICE_DB_SETUP_SQL, SQL_PRACTICE_DB_TABLES } from "@/data/sqlSampleData";
 import { executeSql } from "@/lib/sqlRunner";
+import { SqlTableView } from "@/components/SqlTableView";
 import { cancelActivePythonExecution, getPythonExecutionTimeoutMs, preloadPyodide } from "@/lib/piston";
 import { BookOpen, CheckCircle2, ChevronRight, Lock, ArrowLeft, Terminal as TerminalIcon, Database, Play, RotateCcw, Square, Trophy, Star, Volume2, Languages, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -98,7 +99,10 @@ export default function CareerLearnPage() {
   const [sqlPlayground, setSqlPlayground] = useState("");
   const [sqlOutput, setSqlOutput] = useState("");
   const [isSqlRunning, setIsSqlRunning] = useState(false);
+  const [sqlViewMode, setSqlViewMode] = useState<"text" | "table">("table");
+  const [rawSqlResult, setRawSqlResult] = useState("");
   const [showDataset, setShowDataset] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { progress, resetLesson } = useProgress();
   const navigate = useNavigate();
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
@@ -244,6 +248,7 @@ export default function CareerLearnPage() {
     setIsSqlRunning(true);
     setSqlOutput(`Running SQL (up to ${timeoutSeconds}s)...`);
     const result = await executeSql(sqlPlayground);
+    setRawSqlResult(result.output);
     if (result.error && !result.output) {
       setSqlOutput(`Error:\n${result.error}`);
     } else {
@@ -632,31 +637,47 @@ export default function CareerLearnPage() {
 	                      Dataset: <span className="font-mono text-foreground">{SQL_PRACTICE_DB_NAME}</span> ({SQL_PRACTICE_DB_TABLES.join(", ")})
 	                    </p>
 	                  </div>
-	                  <div className="flex items-center gap-2 flex-wrap">
-	                    <Button size="sm" variant="outline" className="h-7 text-xs gap-1" onClick={() => setShowDataset(true)}>
-	                      <Database className="w-3 h-3" /> View Example Data
-	                    </Button>
-	                    <Button
-	                      size="sm"
-	                      variant="ghost"
-	                      className="h-7 text-xs gap-1 text-muted-foreground hover:text-foreground"
-	                      onClick={() => {
-	                        setSqlPlayground(selectedLesson.codeExample);
-	                        setSqlOutput("");
-	                      }}
-	                    >
-	                      <RotateCcw className="w-3 h-3" /> Reset
-	                    </Button>
-	                    {isSqlRunning ? (
-	                      <Button size="sm" variant="destructive" className="h-7 text-xs gap-1" onClick={cancelActivePythonExecution}>
-	                        <Square className="w-3 h-3" /> Stop
-	                      </Button>
-	                    ) : (
-	                      <Button size="sm" className="h-7 text-xs gap-1" onClick={runSqlPlayground}>
-	                        <Play className="w-3 h-3" /> Run SQL
-	                      </Button>
-	                    )}
-	                  </div>
+	                  <div className="flex items-center gap-2">
+                  <div className="flex rounded-md border border-border p-0.5 bg-background">
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className={`h-6 text-[10px] px-2 ${sqlViewMode === "table" ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}
+                      onClick={() => setSqlViewMode("table")}
+                    >
+                      Table
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className={`h-6 text-[10px] px-2 ${sqlViewMode === "text" ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}
+                      onClick={() => setSqlViewMode("text")}
+                    >
+                      Text
+                    </Button>
+                  </div>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 text-xs gap-1 border-border/50"
+                    onClick={() => setShowDataset(true)}
+                  >
+                    <Database className="w-3 h-3" /> Dataset
+                  </Button>
+                  <Button
+                    size="sm"
+                    className="h-8 gap-2"
+                    onClick={runSqlPlayground}
+                    disabled={isSqlRunning}
+                  >
+                    {isSqlRunning ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <Play className="w-4 h-4" />
+                    )}
+                    Run Query
+                  </Button>
+                </div>
 	                </div>
 
 	                <div className="border border-border rounded-lg overflow-hidden bg-card">
@@ -679,11 +700,24 @@ export default function CareerLearnPage() {
 	                      }}
 	                    />
 	                  </div>
-	                  {sqlOutput && (
-	                    <pre className="border-t border-border px-4 py-3 text-xs font-mono whitespace-pre-wrap text-foreground">
-	                      {sqlOutput}
-	                    </pre>
-	                  )}
+                      <div className="flex-1 bg-surface-1 border border-border rounded-lg overflow-hidden flex flex-col font-mono text-xs">
+                {sqlOutput && (
+                  <div className="flex-1 flex flex-col overflow-hidden">
+                    {sqlViewMode === "table" && rawSqlResult ? (
+                      <SqlTableView csvOutput={rawSqlResult} />
+                    ) : (
+                      <pre className="flex-1 p-4 whitespace-pre-wrap overflow-auto custom-scrollbar">
+                        {sqlOutput}
+                      </pre>
+                    )}
+                  </div>
+                )}
+                {!sqlOutput && (
+                  <div className="flex-1 flex items-center justify-center text-muted-foreground italic">
+                    Output will appear here...
+                  </div>
+                )}
+              </div>
 	                </div>
 
 	                <Dialog open={showDataset} onOpenChange={setShowDataset}>
