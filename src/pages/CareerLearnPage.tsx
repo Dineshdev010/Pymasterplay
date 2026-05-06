@@ -447,7 +447,7 @@ export default function CareerLearnPage() {
 
         <div className="relative min-h-full">
           <div 
-            className="flex-1 overflow-y-auto p-4 md:p-8 relative"
+            className="flex-1 p-4 md:p-8 relative"
             style={{ 
               backgroundImage: isEnglishTrack ? buildLanguagePattern("#3b82f6") : buildLessonPattern("#3b82f6"),
               backgroundSize: "400px 400px"

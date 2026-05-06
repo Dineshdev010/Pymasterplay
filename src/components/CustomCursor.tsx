@@ -211,12 +211,33 @@ function TrailDot({
 
 export function CustomCursor() {
   const location = useLocation();
+  const [isEnabled, setIsEnabled] = useState(() => {
+    const saved = localStorage.getItem("pymaster_custom_cursor");
+    return saved === null ? true : saved === "true";
+  });
+
+  useEffect(() => {
+    const handleStorage = () => {
+      const saved = localStorage.getItem("pymaster_custom_cursor");
+      setIsEnabled(saved === null ? true : saved === "true");
+    };
+    window.addEventListener("storage", handleStorage);
+    // Also listen for custom events from the same tab
+    window.addEventListener("pymaster_cursor_toggle", handleStorage);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("pymaster_cursor_toggle", handleStorage);
+    };
+  }, []);
+
   const cursorX = useMotionValue<number>(-100);
   const cursorY = useMotionValue<number>(-100);
   const [isHovering, setIsHovering] = useState(false);
   const [isCoding, setIsCoding]     = useState(false);
   const [isPointerReady, setIsPointerReady] = useState(false);
   const [bursts, setBursts] = useState<Burst[]>([]);
+
+  if (!isEnabled) return null;
 
     const baseMode: CursorMode =
       location.pathname === "/"

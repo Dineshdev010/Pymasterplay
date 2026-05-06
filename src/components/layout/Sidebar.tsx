@@ -28,8 +28,8 @@ export function Sidebar({ open, onClose }: SidebarProps) {
   const { progress } = useProgress();
   const { user } = useAuth();
   const { language, setLanguage, languageOptions, t } = useLanguage();
-  const profileName = localStorage.getItem("pymaster_name") || user?.displayName || user?.email?.split("@")[0] || "Guest";
-  const profilePic = localStorage.getItem("pymaster_avatar") || "";
+  const profileName = progress.displayName || user?.displayName || user?.email?.split("@")[0] || "Guest";
+  const profilePic = progress.avatarUrl || "";
   const languageLabelByValue = {
     english: t("language.defaultEnglish"),
     tamil: t("language.tamil"),

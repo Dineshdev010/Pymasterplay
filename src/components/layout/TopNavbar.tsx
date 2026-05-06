@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { 
   Check, ChevronDown, Clock, HeartHandshake, Languages, LogIn, LogOut, Menu, Moon, Settings, Sun, 
-  Target, User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw, LayoutGrid, Search, Command as CommandIcon
+  Target, User, Volume2, VolumeX, Medal, Wallet, Focus, RefreshCw, LayoutGrid, Search, Command as CommandIcon,
+  MousePointer2
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useRegisterSW } from "virtual:pwa-register/react";
 
 import { AdViewModal } from "@/components/AdViewModal";
 import { StreakFire } from "@/components/StreakFire";
@@ -81,13 +83,17 @@ interface TopNavbarProps {
 export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { progress } = useProgress();
+  const { progress, syncNow } = useProgress();
   const { theme, toggleTheme } = useTheme();
   const { user, logout } = useAuth();
   const { language, setLanguage, languageOptions, t } = useLanguage();
   const { muted, toggleMuted } = useSound();
   const { setShowFocusSettings, isActive, timeLeft } = useFocus();
   const { toast } = useToast();
+  const {
+    needRefresh: [needRefresh],
+    updateServiceWorker,
+  } = useRegisterSW();
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
@@ -486,26 +492,37 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
             <DropdownMenuTrigger asChild>
               <button id="tour-nav-profile" className="flex items-center gap-2 px-2 py-1.5 rounded-full bg-secondary/30 hover:bg-secondary/50 border border-border/40 transition-all duration-300 outline-none cursor-pointer shrink-0 hover:shadow-md group">
                 <Avatar className="h-7 w-7 shrink-0 border-2 border-primary/30 ring-2 ring-primary/5 shadow-sm transition-transform group-hover:scale-105">
-                  {localStorage.getItem("pymaster_avatar") ? (
+                  {progress.avatarUrl ? (
                     <AvatarImage
-                      src={localStorage.getItem("pymaster_avatar") || ""}
+                      src={progress.avatarUrl}
                       alt="Profile"
                       className="object-cover"
                     />
                   ) : null}
                   <AvatarFallback className="bg-gradient-to-br from-primary/20 to-python-yellow/20 text-[10px] font-black text-primary">
-                    {(localStorage.getItem("pymaster_name") || user.displayName || user.email || "U")[0]?.toUpperCase()}
+                    {(progress.displayName || user.displayName || user.email || "U")[0]?.toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-xs font-bold bg-gradient-to-r from-primary to-python-yellow bg-clip-text text-transparent truncate max-w-[70px] sm:max-w-[120px] drop-shadow-sm animate-in fade-in slide-in-from-right-2 duration-500">
-                  {localStorage.getItem("pymaster_name") || user.displayName || user.email?.split("@")[0] || "User"}
+                <span className={`text-xs font-bold truncate max-w-[70px] sm:max-w-[120px] drop-shadow-sm animate-in fade-in slide-in-from-right-2 duration-500 ${
+                  needRefresh 
+                    ? "text-primary animate-pulse flex items-center gap-1" 
+                    : "bg-gradient-to-r from-primary to-python-yellow bg-clip-text text-transparent"
+                }`}>
+                  {needRefresh ? (
+                    <>
+                      <RefreshCw className="w-3 h-3 animate-spin-slow" />
+                      UPDATE READY
+                    </>
+                  ) : (
+                    progress.displayName || user.displayName || user.email?.split("@")[0] || "User"
+                  )}
                 </span>
                 <ChevronDown className="w-3.5 h-3.5 text-primary transition-transform group-hover:translate-y-0.5" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 mt-2">
               <DropdownMenuLabel className="flex flex-col">
-                <span className="truncate font-semibold">{localStorage.getItem("pymaster_name") || user.displayName || "User"}</span>
+                <span className="truncate font-semibold">{progress.displayName || user.displayName || "User"}</span>
                 <span className="truncate text-[10px] text-muted-foreground font-normal">{user.email}</span>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -515,13 +532,33 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
                   <span>{t("common.profileDashboard")}</span>
                 </Link>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleHardRefresh} className="cursor-pointer text-primary font-medium">
-                <RefreshCw className="mr-2 h-4 w-4 animate-spin-slow" />
-                <span>Refresh & Update</span>
+              <DropdownMenuItem 
+                onClick={() => {
+                  updateServiceWorker(true);
+                }} 
+                className={`cursor-pointer font-bold ${needRefresh ? "bg-primary/10 text-primary animate-pulse" : "text-primary"}`}
+              >
+                <RefreshCw className={`mr-2 h-4 w-4 ${needRefresh ? "animate-spin" : "animate-spin-slow"}`} />
+                <span>{needRefresh ? "Click to Update Now" : "Refresh & Update"}</span>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
                 {theme === "dark" ? <Sun className="mr-2 h-4 w-4" /> : <Moon className="mr-2 h-4 w-4" />}
                 <span>{theme === "dark" ? t("common.lightMode") : t("common.darkMode")}</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem 
+                onClick={() => {
+                  const current = localStorage.getItem("pymaster_custom_cursor") !== "false";
+                  localStorage.setItem("pymaster_custom_cursor", (!current).toString());
+                  window.dispatchEvent(new CustomEvent("pymaster_cursor_toggle"));
+                  toast({ 
+                    title: !current ? "Custom Cursor Disabled" : "Custom Cursor Enabled",
+                    description: "Your preference has been saved."
+                  });
+                }} 
+                className="cursor-pointer"
+              >
+                <MousePointer2 className="mr-2 h-4 w-4" />
+                <span>{localStorage.getItem("pymaster_custom_cursor") === "false" ? "Enable Custom Cursor" : "Disable Custom Cursor"}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">

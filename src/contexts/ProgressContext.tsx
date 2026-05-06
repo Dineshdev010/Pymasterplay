@@ -100,7 +100,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     supabase
       .from("profiles")
       .select(
-        "wallet, streak, last_coding_date, solved_problems, completed_lessons, completed_exercises, unlocked_lessons, xp, activity_map, stars_caught, previous_streak, streak_broken_date, daily_stars, last_star_date, time_spent",
+        "wallet, streak, last_coding_date, solved_problems, completed_lessons, completed_exercises, unlocked_lessons, xp, activity_map, stars_caught, previous_streak, streak_broken_date, daily_stars, last_star_date, time_spent, display_name, avatar_url",
       )
       .eq("id", user.uid)
       .single()
