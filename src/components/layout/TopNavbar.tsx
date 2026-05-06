@@ -90,6 +90,7 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
   const { muted, toggleMuted } = useSound();
   const { setShowFocusSettings, isActive, timeLeft } = useFocus();
   const { toast } = useToast();
+  const [cursorEnabled, setCursorEnabled] = useState(() => localStorage.getItem("pymaster_custom_cursor") !== "false");
   const {
     needRefresh: [needRefresh],
     updateServiceWorker,
@@ -547,18 +548,19 @@ export function TopNavbar({ onMenuToggle }: TopNavbarProps) {
               </DropdownMenuItem>
               <DropdownMenuItem 
                 onClick={() => {
-                  const current = localStorage.getItem("pymaster_custom_cursor") !== "false";
-                  localStorage.setItem("pymaster_custom_cursor", (!current).toString());
+                  const next = !cursorEnabled;
+                  localStorage.setItem("pymaster_custom_cursor", next.toString());
+                  setCursorEnabled(next);
                   window.dispatchEvent(new CustomEvent("pymaster_cursor_toggle"));
                   toast({ 
-                    title: !current ? "Custom Cursor Disabled" : "Custom Cursor Enabled",
+                    title: next ? "Custom Cursor Enabled" : "Custom Cursor Disabled",
                     description: "Your preference has been saved."
                   });
                 }} 
                 className="cursor-pointer"
               >
                 <MousePointer2 className="mr-2 h-4 w-4" />
-                <span>{localStorage.getItem("pymaster_custom_cursor") === "false" ? "Enable Custom Cursor" : "Disable Custom Cursor"}</span>
+                <span>{cursorEnabled ? "Disable Custom Cursor" : "Enable Custom Cursor"}</span>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10">

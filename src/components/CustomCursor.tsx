@@ -237,8 +237,6 @@ export function CustomCursor() {
   const [isPointerReady, setIsPointerReady] = useState(false);
   const [bursts, setBursts] = useState<Burst[]>([]);
 
-  if (!isEnabled) return null;
-
     const baseMode: CursorMode =
       location.pathname === "/"
         ? "focused"
@@ -263,6 +261,7 @@ export function CustomCursor() {
   const auraYSpring = useSpring(cursorY, auraSpring);
 
   useEffect(() => {
+    if (!isEnabled) return;
     if ("ontouchstart" in window || navigator.maxTouchPoints > 0) return;
 
     const moveCursor = (e: MouseEvent) => {
@@ -348,9 +347,9 @@ export function CustomCursor() {
       window.removeEventListener("click", handleClick);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [cursorX, cursorY, isPointerReady, theme.magneticPull]);
+  }, [cursorX, cursorY, isPointerReady, theme.magneticPull, isEnabled]);
 
-  if (typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0)) {
+  if (!isEnabled || (typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0))) {
     return null;
   }
 
