@@ -6,9 +6,10 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { problems, getDifficultyColor, getDifficultyBg } from "@/data/problems";
+import { allSqlProblems } from "@/data/sqlProblems";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getRewardForDifficulty } from "@/lib/progress";
-import { Code, CheckCircle2, ChevronRight, Wallet, Search } from "lucide-react";
+import { Code, CheckCircle2, ChevronRight, Wallet, Search, Database } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import { CompanyBadge } from "@/components/CompanyBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -22,13 +23,16 @@ export default function ProblemsListPage() {
   const [filter, setFilter] = useState<string>("all");
   const [search, setSearch] = useState("");
   const [companyFilter, setCompanyFilter] = useState("all");
+  const [mode, setMode] = useState<"python" | "sql">("python");
   const canonical = "https://pymaster.pro/problems";
 
-  const companyOptions = ["all", ...Array.from(new Set(problems.flatMap((problem) => problem.companies ?? []))).sort()];
+  const currentProblems = mode === "python" ? problems : allSqlProblems;
+
+  const companyOptions = ["all", ...Array.from(new Set(currentProblems.flatMap((problem: any) => problem.companies ?? []))).sort()];
 
   const { user } = useAuth();
 
-  const filtered = problems
+  const filtered = (currentProblems as any[])
     .filter(p => filter === "all" || p.difficulty === filter)
     .filter(p => companyFilter === "all" || p.companies?.includes(companyFilter))
     .filter((p) => {
@@ -41,24 +45,24 @@ export default function ProblemsListPage() {
 
   // Build a serial number map: each problem gets a global index (1-based)
   const serialMap = new Map<string, number>();
-  problems.forEach((p, i) => serialMap.set(p.id, i + 1));
+  currentProblems.forEach((p, i) => serialMap.set(p.id, i + 1));
 
   const difficultyFilters = ["all", "basic", "junior", "intermediate", "advanced", "expert"] as const;
   const filterCounts = {
-    all: problems.length,
-    basic: problems.filter(p => p.difficulty === "basic").length,
-    junior: problems.filter(p => p.difficulty === "junior").length,
-    intermediate: problems.filter(p => p.difficulty === "intermediate").length,
-    advanced: problems.filter(p => p.difficulty === "advanced").length,
-    expert: problems.filter(p => p.difficulty === "expert").length,
+    all: currentProblems.length,
+    basic: currentProblems.filter(p => p.difficulty === "basic").length,
+    junior: currentProblems.filter(p => p.difficulty === "junior").length,
+    intermediate: currentProblems.filter(p => p.difficulty === "intermediate").length,
+    advanced: currentProblems.filter(p => p.difficulty === "advanced").length,
+    expert: currentProblems.filter(p => p.difficulty === "expert").length,
   };
 
   const solvedCounts = {
-    basic: problems.filter(p => p.difficulty === "basic" && progress.solvedProblems.includes(p.id)).length,
-    junior: problems.filter(p => p.difficulty === "junior" && progress.solvedProblems.includes(p.id)).length,
-    intermediate: problems.filter(p => p.difficulty === "intermediate" && progress.solvedProblems.includes(p.id)).length,
-    advanced: problems.filter(p => p.difficulty === "advanced" && progress.solvedProblems.includes(p.id)).length,
-    expert: problems.filter(p => p.difficulty === "expert" && progress.solvedProblems.includes(p.id)).length,
+    basic: currentProblems.filter(p => p.difficulty === "basic" && progress.solvedProblems.includes(p.id)).length,
+    junior: currentProblems.filter(p => p.difficulty === "junior" && progress.solvedProblems.includes(p.id)).length,
+    intermediate: currentProblems.filter(p => p.difficulty === "intermediate" && progress.solvedProblems.includes(p.id)).length,
+    advanced: currentProblems.filter(p => p.difficulty === "advanced" && progress.solvedProblems.includes(p.id)).length,
+    expert: currentProblems.filter(p => p.difficulty === "expert" && progress.solvedProblems.includes(p.id)).length,
   };
 
   const masteryStats = [
@@ -179,7 +183,7 @@ export default function ProblemsListPage() {
                 />
                 <motion.circle
                   initial={{ strokeDasharray: "0 402" }}
-                  animate={{ strokeDasharray: `${(progress.solvedProblems.length / problems.length) * 402} 402` }}
+                  animate={{ strokeDasharray: `${(progress.solvedProblems.length / currentProblems.length) * 402} 402` }}
                   transition={{ duration: 1.5, ease: "easeOut" }}
                   cx="72"
                   cy="72"
@@ -198,7 +202,7 @@ export default function ProblemsListPage() {
             </div>
             <div className="mt-4 px-3 py-1 rounded-full bg-primary/10 border border-primary/20">
               <span className="text-xs font-bold text-primary">
-                {Math.round((progress.solvedProblems.length / problems.length) * 100)}% Complete
+                {Math.round((progress.solvedProblems.length / currentProblems.length) * 100)}% Complete
               </span>
             </div>
           </div>
@@ -242,10 +246,32 @@ export default function ProblemsListPage() {
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-foreground">{t.title}</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            {progress.solvedProblems.length}/{problems.length} {t.solved}
+            {progress.solvedProblems.length}/{currentProblems.length} {t.solved}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          {/* Mode Switcher */}
+          <div className="flex p-1 bg-surface-2 border border-border rounded-xl">
+            <button
+              onClick={() => setMode("python")}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                mode === "python" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Code className="w-3.5 h-3.5" />
+              Python
+            </button>
+            <button
+              onClick={() => setMode("sql")}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                mode === "sql" ? "bg-primary text-primary-foreground shadow-lg" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <Database className="w-3.5 h-3.5" />
+              SQL
+            </button>
+          </div>
+
           {/* Search */}
           <div className="relative w-full sm:w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />

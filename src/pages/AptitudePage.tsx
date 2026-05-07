@@ -995,7 +995,7 @@ export default function AptitudePage() {
                                 <span className="font-medium text-foreground">How to think:</span> {mcq.strategy}
                               </>
                             ) : (
-                              <>This question appears in {mcq.companyTags?.join(", ")} style mock sets.</>
+                              <>This question appears in {(mcq.companyTags || []).join(", ")} style mock sets.</>
                             )}
                           </div>
                         </div>
@@ -1272,7 +1272,7 @@ export default function AptitudePage() {
                         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em]">
                           <span className="text-primary">{type.title} • Question {index + 1}</span>
                           <span className="rounded-full border border-border bg-background px-2 py-1 text-[10px] text-muted-foreground">{mcq.difficulty}</span>
-                          {mcq.companyTags?.slice(0, 2).map((company) => (
+                          {(mcq.companyTags || []).slice(0, 2).map((company) => (
                             <span key={company} className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2 py-1 text-[10px] text-emerald-700 dark:text-emerald-300">
                               {company}
                             </span>

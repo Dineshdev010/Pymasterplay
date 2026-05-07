@@ -745,11 +745,14 @@ export default function CareerLearnPage() {
                 )}
               </h3>
               <div className="space-y-3">
-                {(["beginner", "intermediate", "advanced"] as const).map(level => (
-                  isBashTrack ? (
+                {(["beginner", "intermediate", "advanced"] as const).map(level => {
+                  const ex = selectedLesson.exercises[level];
+                  if (!ex) return null;
+
+                  return isBashTrack ? (
                     <GitTerminalEditor
                       key={level}
-                      exercise={selectedLesson.exercises[level]}
+                      exercise={ex}
                       level={level}
                       lessonId={selectedLesson.id}
                       locked={!isExerciseUnlocked(selectedLesson.id, level)}
@@ -757,7 +760,7 @@ export default function CareerLearnPage() {
                   ) : isSqlTrack ? (
                     <SqlExerciseEditor
                       key={level}
-                      exercise={selectedLesson.exercises[level]}
+                      exercise={ex}
                       level={level}
                       lessonId={selectedLesson.id}
                       locked={!isExerciseUnlocked(selectedLesson.id, level)}
@@ -765,14 +768,14 @@ export default function CareerLearnPage() {
                   ) : (
                     <ExerciseEditor
                       key={level}
-                      exercise={selectedLesson.exercises[level]}
+                      exercise={ex}
                       level={level}
                       lessonId={selectedLesson.id}
                       locked={!isExerciseUnlocked(selectedLesson.id, level)}
                       language={isEnglishTrack ? "english" : (track.language || "python")}
                     />
-                  )
-                ))}
+                  );
+                })}
               </div>
             </div>
 

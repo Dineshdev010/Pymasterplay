@@ -9,19 +9,23 @@ import { useParams, Link } from "react-router-dom";
 const Editor = React.lazy(() => import("@monaco-editor/react"));
 import confetti from "canvas-confetti";
 import { problems, getDifficultyColor, getDifficultyBg, getRecommendedSubjects, type Problem } from "@/data/problems";
+import { allSqlProblems, type SQLProblem } from "@/data/sqlProblems";
 import { useProgress } from "@/contexts/ProgressContext";
 import { getRewardForDifficulty } from "@/lib/progress";
 import { cancelActivePythonExecution, executePython, getPythonExecutionTimeoutMs } from "@/lib/piston";
+import { executeSql } from "@/lib/sqlRunner";
+import { SqlTableView } from "@/components/SqlTableView";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { Play, Send, Eye, EyeOff, ArrowLeft, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, Square, Building2, BookOpenCheck, Clock3, Lock } from "lucide-react";
+import { Play, Send, Eye, EyeOff, ArrowLeft, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Square, Building2, BookOpenCheck, Clock3, Lock, Database } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CompanyBadge } from "@/components/CompanyBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 
 function normalizeOutput(output: string) {
+  if (!output) return "";
   return output
     .replace(/\r\n/g, "\n")
     .split("\n")
@@ -59,10 +63,10 @@ else:
 function getProblemTimerSeconds(problem?: Problem) {
   if (!problem) return 10 * 60;
 
-  const title = problem.title.toLowerCase();
-  const description = problem.description.toLowerCase();
-  const starterLines = problem.starterCode.split("\n").map((line) => line.trim()).filter(Boolean).length;
-  const testCount = problem.testCases.length;
+  const title = (problem.title || "").toLowerCase();
+  const description = (problem.description || "").toLowerCase();
+  const starterLines = (problem.starterCode || "").split("\n").map((line) => line.trim()).filter(Boolean).length;
+  const testCount = (problem.testCases || []).length;
 
   // Ultra-basic warmups should feel quick.
   if (
@@ -91,7 +95,7 @@ function getProblemTimerSeconds(problem?: Problem) {
   if (starterLines >= 12) seconds += 2 * 60;
   if (starterLines >= 20) seconds += 2 * 60;
   if (description.length < 140 && testCount <= 1 && starterLines <= 6) seconds -= 2 * 60;
-  if (/(dp|dynamic programming|graph|tree|backtracking|heap|trie|segment|union find)/i.test(problem.title + " " + problem.description)) {
+  if (/(dp|dynamic programming|graph|tree|backtracking|heap|trie|segment|union find)/i.test((problem.title || "") + " " + (problem.description || ""))) {
     seconds += 3 * 60;
   }
 
@@ -107,10 +111,14 @@ function formatCountdown(seconds: number) {
 
 export default function ProblemPage() {
   const { id } = useParams<{ id: string }>();
-  const problem = problems.find(p => p.id === id);
   const { language } = useLanguage();
   const { progress, solveProblem, addWallet } = useProgress();
   const isMobile = useIsMobile();
+
+  const isSql = id?.startsWith("sql-");
+  const currentProblems = isSql ? allSqlProblems : problems;
+  const problem = currentProblems.find(p => p.id === id) as any;
+
   const [code, setCode] = useState(problem?.starterCode || "");
   const [output, setOutput] = useState("");
   const [showSolution, setShowSolution] = useState(false);
@@ -122,7 +130,27 @@ export default function ProblemPage() {
   const [problemTimeLeft, setProblemTimeLeft] = useState(() => getProblemTimerSeconds(problem));
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [now, setNow] = useState(Date.now());
+  const [sqlResult, setSqlResult] = useState<any>(null);
   const timeoutHandledRef = useRef(false);
+
+  useEffect(() => {
+    if (problem) {
+      setCode(problem.starterCode);
+      setProblemTimeLeft(getProblemTimerSeconds(problem));
+    }
+  }, [id, problem]);
+
+  if (!problem) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[calc(100dvh-3.5rem)] text-center px-4">
+        <h2 className="text-xl font-bold mb-2">Problem Not Found</h2>
+        <p className="text-muted-foreground mb-4">The problem you're looking for doesn't exist or has been moved.</p>
+        <Button asChild>
+          <Link to="/problems">Back to Problems</Link>
+        </Button>
+      </div>
+    );
+  }
 
   const isLocked = lockedUntil !== null && now < lockedUntil;
   const lockTimeRemaining = isLocked ? Math.ceil((lockedUntil - now) / 1000) : 0;
@@ -159,6 +187,7 @@ export default function ProblemPage() {
       setTestResults(null);
       setSubmitted(false);
       setIsRunning(false);
+      setSqlResult(null);
       setProblemTimeLeft(getProblemTimerSeconds(problem));
       timeoutHandledRef.current = false;
       try {
@@ -221,9 +250,9 @@ export default function ProblemPage() {
   const canonical = `https://pymaster.pro/problems/${problem.id}`;
   const solved = progress.solvedProblems.includes(problem.id);
   const reward = getRewardForDifficulty(problem.difficulty);
-  const problemIndex = problems.findIndex(p => p.id === id);
-  const prevProblem = problemIndex > 0 ? problems[problemIndex - 1] : null;
-  const nextProblem = problemIndex < problems.length - 1 ? problems[problemIndex + 1] : null;
+  const problemIndex = currentProblems.findIndex(p => p.id === id);
+  const prevProblem = problemIndex > 0 ? currentProblems[problemIndex - 1] : null;
+  const nextProblem = problemIndex < currentProblems.length - 1 ? currentProblems[problemIndex + 1] : null;
   const serial = problemIndex + 1;
   const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
   const recommendedSubjects = getRecommendedSubjects(problem);
@@ -238,8 +267,22 @@ export default function ProblemPage() {
 
   const handleRun = async () => {
     setIsRunning(true);
+    setSqlResult(null);
     setOutput("⏳ Running...");
     setTestResults(null);
+
+    if (isSql) {
+        try {
+            const fullSql = `${problem.schema}\n${problem.initialData}\n${code}`;
+            const result = await executeSql(fullSql);
+            setSqlResult(result.output); // Pass raw CSV to table
+            setOutput("");
+        } catch (err: any) {
+            setOutput(`❌ SQL Error:\n${err.message}`);
+        }
+        setIsRunning(false);
+        return;
+    }
 
     const result = await executePython(code);
 
@@ -256,7 +299,46 @@ export default function ProblemPage() {
 
   const handleSubmit = async () => {
     setIsRunning(true);
+    setSqlResult(null);
     setOutput("⏳ Running tests...");
+
+    if (isSql) {
+        try {
+            const fullSqlUser = `${problem.schema}\n${problem.initialData}\n${code}`;
+            const fullSqlExpected = `${problem.schema}\n${problem.initialData}\n${problem.expectedQuery}`;
+            
+            const [resultUser, resultExpected] = await Promise.all([
+                executeSql(fullSqlUser),
+                executeSql(fullSqlExpected)
+            ]);
+
+            const parsedUser = resultUser.parsed;
+            const parsedExpected = resultExpected.parsed;
+
+            setSqlResult(resultUser.output); // Pass raw CSV to table
+
+            if (parsedUser && parsedExpected) {
+                const isCorrect = JSON.stringify(parsedUser.columns.sort()) === JSON.stringify(parsedExpected.columns.sort()) && 
+                                 JSON.stringify(parsedUser.values) === JSON.stringify(parsedExpected.values);
+                
+                if (isCorrect) {
+                    setOutput("🎉 Query Correct! All results match.");
+                    if (!solved) {
+                        solveProblem(problem.id, (problem as any).difficulty);
+                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                    }
+                } else {
+                    setOutput(`❌ Query incorrect. Results do not match.\nExpected ${parsedExpected.values.length} rows, you returned ${parsedUser.values.length}.`);
+                }
+            } else {
+                setOutput("❌ Could not parse results. Check your syntax.");
+            }
+        } catch (err: any) {
+            setOutput(`❌ SQL Error during validation:\n${err.message}`);
+        }
+        setIsRunning(false);
+        return;
+    }
 
     const callableName = getCallableName(code);
     const results: { passed: boolean; input: string; expected: string }[] = [];
@@ -270,7 +352,6 @@ export default function ProblemPage() {
       for (const testCase of problem.testCases) {
         const result = await executePython(buildTestHarness(code, callableName, testCase.input));
         
-        // Extract only the output after the delimiter to avoid capturing user's print() calls
         const parts = result.output.split("---PYMASTER-RESULT---");
         const rawOutput = parts.length > 1 ? parts[parts.length - 1] : result.output;
         
@@ -342,12 +423,11 @@ export default function ProblemPage() {
     setIsRunning(false);
   };
 
-  // Generate structured JSON-LD data for Google
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "LearningResource",
     "name": problem.title,
-    "description": problem.description,
+    "description": (problem as any).description,
     "educationalLevel": problem.difficulty,
     "learningResourceType": "Programming Challenge"
   };
@@ -356,9 +436,8 @@ export default function ProblemPage() {
     <div className="flex min-h-[calc(100dvh-3.5rem)] flex-col md:h-[calc(100dvh-3.5rem)]">
       <Helmet>
         <title>{problem.title} | PyMaster Problems</title>
-        <meta name="description" content={`Solve ${problem.title} in Python. ${problem.description.substring(0, 100)}... Challenge yourself with our built-in compiler.`} />
-        <meta property="og:title" content={`${problem.title} - Python Coding Challenge`} />
-        <meta property="og:description" content={`Solve ${problem.title} in Python. ${problem.description.substring(0, 140)}...`} />
+        <meta name="description" content={`Solve ${problem.title}. ${((problem as any).description || "").substring(0, 100)}... Challenge yourself with our built-in compiler.`} />
+        <meta property="og:title" content={`${problem.title} - Coding Challenge`} />
         <meta property="og:url" content={canonical} />
         <link rel="canonical" href={canonical} />
         <script type="application/ld+json">
@@ -366,15 +445,42 @@ export default function ProblemPage() {
         </script>
       </Helmet>
 
-      {/* Problem toolbar */}
       <div className="h-auto min-h-[3rem] bg-surface-1 border-b border-border flex flex-wrap items-center justify-between px-3 sm:px-4 py-2 gap-2 shrink-0">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Button asChild variant="ghost" size="sm" className="h-7 text-xs gap-1 shrink-0">
             <Link to="/problems"><ArrowLeft className="w-3 h-3" /> <span className="hidden sm:inline">{t.problems}</span></Link>
           </Button>
-          <span className="w-7 h-7 rounded-md bg-surface-2 border border-border flex items-center justify-center text-[10px] font-mono text-muted-foreground shrink-0">
-            {serial}
-          </span>
+
+          <div className="flex items-center border border-border rounded-md bg-surface-2 overflow-hidden shrink-0">
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              disabled={!prevProblem}
+              className={`h-7 px-2 rounded-none border-r border-border text-[10px] sm:text-xs gap-1 ${!prevProblem ? "opacity-50 pointer-events-none" : ""}`}
+            >
+              <Link to={prevProblem ? `/problems/${prevProblem.id}` : "#"}>
+                <ChevronLeft className="w-3 h-3" />
+                {t.prev}
+              </Link>
+            </Button>
+            <div className="px-2 py-0.5 text-[10px] font-mono text-muted-foreground border-r border-border min-w-[2rem] text-center">
+              {serial}
+            </div>
+            <Button
+              asChild
+              variant="ghost"
+              size="sm"
+              disabled={!nextProblem}
+              className={`h-7 px-2 rounded-none text-[10px] sm:text-xs gap-1 ${!nextProblem ? "opacity-50 pointer-events-none" : ""}`}
+            >
+              <Link to={nextProblem ? `/problems/${nextProblem.id}` : "#"}>
+                {t.next}
+                <ChevronRight className="w-3 h-3" />
+              </Link>
+            </Button>
+          </div>
+
           <span className="text-sm font-medium text-foreground truncate">{problem.title}</span>
           <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full border capitalize shrink-0 ${getDifficultyBg(problem.difficulty)} ${getDifficultyColor(problem.difficulty)}`}>
             {problem.difficulty}
@@ -387,23 +493,9 @@ export default function ProblemPage() {
           </span>
           {solved && <CheckCircle2 className="w-4 h-4 text-streak-green shrink-0" />}
         </div>
-        <div className="flex items-center gap-1 sm:gap-2">
-          {prevProblem && (
-            <Button asChild variant="ghost" size="sm" className="h-7 text-xs px-2">
-              <Link to={`/problems/${prevProblem.id}`}>← <span className="hidden sm:inline">{t.prev}</span></Link>
-            </Button>
-          )}
-          {nextProblem && (
-            <Button asChild variant="ghost" size="sm" className="h-7 text-xs px-2">
-              <Link to={`/problems/${nextProblem.id}`}><span className="hidden sm:inline">{t.next}</span> →</Link>
-            </Button>
-          )}
-        </div>
       </div>
 
-      {/* Split panes */}
       <div className="flex-1 flex flex-col md:flex-row min-h-0">
-        {/* Left: Problem description */}
         <div className={`md:w-[45%] overflow-y-auto border-b md:border-b-0 md:border-r border-border shrink-0 ${showDescription ? "h-[35vh] md:h-auto" : "hidden md:block"}`}>
           <button
             onClick={() => setShowDescription(!showDescription)}
@@ -420,140 +512,128 @@ export default function ProblemPage() {
             </div>
 
             <div className="space-y-3 mb-6">
-              {problem.description.split("\n").map((line, i) => (
+              {((problem as any).description || "").split("\n").map((line: string, i: number) => (
                 <p key={i} className="text-sm text-muted-foreground leading-relaxed">
                   {line.startsWith("- ") ? <span className="ml-4 list-item list-disc">{line.slice(2)}</span> : line}
                 </p>
               ))}
             </div>
 
-            <h3 className="text-sm font-semibold text-foreground mb-3">{t.examples}</h3>
-            {problem.examples.map((ex, i) => (
-              <div key={i} className="bg-surface-1 border border-border rounded-lg p-3 sm:p-4 mb-3">
-                <div className="text-xs font-mono text-muted-foreground mb-1">Input: <span className="text-foreground break-all">{ex.input}</span></div>
-                <div className="text-xs font-mono text-muted-foreground">Output: <span className="text-foreground break-all">{ex.output}</span></div>
-                {ex.explanation && <div className="text-xs text-muted-foreground mt-2">💡 {ex.explanation}</div>}
+            {((problem as any).examples) && (
+              <>
+                <h3 className="text-sm font-semibold text-foreground mb-3">{t.examples}</h3>
+                {(problem as any).examples.map((ex: any, i: number) => (
+                  <div key={i} className="bg-surface-1 border border-border rounded-lg p-3 sm:p-4 mb-3">
+                    <div className="text-xs font-mono text-muted-foreground mb-1">Input: <span className="text-foreground break-all">{ex.input}</span></div>
+                    <div className="text-xs font-mono text-muted-foreground">Output: <span className="text-foreground break-all">{ex.output}</span></div>
+                    {ex.explanation && <div className="text-xs text-muted-foreground mt-2">💡 {ex.explanation}</div>}
+                  </div>
+                ))}
+              </>
+            )}
+
+            {((problem as any).constraints) && (
+              <>
+                <h3 className="text-sm font-semibold text-foreground mb-2 mt-4">{t.constraints}</h3>
+                <ul className="space-y-1 mb-6">
+                  {(problem as any).constraints.map((c: string, i: number) => (
+                    <li key={i} className="text-xs text-muted-foreground font-mono break-all">• {c}</li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {isSql && (
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-foreground mb-3 flex items-center gap-2">
+                  <Database className="w-4 h-4 text-primary" />
+                  Database Schema
+                </h3>
+                <div className="bg-[#1e1e1e] border border-white/5 rounded-xl p-4 shadow-inner">
+                  <pre className="text-[11px] font-mono leading-relaxed whitespace-pre-wrap">
+                    {(problem as any).schema.split(';').map((stmt: string, i: number) => {
+                      if (!stmt.trim()) return null;
+                      const parts = stmt.trim().split(' ');
+                      return (
+                        <div key={i} className="mb-1">
+                          <span className="text-[#569cd6] font-bold">{parts[0]}</span>{' '}
+                          <span className="text-[#4ec9b0]">{parts[1]}</span>{' '}
+                          <span className="text-[#9cdcfe]">{parts.slice(2).join(' ')}</span>;
+                        </div>
+                      );
+                    })}
+                  </pre>
+                </div>
               </div>
-            ))}
+            )}
 
-            <h3 className="text-sm font-semibold text-foreground mb-2 mt-4">{t.constraints}</h3>
-            <ul className="space-y-1 mb-6">
-              {problem.constraints.map((c, i) => (
-                <li key={i} className="text-xs text-muted-foreground font-mono break-all">• {c}</li>
-              ))}
-            </ul>
-
+            {/* ── SQL: Reveal Answer ───────────────────────── */}
+            {isSql && (
+              <div className="mb-6">
+                {!solutionUnlocked ? (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full gap-2 border-reward-gold/40 text-reward-gold hover:bg-reward-gold/10 hover:border-reward-gold font-semibold"
+                    onClick={() => {
+                      if (progress.wallet >= 70) {
+                        addWallet(-70);
+                        setSolutionUnlocked(true);
+                        setShowSolution(true);
+                        toast({ title: "Answer Revealed", description: "Paid $70 to view the solution." });
+                      } else {
+                        toast({ title: "Not enough wallet cash!", description: "You need $70 to reveal the answer.", variant: "destructive" });
+                      }
+                    }}
+                  >
+                    <Eye className="w-4 h-4" />
+                    {t.revealSolution}
+                  </Button>
+                ) : (
+                  <div className="space-y-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full gap-2 text-muted-foreground hover:text-foreground"
+                      onClick={() => setShowSolution(s => !s)}
+                    >
+                      <Eye className="w-3 h-3" />
+                      {showSolution ? t.hideSolution : "Show Answer"}
+                    </Button>
+                    {showSolution && (
+                      <div className="bg-[#1e1e1e] border border-white/5 rounded-xl p-4 shadow-inner">
+                        <p className="text-[9px] uppercase tracking-widest text-muted-foreground mb-2 font-semibold">Solution Query</p>
+                        <pre className="text-[11px] font-mono text-[#9cdcfe] leading-relaxed whitespace-pre-wrap">
+                          {(problem as any).expectedQuery}
+                        </pre>
+                        <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed border-t border-white/5 pt-3">
+                          💡 {(problem as any).explanation}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            
             <div className="flex items-center gap-2 mb-4">
               <Wallet className="w-4 h-4 text-reward-gold" />
               <span className="text-sm text-reward-gold font-medium">💰 ${reward} {t.reward}</span>
             </div>
-
-            {problem.companies?.length ? (
-              <div className="mb-4 rounded-lg border border-border bg-surface-1 p-3 sm:p-4">
-                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <Building2 className="h-4 w-4 text-primary" />
-                  {t.companiesAsk}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {problem.companies.map((company) => (
-                    <CompanyBadge key={company} company={company} />
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
-            {recommendedSubjects.length ? (
-              <div className="mb-4 rounded-lg border border-border bg-surface-1 p-3 sm:p-4">
-                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
-                  <BookOpenCheck className="h-4 w-4 text-primary" />
-                  {t.learnFirst}
-                </div>
-                <p className="mb-3 text-xs leading-5 text-muted-foreground">
-                  {t.learnFirstDesc}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {recommendedSubjects.map((subject) => (
-                    <span
-                      key={subject}
-                      className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300"
-                    >
-                      {subject}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            ) : null}
-
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="gap-1 text-xs" 
-              onClick={() => {
-                if (showSolution) {
-                  setShowSolution(false);
-                } else if (!solutionUnlocked) {
-                  if (progress.wallet >= 70) {
-                    addWallet(-70);
-                    setSolutionUnlocked(true);
-                    setShowSolution(true);
-                    if (problem.solution) setCode(problem.solution);
-                    toast({
-                      title: "Solution Unlocked!",
-                      description: "Deducted $70 from your wallet.",
-                    });
-                  } else {
-                    toast({
-                      title: "Not enough wallet cash!",
-                      description: "You need $70 to unlock the solution. Keep solving problems to earn more!",
-                      variant: "destructive",
-                    });
-                  }
-                } else {
-                  setShowSolution(true);
-                  if (problem.solution) setCode(problem.solution);
-                }
-              }}
-            >
-              {showSolution ? <EyeOff className="w-3 h-3" /> : <Eye className="w-3 h-3" />}
-              {showSolution ? t.hideSolution : t.revealSolution}
-            </Button>
-            {showSolution && (
-              <div className="mt-4">
-                <div className="code-block mb-3">
-                  <pre className="p-3 sm:p-4 text-xs font-mono text-foreground overflow-x-auto">{problem.solution}</pre>
-                </div>
-                <p className="text-xs text-muted-foreground">{problem.solutionExplanation}</p>
-              </div>
-            )}
           </div>
         </div>
 
-        {!showDescription && (
-          <button
-            onClick={() => setShowDescription(true)}
-            className="md:hidden flex flex-col items-center justify-center gap-1 px-4 py-3 bg-surface-2 border-b border-border text-xs font-semibold text-foreground hover:bg-surface-3 transition-colors shrink-0"
-          >
-            <ChevronDown className="w-4 h-4 text-primary" /> {t.viewDescription}
-          </button>
-        )}
-
-        {/* Right: Editor + Output */}
         <div className="flex-1 flex flex-col min-h-0 relative">
           {isLocked ? (
             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/95 backdrop-blur-sm px-6 text-center">
               <Lock className="w-16 h-16 text-muted-foreground mb-6 opacity-30" />
               <h2 className="text-2xl font-bold text-foreground mb-2">Problem Locked</h2>
-              <p className="text-sm text-muted-foreground max-w-sm mb-8">
-                Your time ran out for this problem. You must wait for the cooldown before attempting it again.
-              </p>
-              
               <div className="bg-surface-1 border border-border rounded-xl p-6 mb-8 w-full max-w-[240px] shadow-lg">
                 <div className="text-xs text-muted-foreground uppercase tracking-widest font-semibold mb-2">Time Remaining</div>
                 <div className="text-4xl font-mono text-foreground tracking-tight">
                   {formatCountdown(lockTimeRemaining)}
                 </div>
               </div>
-
               <Button 
                 onClick={() => {
                   if (progress.wallet >= 50) {
@@ -590,10 +670,15 @@ export default function ProblemPage() {
               <Editor
                 key={id}
                 height="100%"
-                language="python"
+                language={isSql ? "sql" : "python"}
                 theme="vs-dark"
                 value={code}
                 onChange={(v) => setCode(v || "")}
+                onMount={(editor, monaco) => {
+                  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+                    handleRun();
+                  });
+                }}
                 loading={<div className="flex w-full h-full items-center justify-center"><span className="text-sm text-muted-foreground animate-pulse">{t.loadingCompilerSmall}</span></div>}
                 options={{
                   fontSize: isMobile ? 12 : 14,
@@ -632,10 +717,17 @@ export default function ProblemPage() {
               </div>
             </div>
             <div className="flex-1 overflow-auto p-3 sm:p-4">
-              {!output && (
+              {!output && !sqlResult && (
                 <p className="text-[11px] text-muted-foreground mb-3">
-                  {t.runningInfoPrefix} {timeoutSeconds}{t.runningInfoSuffix}
+                  {t.runningInfoPrefix} {600}{t.runningInfoSuffix}
                 </p>
+              )}
+              {isSql && sqlResult ? (
+                <SqlTableView csvOutput={sqlResult} />
+              ) : (
+                <pre className="whitespace-pre-wrap text-foreground font-mono text-sm">
+                  {output || (isRunning ? "Running..." : "Click Run to execute your code")}
+                </pre>
               )}
               {testResults && (
                 <div className="space-y-1.5 mb-3">
@@ -651,18 +743,27 @@ export default function ProblemPage() {
                 </div>
               )}
               {submitted && (
-                <div className="flex items-center gap-3 p-3 bg-streak-green/10 border border-streak-green/30 rounded-lg mb-3">
-                  <CheckCircle2 className="w-5 h-5 text-streak-green shrink-0" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">{t.allPassed}</p>
-                    <p className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5 flex-wrap">
-                      <span className="text-reward-gold">💰 +${reward}</span>
-                      <span className="text-python-yellow">{t.streakUpdated}</span>
-                    </p>
+                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-streak-green/10 border border-streak-green/30 rounded-xl mb-3 shadow-sm animate-in fade-in zoom-in duration-300">
+                  <div className="flex items-center gap-3 flex-1">
+                    <CheckCircle2 className="w-6 h-6 text-streak-green shrink-0" />
+                    <div>
+                      <p className="text-sm font-bold text-foreground tracking-tight">{t.allPassed}</p>
+                      <p className="text-xs text-muted-foreground flex items-center gap-2 mt-0.5 flex-wrap font-medium">
+                        <span className="text-reward-gold px-1.5 py-0.5 bg-reward-gold/10 rounded-md border border-reward-gold/20">💰 +${reward}</span>
+                        <span className="text-python-yellow px-1.5 py-0.5 bg-python-yellow/10 rounded-md border border-python-yellow/20">{t.streakUpdated}</span>
+                      </p>
+                    </div>
                   </div>
+                  {nextProblem && (
+                    <Button asChild size="sm" className="w-full sm:w-auto h-9 gap-2 bg-streak-green hover:bg-streak-green/90 text-white font-semibold">
+                      <Link to={`/problems/${nextProblem.id}`}>
+                        {t.next}
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                    </Button>
+                  )}
                 </div>
               )}
-              <pre className="text-xs sm:text-sm font-mono text-foreground whitespace-pre-wrap">{output}</pre>
             </div>
           </div>
         </div>

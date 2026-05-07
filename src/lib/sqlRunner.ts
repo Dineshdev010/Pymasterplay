@@ -47,8 +47,43 @@ else:
 `;
 }
 
-export async function executeSql(sql: string, options?: { timeoutMs?: number }): Promise<ExecutionResult> {
+export interface SqlResult {
+  columns: string[];
+  values: any[][];
+}
+
+export interface SqlExecutionResult extends ExecutionResult {
+  parsed?: SqlResult;
+}
+
+export async function executeSql(sql: string, options?: { timeoutMs?: number }): Promise<SqlExecutionResult> {
   const harness = buildSqlPythonHarness(sql);
-  return executePython(harness, options);
+  const result = await executePython(harness, options);
+  
+  if (!result.error && result.output) {
+    try {
+      const trimmedOutput = (result.output || "").trim();
+      if (!trimmedOutput) return result;
+      
+      const lines = trimmedOutput.split("\n");
+      if (lines.length > 0) {
+        // Simple CSV parsing for SQLite output
+        const columns = lines[0].split(",");
+        const values = lines.slice(1).map(line => {
+          // Handle potential commas in values if needed, 
+          // but for now simple split is fine for basic challenges
+          return line.split(",").map(v => v === "NULL" ? null : v);
+        });
+        return {
+          ...result,
+          parsed: { columns, values }
+        };
+      }
+    } catch (e) {
+      console.error("Failed to parse SQL output:", e);
+    }
+  }
+
+  return result;
 }
 

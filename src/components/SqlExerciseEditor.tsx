@@ -19,9 +19,10 @@ interface SqlExerciseEditorProps {
 }
 
 function generateHint(exercise: Exercise): string {
-  const expected = exercise.expectedOutput;
+  const expected = exercise?.expectedOutput || "";
+  if (!expected) return "Try to match the required database output.";
   if (expected.includes("\n")) {
-    return `Your result has ${expected.split("\n").length} lines. First line: "${expected.split("\n")[0]}"`;
+    return `Your result should have ${expected.split("\n").length} lines. First line starts with: "${expected.split("\n")[0].substring(0, 20)}..."`;
   }
   return `Expected output starts with: "${expected.substring(0, 40)}${expected.length > 40 ? "..." : ""}"`;
 }
@@ -40,7 +41,8 @@ function generateSolution(exercise: Exercise): string {
   const starter = exercise.starterCode.trim();
   if (starter) return starter;
 
-  return `-- Reference answer\n-- Expected output: ${exercise.expectedOutput.replace(/\n/g, " | ")}`;
+  const expectedLabel = exercise?.expectedOutput ? exercise.expectedOutput.replace(/\n/g, " | ").substring(0, 50) : "N/A";
+  return `-- Reference answer\n-- Expected output: ${expectedLabel}${expectedLabel.length >= 50 ? "..." : ""}`;
 }
 
 export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExerciseEditorProps) {
@@ -106,8 +108,8 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     setOutput(`Executing query...`);
 
     const result = await executeSql(userSql);
-    const actualOutput = result.output.trim();
-    const expected = exercise.expectedOutput.trim();
+    const actualOutput = result.output?.trim() || "";
+    const expected = (exercise?.expectedOutput || "").trim();
 
     setRawSqlResult(result.output);
 
@@ -228,8 +230,8 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
               <div className="text-xs text-muted-foreground font-mono">
                 Expected:{" "}
                 <span className="text-foreground">
-                  {exercise.expectedOutput.split("\n")[0]}
-                  {exercise.expectedOutput.includes("\n") ? "..." : ""}
+                  {(exercise?.expectedOutput || "N/A").split("\n")[0]}
+                  {(exercise?.expectedOutput || "").includes("\n") ? "..." : ""}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 flex-wrap">

@@ -26,11 +26,16 @@ export function splitCsvLine(line: string): string[] {
 }
 
 export function SqlTableView({ csvOutput, onDownload }: SqlTableViewProps) {
-  const lines = csvOutput.trim().split("\n");
-  if (lines.length === 0 || !csvOutput.includes(",")) {
-    return <pre className="p-4 text-[11px] font-mono text-foreground whitespace-pre-wrap">{csvOutput}</pre>;
+  const trimmed = csvOutput.trim();
+  if (!trimmed) {
+    return (
+      <div className="p-8 text-center text-xs text-muted-foreground italic border-t border-border bg-background/50">
+        Query executed successfully, but returned no results.
+      </div>
+    );
   }
 
+  const lines = trimmed.split("\n");
   const headers = splitCsvLine(lines[0]);
   const rows = lines.slice(1).map((line) => splitCsvLine(line));
 
