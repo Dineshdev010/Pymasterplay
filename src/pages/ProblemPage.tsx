@@ -576,54 +576,54 @@ export default function ProblemPage() {
               </div>
             )}
 
-            {/* ── SQL: Reveal Answer ───────────────────────── */}
-            {isSql && (
-              <div className="mb-6">
-                {!solutionUnlocked ? (
+            {/* ── Reveal Answer (Unified for SQL & Python) ───────────────────────── */}
+            <div className="mb-6">
+              {!solutionUnlocked ? (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full gap-2 border-reward-gold/40 text-reward-gold hover:bg-reward-gold/10 hover:border-reward-gold font-semibold"
+                  onClick={() => {
+                    if (progress.wallet >= 70) {
+                      addWallet(-70);
+                      setSolutionUnlocked(true);
+                      setShowSolution(true);
+                      toast({ title: "Answer Revealed", description: "Paid $70 to view the solution." });
+                    } else {
+                      toast({ title: "Not enough wallet cash!", description: "You need $70 to reveal the answer.", variant: "destructive" });
+                    }
+                  }}
+                >
+                  <Eye className="w-4 h-4" />
+                  {t.revealSolution}
+                </Button>
+              ) : (
+                <div className="space-y-2">
                   <Button
-                    variant="outline"
+                    variant="ghost"
                     size="sm"
-                    className="w-full gap-2 border-reward-gold/40 text-reward-gold hover:bg-reward-gold/10 hover:border-reward-gold font-semibold"
-                    onClick={() => {
-                      if (progress.wallet >= 70) {
-                        addWallet(-70);
-                        setSolutionUnlocked(true);
-                        setShowSolution(true);
-                        toast({ title: "Answer Revealed", description: "Paid $70 to view the solution." });
-                      } else {
-                        toast({ title: "Not enough wallet cash!", description: "You need $70 to reveal the answer.", variant: "destructive" });
-                      }
-                    }}
+                    className="w-full gap-2 text-muted-foreground hover:text-foreground"
+                    onClick={() => setShowSolution(s => !s)}
                   >
-                    <Eye className="w-4 h-4" />
-                    {t.revealSolution}
+                    <Eye className="w-3 h-3" />
+                    {showSolution ? t.hideSolution : "Show Answer"}
                   </Button>
-                ) : (
-                  <div className="space-y-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full gap-2 text-muted-foreground hover:text-foreground"
-                      onClick={() => setShowSolution(s => !s)}
-                    >
-                      <Eye className="w-3 h-3" />
-                      {showSolution ? t.hideSolution : "Show Answer"}
-                    </Button>
-                    {showSolution && (
-                      <div className="bg-[#1e1e1e] border border-white/5 rounded-xl p-4 shadow-inner">
-                        <p className="text-[9px] uppercase tracking-widest text-muted-foreground mb-2 font-semibold">Solution Query</p>
-                        <pre className="text-[11px] font-mono text-[#9cdcfe] leading-relaxed whitespace-pre-wrap">
-                          {(problem as any).expectedQuery}
-                        </pre>
-                        <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed border-t border-white/5 pt-3">
-                          💡 {(problem as any).explanation}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
+                  {showSolution && (
+                    <div className="bg-[#1e1e1e] border border-white/5 rounded-xl p-4 shadow-inner">
+                      <p className="text-[9px] uppercase tracking-widest text-muted-foreground mb-2 font-semibold">
+                        {isSql ? "Solution Query" : "Solution Code"}
+                      </p>
+                      <pre className="text-[11px] font-mono text-[#9cdcfe] leading-relaxed whitespace-pre-wrap">
+                        {isSql ? (problem as any).expectedQuery : (problem as any).solution}
+                      </pre>
+                      <p className="text-[10px] text-muted-foreground mt-3 leading-relaxed border-t border-white/5 pt-3">
+                        💡 {isSql ? (problem as any).explanation : (problem as any).solutionExplanation}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             
             <div className="flex items-center gap-2 mb-4">
               <Wallet className="w-4 h-4 text-reward-gold" />
