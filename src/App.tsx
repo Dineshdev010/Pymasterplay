@@ -51,6 +51,7 @@ const QuickPrepPage = lazy(() => import("./pages/QuickPrepPage"));
 const PythonGamePage = lazy(() => import("./pages/PythonGamePage"));
 const PythonLearningBeginnersPage = lazy(() => import("./pages/PythonLearningBeginnersPage"));
 const PythonQuizPage = lazy(() => import("./pages/PythonQuizPage"));
+const UniversalQuizPage = lazy(() => import("./pages/UniversalQuizPage"));
 const PublicProfilePage = lazy(() => import("./pages/PublicProfilePage"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const BlogIndexPage = lazy(() => import("./pages/BlogIndexPage"));
@@ -102,6 +103,7 @@ const appRoutes: AppRoute[] = [
   { path: "/python-game", element: <PythonGamePage />, fallback: <PageSkeleton /> },
   { path: "/python-learning-for-beginners", element: <PythonLearningBeginnersPage />, fallback: <PageSkeleton /> },
   { path: "/python-quiz-100", element: <PythonQuizPage />, fallback: <PageSkeleton /> },
+  { path: "/arena/:topic", element: <UniversalQuizPage />, fallback: <PageSkeleton /> },
   { path: "/linux-learn", element: <LinuxLearningPage />, fallback: <LinuxLearningSkeleton /> },
   { path: "/career-roadmap", element: <CareerRoadmapPage />, fallback: <PageSkeleton /> },
   { path: "/productive-clock", element: <ProductiveClockPage />, fallback: <PageSkeleton /> },

@@ -8,8 +8,25 @@ export interface PythonQuizQuestion {
 }
 
 function rotateOptions(options: string[], shift: number) {
-  const normalized = shift % options.length;
-  return [...options.slice(normalized), ...options.slice(0, normalized)];
+  const uniqueSet = new Set<string>();
+  options.forEach(opt => uniqueSet.add(opt));
+
+  let offset = 1;
+  while (uniqueSet.size < 4) {
+    const baseVal = parseFloat(options[0]);
+    if (!isNaN(baseVal)) {
+      const candidate = String(baseVal + offset);
+      if (!uniqueSet.has(candidate)) uniqueSet.add(candidate);
+    } else {
+      const candidate = `${options[0]}_${offset}`;
+      if (!uniqueSet.has(candidate)) uniqueSet.add(candidate);
+    }
+    offset++;
+  }
+
+  const uniqueOptions = Array.from(uniqueSet);
+  const normalized = shift % 4;
+  return [...uniqueOptions.slice(normalized), ...uniqueOptions.slice(0, normalized)];
 }
 
 function createQuestion(id: number): PythonQuizQuestion {
@@ -25,7 +42,7 @@ function createQuestion(id: number): PythonQuizQuestion {
       id,
       topic: "Operators",
       question: `What is the output of \`print(${a} + ${b} * ${c})\`?`,
-      options: rotateOptions([answer, String((a + b) * c), String(a * b + c), String(a + b + c)], block),
+      options: rotateOptions([answer, String((a + b) * c), String(a * b + c), String(a + b + c + 1)], block),
       answer,
       explanation: "Multiplication runs before addition in Python operator precedence.",
     };
@@ -39,7 +56,7 @@ function createQuestion(id: number): PythonQuizQuestion {
       id,
       topic: "Numbers",
       question: `What is the output of \`print(${a} // ${b})\`?`,
-      options: rotateOptions([answer, String(a / b), String((a % b) + Math.floor(a / b)), String(b)], block),
+      options: rotateOptions([answer, (a / b).toFixed(1), String((a % b) + Math.floor(a / b) + 1), String(b + 2)], block),
       answer,
       explanation: "`//` is floor division, so it returns only the integer part.",
     };
@@ -270,7 +287,7 @@ function createTrickyQuestion(id: number, trickyIndex: number): PythonQuizQuesti
   };
 }
 
-const baseQuestions = Array.from({ length: 200 }, (_, i) => createQuestion(i + 1));
-const trickyQuestions = Array.from({ length: 200 }, (_, i) => createTrickyQuestion(201 + i, i + 1));
+const baseQuestions = Array.from({ length: 250 }, (_, i) => createQuestion(i + 1));
+const trickyQuestions = Array.from({ length: 250 }, (_, i) => createTrickyQuestion(251 + i, i + 1));
 
 export const pythonQuizQuestions: PythonQuizQuestion[] = [...baseQuestions, ...trickyQuestions];

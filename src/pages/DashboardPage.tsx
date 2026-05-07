@@ -16,7 +16,7 @@ import { StreakFire } from "@/components/StreakFire";
 import { SectionErrorBoundary } from "@/components/SectionErrorBoundary";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp, Brain, Volume2, VolumeX, RefreshCw } from "lucide-react";
+import { BookOpen, Trophy, Code, Flame, Target, Zap, Star, Award, Camera, Pencil, Check, ShoppingBag, Clock, Share2, Copy, Download, Palette, Medal, CheckCircle2, Crown, ArrowUpRight, Sparkles, Save, Github, Linkedin, Globe, CircleHelp, Brain, Volume2, VolumeX, RefreshCw, Database, Terminal, BarChart3, Cloud } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/lib/supabase";
 import { getPublicUrl } from "@/lib/public-url";
@@ -25,6 +25,7 @@ import { getDynamicMemers } from "@/data/dummyMemers";
 import { Helmet } from "react-helmet-async";
 import { playSuccessSound, playClickSound } from "@/lib/sounds";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 
 
 
@@ -129,7 +130,7 @@ function formatCountdown(totalSeconds: number) {
 }
 
 const TIME_GIFT_INTERVAL_SECONDS = 60 * 60;
-const QUIZ_PROGRESS_STORAGE_KEY = "pymaster_quiz_progress_v1";
+const QUIZ_PROGRESS_STORAGE_KEY = "pymaster_quiz_progress_v2";
 const DASHBOARD_DENSITY_KEY = "pymaster_dashboard_density";
 const DASHBOARD_VIEW_KEY = "pymaster_dashboard_view";
 const DASHBOARD_GOAL_PRESET_KEY = "pymaster_dashboard_goal_preset";
@@ -141,6 +142,9 @@ type QuizProgressSnapshot = {
   trickyTotal: number;
   trickyAnswered: number;
   trickyScore: number;
+  streak: number;
+  maxStreak: number;
+  current: number;
   updatedAt: string;
 };
 
@@ -151,6 +155,9 @@ const EMPTY_QUIZ_PROGRESS: QuizProgressSnapshot = {
   trickyTotal: 0,
   trickyAnswered: 0,
   trickyScore: 0,
+  streak: 0,
+  maxStreak: 0,
+  current: 0,
   updatedAt: "",
 };
 
@@ -165,6 +172,9 @@ function readQuizProgressSnapshot(): QuizProgressSnapshot {
       trickyTotal: typeof parsed.trickyTotal === "number" ? parsed.trickyTotal : 0,
       trickyAnswered: typeof parsed.trickyAnswered === "number" ? parsed.trickyAnswered : 0,
       trickyScore: typeof parsed.trickyScore === "number" ? parsed.trickyScore : 0,
+      streak: typeof parsed.streak === "number" ? parsed.streak : 0,
+      maxStreak: typeof parsed.maxStreak === "number" ? parsed.maxStreak : 0,
+      current: typeof parsed.current === "number" ? parsed.current : 0,
       updatedAt: typeof parsed.updatedAt === "string" ? parsed.updatedAt : "",
     };
   } catch {
@@ -1080,19 +1090,39 @@ export default function DashboardPage() {
             <Button size="sm" variant="outline" onClick={() => navigate("/jobs")}>Browse Jobs</Button>
           </div>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
-          <div className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">Quiz Insight</div>
-          <div className="mt-3 space-y-2 text-sm">
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">All accuracy</span>
-              <span className="font-semibold text-foreground">{quizAccuracy}%</span>
+        <div className="rounded-2xl border border-border bg-card p-5 relative overflow-hidden group">
+          <div className="absolute right-0 top-0 -mr-8 -mt-8 h-32 w-32 rounded-full bg-primary/5 blur-3xl group-hover:bg-primary/10 transition-colors" />
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground">Arena Mastery</div>
+            <div className="flex items-center gap-1.5 rounded-full bg-orange-500/10 px-2.5 py-0.5 text-[10px] font-bold text-orange-500 border border-orange-500/20">
+              <Flame className="h-3 w-3 fill-orange-500" /> {quizProgress.maxStreak} Best
             </div>
-            <div className="flex items-center justify-between">
-              <span className="text-muted-foreground">Tricky accuracy</span>
-              <span className="font-semibold text-foreground">{trickyAccuracy}%</span>
+          </div>
+          <div className="mt-4 space-y-4">
+            <div>
+              <div className="flex items-end justify-between mb-2">
+                <div className="text-2xl font-black text-foreground">{quizProgress.allAnswered}<span className="text-sm font-medium text-muted-foreground">/400</span></div>
+                <div className="text-xs font-bold text-primary">{allQuizAnsweredPct}%</div>
+              </div>
+              <div className="h-2 rounded-full bg-muted/30 overflow-hidden ring-1 ring-border/50">
+                <motion.div 
+                  initial={{ width: 0 }} 
+                  animate={{ width: `${allQuizAnsweredPct}%` }} 
+                  className="h-full bg-gradient-to-r from-primary to-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.3)]" 
+                />
+              </div>
             </div>
-            <div className="rounded-xl border border-border bg-surface-1 p-3 text-xs text-muted-foreground">
-              {trickyAccuracy < quizAccuracy ? "Focus on tricky mode this week to raise interview readiness." : "Great consistency. Push overall volume for stronger confidence."}
+            <div className="grid grid-cols-2 gap-3 pt-2">
+              <div className="rounded-xl bg-muted/20 p-2 border border-border/50">
+                <div className="text-[10px] font-bold text-muted-foreground uppercase">Accuracy</div>
+                <div className="text-lg font-black text-foreground">{quizAccuracy}%</div>
+              </div>
+              <div className="rounded-xl bg-muted/20 p-2 border border-border/50">
+                <div className="text-[10px] font-bold text-muted-foreground uppercase">Rank</div>
+                <div className="text-lg font-black text-primary">
+                  {allQuizAnsweredPct >= 100 ? "Grandmaster" : allQuizAnsweredPct >= 50 ? "Master" : allQuizAnsweredPct >= 20 ? "Expert" : "Learner"}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -1141,6 +1171,42 @@ export default function DashboardPage() {
       </div>
       )}
 
+      {/* Master Arenas */}
+      {showOverview && (
+        <SectionErrorBoundary section="Master Arenas">
+          <div className="bg-card border border-border rounded-2xl p-6 mb-8">
+            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+              <Zap className="w-5 h-5 text-primary" />
+              Master Arenas
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Master specific domains with 100+ focused questions each. Pick a topic to start.
+            </p>
+            <div className="mt-5 grid grid-cols-2 md:grid-cols-5 gap-3">
+              {[
+                { id: "python", name: "Python", icon: Zap, color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", path: "/python-quiz-100" },
+                { id: "sql", name: "SQL", icon: Database, color: "text-blue-400", bg: "bg-blue-400/5", border: "border-blue-400/20", path: "/arena/sql" },
+                { id: "linux", name: "Linux", icon: Terminal, color: "text-expert-purple", bg: "bg-expert-purple/5", border: "border-expert-purple/20", path: "/arena/linux" },
+                { id: "pandas", name: "Pandas", icon: BarChart3, color: "text-python-yellow", bg: "bg-python-yellow/5", border: "border-python-yellow/20", path: "/arena/pandas" },
+                { id: "cloud", name: "Cloud", icon: Cloud, color: "text-orange-400", bg: "bg-orange-400/5", border: "border-orange-400/20", path: "/arena/cloud" },
+              ].map((arena) => (
+                <button
+                  key={arena.id}
+                  onClick={() => { playClickSound(); navigate(arena.path); }}
+                  className={cn("flex flex-col items-center justify-center p-4 rounded-2xl border transition-all hover:scale-[1.05] active:scale-[0.95] group", arena.bg, arena.border)}
+                >
+                  <div className={cn("p-3 rounded-xl bg-background border border-border group-hover:shadow-lg transition-all", arena.color)}>
+                    <arena.icon className="w-6 h-6" />
+                  </div>
+                  <div className="mt-3 font-bold text-foreground">{arena.name}</div>
+                  <ArrowUpRight className="w-4 h-4 mt-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                </button>
+              ))}
+            </div>
+          </div>
+        </SectionErrorBoundary>
+      )}
+
       {/* Quick actions */}
       {showOverview && (
       <SectionErrorBoundary section="Quick Actions">
@@ -1164,6 +1230,7 @@ export default function DashboardPage() {
             {[
               { to: "/learn", title: "Learn", desc: "Continue lessons", icon: BookOpen, accent: "text-streak-green" },
               { to: "/problems", title: "Problems", desc: "Practice daily", icon: Code, accent: "text-primary" },
+              { to: "/python-quiz-100", title: "Arena", desc: `Resume Q${quizProgress.current + 1}`, icon: Trophy, accent: "text-orange-500" },
               { to: "/dsa", title: "DSA", desc: "Patterns + levels", icon: Brain, accent: "text-python-yellow" },
               { to: "/compiler", title: "Compiler", desc: "Try quick code", icon: Target, accent: "text-blue-400" },
               { to: "/blog", title: "Blog", desc: "Read guides", icon: Globe, accent: "text-expert-purple" },
