@@ -135,10 +135,18 @@ export default function ProblemPage() {
 
   useEffect(() => {
     if (problem) {
-      setCode(problem.starterCode);
       setProblemTimeLeft(getProblemTimerSeconds(problem));
     }
   }, [id, problem]);
+
+  const solved = progress.solvedProblems.includes(problem.id);
+  const reward = getRewardForDifficulty(problem.difficulty);
+  const problemIndex = currentProblems.findIndex(p => p.id === id);
+  const prevProblem = problemIndex > 0 ? currentProblems[problemIndex - 1] : null;
+  const nextProblem = problemIndex < currentProblems.length - 1 ? currentProblems[problemIndex + 1] : null;
+  const serial = problemIndex + 1;
+  const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
+  const recommendedSubjects = getRecommendedSubjects(problem);
 
   if (!problem) {
     return (
@@ -204,15 +212,15 @@ export default function ProblemPage() {
   }, [id, isMobile]);
 
   useEffect(() => {
-    if (problemTimeLeft <= 0) return;
+    if (problemTimeLeft <= 0 || solved) return;
     const timer = window.setInterval(() => {
       setProblemTimeLeft((current) => Math.max(0, current - 1));
     }, 1000);
     return () => window.clearInterval(timer);
-  }, [problemTimeLeft]);
+  }, [id, solved, problemTimeLeft <= 0]); // Only re-run if id or solved changes, or if we hit zero
 
   useEffect(() => {
-    if (!problem) return;
+    if (!problem || solved) return;
     if (problemTimeLeft > 0) return;
     if (timeoutHandledRef.current) return;
     timeoutHandledRef.current = true;
@@ -248,14 +256,6 @@ export default function ProblemPage() {
   }
 
   const canonical = `https://pymaster.pro/problems/${problem.id}`;
-  const solved = progress.solvedProblems.includes(problem.id);
-  const reward = getRewardForDifficulty(problem.difficulty);
-  const problemIndex = currentProblems.findIndex(p => p.id === id);
-  const prevProblem = problemIndex > 0 ? currentProblems[problemIndex - 1] : null;
-  const nextProblem = problemIndex < currentProblems.length - 1 ? currentProblems[problemIndex + 1] : null;
-  const serial = problemIndex + 1;
-  const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
-  const recommendedSubjects = getRecommendedSubjects(problem);
   const text = {
     english: { problems: "Problems", prev: "Prev", next: "Next", problemDescription: "Problem Description", examples: "📝 Examples", constraints: "⚠️ Constraints", reward: "reward", companiesAsk: "Companies that ask this question", learnFirst: "Learn these subjects first", learnFirstDesc: "These topics will make this problem much easier to understand and solve.", hideSolution: "Hide Solution", revealSolution: "👀 Reveal Solution ($70)", viewDescription: "View Problem Description", output: "📺 Output", stop: "Stop", run: "▶ Run", submit: "🚀 Submit", loadingCompiler: "Loading Compiler Engine...", loadingCompilerSmall: "Loading compiler engine...", runningInfoPrefix: "Runs in an isolated browser worker with a", runningInfoSuffix: "s safety timeout.", allPassed: "🎉 All tests passed!", streakUpdated: "🔥 Streak updated" },
     tamil: { problems: "பிரச்சினைகள்", prev: "முந்தையது", next: "அடுத்தது", problemDescription: "பிரச்சினை விளக்கம்", examples: "📝 உதாரணங்கள்", constraints: "⚠️ வரம்புகள்", reward: "பரிசு", companiesAsk: "இந்த கேள்வியை கேட்கும் நிறுவனங்கள்", learnFirst: "முதலில் இவற்றை கற்பீர்", learnFirstDesc: "இந்த தலைப்புகள் இந்த பிரச்சினையை எளிதாக புரிந்து தீர்க்க உதவும்.", hideSolution: "தீர்வை மறை", revealSolution: "👀 தீர்வை காண் ($70)", viewDescription: "பிரச்சினை விளக்கத்தை காண்க", output: "📺 வெளியீடு", stop: "நிறுத்து", run: "▶ இயக்கு", submit: "🚀 சமர்ப்பி", loadingCompiler: "கம்பைலர் ஏற்றப்படுகிறது...", loadingCompilerSmall: "கம்பைலர் ஏற்றப்படுகிறது...", runningInfoPrefix: "இந்த குறியீடு தனிமைப்படுத்தப்பட்ட worker-இல் இயங்குகிறது,", runningInfoSuffix: "விநாடி பாதுகாப்பு நேரவரம்புடன்.", allPassed: "🎉 அனைத்து சோதனைகளும் வெற்றி!", streakUpdated: "🔥 தொடர் புதுப்பிக்கப்பட்டது" },
@@ -445,58 +445,67 @@ export default function ProblemPage() {
         </script>
       </Helmet>
 
-      <div className="h-auto min-h-[3rem] bg-surface-1 border-b border-border flex flex-wrap items-center justify-between px-3 sm:px-4 py-2 gap-2 shrink-0">
+      <div className="h-auto min-h-[3rem] bg-surface-1 border-b border-border flex items-center justify-between px-3 sm:px-4 py-2 gap-4 shrink-0">
         <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           <Button asChild variant="ghost" size="sm" className="h-7 text-xs gap-1 shrink-0">
             <Link to="/problems"><ArrowLeft className="w-3 h-3" /> <span className="hidden sm:inline">{t.problems}</span></Link>
           </Button>
 
-          <div className="flex items-center border border-border rounded-md bg-surface-2 overflow-hidden shrink-0">
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              disabled={!prevProblem}
-              className={`h-7 px-2 rounded-none border-r border-border text-[10px] sm:text-xs gap-1 ${!prevProblem ? "opacity-50 pointer-events-none" : ""}`}
-            >
-              <Link to={prevProblem ? `/problems/${prevProblem.id}` : "#"}>
-                <ChevronLeft className="w-3 h-3" />
-                {t.prev}
-              </Link>
-            </Button>
-            <div className="px-2 py-0.5 text-[10px] font-mono text-muted-foreground border-r border-border min-w-[2rem] text-center">
-              {serial}
-            </div>
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              disabled={!nextProblem}
-              className={`h-7 px-2 rounded-none text-[10px] sm:text-xs gap-1 ${!nextProblem ? "opacity-50 pointer-events-none" : ""}`}
-            >
-              <Link to={nextProblem ? `/problems/${nextProblem.id}` : "#"}>
-                {t.next}
-                <ChevronRight className="w-3 h-3" />
-              </Link>
-            </Button>
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <span className="text-sm font-medium text-foreground truncate max-w-[120px] sm:max-w-none">{problem.title}</span>
+            <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full border capitalize shrink-0 ${getDifficultyBg(problem.difficulty)} ${getDifficultyColor(problem.difficulty)}`}>
+              {problem.difficulty}
+            </span>
+            
+            {!solved ? (
+              <span className={`inline-flex items-center gap-1 rounded-full border px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs shrink-0 ${
+                problemTimeLeft <= 60 ? "border-destructive/40 bg-destructive/10 text-destructive" : "border-border bg-surface-2 text-muted-foreground"
+              }`}>
+                <Clock3 className="w-3 h-3" />
+                {formatCountdown(problemTimeLeft)}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 rounded-full border border-streak-green/30 bg-streak-green/10 px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs text-streak-green shrink-0 font-medium">
+                <CheckCircle2 className="w-3 h-3" />
+                Completed
+              </span>
+            )}
           </div>
+        </div>
 
-          <span className="text-sm font-medium text-foreground truncate">{problem.title}</span>
-          <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 rounded-full border capitalize shrink-0 ${getDifficultyBg(problem.difficulty)} ${getDifficultyColor(problem.difficulty)}`}>
-            {problem.difficulty}
-          </span>
-          <span className={`inline-flex items-center gap-1 rounded-full border px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs shrink-0 ${
-            problemTimeLeft <= 60 ? "border-destructive/40 bg-destructive/10 text-destructive" : "border-border bg-surface-2 text-muted-foreground"
-          }`}>
-            <Clock3 className="w-3 h-3" />
-            {formatCountdown(problemTimeLeft)}
-          </span>
-          {solved && <CheckCircle2 className="w-4 h-4 text-streak-green shrink-0" />}
+        <div className="flex items-center border border-border rounded-md bg-surface-2 overflow-hidden shrink-0">
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            disabled={!prevProblem}
+            className={`h-7 px-2 sm:px-3 rounded-none border-r border-border text-[10px] sm:text-xs gap-1.5 ${!prevProblem ? "opacity-50 pointer-events-none" : "hover:bg-surface-3 transition-colors"}`}
+          >
+            <Link to={prevProblem ? `/problems/${prevProblem.id}` : "#"}>
+              <ChevronLeft className="w-3 h-3" />
+              {t.prev}
+            </Link>
+          </Button>
+          <div className="px-3 py-0.5 text-[10px] font-mono font-bold text-muted-foreground border-r border-border min-w-[2.5rem] text-center bg-surface-1/50">
+            {serial}
+          </div>
+          <Button
+            asChild
+            variant="ghost"
+            size="sm"
+            disabled={!nextProblem}
+            className={`h-7 px-2 sm:px-3 rounded-none text-[10px] sm:text-xs gap-1.5 ${!nextProblem ? "opacity-50 pointer-events-none" : "hover:bg-surface-3 transition-colors"}`}
+          >
+            <Link to={nextProblem ? `/problems/${nextProblem.id}` : "#"}>
+              {t.next}
+              <ChevronRight className="w-3 h-3" />
+            </Link>
+          </Button>
         </div>
       </div>
 
       <div className="flex-1 flex flex-col md:flex-row min-h-0">
-        <div className={`md:w-[45%] overflow-y-auto border-b md:border-b-0 md:border-r border-border shrink-0 ${showDescription ? "h-[35vh] md:h-auto" : "hidden md:block"}`}>
+        <div className={`md:w-[38%] overflow-y-auto border-b md:border-b-0 md:border-r border-border shrink-0 ${showDescription ? "h-[35vh] md:h-auto" : "hidden md:block"}`}>
           <button
             onClick={() => setShowDescription(!showDescription)}
             className="md:hidden w-full flex items-center justify-between px-4 py-2 bg-surface-1 border-b border-border text-xs text-muted-foreground"
@@ -666,35 +675,37 @@ export default function ProblemPage() {
             </div>
           ) : null}
 
-            <Suspense fallback={<div className="flex w-full h-full items-center justify-center bg-surface-0"><span className="text-sm font-semibold tracking-wider text-muted-foreground animate-pulse">{t.loadingCompiler}</span></div>}>
-              <Editor
-                key={id}
-                height="100%"
-                language={isSql ? "sql" : "python"}
-                theme="vs-dark"
-                value={code}
-                onChange={(v) => setCode(v || "")}
-                onMount={(editor, monaco) => {
-                  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-                    handleRun();
-                  });
-                }}
-                loading={<div className="flex w-full h-full items-center justify-center"><span className="text-sm text-muted-foreground animate-pulse">{t.loadingCompilerSmall}</span></div>}
-                options={{
-                  fontSize: isMobile ? 12 : 14,
-                  fontFamily: "'JetBrains Mono', monospace",
-                  minimap: { enabled: false },
-                  padding: { top: 12 },
-                  scrollBeyondLastLine: false,
-                  wordWrap: "on",
-                  automaticLayout: true,
-                  lineNumbers: isMobile ? "off" : "on",
-                }}
-              />
-            </Suspense>
+            <div className="flex-1 min-h-0 relative">
+              <Suspense fallback={<div className="flex w-full h-full items-center justify-center bg-surface-0"><span className="text-sm font-semibold tracking-wider text-muted-foreground animate-pulse">{t.loadingCompiler}</span></div>}>
+                <Editor
+                  key={id}
+                  height="100%"
+                  language={isSql ? "sql" : "python"}
+                  theme="vs-dark"
+                  value={code}
+                  onChange={(v) => setCode(v || "")}
+                  onMount={(editor, monaco) => {
+                    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+                      handleRun();
+                    });
+                  }}
+                  loading={<div className="flex w-full h-full items-center justify-center"><span className="text-sm text-muted-foreground animate-pulse">{t.loadingCompilerSmall}</span></div>}
+                  options={{
+                    fontSize: isMobile ? 12 : 14,
+                    fontFamily: "'JetBrains Mono', monospace",
+                    minimap: { enabled: false },
+                    padding: { top: 12 },
+                    scrollBeyondLastLine: false,
+                    wordWrap: "on",
+                    automaticLayout: true,
+                    lineNumbers: isMobile ? "off" : "on",
+                  }}
+                />
+              </Suspense>
+            </div>
 
-          <div className="h-48 border-t border-border bg-surface-0 flex flex-col shrink-0">
-            <div className="flex items-center justify-between px-3 sm:px-4 py-2 border-b border-border bg-surface-1">
+          <div className="h-[40%] min-h-[140px] border-t border-border bg-surface-0 flex flex-col shrink-0 overflow-hidden shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
+            <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 border-b border-border bg-surface-1/80 backdrop-blur-sm sticky top-0 z-10">
               <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">{t.output}</span>
               <div className="flex gap-2">
                 {isRunning ? (
@@ -716,19 +727,24 @@ export default function ProblemPage() {
                 )}
               </div>
             </div>
-            <div className="flex-1 overflow-auto p-3 sm:p-4">
+            <div className="flex-1 overflow-auto p-3 sm:p-4 flex flex-col">
               {!output && !sqlResult && (
-                <p className="text-[11px] text-muted-foreground mb-3">
-                  {t.runningInfoPrefix} {600}{t.runningInfoSuffix}
-                </p>
+                <div className="flex-1 flex flex-col items-center justify-center text-center opacity-50">
+                  <p className="text-[11px] text-muted-foreground mb-1 max-w-[280px]">
+                    {t.runningInfoPrefix} {600}{t.runningInfoSuffix}
+                  </p>
+                  <pre className="whitespace-pre-wrap text-foreground font-mono text-sm leading-relaxed font-semibold tracking-tight">
+                    {isRunning ? "Running..." : "Click Run to execute your code"}
+                  </pre>
+                </div>
               )}
               {isSql && sqlResult ? (
                 <SqlTableView csvOutput={sqlResult} />
-              ) : (
-                <pre className="whitespace-pre-wrap text-foreground font-mono text-sm">
-                  {output || (isRunning ? "Running..." : "Click Run to execute your code")}
+              ) : output ? (
+                <pre className="whitespace-pre-wrap text-foreground font-mono text-sm leading-relaxed">
+                  {output}
                 </pre>
-              )}
+              ) : null}
               {testResults && (
                 <div className="space-y-1.5 mb-3">
                   {testResults.map((r, i) => (
