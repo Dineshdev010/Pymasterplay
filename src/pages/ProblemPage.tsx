@@ -122,7 +122,7 @@ export default function ProblemPage() {
   const [code, setCode] = useState(problem?.starterCode || "");
   const [output, setOutput] = useState("");
   const [showSolution, setShowSolution] = useState(false);
-  const [solutionUnlocked, setSolutionUnlocked] = useState(false);
+  const solutionUnlocked = progress.unlockedSolutions.includes(problem?.id);
   const [testResults, setTestResults] = useState<{ passed: boolean; input: string; expected: string }[] | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [showDescription, setShowDescription] = useState(!isMobile);
@@ -191,7 +191,6 @@ export default function ProblemPage() {
       setCode(problem.starterCode || "");
       setOutput("");
       setShowSolution(false);
-      setSolutionUnlocked(false);
       setTestResults(null);
       setSubmitted(false);
       setIsRunning(false);
@@ -229,7 +228,6 @@ export default function ProblemPage() {
     setCode(problem.starterCode || "");
     setOutput("");
     setShowSolution(false);
-    setSolutionUnlocked(false);
     setTestResults(null);
     setSubmitted(false);
     setIsRunning(false);
@@ -584,9 +582,8 @@ export default function ProblemPage() {
                   size="sm"
                   className="w-full gap-2 border-reward-gold/40 text-reward-gold hover:bg-reward-gold/10 hover:border-reward-gold font-semibold"
                   onClick={() => {
-                    if (progress.wallet >= 70) {
-                      addWallet(-70);
-                      setSolutionUnlocked(true);
+                    const success = unlockSolution(problem.id, 70);
+                    if (success) {
                       setShowSolution(true);
                       toast({ title: "Answer Revealed", description: "Paid $70 to view the solution." });
                     } else {
