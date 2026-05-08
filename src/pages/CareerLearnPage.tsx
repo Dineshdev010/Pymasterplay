@@ -26,6 +26,49 @@ import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
 
 type LearnLanguage = "english" | "tamil" | "kannada" | "telugu" | "hindi";
+type SqlDialect = "sqlite" | "postgresql" | "dbsql";
+
+const SQL_DIALECTS: Array<{ id: SqlDialect; label: string; shortLabel: string }> = [
+  { id: "sqlite", label: "SQLite", shortLabel: "SQLite" },
+  { id: "postgresql", label: "PostgreSQL", shortLabel: "Postgres" },
+  { id: "dbsql", label: "DB SQL", shortLabel: "DB SQL" },
+];
+
+const SQL_DIALECT_GUIDES: Record<SqlDialect, { title: string; description: string; bullets: string[]; example: string; runnerNote: string }> = {
+  sqlite: {
+    title: "SQLite Lessons",
+    description: "Lightweight SQL for local apps, browsers, mobile apps, and quick practice.",
+    bullets: [
+      "Uses `LIMIT` for row limits and `||` for string concatenation.",
+      "Date helpers include `date('now')` and `strftime(...)`.",
+      "Great for learning core SQL because setup is tiny and feedback is fast.",
+    ],
+    example: "-- SQLite\nSELECT name, price\nFROM products\nORDER BY price DESC\nLIMIT 3;",
+    runnerNote: "The editor and exercises run with SQLite in the browser.",
+  },
+  postgresql: {
+    title: "PostgreSQL Lessons",
+    description: "Production-grade SQL with richer types, stronger constraints, and powerful analytics features.",
+    bullets: [
+      "Use `ILIKE` for case-insensitive text matching.",
+      "Use `SERIAL`, `GENERATED ... AS IDENTITY`, JSONB, arrays, and rich date/time types in real projects.",
+      "Most SELECT, JOIN, GROUP BY, CTE, and window-function lessons transfer directly from SQLite.",
+    ],
+    example: "-- PostgreSQL\nSELECT name, price\nFROM products\nWHERE name ILIKE '%book%'\nORDER BY price DESC\nLIMIT 3;",
+    runnerNote: "PostgreSQL notes are learning guidance; this browser runner still executes SQLite.",
+  },
+  dbsql: {
+    title: "Database SQL Lessons",
+    description: "Portable SQL habits that work across SQLite, PostgreSQL, MySQL, SQL Server, and cloud warehouses.",
+    bullets: [
+      "Always name columns explicitly instead of relying on `SELECT *`.",
+      "Use `ORDER BY` whenever the row order matters.",
+      "Prefer clear aliases, stable joins, constraints, indexes, and transaction-safe changes.",
+    ],
+    example: "-- Portable DB SQL\nSELECT p.name, p.price\nFROM products AS p\nWHERE p.price >= 1000\nORDER BY p.price DESC, p.name;",
+    runnerNote: "Generic SQL examples are designed to stay close to standard SQL; execution is SQLite-backed here.",
+  },
+};
 
 function getLocalizedCareerLesson(
   lesson: (typeof careerTracks)[number]["lessons"][number] | undefined,
@@ -102,6 +145,7 @@ export default function CareerLearnPage() {
   const [sqlViewMode, setSqlViewMode] = useState<"text" | "table">("table");
   const [rawSqlResult, setRawSqlResult] = useState("");
   const [showDataset, setShowDataset] = useState(false);
+  const [sqlDialect, setSqlDialect] = useState<SqlDialect>("sqlite");
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const { progress, resetLesson } = useProgress();
   const navigate = useNavigate();
@@ -169,6 +213,8 @@ export default function CareerLearnPage() {
     return Array.from(set);
   }, [isSqlTrack, track]);
 
+  const sqlDialectGuide = SQL_DIALECT_GUIDES[sqlDialect];
+
   const selectedLesson = useMemo(() => {
     const baseLesson = track?.lessons.find((l) => l.id === selectedId);
     return getLocalizedCareerLesson(baseLesson, language);
@@ -202,10 +248,11 @@ export default function CareerLearnPage() {
   useEffect(() => {
     if (!isSqlTrack) return;
     if (!selectedLesson) return;
-    setSqlPlayground(selectedLesson.codeExample);
+    setSqlPlayground(sqlDialect === "sqlite" ? selectedLesson.codeExample : sqlDialectGuide.example);
     setSqlOutput("");
+    setRawSqlResult("");
     setIsSqlRunning(false);
-  }, [isSqlTrack, selectedLesson?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isSqlTrack, selectedLesson?.id, sqlDialect]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!track) {
     return (
@@ -245,6 +292,12 @@ export default function CareerLearnPage() {
   };
 
   const runSqlPlayground = async () => {
+    if (sqlDialect !== "sqlite") {
+      toast.info("SQLite runner active", {
+        description: `${SQL_DIALECT_GUIDES[sqlDialect].title} are shown as guidance. Switch to SQLite to execute in the browser.`,
+      });
+      return;
+    }
     setIsSqlRunning(true);
     setSqlOutput(`Running SQL (up to ${timeoutSeconds}s)...`);
     const result = await executeSql(sqlPlayground);
@@ -297,7 +350,7 @@ export default function CareerLearnPage() {
   return (
     <div className="flex h-[calc(100dvh-3.5rem)] flex-col md:flex-row overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-72 border-r border-white/5 bg-black/40 backdrop-blur-2xl overflow-y-auto shrink-0 hidden md:block z-20 shadow-2xl">
+      <aside className="w-72 border-r border-border bg-card overflow-y-auto shrink-0 hidden md:block z-20 shadow-2xl">
         <div className="p-4 border-b border-border space-y-4">
           <div>
             <Button asChild variant="ghost" size="sm" className="h-7 text-xs gap-1 mb-2 -ml-2">
@@ -314,7 +367,7 @@ export default function CareerLearnPage() {
               <span>Goal: Next Badge</span>
               <span>{trackProgress}%</span>
             </div>
-            <div className="h-2 w-full bg-secondary/50 rounded-full overflow-hidden border border-white/5">
+            <div className="h-2 w-full bg-secondary/50 rounded-full overflow-hidden border border-border">
               <motion.div 
                 initial={{ width: 0 }}
                 animate={{ width: `${trackProgress}%` }}
@@ -431,7 +484,7 @@ export default function CareerLearnPage() {
         ) : (
           <div className="flex-1">
         {/* Track Progress Sticky Bar */}
-        <div className="sticky top-0 z-50 w-full bg-black/30 backdrop-blur-2xl border-b border-white/10 px-4 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
+        <div className="sticky top-0 z-50 w-full bg-card/95 backdrop-blur-2xl border-b border-border px-4 py-3 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
           <div className="max-w-3xl mx-auto flex items-center gap-4">
             <div className="flex-1">
               <div className="flex justify-between text-[10px] uppercase font-bold tracking-wider mb-1">
@@ -507,7 +560,7 @@ export default function CareerLearnPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -20 }}
-            className="max-w-4xl mx-auto px-4 sm:px-8 py-8 md:py-12 mt-4 mb-12 bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]"
+            className="max-w-4xl mx-auto px-4 sm:px-8 py-8 md:py-12 mt-4 mb-12 bg-card/95 backdrop-blur-xl border border-border rounded-2xl shadow-[0_8px_32px_0_rgba(0,0,0,0.3)]"
           >
             {/* Mobile back button */}
             <button 
@@ -532,7 +585,7 @@ export default function CareerLearnPage() {
               )}
             </div>
             <div className="flex items-start justify-between gap-4 mb-4">
-              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white to-white/60 drop-shadow-sm">{selectedLesson.title}</h1>
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground drop-shadow-sm">{selectedLesson.title}</h1>
               {getLessonProgress(selectedLesson.id) > 0 && (
                 <Button 
                   variant="outline" 
@@ -551,6 +604,50 @@ export default function CareerLearnPage() {
               )}
             </div>
             <p className="text-muted-foreground mb-6">{selectedLesson.description}</p>
+
+            {isSqlTrack && (
+              <div className="mb-6 space-y-4 rounded-xl border border-primary/20 bg-primary/5 p-4">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <div className="text-xs font-bold uppercase tracking-wider text-primary">SQL Mode</div>
+                    <p className="text-xs text-muted-foreground">{sqlDialectGuide.runnerNote}</p>
+                  </div>
+                  <div className="flex rounded-lg border border-border bg-background p-1">
+                    {SQL_DIALECTS.map((dialect) => (
+                      <Button
+                        key={dialect.id}
+                        size="sm"
+                        variant="ghost"
+                        className={`h-8 px-3 text-xs ${
+                          sqlDialect === dialect.id ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"
+                        }`}
+                        onClick={() => setSqlDialect(dialect.id)}
+                      >
+                        {dialect.shortLabel}
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-[1fr_1.05fr]">
+                  <div className="space-y-2">
+                    <h3 className="text-base font-semibold text-foreground">{sqlDialectGuide.title}</h3>
+                    <p className="text-sm text-muted-foreground">{sqlDialectGuide.description}</p>
+                    <ul className="space-y-1.5">
+                      {sqlDialectGuide.bullets.map((bullet) => (
+                        <li key={bullet} className="flex gap-2 text-xs text-muted-foreground">
+                          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-streak-green" />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <pre className="overflow-x-auto rounded-lg border border-border bg-surface-2 p-3 text-xs text-foreground">
+                    {sqlDialectGuide.example}
+                  </pre>
+                </div>
+              </div>
+            )}
 
             {isSqlTrack && sqlCategories.length > 0 && (
               <div className="mb-6">
@@ -581,8 +678,8 @@ export default function CareerLearnPage() {
             {/* Content */}
             <div className="mb-8">
               {selectedLesson.content.split("\n").map((line, i) => {
-                if (line.startsWith("### ")) return <h3 key={i} className="text-xl font-semibold tracking-tight text-white/90 mt-8 mb-3">{line.replace("### ", "")}</h3>;
-                if (line.startsWith("## ")) return <h2 key={i} className="text-2xl font-bold tracking-tight text-white mt-10 mb-4 drop-shadow-sm">{line.replace("## ", "")}</h2>;
+                if (line.startsWith("### ")) return <h3 key={i} className="text-xl font-semibold tracking-tight text-foreground mt-8 mb-3">{line.replace("### ", "")}</h3>;
+                if (line.startsWith("## ")) return <h2 key={i} className="text-2xl font-bold tracking-tight text-foreground mt-10 mb-4">{line.replace("## ", "")}</h2>;
                 if (line.startsWith("- ")) return <li key={i} className="text-muted-foreground ml-4 list-disc">{line.replace("- ", "")}</li>;
                 if (line.trim() === "") return <br key={i} />;
                 return <p key={i} className="text-muted-foreground leading-relaxed">{line}</p>;
@@ -592,7 +689,7 @@ export default function CareerLearnPage() {
             {/* Code Example / Pronunciation */}
             {!isSqlTrack && (
               <div className="code-block mb-8 relative group/card">
-                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-card/40">
+                <div className="flex items-center justify-between px-4 py-2 border-b border-border bg-surface-1">
                   <span className="text-xs text-muted-foreground font-mono">
                     {isEnglishTrack ? "Pronunciation Guide" : isBashTrack ? "terminal" : "example.py"}
                   </span>
@@ -621,7 +718,7 @@ export default function CareerLearnPage() {
                     )}
                   </div>
                 </div>
-                <pre className="p-4 text-sm font-mono text-foreground overflow-x-auto leading-relaxed bg-black/20">
+                <pre className="p-4 text-sm font-mono text-foreground overflow-x-auto leading-relaxed bg-surface-2">
                   {selectedLesson.codeExample}
                 </pre>
               </div>
@@ -634,7 +731,8 @@ export default function CareerLearnPage() {
 	                  <div className="min-w-[14rem]">
 	                    <h3 className="text-lg font-semibold text-foreground">SQL Editor</h3>
 	                    <p className="text-xs text-muted-foreground">
-	                      Dataset: <span className="font-mono text-foreground">{SQL_PRACTICE_DB_NAME}</span> ({SQL_PRACTICE_DB_TABLES.join(", ")})
+	                      Mode: <span className="font-mono text-foreground">{SQL_DIALECTS.find((d) => d.id === sqlDialect)?.label}</span>
+                        {" "}· Dataset: <span className="font-mono text-foreground">{SQL_PRACTICE_DB_NAME}</span> ({SQL_PRACTICE_DB_TABLES.join(", ")})
 	                    </p>
 	                  </div>
 	                  <div className="flex items-center gap-2">
@@ -668,14 +766,14 @@ export default function CareerLearnPage() {
                     size="sm"
                     className="h-8 gap-2"
                     onClick={runSqlPlayground}
-                    disabled={isSqlRunning}
+                    disabled={isSqlRunning || sqlDialect !== "sqlite"}
                   >
                     {isSqlRunning ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <Play className="w-4 h-4" />
                     )}
-                    Run Query
+                    {sqlDialect === "sqlite" ? "Run Query" : "SQLite Only"}
                   </Button>
                 </div>
 	                </div>
@@ -723,9 +821,9 @@ export default function CareerLearnPage() {
 	                <Dialog open={showDataset} onOpenChange={setShowDataset}>
 	                  <DialogContent className="max-w-3xl">
 	                    <DialogHeader>
-	                      <DialogTitle>Example Data (SQLite)</DialogTitle>
+	                      <DialogTitle>Example Data ({SQL_DIALECTS.find((d) => d.id === sqlDialect)?.label})</DialogTitle>
 	                      <DialogDescription>
-	                        This SQL script is loaded before every run so the editor always starts with the same data.
+	                        This SQLite script is loaded before every executable run. PostgreSQL and DB SQL modes provide lesson notes and examples.
 	                      </DialogDescription>
 	                    </DialogHeader>
 	                    <pre className="max-h-[60vh] overflow-auto rounded-lg border border-border bg-surface-1 p-3 text-xs font-mono whitespace-pre-wrap text-foreground">

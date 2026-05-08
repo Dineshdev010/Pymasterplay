@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import Editor from "@monaco-editor/react";
 import confetti from "canvas-confetti";
 import { Exercise } from "@/data/lessons";
+import { SQL_PRACTICE_DB_SETUP_SQL } from "@/data/sqlSampleData";
 import { useProgress } from "@/contexts/ProgressContext";
 import { cancelActivePythonExecution, getPythonExecutionTimeoutMs } from "@/lib/piston";
 import { executeSql } from "@/lib/sqlRunner";
@@ -107,7 +108,10 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     setIsRunning(true);
     setOutput(`Executing query...`);
 
-    const result = await executeSql(userSql);
+    const sqlSetup = exercise.schema ?? SQL_PRACTICE_DB_SETUP_SQL;
+    const initData = exercise.initialData ?? "";
+    const fullSql = [sqlSetup, initData, userSql].filter(Boolean).join("\n");
+    const result = await executeSql(fullSql);
     const actualOutput = result.output?.trim() || "";
     const expected = (exercise?.expectedOutput || "").trim();
 

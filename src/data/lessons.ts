@@ -2,6 +2,8 @@ export interface Exercise {
   prompt: string;
   starterCode: string;
   expectedOutput: string;
+  schema?: string;
+  initialData?: string;
   type?: 'code' | 'quiz' | 'fill-in-the-blank' | 'speaking';
   options?: string[];
   correctOption?: number;

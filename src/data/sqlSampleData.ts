@@ -15,7 +15,8 @@ CREATE TABLE customers (
   id INTEGER PRIMARY KEY,
   name TEXT NOT NULL,
   city TEXT NOT NULL,
-  signup_date TEXT NOT NULL
+  signup_date TEXT NOT NULL,
+  phone TEXT NOT NULL
 );
 
 CREATE TABLE products (
@@ -52,22 +53,22 @@ CREATE TABLE product_reviews (
   FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
 );
 
-INSERT INTO customers (id, name, city, signup_date) VALUES
-  (1, 'Alice Johnson', 'Mumbai', '2025-12-20'),
-  (2, 'Bob Sharma', 'Delhi', '2025-12-28'),
-  (3, 'Charlie Dave', 'Bengaluru', '2026-01-10'),
-  (4, 'Diana Prince', 'Mumbai', '2026-02-01'),
-  (5, 'Ethan Hunt', 'Pune', '2026-02-20'),
-  (6, 'Fiona Apple', 'Chennai', '2026-03-05'),
-  (7, 'George Miller', 'Delhi', '2026-03-12'),
-  (8, 'Hannah Abbott', 'Kolkata', '2026-03-20'),
-  (9, 'Ian Wright', 'Hyderabad', '2026-03-25'),
-  (10, 'Julia Roberts', 'Mumbai', '2026-04-01'),
-  (11, 'Kevin Hart', 'Bengaluru', '2026-04-05'),
-  (12, 'Laura Palmer', 'Pune', '2026-04-10'),
-  (13, 'Mike Ross', 'Delhi', '2026-04-15'),
-  (14, 'Nina Simone', 'Chennai', '2026-04-20'),
-  (15, 'Oscar Wilde', 'Kolkata', '2026-04-25');
+INSERT INTO customers (id, name, city, signup_date, phone) VALUES
+  (1, 'Alice Johnson', 'Mumbai', '2025-12-20', '+91-9876543210'),
+  (2, 'Bob Sharma', 'Delhi', '2025-12-28', '+91-9876543211'),
+  (3, 'Charlie Dave', 'Bengaluru', '2026-01-10', '+91-9876543212'),
+  (4, 'Diana Prince', 'Mumbai', '2026-02-01', '+91-9876543213'),
+  (5, 'Ethan Hunt', 'Pune', '2026-02-20', '+91-9876543214'),
+  (6, 'Fiona Apple', 'Chennai', '2026-03-05', '+91-9876543215'),
+  (7, 'George Miller', 'Delhi', '2026-03-12', '+91-9876543216'),
+  (8, 'Hannah Abbott', 'Kolkata', '2026-03-20', '+91-9876543217'),
+  (9, 'Ian Wright', 'Hyderabad', '2026-03-25', '+91-9876543218'),
+  (10, 'Julia Roberts', 'Mumbai', '2026-04-01', '+91-9876543219'),
+  (11, 'Kevin Hart', 'Bengaluru', '2026-04-05', '+91-9876543220'),
+  (12, 'Laura Palmer', 'Pune', '2026-04-10', '+91-9876543221'),
+  (13, 'Mike Ross', 'Delhi', '2026-04-15', '+91-9876543222'),
+  (14, 'Nina Simone', 'Chennai', '2026-04-20', '+91-9876543223'),
+  (15, 'Oscar Wilde', 'Kolkata', '2026-04-25', '+91-9876543224');
 
 INSERT INTO products (id, name, category, price) VALUES
   (1, 'Logitech Mouse', 'Electronics', 800),
@@ -145,4 +146,3 @@ INSERT INTO product_reviews (id, product_id, customer_id, rating, review_text, r
   (7, 13, 5, 5, 'Perfect grip for yoga.', '2026-03-25');
 
 `;
-

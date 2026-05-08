@@ -573,8 +573,8 @@ export function generateSqlExpansion(): SQLProblem[] {
     {
       name: "Healthcare",
       tables: ["patients", "appointments", "doctors"],
-      schema: "CREATE TABLE patients (id INT, name TEXT, age INT); CREATE TABLE appointments (id INT, patient_id INT, status TEXT);",
-      data: "INSERT INTO patients VALUES (1, 'John Doe', 45); INSERT INTO appointments VALUES (10, 1, 'Completed');",
+      schema: "CREATE TABLE patients (id INT, name TEXT, age INT); CREATE TABLE appointments (id INT, patient_id INT, doctor_id INT, status TEXT);",
+      data: "INSERT INTO patients VALUES (1, 'John Doe', 45); INSERT INTO appointments VALUES (10, 1, 101, 'Completed'), (11, 1, 101, 'Completed'), (12, 1, 102, 'Completed');",
       challenges: [
         { title: "Patient Demographics", query: "SELECT age, COUNT(*) FROM patients GROUP BY age;", diff: "intermediate" },
         { title: "Missed Appointments", query: "SELECT * FROM appointments WHERE status = 'Missed';", diff: "junior" },

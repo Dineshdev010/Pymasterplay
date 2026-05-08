@@ -31,17 +31,28 @@ function generateHint(exercise: Exercise): string {
   return `💡 The expected output is: "${expected.length > 50 ? expected.substring(0, 50) + "..." : expected}"`;
 }
 
-function generateSolution(exercise: Exercise): string {
+function generateSolution(exercise: Exercise, language: string): string {
   // Derive a likely solution from the starter code and expected output
   const starter = exercise.starterCode;
   const expected = exercise.expectedOutput;
   
   // If there's an explicit solution, use it
   if (exercise.solution) return exercise.solution;
+
+  if (language === "bash") {
+    return expected || starter;
+  }
+
+  if (language === "python") {
+    return expected
+      .split("\n")
+      .map((line) => `print(${JSON.stringify(line)})`)
+      .join("\n");
+  }
   
   // Simple heuristic: add a print statement for the expected output
   if (starter.includes("# Print") || starter.includes("# print")) {
-    return `${starter.trimEnd()}\nprint(${JSON.stringify(expected).includes("\\n") ? "..." : `"${expected}"`})`;
+    return `${starter.trimEnd()}\nprint(${JSON.stringify(expected)})`;
   }
   
   return `# Solution: Your code should produce:\n# ${expected.replace(/\n/g, "\n# ")}`;
@@ -272,7 +283,7 @@ export function ExerciseEditor({ exercise, level, lessonId, locked, language = "
   }
 
   const hint = exercise.hint || generateHint(exercise);
-  const solution = exercise.solution || generateSolution(exercise);
+  const solution = exercise.solution || generateSolution(exercise, language);
 
   return (
     <div className={`border rounded-lg overflow-hidden transition-all ${
