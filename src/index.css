@@ -386,3 +386,23 @@ p, li, label {
   @apply absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-0.5 rounded-full;
   background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.4), transparent);
 }
+
+/* ==================== CUSTOM DASHBOARD ANIMATIONS ==================== */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+@keyframes dash {
+  from { stroke-dashoffset: 100; }
+  to { stroke-dashoffset: 0; }
+}
+
+.animate-shimmer {
+  animation: shimmer 2s infinite linear;
+}
+
+.animate-dash {
+  animation: dash 20s linear infinite;
+}
+

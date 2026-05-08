@@ -59,6 +59,21 @@ function withFullTrackTranslations(track: CareerTrack): CareerTrack {
 
 function da(): CareerLesson[] {
   return [
+    {
+      id: "da-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Data Analysis",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Analysis 📊\n\nBefore diving into data, you must understand the rules to avoid making incorrect conclusions.\n\n### DOs (What you should use)\n- **DO** check for missing values and duplicates first.\n- **DO** visualize your data before running complex models.\n- **DO** document your assumptions and data cleaning steps.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** ignore outliers without investigating them.\n- **DON'T** confuse correlation with causation (just because A and B happen together doesn't mean A causes B).\n- **DON'T** present misleading charts (e.g., truncating the Y-axis to exaggerate differences).",
+      codeExample:
+        "# DO: Check for missing values\n# print(df.isnull().sum())\n\n# DON'T: Drop missing values blindly\n# df.dropna(inplace=True)",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Should you always delete outliers immediately?", options: ["Yes, they ruin data", "No, investigate them first", "Only if they are negative"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Correlation is not causation'", starterCode: "print('___')", expectedOutput: "Correlation is not causation" },
+        advanced: { type: "code", prompt: "Print 'Data Cleaning'", starterCode: "print('___')", expectedOutput: "Data Cleaning" },
+      },
+    },
     // ═══════════════════════════════════════════════════════
     // PHASE 1: FOUNDATIONS (Modules 1–4)
     // Build the mindset, math, stats & business context first
@@ -469,121 +484,153 @@ function da(): CareerLesson[] {
 function wd(): CareerLesson[] {
   return [
     {
-      id: "wd-intro", title: "Web Development with Python", description: "Overview of Python web frameworks",
-      content: "## Python for the Web\n\nPython powers Instagram, Pinterest, Spotify.\n\n### Popular Frameworks\n- **Django** — Full-featured, batteries-included\n- **Flask** — Lightweight, flexible\n- **FastAPI** — Modern, async-first\n\n### How the Web Works\n1. Browser sends HTTP request\n2. Server processes it\n3. Server sends HTTP response\n4. Browser renders result",
-      codeExample: "def handle_route(path):\n    routes = {\"/\": \"Home Page\", \"/about\": \"About Page\"}\n    return routes.get(path, \"404 Not Found\")\n\nprint(handle_route(\"/\"))\nprint(handle_route(\"/about\"))\nprint(handle_route(\"/xyz\"))",
-      translations: {
-        tamil: {
-          title: "Python மூலம் Web Development",
-          description: "Python web frameworks பற்றிய அறிமுகம்",
-        },
-        kannada: {
-          title: "Python ಬಳಸಿ Web Development",
-          description: "Python web frameworks ಪರಿಚಯ",
-        },
-        telugu: {
-          title: "Python తో Web Development",
-          description: "Python web frameworks అవలోకనం",
-        },
-        hindi: {
-          title: "Python के साथ Web Development",
-          description: "Python web frameworks का परिचय",
-        },
-      },
+      id: "wd-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Web Dev",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Web Dev 🌐\n\nBefore building apps, you must understand the rules for security and performance.\n\n### DOs (What you should use)\n- **DO** validate all user input on the backend (never trust the client).\n- **DO** use semantic HTML tags (`<header>`, `<nav>`, `<article>`) for accessibility and SEO.\n- **DO** write mobile-first CSS.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** store plain text passwords. Always hash them.\n- **DON'T** block the main JavaScript thread with heavy synchronous tasks.\n- **DON'T** forget to handle API errors and loading states in the UI.",
+      codeExample:
+        "// DO: Semantic HTML\n// <button>Submit</button>\n\n// DON'T: Non-semantic interactive elements\n// <div class=\"button\" onclick=\"submit()\">Submit</div>",
       exercises: {
-        beginner: { prompt: "Create a dict `resp = {'status': 200, 'body': 'OK'}`. Print `resp['status']`, then `resp['body']`.", starterCode: "resp = {'status': 200, 'body': 'OK'}\n\n# Print status and body\n", expectedOutput: "200\nOK" },
-        intermediate: { prompt: "Write `route(path)` using a dict of routes. Return `'Home'` for `'/'`, `'About'` for `'/about'`, `'404'` otherwise. Print results for `'/'` and `'/xyz'`.", starterCode: "# Define route function with dict lookup\n\n# Test with '/' and '/xyz'\n", expectedOutput: "Home\n404" },
-        advanced: { prompt: "Parse query string `'name=Alice&age=25'`. Split by `&`, then by `=` into a dict. Print the dict, then print `params['name']`.", starterCode: "query = 'name=Alice&age=25'\n\n# Parse into dict, print dict and name\n", expectedOutput: "{'name': 'Alice', 'age': '25'}\nAlice" },
+        beginner: { type: "quiz", prompt: "Where should you validate user input for security?", options: ["Frontend only", "Backend only", "Both Backend and Frontend"], correctOption: 2, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Never trust user input'", starterCode: "print('___')", expectedOutput: "Never trust user input" },
+        advanced: { type: "code", prompt: "Print 'Semantic HTML'", starterCode: "print('___')", expectedOutput: "Semantic HTML" },
+      },
+    },
+    // ═══════════════════════════════════════════════════════
+    // PHASE 1: BEGINNER - FOUNDATIONS (Modules 1–3)
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "wd-foundations", title: "1. Python Foundations for Web", description: "JSON, HTTP Basics, and File I/O",
+      content: "## The Web Analyst Toolbox\n\n### Core Skills\n- **JSON Handling** — The language of the web APIs.\n- **HTTP Basics** — Understanding GET, POST, and Status Codes.\n- **File I/O** — Handling uploads and configuration files.\n- **Exceptions** — Graceful error handling for web requests.",
+      codeExample: "import json\ndata = {'status': 'active', 'id': 101}\njson_string = json.dumps(data)\nprint(f'API Payload: {json_string}')",
+      exercises: {
+        beginner: { prompt: "Convert `{'ok': True}` to a JSON string. Print it.", starterCode: "import json\n", expectedOutput: "{\"ok\": true}" },
+        intermediate: { prompt: "Parse `{\"price\": 9.99}` and print the value of 'price'.", starterCode: "import json\njs = '{\"price\": 9.99}'\n", expectedOutput: "9.99" },
+        advanced: { prompt: "Write a function that returns 'OK' if a status code is 200, else 'Error'. Test with 404.", starterCode: "", expectedOutput: "Error" },
       },
     },
     {
-      id: "wd-http", title: "HTTP & Request Handling", description: "HTTP methods and status codes",
-      content: "## HTTP Fundamentals\n\n### HTTP Methods\n- **GET** — Retrieve data\n- **POST** — Create data\n- **PUT** — Update data\n- **DELETE** — Remove data\n\n### Status Codes\n- **200** — OK\n- **201** — Created\n- **404** — Not Found\n- **500** — Server Error",
-      codeExample: "codes = {200: \"OK\", 201: \"Created\", 404: \"Not Found\", 500: \"Server Error\"}\nfor code, msg in codes.items():\n    print(code, \"-\", msg)",
+      id: "wd-frameworks", title: "2. Intro to Web Frameworks", description: "Flask Basics, Routing, and Templates",
+      content: "## Modern Web Frameworks\n\n### Flask Essentials\n- **@app.route** — Mapping URLs to Python functions.\n- **Jinja2** — Rendering dynamic HTML with variables.\n- **Static Files** — Serving CSS, JS, and Images.",
+      codeExample: "from flask import Flask, render_template\napp = Flask(__name__)\n\n@app.route('/')\ndef home():\n    return '<h1>Welcome to PyMaster</h1>'",
       exercises: {
-        beginner: { prompt: "Create `codes = {200: 'OK', 404: 'Not Found', 500: 'Error'}`. Print `codes[404]` and `len(codes)`.", starterCode: "codes = {200: 'OK', 404: 'Not Found', 500: 'Error'}\n\n# Print meaning of 404 and count of codes\n", expectedOutput: "Not Found\n3" },
-        intermediate: { prompt: "Write `is_success(code)` returning `True` if `200 <= code <= 299`. Test with `201` and `404`, print both results.", starterCode: "# Define is_success, test with 201 and 404\n", expectedOutput: "True\nFalse" },
-        advanced: { prompt: "Create a routes dict mapping `(method, path)` tuples to handler names. Look up `('GET', '/users')` and `('POST', '/users')`. Print both.", starterCode: "# Define routes dict with tuple keys, look up two routes\n", expectedOutput: "list_users\ncreate_user" },
+        beginner: { prompt: "Define a route string for the 'about' page. Print it.", starterCode: "", expectedOutput: "/about" },
+        intermediate: { prompt: "Use an f-string to render 'Hello, Alice!' where name='Alice'.", starterCode: "name = 'Alice'\n", expectedOutput: "Hello, Alice!" },
+        advanced: { prompt: "Filter a list `['index.html', 'style.css']` for files ending in `.css`. Print result.", starterCode: "", expectedOutput: "['style.css']" },
       },
     },
     {
-      id: "wd-rest", title: "REST API Design", description: "Build clean RESTful APIs",
-      content: "## REST APIs\n\nREST is the standard for building web APIs.\n\n### Principles\n- **Resources** — Everything is a resource\n- **URLs** — Each resource has a unique URL\n- **Methods** — CRUD maps to HTTP methods\n- **JSON** — Standard data format",
-      codeExample: "import json\nusers = [{\"id\": 1, \"name\": \"Alice\"}, {\"id\": 2, \"name\": \"Bob\"}]\ndef get_user(uid):\n    for u in users:\n        if u[\"id\"] == uid:\n            return json.dumps(u)\n    return json.dumps({\"error\": \"Not found\"})\nprint(get_user(1))",
+      id: "wd-databases", title: "3. Database Basics", description: "SQLite, SQLAlchemy, and Migrations",
+      content: "## Persistent Storage\n\n### SQL for Web\n- **SQLite** — Lightweight, local database.\n- **SQLAlchemy** — Mapping Python classes to database tables (ORM).\n- **Migrations** — Managing schema changes with Alembic.",
+      codeExample: "from flask_sqlalchemy import SQLAlchemy\n# User(id=1, username='dinesh') -> mapped to DB row",
       exercises: {
-        beginner: { prompt: "Given `users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]`. Print the first user's name and `len(users)`.", starterCode: "users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]\n\n# Print first name and count\n", expectedOutput: "Alice\n2" },
-        intermediate: { prompt: "Write `find_user(users, uid)` that loops and returns matching dict. Test with `id=2`. Print the user's name.", starterCode: "users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]\n\n# Define find_user, test with id=2\n", expectedOutput: "Bob" },
-        advanced: { prompt: "Write `add_user(users, name)` that auto-increments `id` using `max()`. Add `'Charlie'`. Print `len(users)` and the new user's `id`.", starterCode: "users = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]\n\n# Define add_user, add Charlie, print count and new id\n", expectedOutput: "3\n3" },
+        beginner: { prompt: "Print the SQL command to create a table named 'users'.", starterCode: "", expectedOutput: "CREATE TABLE users" },
+        intermediate: { prompt: "Given a list of dicts, filter where 'id' == 1. Print the name.", starterCode: "db = [{'id': 1, 'name': 'Alice'}, {'id': 2, 'name': 'Bob'}]\n", expectedOutput: "Alice" },
+        advanced: { prompt: "If `db_type = 'sqlite'`, print 'Local'. Else print 'Cloud'. Test with 'postgres'.", starterCode: "db_type = 'postgres'\n", expectedOutput: "Cloud" },
+      },
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // PHASE 2: INTERMEDIATE - APIS & AUTH (Modules 4–6)
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "wd-auth", title: "4. User Authentication", description: "Sessions, JWT, and Password Hashing",
+      content: "## Securing Your App\n\n### Auth Layers\n- **Sessions** — Server-side state management.\n- **JWT** — Stateless tokens for mobile/modern apps.\n- **Bcrypt/Argon2** — Strong password hashing techniques.",
+      codeExample: "import hashlib\npwd = 'secret123'\nhash = hashlib.sha256(pwd.encode()).hexdigest()\nprint(f'Secure Hash: {hash[:10]}...')",
+      exercises: {
+        beginner: { prompt: "Hash '12345' using sha256 and print the hex digest length.", starterCode: "import hashlib\n", expectedOutput: "64" },
+        intermediate: { prompt: "Check if 'token' exists in `{'user': 'A', 'token': '123'}`. Print result.", starterCode: "", expectedOutput: "True" },
+        advanced: { prompt: "Simulate a login: if `pwd == 'admin'` print '200', else '401'. Test with 'guest'.", starterCode: "pwd = 'guest'\n", expectedOutput: "401" },
       },
     },
     {
-      id: "wd-templates", title: "Templates & Rendering", description: "Dynamic HTML generation",
-      content: "## Templates\n\nTemplates generate dynamic HTML by inserting Python variables.\n\n### Jinja2 Template Engine\n- Variables: {{ name }}\n- Logic: {% if condition %}\n- Loops: {% for item in list %}\n\n### Why Templates?\n- Separate logic from presentation\n- Reuse layouts\n- Dynamic content",
-      codeExample: "def render(template, **kwargs):\n    result = template\n    for key, value in kwargs.items():\n        result = result.replace(\"{{ \" + key + \" }}\", str(value))\n    return result\n\nhtml = \"<h1>Hello, {{ name }}!</h1>\"\nprint(render(html, name=\"Alice\"))",
+      id: "wd-rest-api", title: "5. REST API Development", description: "FastAPI, Swagger, and OpenAPI",
+      content: "## Building Pro APIs\n\n### The Async Stack\n- **FastAPI** — High-performance async Python framework.\n- **Pydantic** — Strict data validation.\n- **Auto-Docs** — Interactive Swagger/OpenAPI documentation.",
+      codeExample: "from fastapi import FastAPI\napp = FastAPI()\n\n@app.get('/items/{id}')\nasync def read_item(id: int):\n    return {'item_id': id}",
       exercises: {
-        beginner: { prompt: "Use an f-string: `name='Alice'`. Print `f'Hello, {name}!'`.", starterCode: "name = 'Alice'\n\n# Print greeting using f-string\n", expectedOutput: "Hello, Alice!" },
-        intermediate: { prompt: "Write `render(template, data)` replacing `{key}` with values from data dict. Test: `render('Hi {name}', {'name': 'World'})`. Print result.", starterCode: "# Define render, test it\n", expectedOutput: "Hi World" },
-        advanced: { prompt: "Given `items = ['A', 'B', 'C']`, build an HTML unordered list using `join()`. Print `'<ul><li>A</li><li>B</li><li>C</li></ul>'`.", starterCode: "items = ['A', 'B', 'C']\n\n# Build HTML list string and print\n", expectedOutput: "<ul><li>A</li><li>B</li><li>C</li></ul>" },
+        beginner: { prompt: "What does REST stand for? Print the full form.", starterCode: "", expectedOutput: "Representational State Transfer" },
+        intermediate: { prompt: "Define an async function `get_data()` that returns 'Done'. Print the call.", starterCode: "import asyncio\n", expectedOutput: "Done" },
+        advanced: { prompt: "Filter `[1, 2, 3]` for even numbers using list comprehension. Print result.", starterCode: "", expectedOutput: "[2]" },
       },
     },
     {
-      id: "wd-database", title: "Database Integration", description: "Connect Python to databases",
-      content: "## Databases with Python\n\n### SQLite — Built into Python\n- No setup required\n- File-based database\n- Perfect for learning\n\n### SQL Basics\n- CREATE TABLE — Define structure\n- INSERT — Add data\n- SELECT — Query data\n- UPDATE — Modify data\n- DELETE — Remove data",
-      codeExample: "table = [\n    {\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@email.com\"},\n    {\"id\": 2, \"name\": \"Bob\", \"email\": \"bob@email.com\"},\n]\nresult = [r for r in table if r[\"id\"] == 1]\nprint(result[0][\"name\"])",
+      id: "wd-frontend", title: "6. Frontend Integration", description: "React, Tailwind, and Form Validation",
+      content: "## Full-Stack Connectivity\n\n### Integration Patterns\n- **Templates** — Server-side rendering (Django/Jinja).\n- **Headless** — React/Vue consuming a JSON API.\n- **Validation** — WTForms and Pydantic for data integrity.",
+      codeExample: "const response = await fetch('/api/data');\nconst data = await response.json();",
       exercises: {
-        beginner: { prompt: "Create a list of tuples `[(1, 'Alice'), (2, 'Bob')]`. Print the second tuple and its length.", starterCode: "rows = [(1, 'Alice'), (2, 'Bob')]\n\n# Print second tuple and its length\n", expectedOutput: "(2, 'Bob')\n2" },
-        intermediate: { prompt: "Filter a list of tuples `[(1, 'A'), (2, 'B'), (3, 'C')]` where `id > 1`. Print the filtered list.", starterCode: "rows = [(1, 'A'), (2, 'B'), (3, 'C')]\n\n# Filter id > 1, print result\n", expectedOutput: "[(2, 'B'), (3, 'C')]" },
-        advanced: { prompt: "Given records as list of dicts, filter where `age > 25`. Print the count and the list of names.", starterCode: "table = [\n    {'name': 'Alice', 'age': 25},\n    {'name': 'Bob', 'age': 30},\n    {'name': 'Charlie', 'age': 22}\n]\n\n# Filter, print count and names\n", expectedOutput: "1\n['Bob']" },
+        beginner: { prompt: "Print the tag used to link CSS in HTML.", starterCode: "", expectedOutput: "<link>" },
+        intermediate: { prompt: "Print a JSON object representing `{id: 1, name: 'UI'}`.", starterCode: "", expectedOutput: "{\"id\": 1, \"name\": \"UI\"}" },
+        advanced: { prompt: "Write a function that returns 'valid' if len > 5, else 'short'. Test 'abc'.", starterCode: "", expectedOutput: "short" },
+      },
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // PHASE 3: ADVANCED - SCALE & SECURITY (Modules 7–9)
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "wd-async", title: "7. Async & Background Tasks", description: "Celery, Redis, and AsyncIO",
+      content: "## High-Performance Backgrounding\n\n### Task Queues\n- **AsyncIO** — Concurrent programming in FastAPI.\n- **Celery** — Distributed task queue for heavy processing.\n- **Redis** — The lightning-fast message broker.",
+      codeExample: "@app.task\ndef send_email_task(user_id):\n    # This runs in the background\n    pass",
+      exercises: {
+        beginner: { prompt: "Is Redis a database or a broker? Print word.", starterCode: "", expectedOutput: "Broker" },
+        intermediate: { prompt: "Print 'Success' after a 1 second async sleep simulation.", starterCode: "import asyncio\n", expectedOutput: "Success" },
+        advanced: { prompt: "Append 'task' to every item in `['mail', 'sms']`. Print result.", starterCode: "", expectedOutput: "['mailtask', 'smstask']" },
       },
     },
     {
-      id: "wd-auth", title: "Authentication & Sessions", description: "User login, tokens, and session management",
-      content: "## Authentication\n\nAuthentication verifies who a user is.\n\n### Methods\n- **Session-based** — Server stores session data\n- **Token-based (JWT)** — Client stores a signed token\n- **OAuth** — Login with Google, GitHub, etc.\n\n### Password Hashing\nNever store passwords in plain text! Use hashing.\n\n### JWT (JSON Web Token)\n- Header — Algorithm info\n- Payload — User data\n- Signature — Verifies integrity",
-      codeExample: "import hashlib\nimport json\nimport base64\n\n# Simple password hashing\ndef hash_password(pwd):\n    return hashlib.sha256(pwd.encode()).hexdigest()\n\n# JWT-like token concept\ndef create_token(user_id, secret):\n    payload = json.dumps({\"user_id\": user_id})\n    encoded = base64.b64encode(payload.encode()).decode()\n    return encoded\n\ntoken = create_token(42, \"secret\")\nprint(\"Token:\", token)\nprint(\"Hash:\", hash_password(\"mypassword\")[:16] + \"...\")",
+      id: "wd-security", title: "8. Security & Best Practices", description: "CORS, CSRF, and Role-Based Access",
+      content: "## Hardening the Server\n\n### Critical Protection\n- **CSRF** — Cross-Site Request Forgery protection.\n- **CORS** — Managing cross-origin resource sharing.\n- **RBAC** — Role-Based Access Control for permissions.",
+      codeExample: "from flask_cors import CORS\nCORS(app) # Enable secure sharing",
       exercises: {
-        beginner: { prompt: "Hash `'password123'` using `hashlib.sha256`. Print the first 10 characters of the hex digest.", starterCode: "import hashlib\n\n# Hash and print first 10 chars\n", expectedOutput: "ef92b778ba" },
-        intermediate: { prompt: "Encode `{'user': 'Alice'}` as JSON, then `base64` encode it. Print the base64 string.", starterCode: "import json, base64\n\n# JSON encode, base64 encode, print\n", expectedOutput: "eyJ1c2VyIjogIkFsaWNlIn0=" },
-        advanced: { prompt: "Write `verify(pwd, stored)` comparing SHA256 hashes. Hash `'secret'`, then verify with `'secret'` and `'wrong'`. Print both results.", starterCode: "import hashlib\n\n# Define verify, hash 'secret', test both\n", expectedOutput: "True\nFalse" },
+        beginner: { prompt: "What does HTTPS stand for? Print full form.", starterCode: "", expectedOutput: "Hypertext Transfer Protocol Secure" },
+        intermediate: { prompt: "If user is 'admin', print 'All'. Else 'Limited'. Test with 'guest'.", starterCode: "user = 'guest'\n", expectedOutput: "Limited" },
+        advanced: { prompt: "Check if URL 'http://' is secure. Print 'Secure' or 'Insecure'.", starterCode: "url = 'http://google.com'\n", expectedOutput: "Insecure" },
       },
     },
     {
-      id: "wd-middleware", title: "Middleware & Error Handling", description: "Request processing pipelines and error management",
-      content: "## Middleware\n\nMiddleware processes requests before they reach your routes.\n\n### Common Middleware\n- **Logging** — Log every request\n- **CORS** — Cross-origin resource sharing\n- **Rate Limiting** — Prevent abuse\n- **Authentication** — Verify tokens\n\n### Error Handling\n- Try/except for graceful failures\n- Custom error responses\n- Error logging and monitoring",
-      codeExample: "# Middleware chain concept\ndef logging_middleware(request):\n    print(f\"LOG: {request['method']} {request['path']}\")\n    return request\n\ndef auth_middleware(request):\n    if 'token' not in request:\n        return {\"error\": \"Unauthorized\", \"status\": 401}\n    return request\n\nreq = {\"method\": \"GET\", \"path\": \"/api/data\", \"token\": \"abc123\"}\nreq = logging_middleware(req)\nresult = auth_middleware(req)\nprint(\"Status:\", result.get(\"status\", 200))",
+      id: "wd-testing", title: "9. Testing & Debugging", description: "PyTest, Coverage, and Debug Toolbars",
+      content: "## Zero-Bug Development\n\n### Reliability Tools\n- **PyTest** — The gold standard for Python testing.\n- **Coverage** — Measuring how much of your code is tested.\n- **Debuggers** — Using Flask/Django Debug Toolbars for deep inspection.",
+      codeExample: "def test_api():\n    response = client.get('/')\n    assert response.status_code == 200",
       exercises: {
-        beginner: { prompt: "Write `log_req(method, path)` that prints them as `'GET /home'`. Call it.", starterCode: "# Define log_req, call with 'GET', '/home'\n", expectedOutput: "GET /home" },
-        intermediate: { prompt: "Write `rate_limit(count, max_r)` returning `True` if under limit. Test `5 < 10` and `15 < 10`. Print both.", starterCode: "# Define rate_limit, test both cases\n", expectedOutput: "True\nFalse" },
-        advanced: { prompt: "Write two middleware functions: `add_ts(req)` adds `'ts'` key, `validate(req)` adds `'valid': True` if `'path'` exists. Chain them on `{'path': '/api'}`. Print `req['valid']` and `req['ts']`.", starterCode: "# Define add_ts and validate, chain on req dict\n", expectedOutput: "True\n2024" },
+        beginner: { prompt: "What command runs pytest? Print it.", starterCode: "", expectedOutput: "pytest" },
+        intermediate: { prompt: "Assert 10 == 10. If passes, print 'OK'.", starterCode: "", expectedOutput: "OK" },
+        advanced: { prompt: "Check if 'error' is in `{'msg': 'ok'}`. Print 'Alert' or 'Safe'.", starterCode: "", expectedOutput: "Safe" },
+      },
+    },
+
+    // ═══════════════════════════════════════════════════════
+    // PHASE 4: EXPERT - ENTERPRISE (Modules 10–12)
+    // ═══════════════════════════════════════════════════════
+    {
+      id: "wd-microservices", title: "10. Microservices & APIs", description: "GraphQL, Gateways, and Orchestration",
+      content: "## The Distributed Web\n\n### Architecture\n- **GraphQL** — Flexible data fetching (Graphene/Strawberry).\n- **API Gateways** — Centralized entry point for services.\n- **Service Mesh** — Managing inter-service communication.",
+      codeExample: "query { user(id: 1) { username email } }",
+      exercises: {
+        beginner: { prompt: "Is GraphQL better for precise data fetching? Print 'Yes' or 'No'.", starterCode: "", expectedOutput: "Yes" },
+        intermediate: { prompt: "Print a dictionary representing a GraphQL user object with id 1.", starterCode: "", expectedOutput: "{\"id\": 1}" },
+        advanced: { prompt: "Join two strings 'Service' and 'A' with a dash. Print result.", starterCode: "", expectedOutput: "Service-A" },
       },
     },
     {
-      id: "wd-deploy", title: "Deployment & DevOps", description: "Deploy Python web apps to production",
-      content: "## Deploying Python Apps\n\n### Platforms\n- **Heroku** — Simple PaaS\n- **Railway / Render** — Modern alternatives\n- **AWS / GCP** — Full cloud\n- **Docker** — Containerization\n\n### Key Concepts\n- Environment variables for secrets\n- WSGI/ASGI servers (Gunicorn, Uvicorn)\n- Reverse proxy (Nginx)\n- CI/CD pipelines",
-      codeExample: "import os\n\n# Environment variables pattern\ndef get_config():\n    return {\n        \"debug\": os.environ.get(\"DEBUG\", \"False\") == \"True\",\n        \"port\": int(os.environ.get(\"PORT\", 8000)),\n        \"db_url\": os.environ.get(\"DATABASE_URL\", \"sqlite:///local.db\"),\n    }\n\nconfig = get_config()\nprint(\"Port:\", config[\"port\"])\nprint(\"Debug:\", config[\"debug\"])",
+      id: "wd-devops", title: "11. Deployment & DevOps", description: "Docker, CI/CD, and Cloud Pipelines",
+      content: "## The Ship-It Phase\n\n### DevOps Toolkit\n- **Docker** — Containerizing your Python environment.\n- **CI/CD** — Automating builds with GitHub Actions.\n- **Cloud** — Deployment on AWS, Azure, and Vercel.",
+      codeExample: "FROM python:3.9\nCOPY . /app\nRUN pip install -r requirements.txt",
       exercises: {
-        beginner: { prompt: "Use `os.environ.get('PORT', '8000')` to get a value with a default. Print the result and its `type().__name__`.", starterCode: "import os\n\n# Get PORT with default, print value and type name\n", expectedOutput: "8000\nstr" },
-        intermediate: { prompt: "Create a config dict from env vars: `host` (default `'localhost'`) and `db` (default `'myapp'`). Print `config['host']` and `config['db']`.", starterCode: "import os\n\n# Build config dict, print host and db\n", expectedOutput: "localhost\nmyapp" },
-        advanced: { prompt: "Parse connection string `'postgres://user:pass@myhost:5432/db'`. Extract and print the host (`myhost`) and port (`5432`).", starterCode: "url = 'postgres://user:pass@myhost:5432/db'\n\n# Parse host and port, print both\n", expectedOutput: "myhost\n5432" },
+        beginner: { prompt: "Command to build a docker image? Print it.", starterCode: "", expectedOutput: "docker build" },
+        intermediate: { prompt: "What file defines Docker instructions? Print filename.", starterCode: "", expectedOutput: "Dockerfile" },
+        advanced: { prompt: "Check if 'AWS' is in `['AWS', 'GCP']`. Print 'Cloud' or 'Local'.", starterCode: "", expectedOutput: "Cloud" },
       },
     },
     {
-      id: "wd-auth-security", title: "Authentication & Security Basics", description: "Passwords, sessions, JWT concepts, and common mistakes",
-      content: "## Auth & Security (Web)\n\n### Authentication vs Authorization\n- **Authentication**: who you are\n- **Authorization**: what you can access\n\n### Password storage (must)\n- Never store plaintext passwords\n- Store a *salted hash* (e.g., PBKDF2/bcrypt/argon2)\n\n### Sessions vs JWT\n- **Sessions**: server stores session, browser stores cookie\n- **JWT**: server signs a token, browser stores token\n\n### Common pitfalls\n- Missing input validation\n- Insecure secrets in code\n- No rate limiting on login\n- Broken access control",
-      codeExample: "import hashlib\n\n# Hash password (demo only; use proper password hash libs in real apps)\ndef hash_password(pwd, salt=\"mysalt\"):\n    return hashlib.sha256((salt + pwd).encode()).hexdigest()\n\nstored = hash_password(\"Pass123\")\nprint(stored[:12])\nprint(hash_password(\"Pass123\") == stored)\n",
+      id: "wd-enterprise", title: "12. Enterprise Full-Stack Apps", description: "Scaling, Kubernetes, and Multi-DB",
+      content: "## Scaling to Millions\n\n### Massive Systems\n- **Kubernetes** — Orchestrating containers at scale.\n- **Multi-DB** — Handling PostgreSQL and MongoDB together.\n- **High Availability** — Zero-downtime deployment patterns.",
+      codeExample: "apiVersion: apps/v1\nkind: Deployment\nmetadata: name: web-app",
       exercises: {
-        beginner: { prompt: "Check if `'/admin'` starts with `'/'`. Also check if `'user'` is alphanumeric. Print both.", starterCode: "path = '/admin'\nuser = 'user'\n\n# Print startswith and isalnum checks\n", expectedOutput: "True\nTrue" },
-        intermediate: { prompt: "Validate username `'ab'`: must be `>= 3` chars and `.isalnum()`. Print result. Then validate `'abc'` and print.", starterCode: "# Validate 'ab' and 'abc', print both results\n", expectedOutput: "False\nTrue" },
-        advanced: { prompt: "Given `tries = 4, max_tries = 3`. Print `'Blocked'` if over limit else `'OK'`. Then reset `tries = 0` and print `'OK'`.", starterCode: "tries = 4\nmax_tries = 3\n\n# Check and print, then reset and print again\n", expectedOutput: "Blocked\nOK" },
-      },
-    },
-    {
-      id: "wd-testing", title: "Testing & Debugging Like a Pro", description: "Unit tests, integration tests, and predictable debugging",
-      content: "## Testing\n\n### Why tests matter\n- Prevent regressions\n- Make refactors safe\n- Improve confidence before deploy\n\n### What to test\n- Pure functions: easiest\n- API routes: status code + JSON shape\n- Database logic: constraints and edge cases\n\n### Debugging checklist\n- Reproduce the bug\n- Reduce to a minimal case\n- Add logs for inputs/outputs\n- Write a test that fails, then fix",
-      codeExample: "import unittest\n\ndef add(a, b):\n    return a + b\n\nclass TestAdd(unittest.TestCase):\n    def test_add(self):\n        self.assertEqual(add(2, 3), 5)\n\nif __name__ == \"__main__\":\n    suite = unittest.defaultTestLoader.loadTestsFromTestCase(TestAdd)\n    result = unittest.TextTestRunner(verbosity=0).run(suite)\n    print(\"OK\" if result.wasSuccessful() else \"FAIL\")\n",
-      exercises: {
-        beginner: { prompt: "Write `status_label(code)` returning `'OK'` if 200 else `'ERR'`. Test with `200` and `500`. Print both.", starterCode: "# Define status_label, test with 200 and 500\n", expectedOutput: "OK\nERR" },
-        intermediate: { prompt: "Given `items = [1, 2, 3]`. Assert `len(items) == 3`. If True print `'pass'`. Also check if `sum(items) == 6`, print that too.", starterCode: "items = [1, 2, 3]\n\n# Check len and sum, print pass/fail\n", expectedOutput: "pass\npass" },
-        advanced: { prompt: "Safely access nested dict `resp = {'user': {'id': 1}}`. Check if `'user'` key exists AND `'id'` exists inside. Print `True`. Then try `.get('missing', {}).get('id')` and print result.", starterCode: "resp = {'user': {'id': 1}}\n\n# Check nested keys, print True. Try missing key, print None\n", expectedOutput: "True\nNone" },
+        beginner: { prompt: "What is K8s short for? Print full word.", starterCode: "", expectedOutput: "Kubernetes" },
+        intermediate: { prompt: "Print 'Cluster' 3 times using a loop.", starterCode: "", expectedOutput: "Cluster\nCluster\nCluster" },
+        advanced: { prompt: "Calculate required replicas: 100 users / 20 per pod. Print result.", starterCode: "", expectedOutput: "5.0" },
       },
     },
   ];
@@ -591,6 +638,21 @@ function wd(): CareerLesson[] {
 
 function aiml(): CareerLesson[] {
   return [
+    {
+      id: "aiml-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in AI/ML",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of ML 🤖\n\nBefore training models, you must understand how to avoid building useless or biased systems.\n\n### DOs (What you should use)\n- **DO** split your data into Training, Validation, and Test sets.\n- **DO** normalize or scale your input features.\n- **DO** establish a simple baseline model before trying complex Deep Learning.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** leak test data into your training process (Data Leakage).\n- **DON'T** use Accuracy as the only metric for imbalanced datasets (use F1-score or Precision/Recall).\n- **DON'T** assume a model is fair; always check for bias.",
+      codeExample:
+        "# DO: Train/Test Split\n# X_train, X_test = train_test_split(X, test_size=0.2)\n\n# DON'T: Train and evaluate on the exact same data\n# model.fit(X, y)\n# score = model.score(X, y) # 100% accuracy? It's memorized!",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What is it called when information from outside the training dataset is used to create the model?", options: ["Overfitting", "Data Leakage", "Underfitting"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Data Leakage'", starterCode: "print('___')", expectedOutput: "Data Leakage" },
+        advanced: { type: "code", prompt: "Print 'Train Test Split'", starterCode: "print('___')", expectedOutput: "Train Test Split" },
+      },
+    },
     // ═══════════════════════════════════════════════════════
     // PHASE 1: FOUNDATIONS & DATA (Modules 1–2)
     // Master the core concepts and prepare data for modeling
@@ -757,6 +819,21 @@ function aiml(): CareerLesson[] {
 function auto(): CareerLesson[] {
   return [
     {
+      id: "auto-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Automation",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Automation ⚙️\n\nBefore writing scripts to automate your life or business, learn how to keep them secure and reliable.\n\n### DOs (What you should use)\n- **DO** use environment variables (`.env`) for secrets like API keys and passwords.\n- **DO** use modern libraries like `pathlib` for file paths instead of string manipulation.\n- **DO** add robust logging so you know exactly when and why a script fails.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** hardcode passwords into your scripts.\n- **DON'T** use blanket exception handling (e.g., `except Exception: pass`). It hides the real bugs.\n- **DON'T** run destructive scripts (like deleting files) without testing them in a safe 'dry run' mode first.",
+      codeExample:
+        "# DO: Catch specific errors\n# try:\n#     import os; key = os.environ['API_KEY']\n# except KeyError:\n#     print('Missing key!')\n\n# DON'T: Hide all errors blindly\n# try:\n#     do_something()\n# except:\n#     pass",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Where should you store sensitive API keys?", options: ["In a text file", "Hardcoded in the script", "In environment variables (.env)"], correctOption: 2, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Never hardcode secrets'", starterCode: "print('___')", expectedOutput: "Never hardcode secrets" },
+        advanced: { type: "code", prompt: "Print 'Use robust logging'", starterCode: "print('___')", expectedOutput: "Use robust logging" },
+      },
+    },
+    {
       id: "auto-intro", title: "Python Automation Basics", description: "Automate repetitive tasks",
       content: "## Why Automation?\n\nIf you do something more than twice, automate it.\n\n### What Can You Automate?\n- File organization & renaming\n- Data entry & form filling\n- Email sending & reporting\n- Web scraping & data collection\n- System monitoring\n\n### Python's Toolkit\n- os / shutil — File operations\n- requests — HTTP calls\n- BeautifulSoup — Web scraping\n- schedule — Task scheduling",
       codeExample: "files = [\"report_jan.csv\", \"report_feb.csv\", \"image.png\", \"report_mar.csv\"]\ncsv_files = [f for f in files if f.endswith(\".csv\")]\nprint(\"CSV files:\", csv_files)\nfor f in csv_files:\n    month = f.split(\"_\")[1].split(\".\")[0]\n    print(\" \", month, \"->\", f)",
@@ -848,6 +925,21 @@ function auto(): CareerLesson[] {
 function de(): CareerLesson[] {
   return [
     {
+      id: "de-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Data Engineering",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Data Engineering 🚰\n\nBefore building data pipelines, you must understand the rules of reliability and scalability.\n\n### DOs (What you should use)\n- **DO** design pipelines to be 'idempotent' (safe to retry multiple times without duplicating data).\n- **DO** use incremental loads instead of full table scans when dealing with large datasets.\n- **DO** log failures clearly with timestamps and tracebacks.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** use `for` loops in Python to transform millions of rows (use vectorized operations in Pandas/Spark, or use SQL).\n- **DON'T** tightly couple your extraction and loading logic. Keep them separate.\n- **DON'T** ignore data quality checks; bad data in means bad data out.",
+      codeExample:
+        "# DO: Vectorized operations\n# df['new_col'] = df['col1'] + df['col2']\n\n# DON'T: Loops for large transformations\n# for i in range(len(df)):\n#     df.loc[i, 'new_col'] = df.loc[i, 'col1'] + df.loc[i, 'col2']",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What does 'idempotent' mean in Data Engineering?", options: ["Fast execution", "Safe to run multiple times with same result", "Written in Python"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Avoid full table scans'", starterCode: "print('___')", expectedOutput: "Avoid full table scans" },
+        advanced: { type: "code", prompt: "Print 'Vectorized Operations'", starterCode: "print('___')", expectedOutput: "Vectorized Operations" },
+      },
+    },
+    {
       id: "de-intro", title: "Data Engineering Fundamentals", description: "Pipelines, ETL, and data infrastructure",
       content: "## What is Data Engineering?\n\nData engineers build infrastructure that makes data usable.\n\n### Key Concepts\n- **ETL** — Extract, Transform, Load\n- **Data Pipeline** — Automated data flow\n- **Data Warehouse** — Centralized store\n- **Data Lake** — Raw data storage\n\n### ETL Process\n1. Extract — Pull from sources\n2. Transform — Clean, validate\n3. Load — Store in destination",
       codeExample: "def extract():\n    return [{\"name\": \"Alice\", \"age\": \"25\"}, {\"name\": \"Bob\", \"age\": \"thirty\"}]\n\ndef transform(data):\n    clean = []\n    for row in data:\n        try:\n            row[\"age\"] = int(row[\"age\"])\n            clean.append(row)\n        except ValueError:\n            print(\"Skipping:\", row[\"name\"])\n    return clean\n\ndef load(data):\n    for row in data:\n        print(\"Loaded:\", row[\"name\"])\n\nload(transform(extract()))",
@@ -928,6 +1020,21 @@ function de(): CareerLesson[] {
 
 function cs(): CareerLesson[] {
   return [
+    {
+      id: "cs-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Cybersecurity",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Security 🛡️\n\nBefore writing scripts that deal with security, you must learn the defensive mindset.\n\n### DOs (What you should use)\n- **DO** sanitize all user input before using it in a shell command or SQL query.\n- **DO** use modern, built-in security libraries (e.g., Python's `secrets` module instead of `random` for passwords).\n- **DO** adhere to the Principle of Least Privilege (give scripts only the permissions they absolutely need).\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** write your own cryptography algorithms (always use proven, standard libraries).\n- **DON'T** print sensitive information (like tokens or PII) to standard logs.\n- **DON'T** assume internal networks are inherently safe (Zero Trust).",
+      codeExample:
+        "# DO: Use secrets for security tokens\n# import secrets\n# token = secrets.token_hex(16)\n\n# DON'T: Use random for security\n# import random\n# token = str(random.random()) # Not secure!",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which Python module should you use for generating secure passwords and tokens?", options: ["random", "math", "secrets"], correctOption: 2, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Sanitize all input'", starterCode: "print('___')", expectedOutput: "Sanitize all input" },
+        advanced: { type: "code", prompt: "Print 'Principle of Least Privilege'", starterCode: "print('___')", expectedOutput: "Principle of Least Privilege" },
+      },
+    },
     {
       id: "cs-intro", title: "Python for Cybersecurity", description: "Security fundamentals with Python",
       content: "## Cybersecurity with Python\n\nPython is widely used by security teams for **defense**, **automation**, and **incident response**.\n\n### First Rule (Important)\nOnly test systems you **own** or have **written permission** to test. Learning security is great, but \"hacking anything\" is illegal and harmful.\n\n### Applications\n- Security automation\n- Log analysis and detection\n- Forensics\n- Secure coding and hardening\n- Authorized security testing (with permission)\n\n### Key Libraries\n- hashlib — Hashing (MD5, SHA256)\n- hmac — Secure comparisons and signatures\n- secrets — Secure random tokens\n- cryptography — Encryption\n- socket — Network programming (safe diagnostics)\n- re/json/csv — Parsing security logs",
@@ -1019,6 +1126,21 @@ function cs(): CareerLesson[] {
 
 function githubMastery(): CareerLesson[] {
   return [
+    {
+      id: "github-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Git & GitHub",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Version Control 🐙\n\nBefore making changes to production codebases, you must learn the rules of collaboration.\n\n### DOs (What you should use)\n- **DO** write clear, imperative commit messages (e.g., 'Fix login bug' instead of 'fixed stuff').\n- **DO** commit early and often to keep changes small and logical.\n- **DO** pull the latest changes from the remote branch before starting your work.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** commit large binary files or sensitive `.env` files (use `.gitignore`).\n- **DON'T** force push (`git push -f`) to a shared branch like `main` or `master`.\n- **DON'T** work directly on the `main` branch. Always create a feature branch.",
+      codeExample:
+        "# DO: Clear, imperative messages\n# git commit -m \"Add user authentication flow\"\n\n# DON'T: Vague, unhelpful messages\n# git commit -m \"finally works idk\"",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What file should you use to prevent sensitive files like `.env` from being committed to Git?", options: [".gitconfig", ".gitignore", "README.md"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { prompt: "Print 'Use feature branches'.", starterCode: "echo '___'", expectedOutput: "Use feature branches" },
+        advanced: { prompt: "Print 'Never force push to main'.", starterCode: "echo '___'", expectedOutput: "Never force push to main" },
+      },
+    },
     {
       id: "git-intro", title: "Git: The Starting Line", description: "Introduction to tracking changes and collaboration",
       content: "## Why Version Control?\n\nAs a developer, you need to track changes, undo mistakes, and collaborate with others. Git is the world's most popular tool for this.\n\n### Key Concepts\n- **History** — Going back in time to any version of your project\n- **Branching** — Working on new features without breaking the main app\n- **Staging** — Preparing files for a commit\n- **Collaboration** — Sharing code via GitHub\n\n### Git's Areas\n1. **Working Directory** — Files you are editing now\n2. **Staging Area** — Files marked to be saved in the next snapshot\n3. **Local Repo** — Your local snapshots (commits)",
@@ -1157,14 +1279,50 @@ function sqlLessons(): CareerLesson[] {
     // Master the basics of retrieving and manipulating data
     // ═══════════════════════════════════════════════════════
     {
+      id: "sql-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in SQL",
+      category: "Foundations",
+      content:
+        "## The Rules of the Database 📜\n\nBefore writing queries, you must understand the golden rules of SQL to avoid destroying databases or writing impossibly slow queries.\n\n### DOs (What you should use)\n- **DO** use `EXPLAIN QUERY PLAN` before running massive queries.\n- **DO** use `JOIN` instead of comma-separated tables in the `FROM` clause.\n- **DO** filter early with `WHERE` before grouping or joining.\n- **DO** end your statements with a semicolon `;`.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** use `SELECT *` in production (it's slow and brittle). Always name your columns explicitly.\n- **DON'T** forget the `WHERE` clause on `UPDATE` or `DELETE` statements (you will wipe the whole table!).\n- **DON'T** use `ORDER BY` if you don't need sorting, as it slows down the query.",
+      codeExample:
+        "-- DO: Be explicit\nSELECT id, name FROM customers WHERE city = 'Delhi';\n\n-- DON'T: The brittle way\n-- SELECT * FROM customers;",
+      translations: {
+        tamil: { title: "0. சிறந்த நடைமுறைகள்", description: "SQL-ல் செய்ய வேண்டியவை மற்றும் தவிர்க்க வேண்டியவை", category: "Foundations" },
+        kannada: { title: "0. ಉತ್ತಮ ಅಭ್ಯಾಸಗಳು", description: "SQL ನಲ್ಲಿ ಮಾಡಬೇಕಾದದ್ದು ಮತ್ತು ಮಾಡಬಾರದದ್ದು", category: "Foundations" },
+        telugu: { title: "0. ఉత్తమ పద్ధతులు", description: "SQL లో ఏమి చేయాలి మరియు ఏమి చేయకూడదు", category: "Foundations" },
+        hindi: { title: "0. सर्वोत्तम प्रथाएँ", description: "SQL में क्या करें और क्या न करें", category: "Foundations" },
+      },
+      exercises: {
+        beginner: {
+          prompt: "Write a safe query. Select ONLY the `name` column from the `products` table, limited to 3 rows.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "name\nAlgorithmic Socks\nCushion Cover\nData Science Cap",
+          solution: "SELECT name FROM products LIMIT 3;",
+        },
+        intermediate: {
+          prompt: "The query `SELECT * FROM orders` is considered bad practice. Rewrite it to select only `id` and `status`, limiting to 2 rows.",
+          starterCode: "SELECT * FROM orders;",
+          expectedOutput: "id,status\n1,completed\n2,completed",
+          solution: "SELECT id, status FROM orders LIMIT 2;",
+        },
+        advanced: {
+          prompt: "Demonstrate filtering EARLY. Select `name` and `price` from `products` where price is greater than 1000, ordered by price DESC, limit 2.",
+          starterCode: "-- Write your SQL here\n",
+          expectedOutput: "name,price\nDell 24-inch Monitor,12000\nSony Headphones,4500",
+          solution: "SELECT name, price FROM products WHERE price > 1000 ORDER BY price DESC LIMIT 2;",
+        },
+      },
+    },
+    {
       id: "sql-intro",
       title: "1. SQL Foundations (DQL)",
       description: "SELECT, FROM, ORDER BY, LIMIT — your first queries",
       category: "DQL (SELECT)",
       content:
-        "## SQL Foundations\n\nSQL is the language used to **query and analyze** data in relational databases.\n\n### What you will practice here\n- `SELECT` columns\n- `FROM` tables\n- `ORDER BY` for stable output\n- `LIMIT` to reduce rows\n\n### Practice database (built-in)\nYou will query a small practice dataset with tables like `customers`, `orders`, `order_items`, and `products`.",
+        "## SQL Foundations\n\nSQL is the language used to **query and analyze** data in relational databases.\n\n### What you will practice here\n- `SELECT` columns\n- `FROM` tables\n- `ORDER BY` for stable output (use multiple columns for ties)\n- `LIMIT` to reduce rows\n\n### Practice database (built-in)\nYou will query a small practice dataset with tables like `customers`, `orders`, `order_items`, and `products`.",
       codeExample:
-        "-- Explore customers\nSELECT id, name, city\nFROM customers\nORDER BY id\nLIMIT 5;",
+        "-- Explore customers (sort by city, then name for ties)\nSELECT id, name, city\nFROM customers\nORDER BY city, name\nLIMIT 5;",
       translations: {
         tamil: { title: "1. SQL அடித்தளம் (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — உங்கள் முதல் queries", category: "DQL (SELECT)" },
         kannada: { title: "1. SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — ನಿಮ್ಮ ಮೊದಲ queries", category: "DQL (SELECT)" },
@@ -1198,37 +1356,37 @@ function sqlLessons(): CareerLesson[] {
       description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
       category: "Filtering & Sorting",
       content:
-        "## Filtering & Sorting\n\n### Core clauses\n- `WHERE` filters rows\n- `AND` / `OR` combine conditions\n- `IN` checks membership\n- `BETWEEN` checks ranges\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: Always add an `ORDER BY` when you care about the exact row order (especially for exercises).",
+        "## Filtering & Sorting\n\n### Core clauses\n- `WHERE`: Filters rows (e.g., `WHERE price > 500`)\n- `AND` / `OR`: Combine conditions (e.g., `WHERE price > 500 AND stock > 0`)\n- `IN`: Checks membership (e.g., `WHERE city IN ('Delhi', 'Mumbai')`)\n- `BETWEEN`: Checks ranges (e.g., `WHERE price BETWEEN 300 AND 1000`)\n- `LIKE`: Pattern matching using `%` (e.g., `WHERE name LIKE 'A%'`)\n\n### Sorting Ties\nIf multiple rows have the same value (like price), use a secondary sort column to keep the order stable:\n`ORDER BY price, name` (first by price, then by name for ties).\n\nTip: Always add an `ORDER BY` when you care about the exact row order (especially for exercises).",
       codeExample:
-        "-- Customers in Mumbai\nSELECT name, city\nFROM customers\nWHERE city = 'Mumbai'\nORDER BY name;",
+        "-- Products between 300-1000, sorted by price then name\nSELECT name, price\nFROM products\nWHERE price BETWEEN 300 AND 1000\nORDER BY price, name;",
       translations: {
         tamil: {
           title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
-            "## Filtering & Sorting\n\n### முக்கிய clauses\n- `WHERE` rows-ஐ filter செய்கிறது\n- `AND` / `OR` conditions-ஐ இணைக்கிறது\n- `IN` membership சரிபார்க்கிறது\n- `BETWEEN` range சரிபார்க்கிறது\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: output order முக்கியமானால் எப்போதும் `ORDER BY` சேர்க்கவும் (exercises-க்கு இது மிக முக்கியம்).",
+            "## Filtering & Sorting\n\n### முக்கிய clauses\n- `WHERE` rows-ஐ filter செய்கிறது\n- `AND` / `OR` conditions-ஐ இணைக்கிறது\n- `IN` membership சரிபார்க்கிறது\n- `BETWEEN` range சரிபார்க்கிறது\n- `LIKE` pattern matching (`%` wildcard)\n\n### Sorting Ties (ஒரே மதிப்புள்ள தரவுகள்)\nபல வரிசைகள் ஒரே மதிப்பைக் கொண்டிருந்தால் (உதாரணமாக விலை), வரிசையை சீராக வைக்க இரண்டாவது வரிசைப்படுத்தும் தூணைப் பயன்படுத்தவும்:\n`ORDER BY price, name` (முதலில் விலை, பிறகு பெயரின் அடிப்படையில்).\n\nTip: output order முக்கியமானால் எப்போதும் `ORDER BY` சேர்க்கவும் (exercises-க்கு இது மிக முக்கியம்).",
         },
         kannada: {
           title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
-            "## Filtering & Sorting\n\n### ಮುಖ್ಯ clauses\n- `WHERE` rows ಅನ್ನು filter ಮಾಡುತ್ತದೆ\n- `AND` / `OR` conditions ಅನ್ನು ಸೇರಿಸುತ್ತದೆ\n- `IN` membership ಪರಿಶೀಲಿಸುತ್ತದೆ\n- `BETWEEN` range ಪರಿಶೀಲಿಸುತ್ತದೆ\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: output order ಮುಖ್ಯವಾದರೆ ಯಾವಾಗಲೂ `ORDER BY` ಸೇರಿಸಿ (exercises ಗೆ ವಿಶೇಷವಾಗಿ).",
+            "## Filtering & Sorting\n\n### ಮುಖ್ಯ clauses\n- `WHERE` rows ಅನ್ನು filter ಮಾಡುತ್ತದೆ\n- `AND` / `OR` conditions ಅನ್ನು ಸೇರಿಸುತ್ತದೆ\n- `IN` membership ಪರಿಶೀಲಿಸುತ್ತದೆ\n- `BETWEEN` range ಪರಿಶೀಲಿಸುತ್ತದೆ\n- `LIKE` pattern matching (`%` wildcard)\n\n### Sorting Ties (ಸಮಾನ ಮೌಲ್ಯಗಳು)\nಒಂದಕ್ಕಿಂತ ಹೆಚ್ಚು ಸಾಲುಗಳು ಒಂದೇ ಮೌಲ್ಯವನ್ನು ಹೊಂದಿದ್ದರೆ (ಉದಾಹರಣೆಗೆ ಬೆಲೆ), ಕ್ರಮವನ್ನು ಸ್ಥಿರವಾಗಿಡಲು ಎರಡನೇ ಕಾಲಮ್ ಬಳಸಿ:\n`ORDER BY price, name` (ಮೊದಲು ಬೆಲೆ, ನಂತರ ಹೆಸರು).\n\nTip: output order ಮುಖ್ಯವಾದರೆ ಯಾವಾಗಲೂ `ORDER BY` ಸೇರಿಸಿ (exercises ಗೆ ವಿಶೇಷವಾಗಿ).",
         },
         telugu: {
           title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
-            "## Filtering & Sorting\n\n### ముఖ్య clauses\n- `WHERE` rows ని filter చేస్తుంది\n- `AND` / `OR` conditions ని కలుపుతుంది\n- `IN` membership చెక్ చేస్తుంది\n- `BETWEEN` range చెక్ చేస్తుంది\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: output order ముఖ్యమైతే ఎప్పుడూ `ORDER BY` వాడండి (exercises కి చాలా ముఖ్యం).",
+            "## Filtering & Sorting\n\n### ముఖ్య clauses\n- `WHERE` rows ని filter చేస్తుంది\n- `AND` / `OR` conditions ని కలుపుతుంది\n- `IN` membership చెక్ చేస్తుంది\n- `BETWEEN` range చెక్ చేస్తుంది\n- `LIKE` pattern matching (`%` wildcard)\n\n### Sorting Ties (ఒకే విలువలు ఉన్నప్పుడు)\nఒకటి కంటే ఎక్కువ వరుసలు ఒకే విలువను కలిగి ఉంటే (ఉదాహరణకు ధర), క్రమాన్ని స్థిరంగా ఉంచడానికి రెండవ కాలమ్ ఉపయోగించండి:\n`ORDER BY price, name` (ముందు ధర, తర్వాత పేరు).\n\nTip: output order ముఖ్యమైతే ఎప్పుడూ `ORDER BY` వాడండి (exercises కి చాలా ముఖ్యం).",
         },
         hindi: {
           title: "2. Filtering & Sorting",
           description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
           category: "Filtering & Sorting",
           content:
-            "## Filtering & Sorting\n\n### मुख्य clauses\n- `WHERE` rows को filter करता है\n- `AND` / `OR` conditions को जोड़ता है\n- `IN` membership check करता है\n- `BETWEEN` range check करता है\n- `LIKE` pattern matching (`%` wildcard)\n\nTip: output order ज़रूरी हो तो हमेशा `ORDER BY` लगाएँ (खासकर exercises में).",
+            "## Filtering & Sorting\n\n### मुख्य clauses\n- `WHERE` rows को filter करता है\n- `AND` / `OR` conditions को जोड़ता है\n- `IN` membership check करता है\n- `BETWEEN` range check करता है\n- `LIKE` pattern matching (`%` wildcard)\n\n### Sorting Ties (समान मान होने पर)\nयदि एक से अधिक rows का मान समान है (जैसे मूल्य), तो क्रम को स्थिर रखने के लिए दूसरे कॉलम का उपयोग करें:\n`ORDER BY price, name` (पहले मूल्य, फिर नाम).\n\nTip: output order ज़रूरी हो तो हमेशा `ORDER BY` लगाएँ (खासकर exercises में).",
         },
       },
       exercises: {
@@ -1245,10 +1403,10 @@ function sqlLessons(): CareerLesson[] {
           solution: "SELECT id, order_date, status FROM orders WHERE order_date LIKE '2026-03-%' ORDER BY order_date;",
         },
         advanced: {
-          prompt: "List products priced between 100 and 2000 (name, price) ordered by price.",
+          prompt: "List products priced between 100 and 2000 (name, price) ordered by price and then name.",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,price\nOrganic Tea,250\nCushion Cover,300\nNescafe Coffee,350\nAlgorithmic Socks,400\nResistance Band,400\nSteelo Water Bottle,450\nParker Pen,500\nData Science Cap,600\nLogitech Mouse,800\nPython Book,800\nYoga Mat,900\nTable Lamp,1100\nMoleskine Diary,1200\nSQL Masterclass,1200\nDumbbell 5kg,1500",
-          solution: "SELECT name, price FROM products WHERE price BETWEEN 100 AND 2000 ORDER BY price;",
+          solution: "SELECT name, price FROM products WHERE price BETWEEN 100 AND 2000 ORDER BY price, name;",
         },
       },
     },
@@ -1258,14 +1416,38 @@ function sqlLessons(): CareerLesson[] {
       description: "UPPER, SUBSTR, ROUND, DATE functions — transform your data",
       category: "Functions",
       content:
-        "## Scalar Functions\n\nScalar functions take one input and return one output for every row.\n\n### Key functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `SUBSTR(x, start, len)`, and `||` for joining strings.\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `date('now')`, `strftime('%Y-%m', date_col)`.\n\nTip: In SQLite, concatenation is done using `||` (e.g., `'Hello' || ' ' || 'World'`).",
+        "## Scalar Functions\n\nScalar functions take one input and return one output for every row.\n\n### Key functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `LENGTH(x)`, `REPLACE(x, old, new)`, `TRIM(x)`, and `SUBSTR(x, start, len)`.\n- **Concatenation**: Use `||` to join strings (e.g., `'A' || 'B'`).\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `date('now')`, `strftime('%Y-%m', date_col)`.\n\n### Left & Right (Emulation)\nSQLite doesn't have `LEFT()` or `RIGHT()`. Use `SUBSTR` instead:\n- **LEFT(x, 3)** → `SUBSTR(x, 1, 3)`\n- **RIGHT(x, 3)** → `SUBSTR(x, -3)`",
       codeExample:
-        "-- Format product labels\nSELECT name || ' ($' || price || ')' AS label\nFROM products\nORDER BY price DESC\nLIMIT 5;",
+        "-- Clean phone numbers (remove dash) and get length\nSELECT \n  REPLACE(phone, '-', '') AS clean_phone,\n  LENGTH(phone) AS original_length\nFROM customers\nLIMIT 5;",
       translations: {
-        tamil: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — தரவை மாற்றியமைக்க", category: "Functions" },
-        kannada: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — ಡೇಟಾವನ್ನು ಬದಲಾಯಿಸಲು", category: "Functions" },
-        telugu: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — డేటాను మార్చడానికి", category: "Functions" },
-        hindi: { title: "3. Scalar Functions", description: "UPPER, SUBSTR, ROUND, DATE functions — डेटा को ट्रांसफॉर्म करें", category: "Functions" },
+        tamil: {
+          title: "3. Scalar Functions",
+          description: "UPPER, SUBSTR, ROUND, DATE functions — தரவை மாற்றியமைக்க",
+          category: "Functions",
+          content:
+            "## Scalar Functions\n\nScalar functions ஒவ்வொரு row-க்கும் ஒரு input பெற்று ஒரு output-ஐ தரும்.\n\n### முக்கிய functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `LENGTH(x)` (நீளம்), `REPLACE(x, old, new)` (மாற்ற), `TRIM(x)` (தேவையற்ற இடைவெளியை நீக்க), மற்றும் `SUBSTR(x, start, len)`.\n- **Concatenation**: strings-ஐ இணைக்க `||` பயன்படுத்தவும்.\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `strftime('%Y-%m', date_col)`.\n\n### Left & Right (மாற்று வழி)\nSQLite-ல் `LEFT()` அல்லது `RIGHT()` கிடையாது. அதற்கு பதிலாக `SUBSTR` பயன்படுத்தவும்:\n- **LEFT(x, 3)** → `SUBSTR(x, 1, 3)`\n- **RIGHT(x, 3)** → `SUBSTR(x, -3)`",
+        },
+        kannada: {
+          title: "3. Scalar Functions",
+          description: "UPPER, SUBSTR, ROUND, DATE functions — ಡೇಟಾವನ್ನು ಬದಲಾಯಿಸಲು",
+          category: "Functions",
+          content:
+            "## Scalar Functions\n\nScalar functions ಪ್ರತಿ ಸಾಲಿಗೆ ಒಂದು ಇನ್‌ಪುಟ್ ತೆಗೆದುಕೊಂಡು ಒಂದು ಔಟ್‌ಪುಟ್ ನೀಡುತ್ತದೆ.\n\n### ಮುಖ್ಯ functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `LENGTH(x)` (ಉದ್ದ), `REPLACE(x, old, new)` (ಬದಲಾಯಿಸಲು), `TRIM(x)`, ಮತ್ತು `SUBSTR(x, start, len)`.\n- **Concatenation**: strings ಸೇರಿಸಲು `||` ಬಳಸಿ.\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `strftime('%Y-%m', date_col)`.\n\n### Left & Right\nSQLite ನಲ್ಲಿ `LEFT()` ಅಥವಾ `RIGHT()` ಇಲ್ಲ. ಅದರ ಬದಲು `SUBSTR` ಬಳಸಿ:\n- **LEFT(x, 3)** → `SUBSTR(x, 1, 3)`\n- **RIGHT(x, 3)** → `SUBSTR(x, -3)`",
+        },
+        telugu: {
+          title: "3. Scalar Functions",
+          description: "UPPER, SUBSTR, ROUND, DATE functions — డేటాను మార్చడానికి",
+          category: "Functions",
+          content:
+            "## Scalar Functions\n\nScalar functions ప్రతి వరుసకు ఒక ఇన్‌పుట్ తీసుకొని ఒక అవుట్‌పుట్ ఇస్తాయి.\n\n### ముఖ్యమైన functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `LENGTH(x)` (పొడవు), `REPLACE(x, old, new)` (మార్చడానికి), `TRIM(x)`, మరియు `SUBSTR(x, start, len)`.\n- **Concatenation**: strings ని కలపడానికి `||` వాడండి.\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `strftime('%Y-%m', date_col)`.\n\n### Left & Right\nSQLite లో `LEFT()` లేదా `RIGHT()` లేవు. వాటి బదులు `SUBSTR` వాడండి:\n- **LEFT(x, 3)** → `SUBSTR(x, 1, 3)`\n- **RIGHT(x, 3)** → `SUBSTR(x, -3)`",
+        },
+        hindi: {
+          title: "3. Scalar Functions",
+          description: "UPPER, SUBSTR, ROUND, DATE functions — डेटा को ट्रांसफॉर्म करें",
+          category: "Functions",
+          content:
+            "## Scalar Functions\n\nScalar functions हर row के लिए एक इनपुट लेते हैं और एक आउटपुट देते हैं।\n\n### मुख्य functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `LENGTH(x)` (लम्बाई), `REPLACE(x, old, new)` (बदलने के लिए), `TRIM(x)`, और `SUBSTR(x, start, len)`.\n- **Concatenation**: strings को जोड़ने के लिए `||` का उपयोग करें।\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `strftime('%Y-%m', date_col)`.\n\n### Left & Right\nSQLite में `LEFT()` या `RIGHT()` नहीं होते हैं। इसके बजाय `SUBSTR` का उपयोग करें:\n- **LEFT(x, 3)** → `SUBSTR(x, 1, 3)`\n- **RIGHT(x, 3)** → `SUBSTR(x, -3)`",
+        },
       },
       exercises: {
         beginner: {
@@ -1275,16 +1457,16 @@ function sqlLessons(): CareerLesson[] {
           solution: "SELECT UPPER(name) || ' FROM ' || UPPER(city) AS label FROM customers ORDER BY label LIMIT 5;",
         },
         intermediate: {
-          prompt: "Extract the year and month (YYYY-MM) from order dates, name the column 'month'. List first 5 ordered by id.",
+          prompt: "Clean phone numbers by removing '+91-' prefix (use REPLACE) and show their character length. Output (clean_phone, phone_len) for first 5 customers ordered by id.",
           starterCode: "-- Write your SQL here\n",
-          expectedOutput: "id,month\n1,2026-01\n2,2026-01\n3,2026-02\n4,2026-03\n5,2026-03",
-          solution: "SELECT id, strftime('%Y-%m', order_date) AS month FROM orders ORDER BY id LIMIT 5;",
+          expectedOutput: "clean_phone,phone_len\n9876543210,14\n9876543211,14\n9876543212,14\n9876543213,14\n9876543214,14",
+          solution: "SELECT REPLACE(phone, '+91-', '') AS clean_phone, LENGTH(phone) AS phone_len FROM customers ORDER BY id LIMIT 5;",
         },
         advanced: {
-          prompt: "Show product names and their prices with an 18% tax added, rounded to 0 decimal places. Name it 'price_with_tax'. Top 5 by price_with_tax DESC.",
+          prompt: "Show product names and their prices with an 18% tax added (rounded to 0 decimal places, name it 'price_with_tax'). Also include a 'short_name' which is just the first 5 characters of the product name. Top 5 by price_with_tax DESC and then name.",
           starterCode: "-- Write your SQL here\n",
-          expectedOutput: "name,price_with_tax\nDell 24-inch Monitor,14160.0\nSony Headphones,5310.0\nMechanical Keyboard,2950.0\nPyMaster Hoodie,2596.0\nDumbbell 5kg,1770.0",
-          solution: "SELECT name, ROUND(price * 1.18, 0) AS price_with_tax FROM products ORDER BY price_with_tax DESC LIMIT 5;",
+          expectedOutput: "name,price_with_tax,short_name\nDell 24-inch Monitor,14160.0,Dell \nSony Headphones,5310.0,Sony \nMechanical Keyboard,2950.0,Mecha\nPyMaster Hoodie,2596.0,PyMas\nDumbbell 5kg,1770.0,Dumbb",
+          solution: "SELECT name, ROUND(price * 1.18, 0) AS price_with_tax, SUBSTR(name, 1, 5) AS short_name FROM products ORDER BY price_with_tax DESC, name LIMIT 5;",
         },
       },
     },
@@ -1294,7 +1476,7 @@ function sqlLessons(): CareerLesson[] {
       description: "CASE, COALESCE, CAST — handle logic and types",
       category: "Logic",
       content:
-        "## Advanced Logic\n\n### Conditional Logic (`CASE`)\nUse `CASE` to create if-else logic inside your queries.\n\n### Handling NULLs\n- `COALESCE(val, default)`: returns the first non-null value.\n- `NULLIF(val1, val2)`: returns NULL if the values are equal.\n\n### Type Conversion\nUse `CAST(value AS type)` to change data types (e.g., from string to integer).",
+        "## Advanced Logic\n\n### Conditional Logic (`CASE`)\nUse `CASE` to create if-else logic inside your queries. (e.g., `CASE WHEN price > 1000 THEN 'Expensive' ELSE 'Cheap' END`)\n\n### Handling NULLs\n- `COALESCE(val, default)`: returns the first non-null value (e.g., `COALESCE(phone, 'No Phone')`).\n- `NULLIF(val1, val2)`: returns NULL if the values are equal (e.g., `NULLIF(balance, 0)`).\n\n### Type Conversion\nUse `CAST(value AS type)` to change data types (e.g., `CAST(price AS TEXT)`).",
       codeExample:
         "-- Categorize products\nSELECT name, \n  CASE WHEN price > 1000 THEN 'Premium' ELSE 'Standard' END AS category\nFROM products\nLIMIT 5;",
       translations: {
@@ -1330,7 +1512,7 @@ function sqlLessons(): CareerLesson[] {
       description: "COUNT, SUM, AVG, GROUP BY, HAVING",
       category: "Aggregations",
       content:
-        "## Aggregations\n\n### Common functions\n- `COUNT(*)`\n- `SUM(x)`\n- `AVG(x)`\n- `MIN(x)`, `MAX(x)`\n\n### GROUP BY\nGroups rows so aggregates are calculated per group.\n\n### HAVING\nFilters *groups* (after aggregation).",
+        "## Aggregations\n\n### Common functions\n- `COUNT(*)`: Counts rows (e.g., `SELECT COUNT(*) FROM orders`)\n- `SUM(x)`: Adds values (e.g., `SELECT SUM(price) FROM products`)\n- `AVG(x)`: Averages values (e.g., `SELECT AVG(rating) FROM reviews`)\n- `MIN(x)`, `MAX(x)`: Finds extremes (e.g., `SELECT MAX(price) FROM products`)\n\n### GROUP BY\nGroups rows so aggregates are calculated per group (e.g., `GROUP BY category`).\n\n### HAVING\nFilters *groups* after aggregation (e.g., `HAVING SUM(price) > 5000`).",
       codeExample:
         "-- Orders per status\nSELECT status, COUNT(*) AS count\nFROM orders\nGROUP BY status\nORDER BY status;",
       translations: {
@@ -1394,7 +1576,7 @@ function sqlLessons(): CareerLesson[] {
       description: "INNER JOIN, LEFT JOIN, joining multiple tables",
       category: "Joins",
       content:
-        "## JOINs\n\n### The big idea\nA JOIN combines rows from tables using a matching key.\n\n### Most used JOINs\n- `INNER JOIN`: only matching rows\n- `LEFT JOIN`: keep all left rows (even if no match)\n\nNote: SQLite does not natively support `RIGHT JOIN` or `FULL OUTER JOIN`. These are usually emulated by swapping table order or using `UNION`.\n\nTip: When totals can be missing, use `COALESCE(x, 0)` to turn NULL into 0.",
+        "## JOINs\n\n### The big idea\nA JOIN combines rows from tables using a matching key.\n\n### Most used JOINs\n- `INNER JOIN`: only matching rows (e.g., `FROM orders JOIN customers ON orders.customer_id = customers.id`)\n- `LEFT JOIN`: keep all left rows even if no match (e.g., `FROM customers LEFT JOIN orders ON customers.id = orders.customer_id`)\n\nNote: SQLite does not natively support `RIGHT JOIN` or `FULL OUTER JOIN`. These are usually emulated by swapping table order or using `UNION`.\n\nTip: When totals can be missing, use `COALESCE(SUM(x), 0)` to turn NULL into 0.",
       codeExample:
         "-- Orders with customer names\nSELECT o.id AS order_id, c.name, o.status\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nORDER BY o.id;",
       translations: {
@@ -1441,10 +1623,10 @@ function sqlLessons(): CareerLesson[] {
           solution: "SELECT oi.order_id, p.name AS product, oi.qty AS quantity FROM order_items oi JOIN products p ON oi.product_id = p.id WHERE oi.order_id = 1 ORDER BY p.name;",
         },
         advanced: {
-          prompt: "Total spent per customer on completed orders (include customers with 0). Output (name, total_spent) ordered by total_spent DESC.",
+          prompt: "Total spent per customer on completed orders (include customers with 0). Output (name, total_spent) ordered by total_spent DESC and then name.",
           starterCode: "-- Write your SQL here\n",
           expectedOutput: "name,total_spent\nBob Sharma,9400\nAlice Johnson,9000\nHannah Abbott,6700\nKevin Hart,3900\nFiona Apple,3800\nOscar Wilde,2900\nMike Ross,2800\nCharlie Dave,2000\nDiana Prince,1150\nIan Wright,550\nEthan Hunt,0\nGeorge Miller,0\nJulia Roberts,0\nLaura Palmer,0\nNina Simone,0",
-          solution: "SELECT c.name, COALESCE(SUM(p.price * oi.qty), 0) AS total_spent FROM customers c LEFT JOIN orders o ON c.id = o.customer_id AND o.status = 'completed' LEFT JOIN order_items oi ON o.id = oi.order_id LEFT JOIN products p ON oi.product_id = p.id GROUP BY c.name ORDER BY total_spent DESC;",
+          solution: "SELECT c.name, COALESCE(SUM(p.price * oi.qty), 0) AS total_spent FROM customers c LEFT JOIN orders o ON c.id = o.customer_id AND o.status = 'completed' LEFT JOIN order_items oi ON o.id = oi.order_id LEFT JOIN products p ON oi.product_id = p.id GROUP BY c.name ORDER BY total_spent DESC, name;",
         },
       },
     },
@@ -1454,7 +1636,7 @@ function sqlLessons(): CareerLesson[] {
       description: "IN, EXISTS, scalar subqueries, derived tables",
       category: "Subqueries",
       content:
-        "## Subqueries\n\nSubqueries let you use one query inside another.\n\n### Common patterns\n- `WHERE x IN (SELECT ...)`\n- `WHERE EXISTS (SELECT ...)`\n- Subquery in `FROM` (derived table)\n\nTip: Prefer `EXISTS` when you only need to check presence (not values).",
+        "## Subqueries\n\nSubqueries let you use one query inside another.\n\n### Common patterns\n- `WHERE x IN (SELECT ...)`: Find items in a sub-list (e.g., `WHERE id IN (SELECT customer_id FROM orders)`)\n- `WHERE EXISTS (SELECT ...)`: Fast check for presence (e.g., `WHERE EXISTS (SELECT 1 FROM orders WHERE customer_id = c.id)`)\n- Subquery in `FROM`: Derived tables for intermediate steps (e.g., `FROM (SELECT id, price FROM products) AS p`)\n\nTip: Prefer `EXISTS` when you only need to check presence (not values).",
       codeExample:
         "-- Customers with any cancelled order\nSELECT name\nFROM customers\nWHERE id IN (\n  SELECT customer_id FROM orders WHERE status = 'cancelled'\n)\nORDER BY name;",
       translations: {
@@ -1514,7 +1696,7 @@ function sqlLessons(): CareerLesson[] {
       description: "Readable multi-step queries with WITH",
       category: "CTEs",
       content:
-        "## Common Table Expressions (CTEs)\n\nCTEs make complex queries easier to read by giving names to intermediate results.\n\n### Benefits\n- Break logic into steps\n- Reuse computed sets\n- Safer than repeating subqueries",
+        "## Common Table Expressions (CTEs)\n\nCTEs make complex queries easier to read by giving names to intermediate results.\n\n### Benefits\n- Break logic into steps (e.g., `WITH valid_orders AS (SELECT * FROM orders WHERE status = 'completed') SELECT ...`)\n- Reuse computed sets\n- Safer than repeating subqueries",
       codeExample:
         "-- Monthly revenue for completed orders\nWITH order_revenue AS (\n  SELECT o.id, substr(o.order_date, 1, 7) AS month, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, month\n)\nSELECT month, SUM(revenue) AS revenue\nFROM order_revenue\nGROUP BY month\nORDER BY month;",
       translations: {
@@ -1574,7 +1756,7 @@ function sqlLessons(): CareerLesson[] {
       description: "RANK, DENSE_RANK, OVER(), running totals",
       category: "Window Functions",
       content:
-        "## Window Functions\n\nWindow functions compute values across a set of rows **without collapsing** them like GROUP BY.\n\n### Examples\n- Ranking within a category\n- Running totals\n- Moving averages\n\nSyntax pattern:\n`func(...) OVER (PARTITION BY ... ORDER BY ...)`",
+        "## Window Functions\n\nWindow functions compute values across a set of rows **without collapsing** them like GROUP BY.\n\n### Examples\n- Ranking within a category (e.g., `RANK() OVER (PARTITION BY category ORDER BY price DESC)`)\n- Running totals (e.g., `SUM(price) OVER (ORDER BY date)`)\n- Moving averages (e.g., `AVG(price) OVER (ORDER BY date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`)\n\nSyntax pattern:\n`func(...) OVER (PARTITION BY ... ORDER BY ...)`",
       codeExample:
         "-- Rank products by price within category\nSELECT category, name, price,\n       RANK() OVER (PARTITION BY category ORDER BY price DESC) AS price_rank\nFROM products\nORDER BY category, name;",
       translations: {
@@ -1638,7 +1820,7 @@ function sqlLessons(): CareerLesson[] {
       description: "Define tables, constraints, and schema",
       category: "DDL",
       content:
-        "## DDL (Data Definition Language)\n\nDDL changes the database structure.\n\n### Common commands\n- `CREATE TABLE`\n- `ALTER TABLE`\n- `DROP TABLE`\n\nIn the practice editor, you can run multiple statements in one execution (separated by `;`).",
+        "## DDL (Data Definition Language)\n\nDDL changes the database structure.\n\n### Common commands\n- `CREATE TABLE`: Defines a new table (e.g., `CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)`)\n- `ALTER TABLE`: Modifies an existing table (e.g., `ALTER TABLE users ADD COLUMN age INTEGER`)\n- `DROP TABLE`: Deletes a table completely (e.g., `DROP TABLE old_logs`)\n\nIn the practice editor, you can run multiple statements in one execution (separated by `;`).",
       codeExample:
         "CREATE TABLE temp_notes(\n  id INTEGER,\n  note TEXT\n);\n\nSELECT name\nFROM sqlite_master\nWHERE type='table' AND name='temp_notes';",
       translations: {
@@ -1698,7 +1880,7 @@ function sqlLessons(): CareerLesson[] {
       description: "Modify rows safely with conditions",
       category: "DML",
       content:
-        "## DML (Data Manipulation Language)\n\nDML changes row data.\n\n### Commands\n- `INSERT` add rows\n- `UPDATE` change rows (always use a WHERE unless you intend to update all)\n- `DELETE` remove rows\n\nTip: For practice, you can run changes and immediately verify with a SELECT.",
+        "## DML (Data Manipulation Language)\n\nDML changes row data.\n\n### Commands\n- `INSERT`: add rows (e.g., `INSERT INTO users (name) VALUES ('Alice')`)\n- `UPDATE`: change rows (e.g., `UPDATE users SET age = 30 WHERE name = 'Alice'`). Always use a `WHERE` unless you intend to update all!\n- `DELETE`: remove rows (e.g., `DELETE FROM users WHERE id = 1`)\n\nTip: For practice, you can run changes and immediately verify with a SELECT.",
       codeExample:
         "-- Insert a new customer and verify\nINSERT INTO customers(id, name, city, signup_date)\nVALUES (6, 'Farah', 'Delhi', '2026-04-01');\n\nSELECT name, city\nFROM customers\nWHERE id = 6;",
       translations: {
@@ -1758,7 +1940,7 @@ function sqlLessons(): CareerLesson[] {
       description: "BEGIN, COMMIT, ROLLBACK for safe changes",
       category: "Transactions (TCL)",
       content:
-        "## Transactions\n\nTransactions let you group changes so they either all happen or none happen.\n\n### Commands\n- `BEGIN` / `BEGIN TRANSACTION`\n- `COMMIT` save changes\n- `ROLLBACK` undo changes\n\nThis is essential for correctness in real systems (payments, inventory, etc.).",
+        "## Transactions\n\nTransactions let you group changes so they either all happen or none happen.\n\n### Commands\n- `BEGIN` / `BEGIN TRANSACTION`: Starts the block\n- `COMMIT`: save changes (e.g., `BEGIN; UPDATE accounts SET balance = balance - 100; COMMIT;`)\n- `ROLLBACK`: undo changes (e.g., `BEGIN; DELETE FROM users; ROLLBACK;`)\n\nThis is essential for correctness in real systems (payments, inventory, etc.).",
       codeExample:
         "BEGIN;\nUPDATE products SET price = 15 WHERE name = 'Pen';\nCOMMIT;\nSELECT price FROM products WHERE name = 'Pen';",
       translations: {
@@ -1822,7 +2004,7 @@ function sqlLessons(): CareerLesson[] {
       description: "What indexes do and when to use them",
       category: "Indexes",
       content:
-        "## Indexes\n\nIndexes speed up lookups by creating an additional data structure.\n\n### Key idea\nIndexes can improve read performance but may slow down writes.\n\nIn SQLite, you can inspect indexes via `sqlite_master`.",
+        "## Indexes\n\nIndexes speed up lookups by creating an additional data structure.\n\n### Key idea\nIndexes can improve read performance but may slow down writes. (e.g., `CREATE INDEX idx_users_name ON users(name)`)\n\nIn SQLite, you can inspect indexes via `sqlite_master`.",
       codeExample:
         "CREATE INDEX idx_orders_customer ON orders(customer_id);\n\nSELECT name\nFROM sqlite_master\nWHERE type='index' AND tbl_name='orders'\nORDER BY name;",
       translations: {
@@ -1882,7 +2064,7 @@ function sqlLessons(): CareerLesson[] {
       description: "Saved queries for reuse and simplicity",
       category: "Views",
       content:
-        "## Views\n\nA view is a saved query that acts like a virtual table.\n\n### Why views?\n- Reuse common joins\n- Simplify reporting queries\n- Keep application queries cleaner",
+        "## Views\n\nA view is a saved query that acts like a virtual table.\n\n### Why views?\n- Reuse common joins (e.g., `CREATE VIEW active_users AS SELECT * FROM users WHERE status = 'active'`)\n- Simplify reporting queries\n- Keep application queries cleaner",
       codeExample:
         "CREATE VIEW v_completed_orders AS\nSELECT o.id AS order_id, c.name, o.order_date\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'completed';\n\nSELECT order_id, name\nFROM v_completed_orders\nORDER BY order_id\nLIMIT 2;",
       translations: {
@@ -1941,6 +2123,21 @@ function sqlLessons(): CareerLesson[] {
 
 function linuxMastery(): CareerLesson[] {
   return [
+    {
+      id: "linux-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Linux",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Linux 🐧\n\nBefore taking control of a Linux server, you must learn how to not break it.\n\n### DOs (What you should use)\n- **DO** use `sudo` only when absolutely necessary. Default to a regular user.\n- **DO** use `man <command>` to read the manual before running an unknown command.\n- **DO** make backups of configuration files before editing them (e.g., `cp config config.bak`).\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** blindly copy and paste curl-to-bash scripts from the internet into your terminal.\n- **DON'T** ever run `rm -rf /` or blindly use wildcards with `rm` (e.g., `rm -rf *`).\n- **DON'T** log in as `root` via SSH. Disable root SSH login immediately.",
+      codeExample:
+        "# DO: Make a backup before editing\n# cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak\n# nano /etc/ssh/sshd_config\n\n# DON'T: Edit system files blindly without backup",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What should you do before running an unfamiliar command you found online?", options: ["Run it with sudo", "Read the manual (man page) first", "Run it in the background"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { prompt: "Print 'Make backups first'.", starterCode: "echo '___'", expectedOutput: "Make backups first" },
+        advanced: { prompt: "Print 'Never copy paste blindly'.", starterCode: "echo '___'", expectedOutput: "Never copy paste blindly" },
+      },
+    },
     {
       id: "linux-01-intro",
       title: "1. Intro to Linux",
@@ -2878,6 +3075,21 @@ $ find /tmp -name ".env"`,
 function cloudMlops(): CareerLesson[] {
   return [
     {
+      id: "cloud-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Cloud & MLOps",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of the Cloud ☁️\n\nBefore provisioning servers, you must learn the rules of scale and cost management.\n\n### DOs (What you should use)\n- **DO** set up Billing Alerts on day one so you don't wake up to a $10,000 bill.\n- **DO** use Infrastructure as Code (like Terraform) instead of clicking around the AWS Console manually.\n- **DO** containerize your ML models using Docker to avoid the 'It works on my machine' problem.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** ever commit your AWS/GCP Access Keys to GitHub. Bots will find them in seconds.\n- **DON'T** leave expensive GPU instances running over the weekend if you aren't training.\n- **DON'T** rely on local state; always use object storage (like S3) for models and data.",
+      codeExample:
+        "# DO: Read credentials from environment\n# import os; key = os.environ.get('AWS_ACCESS_KEY')\n\n# DON'T: Hardcode cloud keys in your ML scripts\n# key = 'AKIAIOSFODNN7EXAMPLE'",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What is the very first thing you should do when creating a new AWS/GCP account?", options: ["Launch a GPU", "Set up Billing Alerts", "Install Docker"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Use Infrastructure as Code'", starterCode: "print('___')", expectedOutput: "Use Infrastructure as Code" },
+        advanced: { type: "code", prompt: "Print 'Never commit keys'", starterCode: "print('___')", expectedOutput: "Never commit keys" },
+      },
+    },
+    {
       id: "cloud-intro", title: "Introduction to Cloud Computing", description: "Learn about AWS, GCP, and the serverless revolution",
       content: "## Cloud Basics\n\nThe cloud is just someone else's computer, but with specialized tools for scaling and reliability.\n\n### Major Providers\n- **AWS** — The industry leader\n- **Google Cloud (GCP)** — Best for ML and data\n- **Azure** — Enterprise standard\n\n### Core Services\n- **Compute** — EC2, Lambda, Cloud Run\n- **Storage** — S3, Cloud storage\n- **Networking** — VPCs, Load Balancers",
       codeExample: "# Check if running in a cloud environment\nimport os\n\ndef check_cloud():\n    if os.environ.get(\"AWS_EXECUTION_ENV\"):\n        return \"AWS Lambda\"\n    if os.environ.get(\"K_SERVICE\"):\n        return \"Google Cloud Run\"\n    return \"Local Environment\"\n\nprint(\"Environment:\", check_cloud())",
@@ -2979,6 +3191,21 @@ function cloudMlops(): CareerLesson[] {
 function gameDev(): CareerLesson[] {
   return [
     {
+      id: "gamedev-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Game Development",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Game Dev 🎮\n\nBefore building complex games, learn the rules of performance and architecture.\n\n### DOs (What you should use)\n- **DO** separate your game logic (updates) from your rendering logic (drawing).\n- **DO** use 'Delta Time' so your game speed is consistent regardless of the player's frame rate.\n- **DO** optimize assets (compress images and audio) before loading them.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** load images, sounds, or heavy assets inside your main game loop. Load them once at the start.\n- **DON'T** tie physics updates directly to frames per second.\n- **DON'T** optimize too early. Focus on getting a fun, working prototype first.",
+      codeExample:
+        "# DO: Multiply movement by delta_time\n# player.x += speed * delta_time\n\n# DON'T: Tie movement to frame rate\n# player.x += speed # Runs 2x faster at 120fps than 60fps!",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Why do we use Delta Time in game development?", options: ["To make the game look prettier", "To decouple game speed from frame rate", "To load assets faster"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Load assets before the loop'", starterCode: "print('___')", expectedOutput: "Load assets before the loop" },
+        advanced: { type: "code", prompt: "Print 'Use Delta Time'", starterCode: "print('___')", expectedOutput: "Use Delta Time" },
+      },
+    },
+    {
       id: "game-loop", title: "The Game Loop", description: "Understand how games update and render in real-time",
       content: "## The Heart of Every Game\n\nA game is just a loop that runs 60 times per second.\n\n### 3 Steps per Frame\n1. **Process Input** — Did the player press 'Space'?\n2. **Update** — Move the player, check for gravity\n3. **Render** — Draw everything to the screen\n\n### Frame Rate (FPS)\nIf your loop takes too long, your game lags. The goal is ~16ms per frame.",
       codeExample: "# A simplified game loop concept\nimport time\n\nrunning = True\nframe = 0\n\ndef update():\n    global frame\n    frame += 1\n\n# Run for 3 'frames'\nfor _ in range(3):\n    update()\n    print(f\"Frame {frame}: Updated state\")\n    time.sleep(0.01) # Simulate logic time",
@@ -3079,6 +3306,21 @@ function gameDev(): CareerLesson[] {
 
 function iotRobotics(): CareerLesson[] {
   return [
+    {
+      id: "iot-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in IoT & Robotics",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Hardware 🤖\n\nBefore controlling motors and sensors, you must learn the rules of the physical world.\n\n### DOs (What you should use)\n- **DO** use `try/except` blocks to handle hardware failures gracefully. Sensors will disconnect!\n- **DO** keep your main loop lightweight and non-blocking.\n- **DO** always double-check your wiring before supplying power.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** use blocking `time.sleep()` calls if you need to read multiple sensors simultaneously. Use asynchronous programming or event loops.\n- **DON'T** draw power for heavy motors directly from a Raspberry Pi or Arduino pin (you will fry the board).\n- **DON'T** assume network connectivity is always stable in IoT deployments.",
+      codeExample:
+        "# DO: Graceful fallback on hardware failure\n# try:\n#     temp = sensor.read()\n# except IOError:\n#     temp = None # Handle it!\n\n# DON'T: Crash the whole system on one failed read\n# temp = sensor.read()",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Why should you avoid long `time.sleep()` calls in an IoT main loop?", options: ["It wastes battery", "It blocks the program from reading other sensors", "It overheats the CPU"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Handle hardware failures'", starterCode: "print('___')", expectedOutput: "Handle hardware failures" },
+        advanced: { type: "code", prompt: "Print 'Avoid blocking sleep calls'", starterCode: "print('___')", expectedOutput: "Avoid blocking sleep calls" },
+      },
+    },
     {
       id: "iot-intro", title: "Hardware Basics", description: "Pixels to Pins: Introduction to MicroPython",
       content: "## Coding the Physical World\n\nWith Python, you can control LEDs, read temperature sensors, and move robotic arms.\n\n### MicroPython & CircuitPython\nThese are lightweight versions of Python designed to run on tiny computers (microcontrollers) like the ESP32 or Raspberry Pi Pico.\n\n### GPIO (General Purpose Input/Output)\nThese pins on the board are your connection to the world.\n- **Output**: Sending power to an LED\n- **Input**: Reading if a button is pushed",
@@ -3182,6 +3424,21 @@ function iotRobotics(): CareerLesson[] {
 
 function dsa(): CareerLesson[] {
   return [
+    {
+      id: "dsa-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in DSA",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Algorithms 🧩\n\nBefore solving complex problems, you must understand the rules for writing clean, optimal code.\n\n### DOs (What you should use)\n- **DO** clarify the problem and constraints before writing code.\n- **DO** write out test cases (including edge cases like empty arrays).\n- **DO** start with a Brute Force solution, then optimize.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** mutate (modify) a list or array while iterating over it.\n- **DON'T** use `O(N^2)` algorithms for datasets larger than 10,000 items.\n- **DON'T** forget to check for `null`, `None`, or out-of-bounds indices.",
+      codeExample:
+        "# DO: Iterate over a copy if modifying\n# for item in my_list[:]:\n#     if condition: my_list.remove(item)\n\n# DON'T: Mutate while iterating\n# for item in my_list:\n#     if condition: my_list.remove(item) # Skips items!",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What should you do before writing any code in an interview?", options: ["Start typing immediately", "Clarify constraints and examples", "Ask for the solution"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Check Edge Cases'", starterCode: "print('___')", expectedOutput: "Check Edge Cases" },
+        advanced: { type: "code", prompt: "Print 'Brute Force'", starterCode: "print('___')", expectedOutput: "Brute Force" },
+      },
+    },
     {
       id: "dsa-basics", title: "1. Basics & Foundations", description: "Complexity Analysis and Recursion",
       content: "## Foundations of DSA\n\n### Complexity Analysis\n- **Time Complexity**: Measuring how execution time grows with input size (Big O, Big Ω, Big Θ).\n- **Space Complexity**: Measuring memory usage relative to input.\n\n### Recursion\n- **Direct**: Function calls itself.\n- **Indirect**: Function A calls B, B calls A.\n- **Tail Recursion**: The recursive call is the last action in the function (more efficient).",
@@ -3383,6 +3640,21 @@ const rawTracks: CareerTrack[] = [
 
 function englishMastery(): CareerLesson[] {
   return [
+    {
+      id: "eng-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Professional English",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Communication 🗣️\n\nBefore mastering complex grammar, you must learn the basics of clear, professional communication.\n\n### DOs (What you should use)\n- **DO** use active voice instead of passive voice ('We fixed the bug' vs 'The bug was fixed by us').\n- **DO** keep sentences concise. One thought per sentence.\n- **DO** proofread for spelling and tone before sending emails.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** use overly complex jargon just to sound smart.\n- **DON'T** use filler words ('like', 'um', 'basically') in professional writing.\n- **DON'T** translate literally from your native language; idioms often don't map 1-to-1.",
+      codeExample:
+        "// DO: Active Voice\n// The team completed the project.\n\n// DON'T: Passive Voice\n// The project was completed by the team.",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Which is better for professional communication?", options: ["Active voice ('I wrote the code')", "Passive voice ('The code was written by me')", "Neither"], correctOption: 0, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Use active voice'", starterCode: "print('___')", expectedOutput: "Use active voice" },
+        advanced: { type: "code", prompt: "Print 'Keep it concise'", starterCode: "print('___')", expectedOutput: "Keep it concise" },
+      },
+    },
     {
       id: "eng-1-grammar",
       title: "Level 1: Present Simple Tense 🧩",
@@ -3626,6 +3898,21 @@ function englishMastery(): CareerLesson[] {
 function agenticAi(): CareerLesson[] {
   return [
     {
+      id: "agentic-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Agentic AI",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of AI Agents 🤖\n\nBefore giving LLMs access to tools and APIs, you must learn the rules of prompt engineering and safety.\n\n### DOs (What you should use)\n- **DO** provide tools with extremely clear, unambiguous instructions.\n- **DO** use Structured Outputs (like JSON schemas) to ensure the AI returns data your code can actually parse.\n- **DO** include a 'Human-in-the-loop' for any destructive action (like deleting files or sending emails).\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** write vague prompts ('do the thing'). Be explicit about the role, context, and desired output.\n- **DON'T** trust the LLM blindly. Always validate inputs and outputs.\n- **DON'T** pass massive contexts into every prompt if it's not needed (it's slow and expensive).",
+      codeExample:
+        "# DO: Clear tool instructions\n# def get_weather(location):\n#     \"\"\"Gets current weather for a specific city. Required arg: location.\"\"\"\n\n# DON'T: Vague instructions\n# def weather(loc):\n#     \"\"\"gets weather\"\"\"",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What should you ALWAYS do before letting an AI execute a destructive action (like dropping a database)?", options: ["Tell it to be careful", "Require Human-in-the-loop approval", "Ask it twice"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Human in the loop'", starterCode: "print('___')", expectedOutput: "Human in the loop" },
+        advanced: { type: "code", prompt: "Print 'Clear instructions'", starterCode: "print('___')", expectedOutput: "Clear instructions" },
+      },
+    },
+    {
       id: "agentic-1-foundations",
       title: "1. AI Foundations",
       description: "Concepts, Deep Learning, Mathematics, and Applications",
@@ -3756,6 +4043,21 @@ function agenticAi(): CareerLesson[] {
 
 function systemDesign(): CareerLesson[] {
   return [
+    {
+      id: "sysdesign-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in System Design",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of Architecture 🏗️\n\nBefore designing complex distributed systems, you must learn to avoid over-engineering.\n\n### DOs (What you should use)\n- **DO** clarify the exact requirements and constraints (Scale, Read/Write ratio) before designing.\n- **DO** start with a simple monolith and scale only when necessary.\n- **DO** design stateless servers so they can scale horizontally behind a load balancer.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** use microservices for a simple MVP. It adds massive operational overhead.\n- **DON'T** build a distributed NoSQL system if a single Postgres database works perfectly fine for your scale.\n- **DON'T** forget about monitoring and alerting in your design.",
+      codeExample:
+        "// DO: Stateless server (can be scaled infinitely)\n// app.post('/data', (req, res) => db.insert(req.body));\n\n// DON'T: Stateful server (breaks behind a load balancer)\n// const localState = {}; \n// app.post('/data', (req, res) => localState[req.id] = req.body);",
+      exercises: {
+        beginner: { type: "quiz", prompt: "Should you always use Microservices for a brand new startup's MVP?", options: ["Yes, to be web-scale", "No, start with a simple monolith", "Only if using Node.js"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { prompt: "Print 'Avoid over-engineering'.", starterCode: "echo '___'", expectedOutput: "Avoid over-engineering" },
+        advanced: { prompt: "Print 'Design stateless servers'.", starterCode: "echo '___'", expectedOutput: "Design stateless servers" },
+      },
+    },
     {
       id: "sd-1-foundations",
       title: "Module 1: Foundations",
@@ -3941,6 +4243,21 @@ function systemDesign(): CareerLesson[] {
 
 function softwareTesting(): CareerLesson[] {
   return [
+    {
+      id: "qa-best-practices",
+      title: "0. Best Practices & Classic Mistakes",
+      description: "Dos, Don'ts, and what to avoid in Software Testing",
+      category: "Foundations",
+      content:
+        "## The Golden Rules of QA 🧪\n\nBefore writing test suites, you must learn what makes a test useful versus what makes it annoying.\n\n### DOs (What you should use)\n- **DO** write tests that verify *behavior*, not internal implementation details.\n- **DO** test both the 'Happy Path' (when everything works) and Edge Cases (errors, empty inputs).\n- **DO** ensure tests are deterministic (they either always pass or always fail on the same code).\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** write flaky tests that depend on an active internet connection or slow 3rd party APIs (mock them!).\n- **DON'T** assert on exact string error messages if they change frequently (assert on status codes or error types instead).\n- **DON'T** try to achieve 100% code coverage at the expense of writing meaningful tests.",
+      codeExample:
+        "# DO: Test behavior\n# def test_addition(): assert add(2, 2) == 4\n\n# DON'T: Test implementation (too brittle)\n# def test_addition(): assert add.__code__.co_varnames == ('a', 'b')",
+      exercises: {
+        beginner: { type: "quiz", prompt: "What should you do if your test relies on a slow external weather API?", options: ["Add time.sleep(10)", "Mock the API response", "Skip the test entirely"], correctOption: 1, starterCode: "", expectedOutput: "" },
+        intermediate: { type: "code", prompt: "Print 'Mock external APIs'", starterCode: "print('___')", expectedOutput: "Mock external APIs" },
+        advanced: { type: "code", prompt: "Print 'Test behavior not implementation'", starterCode: "print('___')", expectedOutput: "Test behavior not implementation" },
+      },
+    },
     {
       id: "qa-1-intro",
       title: "Module 1: Introduction to Testing",

@@ -9,6 +9,7 @@ export interface ExecutionResult {
   output: string;
   error: string;
   exitCode: number;
+  executionTime?: number;
 }
 
 interface WorkerSuccessMessage {
@@ -158,16 +159,21 @@ function runPythonExecution(code: string, options?: ExecutionOptions): Promise<E
           worker.removeEventListener("error", handleError);
         };
 
+        const startTime = performance.now();
+
         const finish = (result: ExecutionResult) => {
           if (!activeExecution || activeExecution.requestId !== requestId) {
             return;
           }
+          
+          const endTime = performance.now();
+          const duration = Math.round(endTime - startTime);
 
           cleanup();
           window.clearTimeout(activeExecution.timeoutId);
           activeExecution = null;
           setRuntimeStatus(previousStatus === "error" ? "ready" : previousStatus);
-          resolve(result);
+          resolve({ ...result, executionTime: duration });
         };
 
         const handleMessage = (event: MessageEvent<WorkerMessage>) => {

@@ -18,7 +18,7 @@ import { SqlTableView } from "@/components/SqlTableView";
 import { Helmet } from "react-helmet-async";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/components/ui/use-toast";
-import { Play, Send, Eye, EyeOff, ArrowLeft, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Square, Building2, BookOpenCheck, Clock3, Lock, Database } from "lucide-react";
+import { Play, Send, Eye, EyeOff, ArrowLeft, CheckCircle2, XCircle, Wallet, ChevronDown, ChevronUp, ChevronLeft, ChevronRight, Square, Building2, BookOpenCheck, Clock3, Lock, Database, Sparkles, Zap } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CompanyBadge } from "@/components/CompanyBadge";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -112,7 +112,7 @@ function formatCountdown(seconds: number) {
 export default function ProblemPage() {
   const { id } = useParams<{ id: string }>();
   const { language } = useLanguage();
-  const { progress, solveProblem, addWallet } = useProgress();
+  const { progress, solveProblem, addWallet, unlockSolution } = useProgress();
   const isMobile = useIsMobile();
 
   const isSql = id?.startsWith("sql-");
@@ -131,6 +131,9 @@ export default function ProblemPage() {
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [now, setNow] = useState(Date.now());
   const [sqlResult, setSqlResult] = useState<any>(null);
+  const [executionTime, setExecutionTime] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState<"description" | "editor" | "output">("description");
+  const [executionHistory, setExecutionHistory] = useState<number[]>([]);
   const timeoutHandledRef = useRef(false);
 
   useEffect(() => {
@@ -145,7 +148,6 @@ export default function ProblemPage() {
   const prevProblem = problemIndex > 0 ? currentProblems[problemIndex - 1] : null;
   const nextProblem = problemIndex < currentProblems.length - 1 ? currentProblems[problemIndex + 1] : null;
   const serial = problemIndex + 1;
-  const timeoutSeconds = Math.round(getPythonExecutionTimeoutMs() / 1000);
   const recommendedSubjects = getRecommendedSubjects(problem);
 
   if (!problem) {
@@ -195,6 +197,8 @@ export default function ProblemPage() {
       setSubmitted(false);
       setIsRunning(false);
       setSqlResult(null);
+      setExecutionTime(null);
+      setExecutionHistory([]);
       setProblemTimeLeft(getProblemTimerSeconds(problem));
       timeoutHandledRef.current = false;
       try {
@@ -268,12 +272,14 @@ export default function ProblemPage() {
     setSqlResult(null);
     setOutput("⏳ Running...");
     setTestResults(null);
+    setExecutionTime(null);
 
     if (isSql) {
         try {
             const fullSql = `${problem.schema}\n${problem.initialData}\n${code}`;
             const result = await executeSql(fullSql);
             setSqlResult(result.output); // Pass raw CSV to table
+            setExecutionTime(result.executionTime || null);
             setOutput("");
         } catch (err: any) {
             setOutput(`❌ SQL Error:\n${err.message}`);
@@ -292,6 +298,11 @@ export default function ProblemPage() {
       setOutput("(No output — add print() statements to see results)");
     }
 
+    if (result.executionTime !== undefined) {
+      setExecutionHistory(prev => [...prev.slice(-9), result.executionTime!]);
+      if (isMobile) setActiveTab("output");
+    }
+    setExecutionTime(result.executionTime || null);
     setIsRunning(false);
   };
 
@@ -310,10 +321,21 @@ export default function ProblemPage() {
                 executeSql(fullSqlExpected)
             ]);
 
+            if (resultUser.error) {
+                setOutput(`❌ SQL Error:\n${resultUser.error}`);
+                const errTime = resultUser.executionTime || null;
+                if (errTime) setExecutionHistory(prev => [...prev.slice(-9), errTime]);
+                setExecutionTime(errTime);
+                setIsRunning(false);
+                return;
+            }
+
             const parsedUser = resultUser.parsed;
             const parsedExpected = resultExpected.parsed;
-
             setSqlResult(resultUser.output); // Pass raw CSV to table
+            const sqlTime = resultUser.executionTime || null;
+            if (sqlTime) setExecutionHistory(prev => [...prev.slice(-9), sqlTime]);
+            setExecutionTime(sqlTime);
 
             if (parsedUser && parsedExpected) {
                 const isCorrect = JSON.stringify(parsedUser.columns.sort()) === JSON.stringify(parsedExpected.columns.sort()) && 
@@ -329,7 +351,7 @@ export default function ProblemPage() {
                     setOutput(`❌ Query incorrect. Results do not match.\nExpected ${parsedExpected.values.length} rows, you returned ${parsedUser.values.length}.`);
                 }
             } else {
-                setOutput("❌ Could not parse results. Check your syntax.");
+                setOutput("❌ Could not parse results. Please ensure your query returns a valid table.");
             }
         } catch (err: any) {
             setOutput(`❌ SQL Error during validation:\n${err.message}`);
@@ -339,7 +361,7 @@ export default function ProblemPage() {
     }
 
     const callableName = getCallableName(code);
-    const results: { passed: boolean; input: string; expected: string }[] = [];
+    const results: { passed: boolean; input: string; expected: string; executionTime?: number }[] = [];
     let combinedOutput = "";
 
     const method = problem.validationMethod || (callableName ? 'harness' : 'script');
@@ -362,7 +384,7 @@ export default function ProblemPage() {
             : actualOutput.replace(/\s+/g, " ") === expectedOutput.replace(/\s+/g, " ")
         );
 
-        results.push({ passed, input: testCase.input, expected: testCase.expected });
+        results.push({ passed, input: testCase.input, expected: testCase.expected, executionTime: result.executionTime });
 
         if (result.error && !result.output) {
           setOutput(`❌ Error:\n${result.error}`);
@@ -395,9 +417,17 @@ export default function ProblemPage() {
         passed,
         input: problem.testCases[0]?.input || "",
         expected: problem.testCases[0]?.expected || "",
+        executionTime: result.executionTime,
       });
       combinedOutput = actualOutput || "(no output)";
     }
+    
+    const finalTime = results.length > 0 ? results[results.length-1].executionTime ?? null : null;
+    if (finalTime !== null) {
+      setExecutionHistory(prev => [...prev.slice(-9), finalTime]);
+      if (isMobile) setActiveTab("output");
+    }
+    setExecutionTime(finalTime);
 
     setTestResults(results);
     const allPassed = results.every(r => r.passed);
@@ -431,7 +461,7 @@ export default function ProblemPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100dvh-3.5rem)] flex-col md:h-[calc(100dvh-3.5rem)]">
+    <div className="flex h-[calc(100dvh-3.5rem)] md:h-[calc(100dvh-3.5rem)] flex-col overflow-hidden">
       <Helmet>
         <title>{problem.title} | PyMaster Problems</title>
         <meta name="description" content={`Solve ${problem.title}. ${((problem as any).description || "").substring(0, 100)}... Challenge yourself with our built-in compiler.`} />
@@ -502,17 +532,108 @@ export default function ProblemPage() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col md:flex-row min-h-0">
-        <div className={`md:w-[38%] overflow-y-auto border-b md:border-b-0 md:border-r border-border shrink-0 ${showDescription ? "h-[35vh] md:h-auto" : "hidden md:block"}`}>
-          <button
-            onClick={() => setShowDescription(!showDescription)}
-            className="md:hidden w-full flex items-center justify-between px-4 py-2 bg-surface-1 border-b border-border text-xs text-muted-foreground"
-          >
-            📋 {t.problemDescription}
-            {showDescription ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
-          </button>
+      <div className="md:hidden flex border-b border-border bg-surface-1/50 backdrop-blur-md sticky top-12 z-40">
+        <button 
+          onClick={() => setActiveTab("description")}
+          className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === "description" ? "text-primary border-b-2 border-primary bg-primary/5" : "text-muted-foreground"}`}
+        >
+          Description
+        </button>
+        <button 
+          onClick={() => setActiveTab("editor")}
+          className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === "editor" ? "text-primary border-b-2 border-primary bg-primary/5" : "text-muted-foreground"}`}
+        >
+          Editor
+        </button>
+        <button 
+          onClick={() => setActiveTab("output")}
+          className={`flex-1 py-2 text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === "output" ? "text-primary border-b-2 border-primary bg-primary/5" : "text-muted-foreground"}`}
+        >
+          Output {testResults && <span className="ml-1 text-[8px] bg-streak-green/20 text-streak-green px-1 rounded">Results</span>}
+        </button>
+      </div>
 
-          <div className="p-4 sm:p-6">
+      <div className="flex-1 flex flex-col md:flex-row min-h-0 relative">
+        <div className={`md:w-[42%] overflow-y-auto border-b md:border-b-0 md:border-r border-border shrink-0 ${isMobile && activeTab !== "description" ? "hidden" : "h-full"}`}>
+          <div className="p-4 sm:p-6 lg:p-8">
+            {executionHistory.length > 0 && (
+              <div className="mb-6 p-3.5 rounded-xl bg-surface-1/40 border border-white/10 shadow-lg backdrop-blur-xl relative overflow-hidden group">
+                <div className="flex items-center justify-between mb-4 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <h4 className="text-[9px] font-black uppercase tracking-widest text-primary/60 flex items-center gap-1.5">
+                      <Zap className="w-3 h-3 text-primary" />
+                      Intel
+                    </h4>
+                    <div className="flex gap-1.5">
+                      <span className="text-[9px] font-mono font-bold text-sky-400 bg-sky-400/10 px-1.5 py-0.5 rounded border border-sky-400/20">O({(problem as any).timeComplexity || "N"})</span>
+                      <span className="text-[9px] font-mono font-bold text-sky-300 bg-sky-300/10 px-1.5 py-0.5 rounded border border-sky-300/20">O({(problem as any).spaceComplexity || "1"})</span>
+                    </div>
+                  </div>
+                  <div className="text-[9px] font-black px-2 py-0.5 rounded border bg-primary/10 text-primary border-primary/20">
+                    {executionHistory[executionHistory.length-1] < 100 ? "OPTIMAL" : "STABLE"}
+                  </div>
+                </div>
+                
+                {/* Luminous Blue Pulse Graph */}
+                <div className="h-16 w-full relative group/graph flex items-end gap-1 px-1">
+                  {executionHistory.map((time, i) => {
+                    const dynamicMax = Math.max(...executionHistory, 100);
+                    const height = Math.max(15, (time / dynamicMax) * 85);
+                    const isLatest = i === executionHistory.length - 1;
+                    
+                    return (
+                      <div key={i} className="flex-1 group/bar relative flex flex-col justify-end h-full">
+                        {/* Luminous Glow */}
+                        <div 
+                          style={{ height: `${height + 5}%`, width: '140%', left: '-20%' }}
+                          className={`absolute bottom-0 blur-[10px] transition-all duration-700 opacity-0 group-hover/bar:opacity-30 ${isLatest ? "opacity-20" : ""} bg-sky-400/40`}
+                        />
+                        
+                        <div 
+                          style={{ height: `${height}%` }}
+                          className={`w-full rounded-t-[2px] transition-all duration-700 relative overflow-hidden ${
+                            isLatest ? "opacity-100 ring-1 ring-white/30 animate-pulse shadow-[0_0_15px_rgba(56,189,248,0.4)]" : "opacity-30 hover:opacity-100"
+                          } bg-gradient-to-t from-sky-600/40 via-sky-400/60 to-sky-300`}
+                        >
+                          {/* Shimmer Overlay */}
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/bar:animate-shimmer" />
+                        </div>
+                        
+                        <div className="absolute -top-7 left-1/2 -translate-x-1/2 bg-sky-950 border border-sky-400/30 px-1.5 py-0.5 rounded text-[8px] font-mono font-bold text-sky-100 opacity-0 group-hover/bar:opacity-100 transition-all pointer-events-none z-30 shadow-2xl">
+                          {time}ms
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {executionHistory.length > 1 && (
+                    <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+                      <path
+                        d={`M ${executionHistory.map((time, i) => {
+                          const dynamicMax = Math.max(...executionHistory, 100);
+                          const x = (i / (executionHistory.length - 1)) * 100;
+                          const y = 100 - (Math.max(15, (time / dynamicMax) * 85));
+                          return `${x},${y}`;
+                        }).join(' L ')}`}
+                        fill="none"
+                        stroke="rgba(125,211,252,0.4)"
+                        strokeWidth="0.6"
+                        strokeDasharray="2,2"
+                        className="animate-dash"
+                      />
+                    </svg>
+                  )}
+                </div>
+
+                <div className="flex justify-between items-center mt-4 pt-2 border-t border-white/5">
+                  <div className="flex gap-3 text-[8px] font-mono">
+                    <div className="flex gap-1"><span className="text-sky-400/60 uppercase">Best</span><span className="text-sky-300 font-bold">{Math.min(...executionHistory)}ms</span></div>
+                    <div className="flex gap-1"><span className="text-sky-400/60 uppercase">Avg</span><span className="text-sky-300 font-bold">{Math.round(executionHistory.reduce((a, b) => a + b, 0) / executionHistory.length)}ms</span></div>
+                  </div>
+                  <button onClick={() => setExecutionHistory([])} className="text-[8px] font-bold text-sky-400/30 hover:text-sky-400 uppercase tracking-widest transition-colors">Clear</button>
+                </div>
+              </div>
+            )}
             <div className="flex items-center gap-2 mb-3">
               <span className="text-xs text-muted-foreground font-mono">#{serial}</span>
               <h2 className="text-lg sm:text-xl font-bold text-foreground">{problem.title}</h2>
@@ -574,7 +695,6 @@ export default function ProblemPage() {
               </div>
             )}
 
-            {/* ── Reveal Answer (Unified for SQL & Python) ───────────────────────── */}
             <div className="mb-6">
               {!solutionUnlocked ? (
                 <Button
@@ -622,14 +742,39 @@ export default function ProblemPage() {
               )}
             </div>
             
-            <div className="flex items-center gap-2 mb-4">
-              <Wallet className="w-4 h-4 text-reward-gold" />
-              <span className="text-sm text-reward-gold font-medium">💰 ${reward} {t.reward}</span>
+            {recommendedSubjects.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-[10px] uppercase tracking-widest text-muted-foreground mb-3 font-semibold flex items-center gap-2">
+                  <BookOpenCheck className="w-3.5 h-3.5 text-primary" />
+                  {t.learnFirst}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {recommendedSubjects.map((subject: string) => (
+                    <span
+                      key={subject}
+                      className="px-2 py-1 rounded-md bg-primary/5 border border-primary/20 text-[10px] font-medium text-primary/80"
+                    >
+                      {subject}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <div className="flex flex-wrap items-center gap-4 mb-6">
+              <div className="flex items-center gap-2">
+                <Wallet className="w-4 h-4 text-reward-gold" />
+                <span className="text-sm text-reward-gold font-medium">💰 ${reward} {t.reward}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock3 className="w-4 h-4 text-sky-400" />
+                <span className="text-sm text-sky-400 font-medium">⏱️ {Math.round(getProblemTimerSeconds(problem) / 60)} mins</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col min-h-0 relative">
+        <div className={`flex-1 flex flex-col min-h-0 w-full relative ${isMobile && activeTab === "description" ? "hidden" : "flex"}`}>
           {isLocked ? (
             <div className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-background/95 backdrop-blur-sm px-6 text-center">
               <Lock className="w-16 h-16 text-muted-foreground mb-6 opacity-30" />
@@ -672,7 +817,7 @@ export default function ProblemPage() {
             </div>
           ) : null}
 
-            <div className="flex-1 min-h-0 relative">
+            <div className={`flex-1 min-h-0 w-full relative ${isMobile && activeTab === "output" ? "hidden" : "flex h-full"}`}>
               <Suspense fallback={<div className="flex w-full h-full items-center justify-center bg-surface-0"><span className="text-sm font-semibold tracking-wider text-muted-foreground animate-pulse">{t.loadingCompiler}</span></div>}>
                 <Editor
                   key={id}
@@ -701,9 +846,42 @@ export default function ProblemPage() {
               </Suspense>
             </div>
 
-          <div className="h-[40%] min-h-[140px] border-t border-border bg-surface-0 flex flex-col shrink-0 overflow-hidden shadow-[0_-4px_20px_rgba(0,0,0,0.2)]">
+          <div className={`h-[45%] md:h-[45%] min-h-[160px] w-full border-t border-border bg-surface-0 flex flex-col shrink-0 overflow-hidden shadow-[0_-8px_30px_rgba(0,0,0,0.3)] transition-all duration-300 ${isMobile && activeTab !== "output" ? "hidden" : "h-full flex-1"}`}>
             <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 border-b border-border bg-surface-1/80 backdrop-blur-sm sticky top-0 z-10">
-              <span className="text-[10px] sm:text-xs text-muted-foreground font-mono">{t.output}</span>
+              <div className="flex items-center gap-4">
+                <span className="text-[10px] sm:text-xs text-muted-foreground font-mono uppercase tracking-wider">{t.output}</span>
+                
+                {/* Modern Performance Badge */}
+                {executionTime !== null && (
+                  <div className={`flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[10px] font-mono animate-in zoom-in duration-300 ${
+                    executionTime < 100 ? "border-streak-green/30 bg-streak-green/10 text-streak-green shadow-[0_0_10px_rgba(34,197,94,0.1)]" :
+                    executionTime < 500 ? "border-reward-gold/30 bg-reward-gold/10 text-reward-gold shadow-[0_0_10px_rgba(234,179,8,0.1)]" :
+                    "border-destructive/30 bg-destructive/10 text-destructive"
+                  }`}>
+                    <Sparkles className="w-3 h-3" />
+                    {executionTime}ms
+                  </div>
+                )}
+                
+                {/* Sparkline Graph */}
+                {executionHistory.length > 1 && (
+                  <div className="hidden sm:flex items-end gap-[2px] h-4 pb-0.5">
+                    {executionHistory.map((time, i) => {
+                      const dynamicMax = Math.max(...executionHistory, 100);
+                      const height = Math.max(4, (time / dynamicMax) * 100);
+                      return (
+                        <div 
+                          key={i} 
+                          style={{ height: `${height}%` }}
+                          className={`w-1 rounded-t-[1px] transition-all duration-500 ${
+                            time < 100 ? "bg-streak-green" : time < 500 ? "bg-reward-gold" : "bg-destructive"
+                          }`}
+                        />
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
               <div className="flex gap-2">
                 {isRunning ? (
                   <Button size="sm" variant="destructive" className="h-7 text-xs gap-1 px-2 sm:px-3" onClick={cancelActivePythonExecution}>

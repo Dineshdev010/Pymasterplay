@@ -41,6 +41,39 @@ export const lessons: Lesson[] = [
   // BEGINNER
   // ═══════════════════════════════════════
   {
+    id: "best-practices",
+    title: "0. Best Practices & Classic Mistakes",
+    category: "Beginner",
+    description: "Crucial dos and don'ts before you start coding in Python",
+    content: "## The Golden Rules of Python\n\nBefore writing code, understand these professional standards.\n\n### Dos\n- **Do** follow PEP 8 style guide (use `snake_case` for variables and functions).\n- **Do** use meaningful variable names (e.g., `user_age` instead of `x`).\n- **Do** write docstrings for your functions to explain what they do.\n- **Do** use virtual environments (`venv`) for your projects to isolate dependencies.\n\n### Don'ts\n- **Don't** use mutable default arguments like `def func(lst=[])`. This creates a shared list across all function calls.\n- **Don't** write massive, monolithic functions. Break logic into smaller, testable pieces.\n- **Don't** catch general exceptions with `except Exception:`. Catch specific exceptions to avoid hiding real bugs.",
+    codeExample: `# ❌ BAD (Classic Mistake)\ndef add_item(item, my_list=[]):\n    my_list.append(item)  # MUTABLE DEFAULT ARGUMENT!\n    return my_list\n\n# ✅ GOOD (Professional Standard)\ndef add_item(item, my_list=None):\n    if my_list is None:\n        my_list = []\n    my_list.append(item)\n    return my_list`,
+    translations: {
+      tamil: {
+        title: "0. சிறந்த நடைமுறைகள் & தவறுகள்",
+        category: "தொடக்கநிலை",
+        description: "நீங்கள் Python-ல் நிரல் எழுத தொடங்கும் முன் முக்கிய விதிகள்",
+        content: "## Python-ன் முக்கிய விதிகள்\n\nநிரல் எழுதுவதற்கு முன், இந்த தொழில்முறை தரங்களை புரிந்து கொள்ளுங்கள்.\n\n### செய்ய வேண்டியவை\n- **PEP 8** நடைமுறைகளை பின்பற்றுங்கள் (எ.கா. `snake_case`).\n- அர்த்தமுள்ள பெயர்களை பயன்படுத்துங்கள் (எ.கா. `x`-க்கு பதிலாக `user_age`).\n\n### செய்ய கூடாதவை\n- `lst=[]` போன்ற மாறக்கூடிய default argument-களை பயன்படுத்த வேண்டாம்.\n- பெரிய, சிக்கலான function-களை எழுத வேண்டாம்."
+      }
+    },
+    exercises: {
+      beginner: {
+        prompt: "Fix the bad variable name. Create a variable `user_age = 25` instead of `x = 25` and print it.",
+        starterCode: `# Create a well-named variable user_age and print it\n`,
+        expectedOutput: "25",
+      },
+      intermediate: {
+        prompt: "Fix the mutable default argument mistake. Complete `def add(item, lst=None):`, if `lst is None` assign `[]`, append item, return `lst`. Print `add(1)`.",
+        starterCode: `def add(item, lst=None):\n    # Fix the logic to avoid mutable default arg\n\n# Print add(1)\n`,
+        expectedOutput: "[1]",
+      },
+      advanced: {
+        prompt: "Write a function `safe_divide(a, b)` that explicitly catches `ZeroDivisionError` (not generic Exception) and returns `0`. Print `safe_divide(10, 0)`.",
+        starterCode: `# Define safe_divide catching specific ZeroDivisionError\n`,
+        expectedOutput: "0",
+      },
+    },
+  },
+  {
     id: "fundamentals",
     title: "Python Fundamentals",
     category: "Beginner",
