@@ -74,6 +74,7 @@ export function SqlExerciseEditor({ exercise, level, lessonId, locked }: SqlExer
     setShowSolution(false);
   }, [exerciseKey, exercise.starterCode]);
 
+
   const levelColors = useMemo(
     () => ({
       beginner: "bg-streak-green/10 border-streak-green/30 text-streak-green",

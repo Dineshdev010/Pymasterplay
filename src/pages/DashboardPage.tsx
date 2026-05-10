@@ -25,7 +25,9 @@ import { getDynamicMemers } from "@/data/dummyMemers";
 import { Helmet } from "react-helmet-async";
 import { playSuccessSound, playClickSound } from "@/lib/sounds";
 import { cn } from "@/lib/utils";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
+
 
 
 
@@ -558,6 +560,37 @@ export default function DashboardPage() {
     { title: `${progress.completedLessons.length} lessons completed`, helper: "Learning depth improved", tone: "text-blue-400" },
     { title: `${progress.streak}-day streak active`, helper: "Keep it alive before reset", tone: "text-python-yellow" },
   ];
+
+  const dailyFocusIntelligence = useMemo(() => {
+    if (progress.solvedProblems.length < 5) return {
+      title: "Foundation Phase",
+      desc: "Building a problem-solving habit. 5 completions will unlock your first momentum badge.",
+      action: "Solve Problem",
+      link: "/problems",
+      icon: Target,
+      color: "text-python-yellow",
+      accent: "bg-python-yellow/10 border-python-yellow/20"
+    };
+    if (progress.completedLessons.length < 10) return {
+      title: "Curriculum Deep-Dive",
+      desc: "Master core concepts. Reaching 10 lessons marks you as a dedicated learner.",
+      action: "Resume Learning",
+      link: "/learn",
+      icon: BookOpen,
+      color: "text-streak-green",
+      accent: "bg-streak-green/10 border-streak-green/20"
+    };
+    return {
+      title: "Daily Mastery Loop",
+      desc: "Consistency is key. One quick compiler run or quiz maintains your sharp edge.",
+      action: "Open Compiler",
+      link: "/compiler",
+      icon: Sparkles,
+      color: "text-primary",
+      accent: "bg-primary/10 border-primary/20"
+    };
+  }, [progress.solvedProblems.length, progress.completedLessons.length]);
+
   const showOverview = dashboardView === "overview";
   const showInsights = dashboardView === "insights";
   const showCustomize = dashboardView === "customize";
@@ -729,8 +762,10 @@ export default function DashboardPage() {
         </p>
       </div>
 
-      <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 rounded-none md:rounded-[2rem] ${selectedTheme.shell}`}>
-      <div className="mb-6 rounded-2xl border border-border bg-card/80 p-4">
+      <div className={`max-w-6xl mx-auto px-4 sm:px-6 py-6 md:py-8 rounded-none md:rounded-[2rem] relative overflow-hidden ${selectedTheme.shell}`}>
+        <div className="animated-mesh opacity-40" />
+
+      <div className="mb-6 rounded-2xl border border-border/50 bg-card/40 backdrop-blur-md p-4 glass-card">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-wrap items-center gap-2">
             <span className="text-xs font-semibold uppercase tracking-[0.2em] text-muted-foreground">Dashboard View</span>
@@ -738,9 +773,12 @@ export default function DashboardPage() {
               <button
                 key={view}
                 type="button"
-                onClick={() => setDashboardView(view)}
-                className={`rounded-full border px-3 py-1 text-xs font-medium capitalize transition-colors ${
-                  dashboardView === view ? "border-primary bg-primary text-primary-foreground" : "border-border bg-surface-1 text-muted-foreground"
+                onClick={() => {
+                  setDashboardView(view);
+                  playClickSound();
+                }}
+                className={`rounded-full border px-3 py-1 text-xs font-medium capitalize transition-all duration-300 ${
+                  dashboardView === view ? "border-primary bg-primary text-primary-foreground shadow-md scale-105" : "border-border bg-surface-1 text-muted-foreground hover:bg-surface-2"
                 }`}
               >
                 {view}
@@ -750,8 +788,11 @@ export default function DashboardPage() {
           <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
-              onClick={() => setDashboardDensity((current) => (current === "full" ? "focus" : "full"))}
-              className="rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-medium text-foreground"
+              onClick={() => {
+                setDashboardDensity((current) => (current === "full" ? "focus" : "full"));
+                playClickSound();
+              }}
+              className="rounded-full border border-border bg-surface-1 px-3 py-1 text-xs font-medium text-foreground hover:bg-surface-2 transition-colors"
             >
               {dashboardDensity === "focus" ? "Performance Mode On" : "Performance Mode Off"}
             </button>
@@ -973,24 +1014,60 @@ export default function DashboardPage() {
       <SectionErrorBoundary section="Stats">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6 md:mb-8">
           {stats.map((s) => (
-            <div key={s.label} className="bg-card border border-border rounded-lg p-4 hover:border-primary/30 transition-colors">
-              <div className="flex items-center gap-1.5 mb-2">
-                <span className="text-lg">{s.emoji}</span>
+            <motion.div 
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              key={s.label} 
+              className="bg-card/70 border border-border/50 rounded-xl p-4 glass-card-elevated hover:border-primary/50 transition-all group overflow-hidden relative shimmer-bg"
+            >
+              <div className="flex items-center gap-1.5 mb-2 relative z-10">
+                <span className="text-xl group-hover:scale-125 transition-transform duration-300">{s.emoji}</span>
               </div>
-              <div className="text-xl font-bold text-foreground">{s.value}</div>
-              <div className="text-xs text-muted-foreground">{s.label}</div>
+              <div className="text-2xl font-bold text-foreground tracking-tight relative z-10">{s.value}</div>
+              <div className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground/80 mt-1 relative z-10">{s.label}</div>
               {s.total && typeof s.value === "number" ? (
-                <div className="mt-2 h-1.5 bg-surface-2 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-primary rounded-full transition-all"
-                    style={{ width: `${Math.min((s.value / s.total) * 100, 100)}%` }}
+                <div className="mt-3 h-1.5 bg-surface-2/50 rounded-full overflow-hidden relative z-10 backdrop-blur-sm">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${Math.min((s.value / s.total) * 100, 100)}%` }}
+                    className="h-full bg-gradient-to-r from-primary via-primary/80 to-accent rounded-full shadow-[0_0_8px_rgba(var(--primary),0.3)]"
                   />
                 </div>
               ) : null}
-            </div>
+              
+              <div className="absolute top-0 right-0 p-2 opacity-5 group-hover:opacity-10 transition-opacity">
+                <s.icon className="w-8 h-8 rotate-12" />
+              </div>
+            </motion.div>
           ))}
         </div>
       </SectionErrorBoundary>
+
+      {/* Daily Focus Layer */}
+      {showOverview && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 p-6 rounded-2xl border border-border/50 glass-card-elevated relative overflow-hidden"
+        >
+          <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+            <div className={`p-4 rounded-2xl ${dailyFocusIntelligence.accent} ${dailyFocusIntelligence.color}`}>
+              <dailyFocusIntelligence.icon className="w-8 h-8" />
+            </div>
+            <div className="flex-1 text-center md:text-left">
+              <div className="text-xs font-bold uppercase tracking-widest text-primary mb-1">Recommended Focus</div>
+              <h3 className="text-xl font-bold text-foreground mb-2">{dailyFocusIntelligence.title}</h3>
+              <p className="text-sm text-muted-foreground max-w-2xl">{dailyFocusIntelligence.desc}</p>
+            </div>
+            <Link to={dailyFocusIntelligence.link}>
+              <Button className="gap-2 px-6 py-6 text-base font-bold shadow-lg shadow-primary/20 hover:scale-105 transition-transform">
+                {dailyFocusIntelligence.action} <ArrowUpRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
+          <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl" />
+        </motion.div>
+      )}
+
 
       {/* Activity (moved below Public Profile) */}
       {(showOverview || showInsights) && dashboardDensity === "full" && (
@@ -1128,276 +1205,238 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {(showInsights || showOverview) && (
-      <div className="mb-6 grid gap-4 lg:grid-cols-2">
-        <div className="rounded-2xl border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold text-foreground">Weekly Trend Snapshot</h3>
-          <div className="mt-4 space-y-3">
-            {weeklyTrendCards.map((trend) => {
-              const trendPct = trend.previous > 0 ? Math.round(((trend.current - trend.previous) / trend.previous) * 100) : 100;
-              const barWidth = Math.min(100, Math.max(8, Math.round((trend.current / Math.max(trend.current, trend.previous || 1)) * 100)));
-              return (
-                <div key={trend.label} className="rounded-xl border border-border bg-surface-1 p-3">
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-sm font-medium text-foreground">{trend.label}</span>
-                    <span className={`text-xs font-semibold ${trendPct >= 0 ? "text-streak-green" : "text-destructive"}`}>
-                      {trendPct >= 0 ? "+" : ""}{trendPct}%
-                    </span>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={dashboardView}
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -10 }}
+          transition={{ duration: 0.2 }}
+        >
+          {showOverview && (
+            <>
+              {/* Master Arenas */}
+              <SectionErrorBoundary section="Master Arenas">
+                <div className="bg-card/40 border border-border/50 rounded-2xl p-6 mb-8 glass-card">
+                  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-primary" />
+                    Master Arenas
+                  </h2>
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Master specific domains with 100+ focused questions each. Pick a topic to start.
+                  </p>
+                  <div className="mt-5 grid grid-cols-2 md:grid-cols-5 gap-3">
+                    {[
+                      { id: "python", name: "Python", icon: Zap, color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", path: "/python-quiz-100" },
+                      { id: "sql", name: "SQL", icon: Database, color: "text-blue-400", bg: "bg-blue-400/5", border: "border-blue-400/20", path: "/arena/sql" },
+                      { id: "linux", name: "Linux", icon: Terminal, color: "text-expert-purple", bg: "bg-expert-purple/5", border: "border-expert-purple/20", path: "/arena/linux" },
+                      { id: "pandas", name: "Pandas", icon: BarChart3, color: "text-python-yellow", bg: "bg-python-yellow/5", border: "border-python-yellow/20", path: "/arena/pandas" },
+                      { id: "cloud", name: "Cloud", icon: Cloud, color: "text-orange-400", bg: "bg-orange-400/5", border: "border-orange-400/20", path: "/arena/cloud" },
+                    ].map((arena) => (
+                      <motion.button
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        key={arena.id}
+                        onClick={() => { playClickSound(); navigate(arena.path); }}
+                        className={cn("flex flex-col items-center justify-center p-4 rounded-2xl border transition-all group", arena.bg, arena.border)}
+                      >
+                        <div className={cn("p-3 rounded-xl bg-background border border-border group-hover:shadow-lg transition-all", arena.color)}>
+                          <arena.icon className="w-6 h-6" />
+                        </div>
+                        <div className="mt-3 font-bold text-foreground">{arena.name}</div>
+                        <ArrowUpRight className="w-4 h-4 mt-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                      </motion.button>
+                    ))}
                   </div>
-                  <div className="mt-2 h-2 rounded-full bg-background overflow-hidden">
-                    <div className="h-full rounded-full bg-primary" style={{ width: `${barWidth}%` }} />
+                </div>
+              </SectionErrorBoundary>
+
+              {/* Quick actions */}
+              <SectionErrorBoundary section="Quick Actions">
+                <div className="bg-card/40 border border-border/50 rounded-2xl p-6 mb-8 glass-card">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-python-yellow" />
+                        Quick Actions
+                      </h2>
+                      <p className="text-sm text-muted-foreground">
+                        Jump back into learning in one click. Great for all ages—pick one small next step and continue.
+                      </p>
+                    </div>
                   </div>
-                  <div className="mt-1 text-[11px] text-muted-foreground">{trend.helper}</div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
 
-        <div className="rounded-2xl border border-border bg-card p-5">
-          <h3 className="text-sm font-semibold text-foreground">Achievement Timeline</h3>
-          <div className="mt-4 space-y-3">
-            {timelineItems.map((item, index) => (
-              <div key={item.title} className="flex items-start gap-3 rounded-xl border border-border bg-surface-1 p-3">
-                <div className={`mt-0.5 text-xs font-bold ${item.tone}`}>#{index + 1}</div>
-                <div>
-                  <div className="text-sm font-medium text-foreground">{item.title}</div>
-                  <div className="text-[11px] text-muted-foreground">{item.helper}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      )}
-
-      {/* Master Arenas */}
-      {showOverview && (
-        <SectionErrorBoundary section="Master Arenas">
-          <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Zap className="w-5 h-5 text-primary" />
-              Master Arenas
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Master specific domains with 100+ focused questions each. Pick a topic to start.
-            </p>
-            <div className="mt-5 grid grid-cols-2 md:grid-cols-5 gap-3">
-              {[
-                { id: "python", name: "Python", icon: Zap, color: "text-primary", bg: "bg-primary/5", border: "border-primary/20", path: "/python-quiz-100" },
-                { id: "sql", name: "SQL", icon: Database, color: "text-blue-400", bg: "bg-blue-400/5", border: "border-blue-400/20", path: "/arena/sql" },
-                { id: "linux", name: "Linux", icon: Terminal, color: "text-expert-purple", bg: "bg-expert-purple/5", border: "border-expert-purple/20", path: "/arena/linux" },
-                { id: "pandas", name: "Pandas", icon: BarChart3, color: "text-python-yellow", bg: "bg-python-yellow/5", border: "border-python-yellow/20", path: "/arena/pandas" },
-                { id: "cloud", name: "Cloud", icon: Cloud, color: "text-orange-400", bg: "bg-orange-400/5", border: "border-orange-400/20", path: "/arena/cloud" },
-              ].map((arena) => (
-                <button
-                  key={arena.id}
-                  onClick={() => { playClickSound(); navigate(arena.path); }}
-                  className={cn("flex flex-col items-center justify-center p-4 rounded-2xl border transition-all hover:scale-[1.05] active:scale-[0.95] group", arena.bg, arena.border)}
-                >
-                  <div className={cn("p-3 rounded-xl bg-background border border-border group-hover:shadow-lg transition-all", arena.color)}>
-                    <arena.icon className="w-6 h-6" />
+                  <div className="mt-5 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-3">
+                    {[
+                      { to: "/learn", title: "Learn", desc: "Continue lessons", icon: BookOpen, accent: "text-streak-green" },
+                      { to: "/problems", title: "Problems", desc: "Practice daily", icon: Code, accent: "text-primary" },
+                      { to: "/python-quiz-100", title: "Arena", desc: `Resume Q${quizProgress.current + 1}`, icon: Trophy, accent: "text-orange-500" },
+                      { to: "/dsa", title: "DSA", desc: "Patterns + levels", icon: Brain, accent: "text-python-yellow" },
+                      { to: "/compiler", title: "Compiler", desc: "Try quick code", icon: Target, accent: "text-blue-400" },
+                      { to: "/blog", title: "Blog", desc: "Read guides", icon: Globe, accent: "text-expert-purple" },
+                      { to: "/projects", title: "Projects", desc: "See how it’s built", icon: Award, accent: "text-python-yellow" },
+                    ].map((item) => (
+                      <button
+                        key={item.to}
+                        type="button"
+                        onClick={() => { playClickSound(); navigate(item.to); }}
+                        className="rounded-xl border border-border bg-surface-1 p-4 text-left hover:border-primary/30 hover:bg-primary/5 transition-colors"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className={`rounded-lg border border-border bg-background p-2 ${item.accent}`}>
+                            <item.icon className="w-4 h-4" />
+                          </div>
+                          <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
+                        </div>
+                        <div className="mt-3 text-sm font-semibold text-foreground">{item.title}</div>
+                        <div className="mt-1 text-[11px] leading-5 text-muted-foreground">{item.desc}</div>
+                      </button>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={toggleSound}
+                      className="group rounded-xl border border-border bg-surface-1 p-4 text-left hover:border-primary/30 hover:bg-primary/5 transition-all active:scale-95"
+                    >
+                      <div className="flex items-start justify-between gap-2">
+                        <div className={`rounded-lg border border-border bg-background p-2 ${soundEnabled ? "text-primary" : "text-muted-foreground"}`}>
+                          {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+                        </div>
+                      </div>
+                      <div className="mt-3 text-sm font-semibold text-foreground">Sound Effects</div>
+                      <div className="mt-1 text-[11px] leading-5 text-muted-foreground">
+                        {soundEnabled ? "Audio enabled" : "Audio muted"}
+                      </div>
+                    </button>
                   </div>
-                  <div className="mt-3 font-bold text-foreground">{arena.name}</div>
-                  <ArrowUpRight className="w-4 h-4 mt-1 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
-                </button>
-              ))}
-            </div>
-          </div>
-        </SectionErrorBoundary>
-      )}
-
-      {/* Quick actions */}
-      {showOverview && (
-      <SectionErrorBoundary section="Quick Actions">
-        <div className="bg-card border border-border rounded-2xl p-6 mb-8">
-          <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-python-yellow" />
-                Quick Actions
-              </h2>
-              <p className="text-sm text-muted-foreground">
-                Jump back into learning in one click. Great for all ages—pick one small next step and continue.
-              </p>
-            </div>
-            <div className="text-xs text-muted-foreground">
-              Tip: 15 minutes daily beats 2 hours once a week.
-            </div>
-          </div>
-
-          <div className="mt-5 grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-3">
-            {[
-              { to: "/learn", title: "Learn", desc: "Continue lessons", icon: BookOpen, accent: "text-streak-green" },
-              { to: "/problems", title: "Problems", desc: "Practice daily", icon: Code, accent: "text-primary" },
-              { to: "/python-quiz-100", title: "Arena", desc: `Resume Q${quizProgress.current + 1}`, icon: Trophy, accent: "text-orange-500" },
-              { to: "/dsa", title: "DSA", desc: "Patterns + levels", icon: Brain, accent: "text-python-yellow" },
-              { to: "/compiler", title: "Compiler", desc: "Try quick code", icon: Target, accent: "text-blue-400" },
-              { to: "/blog", title: "Blog", desc: "Read guides", icon: Globe, accent: "text-expert-purple" },
-              { to: "/projects", title: "Projects", desc: "See how it’s built", icon: Award, accent: "text-python-yellow" },
-            ].map((item) => (
-              <button
-                key={item.to}
-                type="button"
-                onClick={() => { playClickSound(); navigate(item.to); }}
-                className="rounded-xl border border-border bg-surface-1 p-4 text-left hover:border-primary/30 hover:bg-primary/5 transition-colors"
-              >
-                <div className="flex items-start justify-between gap-2">
-                  <div className={`rounded-lg border border-border bg-background p-2 ${item.accent}`}>
-                    <item.icon className="w-4 h-4" />
-                  </div>
-                  <ArrowUpRight className="w-4 h-4 text-muted-foreground" />
                 </div>
-                <div className="mt-3 text-sm font-semibold text-foreground">{item.title}</div>
-                <div className="mt-1 text-[11px] leading-5 text-muted-foreground">{item.desc}</div>
-              </button>
-            ))}
+              </SectionErrorBoundary>
+            </>
+          )}
 
-            {/* Sound Toggle Action */}
-            <button
-              type="button"
-              onClick={toggleSound}
-              className="group rounded-xl border border-border bg-surface-1 p-4 text-left hover:border-primary/30 hover:bg-primary/5 transition-all active:scale-95"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div className={`rounded-lg border border-border bg-background p-2 ${soundEnabled ? "text-primary" : "text-muted-foreground"}`}>
-                  {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-                </div>
-                <div className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full border ${soundEnabled ? "bg-primary/10 border-primary/20 text-primary" : "bg-muted/10 border-border text-muted-foreground"}`}>
-                  {soundEnabled ? "ON" : "OFF"}
-                </div>
-              </div>
-              <div className="mt-3 text-sm font-semibold text-foreground">Sound Effects</div>
-              <div className="mt-1 text-[11px] leading-5 text-muted-foreground">
-                {soundEnabled ? "Audio feedback is enabled" : "Audio is currently muted"}
-              </div>
-            </button>
-          </div>
-        </div>
-      </SectionErrorBoundary>
-      )}
-
-      <div className={`grid gap-6 xl:grid-cols-[1.1fr_0.9fr] mb-8 ${showCustomize ? "" : "hidden"}`}>
-        <SectionErrorBoundary section="Profile Editor">
-          <div className="bg-card border border-border rounded-2xl p-6">
-            <div className="flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-                  <Pencil className="w-5 h-5 text-primary" />
-                  Edit Profile
-                </h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Keep your public card fresh with a bio, skill tags, and your main links.
-                </p>
-              </div>
-              <Button type="button" size="sm" className="gap-2" onClick={handleSaveProfileDetails} disabled={savingProfileDetails}>
-                <Save className="w-4 h-4" />
-                {savingProfileDetails ? "Saving..." : "Save"}
-              </Button>
-            </div>
-
-            <div className="mt-5 space-y-4">
-              <div>
-                <label className="text-sm font-medium text-foreground">Bio</label>
-                <textarea
-                  value={draftProfileBio}
-                  onChange={(event) => setDraftProfileBio(event.target.value.slice(0, 180))}
-                  className="mt-2 min-h-[96px] w-full rounded-xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
-                  placeholder="Tell people what you are learning, building, or aiming for."
-                />
-                <div className="mt-1 text-right text-xs text-muted-foreground">{draftProfileBio.length}/180</div>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-foreground">Skills</label>
-                <input
-                  value={draftSkillsInput}
-                  onChange={(event) => setDraftSkillsInput(event.target.value)}
-                  className="mt-2 w-full rounded-xl border border-border bg-surface-1 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
-                  placeholder="Python, Flask, Pandas, APIs"
-                />
-                <div className="mt-2 flex flex-wrap gap-2">
-                  {draftSkillsParsed.length > 0 ? draftSkillsParsed.map((skill) => (
-                    <span key={skill} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
-                      {skill}
-                    </span>
-                  )) : (
-                    <span className="text-xs text-muted-foreground">Comma-separated skills will appear here.</span>
-                  )}
+          {showInsights && (
+            <div className="grid gap-6 lg:grid-cols-2 mb-8">
+              <div className="rounded-2xl border border-border/50 bg-card/40 p-5 glass-card">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4 text-primary" />
+                  Weekly Trend Snapshot
+                </h3>
+                <div className="mt-4 space-y-3">
+                  {weeklyTrendCards.map((trend) => {
+                    const trendPct = trend.previous > 0 ? Math.round(((trend.current - trend.previous) / trend.previous) * 100) : 100;
+                    return (
+                      <div key={trend.label} className="rounded-xl border border-border bg-surface-1/50 p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-medium text-foreground">{trend.label}</span>
+                          <span className={`text-xs font-semibold ${trendPct >= 0 ? "text-streak-green" : "text-destructive"}`}>
+                            {trendPct >= 0 ? "+" : ""}{trendPct}%
+                          </span>
+                        </div>
+                        <div className="mt-2 h-2 rounded-full bg-background overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: `${Math.min(100, (trend.current / Math.max(trend.current, trend.previous || 1)) * 100)}%` }}
+                            className="h-full rounded-full bg-primary" 
+                          />
+                        </div>
+                        <div className="mt-1 text-[10px] text-muted-foreground">{trend.helper}</div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
-                <div>
-                  <label className="text-sm font-medium text-foreground">GitHub</label>
-                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
-                    <Github className="w-4 h-4 text-muted-foreground" />
-                    <input
-                      value={draftSocialLinks.github}
-                      onChange={(event) => setDraftSocialLinks((current) => ({ ...current, github: event.target.value }))}
-                      className="w-full bg-transparent text-sm text-foreground outline-none"
-                      placeholder="https://github.com/username"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground">LinkedIn</label>
-                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
-                    <Linkedin className="w-4 h-4 text-muted-foreground" />
-                    <input
-                      value={draftSocialLinks.linkedin}
-                      onChange={(event) => setDraftSocialLinks((current) => ({ ...current, linkedin: event.target.value }))}
-                      className="w-full bg-transparent text-sm text-foreground outline-none"
-                      placeholder="https://linkedin.com/in/username"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground">Portfolio</label>
-                  <div className="mt-2 flex items-center gap-2 rounded-xl border border-border bg-surface-1 px-3 py-2.5">
-                    <Globe className="w-4 h-4 text-muted-foreground" />
-                    <input
-                      value={draftSocialLinks.portfolio}
-                      onChange={(event) => setDraftSocialLinks((current) => ({ ...current, portfolio: event.target.value }))}
-                      className="w-full bg-transparent text-sm text-foreground outline-none"
-                      placeholder="https://your-site.com"
-                    />
-                  </div>
+              <div className="rounded-2xl border border-border/50 bg-card/40 p-5 glass-card">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-blue-400" />
+                  Achievement Timeline
+                </h3>
+                <div className="mt-4 space-y-3">
+                  {timelineItems.map((item, index) => (
+                    <div key={item.title} className="flex items-start gap-3 rounded-xl border border-border bg-surface-1/50 p-3">
+                      <div className={`mt-0.5 text-xs font-bold ${item.tone}`}>#{index + 1}</div>
+                      <div>
+                        <div className="text-sm font-medium text-foreground">{item.title}</div>
+                        <div className="text-[10px] text-muted-foreground">{item.helper}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
-          </div>
-        </SectionErrorBoundary>
+          )}
 
-        <SectionErrorBoundary section="Time Gift">
-          <div className="bg-card border border-border rounded-2xl p-6">
-            <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <Clock className="w-5 h-5 text-primary" />
-              Time Gift Countdown
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Stay on the platform and PyMaster drops a wallet gift every 10 minutes.
-            </p>
+          {showCustomize && (
+            <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr] mb-8">
+              <SectionErrorBoundary section="Profile Editor">
+                <div className="bg-card/40 border border-border/50 rounded-2xl p-6 glass-card">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                        <Pencil className="w-5 h-5 text-primary" />
+                        Edit Profile
+                      </h2>
+                    </div>
+                    <Button type="button" size="sm" className="gap-2" onClick={handleSaveProfileDetails} disabled={savingProfileDetails}>
+                      <Save className="w-4 h-4" />
+                      {savingProfileDetails ? "Saving..." : "Save"}
+                    </Button>
+                  </div>
 
-            <div className="mt-5 rounded-2xl border border-primary/20 bg-primary/5 p-5">
-              <div className="text-xs uppercase tracking-[0.2em] text-primary">Next Gift</div>
-              <div className="mt-2 text-4xl font-bold text-foreground">{formatCountdown(secondsUntilGift)}</div>
-              <div className="mt-2 text-sm text-muted-foreground">
-                Hourly gift #{nextGiftAtHours} unlocks with a <span className="font-semibold text-foreground">+$5 wallet bonus</span>.
-              </div>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-background">
-                <div
-                  className="h-full rounded-full bg-primary transition-all"
-                  style={{ width: `${((TIME_GIFT_INTERVAL_SECONDS - secondsUntilGift) / TIME_GIFT_INTERVAL_SECONDS) * 100}%` }}
-                />
-              </div>
-              <div className="mt-3 text-xs text-muted-foreground">
-                Time tracked so far: <span className="font-semibold text-foreground">{formatTime(liveTimeSpent)}</span>
-              </div>
+                  <div className="mt-5 space-y-4">
+                    <div>
+                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Bio</label>
+                      <textarea
+                        value={draftProfileBio}
+                        onChange={(event) => setDraftProfileBio(event.target.value.slice(0, 180))}
+                        className="mt-2 min-h-[96px] w-full rounded-xl border border-border bg-surface-1/50 px-4 py-3 text-sm text-foreground outline-none transition-colors focus:border-primary"
+                        placeholder="Tell people what you are learning."
+                      />
+                    </div>
+                    {/* ... other fields can stay similar but with surface-1/50 ... */}
+                    <div className="grid gap-4 md:grid-cols-3">
+                      {["github", "linkedin", "portfolio"].map((key) => (
+                        <div key={key}>
+                          <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">{key}</label>
+                          <div className="mt-1 flex items-center gap-2 rounded-xl border border-border bg-surface-1/50 px-3 py-2">
+                            <input
+                              value={draftSocialLinks[key as keyof SocialLinks]}
+                              onChange={(e) => setDraftSocialLinks(prev => ({ ...prev, [key]: e.target.value }))}
+                              className="w-full bg-transparent text-sm text-foreground outline-none"
+                              placeholder="URL"
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </SectionErrorBoundary>
+
+              <SectionErrorBoundary section="Time Gift">
+                <div className="bg-card/40 border border-border/50 rounded-2xl p-6 glass-card">
+                  <h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+                    <Clock className="w-5 h-5 text-primary" />
+                    Time Gift
+                  </h2>
+                  <div className="mt-5 rounded-2xl border border-primary/20 bg-primary/5 p-5 relative overflow-hidden">
+                    <div className="text-xs uppercase tracking-[0.2em] text-primary relative z-10">Next Wallet Drop</div>
+                    <div className="mt-2 text-4xl font-black text-foreground relative z-10 tabular-nums">{formatCountdown(secondsUntilGift)}</div>
+                    <div className="mt-4 h-2 overflow-hidden rounded-full bg-background relative z-10">
+                      <motion.div
+                        className="h-full rounded-full bg-primary"
+                        initial={{ width: 0 }}
+                        animate={{ width: `${((TIME_GIFT_INTERVAL_SECONDS - secondsUntilGift) / TIME_GIFT_INTERVAL_SECONDS) * 100}%` }}
+                      />
+                    </div>
+                    <Sparkles className="absolute -right-4 -bottom-4 w-24 h-24 text-primary/10 rotate-12" />
+                  </div>
+                </div>
+              </SectionErrorBoundary>
             </div>
-          </div>
-        </SectionErrorBoundary>
-      </div>
+          )}
+        </motion.div>
+      </AnimatePresence>
+
 
       {/* Streak Recovery Banner */}
       {(showInsights || showOverview) && canRecover &&

@@ -38,7 +38,7 @@ import {
 import { lessons } from "@/data/lessons";
 import { problems } from "@/data/problems";
 import { careerTracks } from "@/data/careerLessons";
-import { dsaTopics } from "@/pages/DSAPage";
+import { dsaTopics } from "@/data/dsaData";
 import { aptitudeTypes } from "@/data/aptitudeQuestions";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";

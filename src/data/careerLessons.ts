@@ -1282,11 +1282,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-best-practices",
       title: "0. Best Practices & Classic Mistakes",
       description: "Dos, Don'ts, and what to avoid in SQL",
-      category: "Foundations",
+      category: "Phase 1 — Foundations",
       content:
-        "## The Rules of the Database 📜\n\nBefore writing queries, you must understand the golden rules of SQL to avoid destroying databases or writing impossibly slow queries.\n\n### DOs (What you should use)\n- **DO** use `EXPLAIN QUERY PLAN` before running massive queries.\n- **DO** use `JOIN` instead of comma-separated tables in the `FROM` clause.\n- **DO** filter early with `WHERE` before grouping or joining.\n- **DO** end your statements with a semicolon `;`.\n\n### DON'Ts (Classic Mistakes)\n- **DON'T** use `SELECT *` in production (it's slow and brittle). Always name your columns explicitly.\n- **DON'T** forget the `WHERE` clause on `UPDATE` or `DELETE` statements (you will wipe the whole table!).\n- **DON'T** use `ORDER BY` if you don't need sorting, as it slows down the query.",
+        "## The Rules of the Database 📜\n\nBefore writing your first query, internalize these golden rules. Violating them can corrupt data, crash production, or grind servers to a halt.\n\n### DOs ✅\n- **DO** always name columns explicitly — `SELECT id, name` not `SELECT *`. `SELECT *` breaks silently when columns are added or reordered.\n- **DO** use `JOIN` with an `ON` clause instead of comma-separated tables in `FROM`. Old-style `FROM a, b WHERE a.id = b.id` is ambiguous and error-prone.\n- **DO** filter data early with `WHERE` before aggregating or joining — it dramatically reduces the amount of data the engine needs to process.\n- **DO** always end SQL statements with a semicolon `;` — especially when running multiple statements at once.\n- **DO** add `ORDER BY` when the order of your output matters (e.g., for exercises or reports). Without it, the database can return rows in any order.\n\n### DON'Ts ❌\n- **DON'T** run `UPDATE` or `DELETE` without a `WHERE` clause — you will modify or erase every row in the table. Always double-check.\n- **DON'T** use `ORDER BY` in subqueries or CTEs — it's meaningless there and may be ignored by the optimizer.\n- **DON'T** assume `NULL = NULL` is true. Always use `IS NULL` or `IS NOT NULL`.\n- **DON'T** store computed values (like age) — store source data (like birthdate) and compute at query time.\n\n### SQL Injection Warning 🛡️\nNever build SQL by concatenating user input strings (e.g., `'SELECT * FROM users WHERE name = ' + input`). Always use parameterized queries in application code.",
       codeExample:
-        "-- DO: Be explicit\nSELECT id, name FROM customers WHERE city = 'Delhi';\n\n-- DON'T: The brittle way\n-- SELECT * FROM customers;",
+        "-- ✅ DO: Explicit columns, early filter\nSELECT id, name, city\nFROM customers\nWHERE city = 'Delhi'\nORDER BY name;\n\n-- ❌ DON'T: Brittle and slow\n-- SELECT * FROM customers;\n\n-- ❌ DANGER: DELETE without WHERE wipes all rows!\n-- DELETE FROM orders;  -- Never do this!\n\n-- ✅ SAFE: Always use WHERE on mutations\n-- DELETE FROM orders WHERE status = 'cancelled';",
       translations: {
         tamil: { title: "0. சிறந்த நடைமுறைகள்", description: "SQL-ல் செய்ய வேண்டியவை மற்றும் தவிர்க்க வேண்டியவை", category: "Foundations" },
         kannada: { title: "0. ಉತ್ತಮ ಅಭ್ಯಾಸಗಳು", description: "SQL ನಲ್ಲಿ ಮಾಡಬೇಕಾದದ್ದು ಮತ್ತು ಮಾಡಬಾರದದ್ದು", category: "Foundations" },
@@ -1318,11 +1318,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-intro",
       title: "1. SQL Foundations (DQL)",
       description: "SELECT, FROM, ORDER BY, LIMIT — your first queries",
-      category: "DQL (SELECT)",
+      category: "Phase 1 — Foundations",
       content:
-        "## SQL Foundations\n\nSQL is the language used to **query and analyze** data in relational databases.\n\n### What you will practice here\n- `SELECT` columns\n- `FROM` tables\n- `ORDER BY` for stable output (use multiple columns for ties)\n- `LIMIT` to reduce rows\n\n### Practice database (built-in)\nYou will query a small practice dataset with tables like `customers`, `orders`, `order_items`, and `products`.",
+        "## SQL Foundations (DQL) 🏗️\n\nSQL (Structured Query Language) is the universal language for communicating with relational databases. Every major database — PostgreSQL, MySQL, SQLite, SQL Server — uses SQL.\n\n### The Anatomy of a SELECT Query\n```sql\nSELECT column1, column2  -- What to show\nFROM table_name           -- Where to look\nWHERE condition           -- Which rows to include\nORDER BY column ASC|DESC  -- How to sort\nLIMIT n;                  -- How many rows\n```\n\n### How the Database Actually Executes a Query\nEven though you write `SELECT` first, SQL is processed in this order:\n1. `FROM` — identify the table\n2. `WHERE` — filter rows\n3. `SELECT` — compute output columns\n4. `ORDER BY` — sort the result\n5. `LIMIT` — cut to the top N rows\n\nThis is why you **cannot reference a SELECT alias in a WHERE clause** — WHERE runs before SELECT!\n\n### Handling Ties in ORDER BY\nIf two rows share the same sort value (e.g., same price), the order between them is undefined. Always add a secondary column to guarantee a deterministic output:\n`ORDER BY price DESC, name ASC`\n\n### Practice Database (ShopDB)\nYou have a built-in e-commerce dataset with: `customers`, `products`, `orders`, `order_items`.",
       codeExample:
-        "-- Explore customers (sort by city, then name for ties)\nSELECT id, name, city\nFROM customers\nORDER BY city, name\nLIMIT 5;",
+        "-- The execution order: FROM → WHERE → SELECT → ORDER BY → LIMIT\nSELECT id, name, city\nFROM customers\nWHERE city != 'Mumbai'     -- Filter first\nORDER BY city ASC, name ASC  -- Sort by city, then name for ties\nLIMIT 5;                     -- Then take top 5",
       translations: {
         tamil: { title: "1. SQL அடித்தளம் (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — உங்கள் முதல் queries", category: "DQL (SELECT)" },
         kannada: { title: "1. SQL Foundations (DQL)", description: "SELECT, FROM, ORDER BY, LIMIT — ನಿಮ್ಮ ಮೊದಲ queries", category: "DQL (SELECT)" },
@@ -1354,11 +1354,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-filtering",
       title: "2. Filtering & Sorting",
       description: "WHERE, AND/OR, LIKE, BETWEEN, IN, ORDER BY",
-      category: "Filtering & Sorting",
+      category: "Phase 1 — Foundations",
       content:
-        "## Filtering & Sorting\n\n### Core clauses\n- `WHERE`: Filters rows (e.g., `WHERE price > 500`)\n- `AND` / `OR`: Combine conditions (e.g., `WHERE price > 500 AND stock > 0`)\n- `IN`: Checks membership (e.g., `WHERE city IN ('Delhi', 'Mumbai')`)\n- `BETWEEN`: Checks ranges (e.g., `WHERE price BETWEEN 300 AND 1000`)\n- `LIKE`: Pattern matching using `%` (e.g., `WHERE name LIKE 'A%'`)\n\n### Sorting Ties\nIf multiple rows have the same value (like price), use a secondary sort column to keep the order stable:\n`ORDER BY price, name` (first by price, then by name for ties).\n\nTip: Always add an `ORDER BY` when you care about the exact row order (especially for exercises).",
+        "## Filtering & Sorting 🔍\n\n### Core Filtering Clauses\n- `WHERE`: Filters rows before aggregation (e.g., `WHERE price > 500`)\n- `AND` / `OR`: Combine conditions. `AND` has higher precedence than `OR`, so use parentheses: `WHERE (city = 'Delhi' OR city = 'Mumbai') AND status = 'active'`\n- `IN (...)`: Cleaner membership check — `WHERE city IN ('Delhi', 'Mumbai')` is equivalent to `city = 'Delhi' OR city = 'Mumbai'`\n- `NOT IN (...)`: Excludes a set — but **beware**: if the list contains a `NULL`, the result is always empty!\n- `BETWEEN a AND b`: Inclusive range check (e.g., `WHERE price BETWEEN 300 AND 1000`)\n- `LIKE`: Pattern matching — `%` matches any sequence of characters, `_` matches exactly one character.\n  - `'A%'` → starts with A\n  - `'%son'` → ends with 'son'\n  - `'_ell%'` → second char is 'e', third is 'l'\n\n### NULL — The Tricky Third State\nNULL means \"unknown\", not \"empty\". This has surprising consequences:\n- `NULL = NULL` → **false** (unknown = unknown is still unknown!)\n- `NULL != NULL` → **false**\n- **Always use** `IS NULL` or `IS NOT NULL` to check for NULL values.\n\n### Sorting: Deterministic Output\nAlways add a secondary sort column when the primary column can have ties:\n`ORDER BY price ASC, name ASC` — guarantees the same output every time.",
       codeExample:
-        "-- Products between 300-1000, sorted by price then name\nSELECT name, price\nFROM products\nWHERE price BETWEEN 300 AND 1000\nORDER BY price, name;",
+        "-- Multi-condition filtering with IN and LIKE\nSELECT name, city, signup_date\nFROM customers\nWHERE city IN ('Delhi', 'Mumbai')\n  AND name LIKE 'A%'\nORDER BY city, name;\n\n-- Check for NULLs correctly\n-- SELECT name FROM customers WHERE phone IS NULL;",
       translations: {
         tamil: {
           title: "2. Filtering & Sorting",
@@ -1414,11 +1414,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-scalar-functions",
       title: "3. Scalar Functions",
       description: "UPPER, SUBSTR, ROUND, DATE functions — transform your data",
-      category: "Functions",
+      category: "Phase 2 — Core Skills",
       content:
-        "## Scalar Functions\n\nScalar functions take one input and return one output for every row.\n\n### Key functions\n- **String**: `UPPER(x)`, `LOWER(x)`, `LENGTH(x)`, `REPLACE(x, old, new)`, `TRIM(x)`, and `SUBSTR(x, start, len)`.\n- **Concatenation**: Use `||` to join strings (e.g., `'A' || 'B'`).\n- **Numeric**: `ROUND(x, precision)`, `ABS(x)`.\n- **Date**: `date('now')`, `strftime('%Y-%m', date_col)`.\n\n### Left & Right (Emulation)\nSQLite doesn't have `LEFT()` or `RIGHT()`. Use `SUBSTR` instead:\n- **LEFT(x, 3)** → `SUBSTR(x, 1, 3)`\n- **RIGHT(x, 3)** → `SUBSTR(x, -3)`",
+        "## Scalar Functions 🔧\n\nScalar functions operate on a **single value** and return **one output per row**. They're your Swiss Army knife for transforming and cleaning data.\n\n### String Functions\n| Function | What it Does | Example |\n|---|---|---|\n| `UPPER(x)` | Uppercase | `UPPER('hello')` → `'HELLO'` |\n| `LOWER(x)` | Lowercase | `LOWER('HELLO')` → `'hello'` |\n| `LENGTH(x)` | Character count | `LENGTH('abc')` → `3` |\n| `TRIM(x)` | Remove leading/trailing spaces | `TRIM('  hi ')` → `'hi'` |\n| `REPLACE(x, old, new)` | Substitution | `REPLACE('a-b', '-', '')` → `'ab'` |\n| `SUBSTR(x, start, len)` | Extract substring (1-indexed) | `SUBSTR('hello', 2, 3)` → `'ell'` |\n| `x \\|\\| y` | String concatenation | `'Hi' \\|\\| ' ' \\|\\| 'Bob'` → `'Hi Bob'` |\n\n### Numeric Functions\n- `ROUND(x, n)`: Round to `n` decimal places. `ROUND(3.14159, 2)` → `3.14`\n- `ABS(x)`: Absolute value. `ABS(-5)` → `5`\n- `MAX(a, b)` / `MIN(a, b)`: Works per-row in SQLite (not to be confused with aggregate MAX/MIN).\n\n### Date Functions (SQLite)\n- `date('now')` → today's date as `'YYYY-MM-DD'`\n- `strftime('%Y-%m', order_date)` → extracts year-month like `'2026-03'`\n- `strftime('%Y', 'now') - strftime('%Y', birthdate)` → approximate age in years\n\n### LEFT / RIGHT Emulation\nSQLite doesn't have `LEFT()` or `RIGHT()`. Use `SUBSTR` instead:\n- `LEFT(x, 3)` → `SUBSTR(x, 1, 3)` (first 3 chars)\n- `RIGHT(x, 3)` → `SUBSTR(x, -3)` (last 3 chars)",
       codeExample:
-        "-- Clean phone numbers (remove dash) and get length\nSELECT \n  REPLACE(phone, '-', '') AS clean_phone,\n  LENGTH(phone) AS original_length\nFROM customers\nLIMIT 5;",
+        "-- String transformations: build a formatted label and extract the month\nSELECT\n  UPPER(name) || ' (' || city || ')' AS customer_label,\n  SUBSTR(signup_date, 1, 7) AS signup_month,\n  LENGTH(REPLACE(phone, '-', '')) AS digits_in_phone\nFROM customers\nORDER BY customer_label\nLIMIT 5;",
       translations: {
         tamil: {
           title: "3. Scalar Functions",
@@ -1474,11 +1474,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-advanced-logic",
       title: "4. Advanced Logic",
       description: "CASE, COALESCE, CAST — handle logic and types",
-      category: "Logic",
+      category: "Phase 2 — Core Skills",
       content:
-        "## Advanced Logic\n\n### Conditional Logic (`CASE`)\nUse `CASE` to create if-else logic inside your queries. (e.g., `CASE WHEN price > 1000 THEN 'Expensive' ELSE 'Cheap' END`)\n\n### Handling NULLs\n- `COALESCE(val, default)`: returns the first non-null value (e.g., `COALESCE(phone, 'No Phone')`).\n- `NULLIF(val1, val2)`: returns NULL if the values are equal (e.g., `NULLIF(balance, 0)`).\n\n### Type Conversion\nUse `CAST(value AS type)` to change data types (e.g., `CAST(price AS TEXT)`).",
+        "## Advanced Logic 🧠\n\n### Conditional Logic with CASE\n`CASE` is SQL's if-else statement. There are two forms:\n\n**Searched CASE** (most flexible):\n```sql\nCASE\n  WHEN price > 5000 THEN 'Luxury'\n  WHEN price > 1000 THEN 'Premium'\n  WHEN price > 500  THEN 'Standard'\n  ELSE 'Budget'\nEND\n```\n**Simple CASE** (equality checks only):\n```sql\nCASE status\n  WHEN 'completed' THEN '✅'\n  WHEN 'cancelled'  THEN '❌'\n  ELSE '⏳'\nEND\n```\nCASE evaluates conditions top-to-bottom and returns the **first match**. If no condition matches and there's no `ELSE`, it returns `NULL`.\n\n### Handling NULLs\n- `COALESCE(a, b, c, ...)`: Returns the **first non-NULL** value in the list. Perfect for default values.\n  - `COALESCE(discount, 0)` → use 0 if discount is NULL\n  - `COALESCE(mobile, landline, 'No phone')` → try each fallback\n- `NULLIF(val1, val2)`: Returns `NULL` if both values are equal, otherwise returns `val1`. Useful to prevent division by zero:\n  - `total / NULLIF(count, 0)` → if count is 0, returns NULL instead of crashing\n\n### Type Conversion with CAST\nDatabases store data in specific types. Use `CAST` to convert explicitly:\n- `CAST(price AS TEXT)` → turns a number into a string for concatenation\n- `CAST('42' AS INTEGER)` → turns a string into a number for math\n- `CAST(3.7 AS INTEGER)` → truncates (→ `3`), does NOT round",
       codeExample:
-        "-- Categorize products\nSELECT name, \n  CASE WHEN price > 1000 THEN 'Premium' ELSE 'Standard' END AS category\nFROM products\nLIMIT 5;",
+        "-- Three-tier price classification with CASE\nSELECT\n  name,\n  price,\n  CASE\n    WHEN price >= 5000 THEN '💎 Luxury'\n    WHEN price >= 1000 THEN '⭐ Premium'\n    ELSE '💰 Budget'\n  END AS tier,\n  -- Prefix price string safely with CAST\n  '₹' || CAST(price AS TEXT) AS price_label\nFROM products\nORDER BY price DESC\nLIMIT 6;",
       translations: {
         tamil: { title: "4. Advanced Logic", description: "CASE, COALESCE, CAST — logic மற்றும் types கையாள", category: "Logic" },
         kannada: { title: "4. Advanced Logic", description: "CASE, COALESCE, CAST — logic ಮತ್ತು types ನಿರ್ವಹಿಸಲು", category: "Logic" },
@@ -1510,11 +1510,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-aggregations",
       title: "5. Aggregations & GROUP BY",
       description: "COUNT, SUM, AVG, GROUP BY, HAVING",
-      category: "Aggregations",
+      category: "Phase 2 — Core Skills",
       content:
-        "## Aggregations\n\n### Common functions\n- `COUNT(*)`: Counts rows (e.g., `SELECT COUNT(*) FROM orders`)\n- `SUM(x)`: Adds values (e.g., `SELECT SUM(price) FROM products`)\n- `AVG(x)`: Averages values (e.g., `SELECT AVG(rating) FROM reviews`)\n- `MIN(x)`, `MAX(x)`: Finds extremes (e.g., `SELECT MAX(price) FROM products`)\n\n### GROUP BY\nGroups rows so aggregates are calculated per group (e.g., `GROUP BY category`).\n\n### HAVING\nFilters *groups* after aggregation (e.g., `HAVING SUM(price) > 5000`).",
+        "## Aggregations & GROUP BY 📊\n\nAggregation functions **collapse multiple rows into a single summary value**. They are the engine behind dashboards, reports, and analytics.\n\n### Core Aggregate Functions\n| Function | Description | Ignores NULLs? |\n|---|---|---|\n| `COUNT(*)` | Counts all rows including NULLs | No |\n| `COUNT(col)` | Counts only non-NULL values | Yes |\n| `SUM(col)` | Sum of non-NULL values | Yes |\n| `AVG(col)` | Average of non-NULL values | Yes |\n| `MIN(col)` / `MAX(col)` | Smallest / largest non-NULL value | Yes |\n\n### GROUP BY — Aggregating Per Group\n`GROUP BY` splits the table into groups and applies the aggregate to each group:\n```sql\nSELECT category, COUNT(*) AS product_count, AVG(price) AS avg_price\nFROM products\nGROUP BY category;\n```\n⚠️ **Rule**: Every column in `SELECT` must either be in `GROUP BY` or wrapped in an aggregate function.\n\n### HAVING — Filtering Groups (not rows)\n- `WHERE` filters individual rows **before** grouping.\n- `HAVING` filters aggregated groups **after** grouping.\n```sql\n-- Only categories with avg price > 500\nSELECT category, AVG(price) AS avg_price\nFROM products\nGROUP BY category\nHAVING AVG(price) > 500;\n```\n\n### COUNT(*) vs COUNT(col)\n- `COUNT(*)` = total rows (never ignores anything)\n- `COUNT(column)` = rows where that column is NOT NULL\n- Use `COUNT(DISTINCT column)` to count unique values",
       codeExample:
-        "-- Orders per status\nSELECT status, COUNT(*) AS count\nFROM orders\nGROUP BY status\nORDER BY status;",
+        "-- Sales summary: orders, revenue and avg order value per status\nSELECT\n  o.status,\n  COUNT(*) AS order_count,\n  SUM(p.price * oi.quantity) AS total_revenue,\n  ROUND(AVG(p.price * oi.quantity), 0) AS avg_line_value\nFROM orders o\nJOIN order_items oi ON o.id = oi.order_id\nJOIN products p ON oi.product_id = p.id\nGROUP BY o.status\nHAVING COUNT(*) > 5\nORDER BY total_revenue DESC;",
       translations: {
         tamil: {
           title: "5. Aggregations & GROUP BY",
@@ -1572,41 +1572,41 @@ function sqlLessons(): CareerLesson[] {
     // ═══════════════════════════════════════════════════════
     {
       id: "sql-joins",
-      title: "6. JOINs",
-      description: "INNER JOIN, LEFT JOIN, joining multiple tables",
-      category: "Joins",
+      title: "6. JOINs (All 4 Types)",
+      description: "INNER, LEFT, RIGHT, and FULL OUTER JOINs",
+      category: "Phase 3 — Advanced SQL",
       content:
-        "## JOINs\n\n### The big idea\nA JOIN combines rows from tables using a matching key.\n\n### Most used JOINs\n- `INNER JOIN`: only matching rows (e.g., `FROM orders JOIN customers ON orders.customer_id = customers.id`)\n- `LEFT JOIN`: keep all left rows even if no match (e.g., `FROM customers LEFT JOIN orders ON customers.id = orders.customer_id`)\n\nNote: SQLite does not natively support `RIGHT JOIN` or `FULL OUTER JOIN`. These are usually emulated by swapping table order or using `UNION`.\n\nTip: When totals can be missing, use `COALESCE(SUM(x), 0)` to turn NULL into 0.",
+        "## JOINs 🔗\n\n### The Big Idea\nA JOIN combines rows from two tables based on a **matching key**. Think of it as merging two spreadsheets by a common column.\n\n### Visual Comparison\n| JOIN Type | Returns |\n|---|---|\n| `INNER JOIN` | Only rows with a match in **both** tables |\n| `LEFT JOIN` | **All** left rows + matching right rows (NULL if no match) |\n| `RIGHT JOIN` | **All** right rows + matching left rows (NULL if no match) |\n| `FULL OUTER JOIN` | **All** rows from both tables (NULL where no match) |\n\n---\n\n### 1. INNER JOIN\nMost common JOIN. Returns only the rows where a match exists in **both** tables.\n```sql\nSELECT o.id, c.name, o.status\nFROM orders o\nINNER JOIN customers c ON o.customer_id = c.id;\n-- Only orders that have a matching customer\n```\n\n### 2. LEFT JOIN\nReturns every row from the **left** table. If no match exists in the right table, those columns are filled with `NULL`.\n```sql\nSELECT c.name, o.id AS order_id\nFROM customers c\nLEFT JOIN orders o ON c.id = o.customer_id;\n-- ALL customers shown, even those with NO orders (order_id = NULL)\n```\n\n### 3. RIGHT JOIN\nMirror of LEFT JOIN. Returns every row from the **right** table, with NULLs for unmatched left rows.\n```sql\nSELECT c.name, o.id AS order_id\nFROM orders o\nRIGHT JOIN customers c ON o.customer_id = c.id;\n-- Same result as the LEFT JOIN example above (just tables swapped)\n```\n\n### 4. FULL OUTER JOIN\nReturns rows from **both** tables. Where there is no match on either side, NULLs appear.\n```sql\nSELECT c.name, o.id AS order_id\nFROM customers c\nFULL OUTER JOIN orders o ON c.id = o.customer_id;\n-- Customers with no orders AND orders with no customer both appear\n```\n\n### Filtering NULLs After a JOIN\nYou can use `IS NULL` after a LEFT JOIN to find records that do NOT have a match — this is called an **Anti-JOIN**:\n```sql\n-- Customers who have NEVER placed an order\nSELECT c.name\nFROM customers c\nLEFT JOIN orders o ON c.id = o.customer_id\nWHERE o.id IS NULL;\n```\n\n### Joining 3+ Tables\nChain multiple JOINs to combine more tables:\n```sql\nSELECT c.name, p.name AS product, oi.quantity\nFROM orders o\nJOIN customers c   ON c.id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.id\nJOIN products p    ON p.id = oi.product_id;\n```\n\n**Tip**: When totals can be NULL after a LEFT JOIN, use `COALESCE(SUM(x), 0)` to turn `NULL` into `0`.",
       codeExample:
-        "-- Orders with customer names\nSELECT o.id AS order_id, c.name, o.status\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nORDER BY o.id;",
+        "-- Orders with customer names\nSELECT o.id AS order_id, c.name, o.status\nFROM orders o\nINNER JOIN customers c ON c.id = o.customer_id\nORDER BY o.id;",
       translations: {
         tamil: {
-          title: "6. JOINs",
-          description: "INNER JOIN, LEFT JOIN, multiple tables join",
+          title: "6. JOINs (4 வகைகள்)",
+          description: "INNER, LEFT, RIGHT, மற்றும் FULL OUTER JOINs",
           category: "Joins",
           content:
-            "## JOINs\n\n### முக்கிய idea\nmatching key மூலம் பல tables-லிருந்த rows-ஐ JOIN இணைக்கிறது.\n\n### அதிகம் பயன்படுத்தப்படும் JOINs\n- `INNER JOIN`: match ஆன rows மட்டும்\n- `LEFT JOIN`: left table-ன் rows அனைத்தும் (match இல்லையெனிலும்)\n\nTip: totals இல்லாமல் NULL வரலாம்; `COALESCE(x, 0)` மூலம் NULL → 0 ஆக மாற்றலாம்.",
+            "## JOINs\n\n### முக்கிய idea\nmatching key மூலம் பல tables-லிருந்த rows-ஐ JOIN இணைக்கிறது. இதில் 4 முக்கிய வகைகள் உள்ளன:\n\n### 1. INNER JOIN\nஇரண்டு tables-லும் match ஆன rows மட்டும்.\n\n### 2. LEFT JOIN\nleft table-ன் rows அனைத்தும் மற்றும் match ஆன right rows.\n\n### 3. RIGHT JOIN\nright table-ன் rows அனைத்தும் மற்றும் match ஆன left rows.\n\n### 4. FULL OUTER JOIN\nஇரண்டில் எதில் match ஆனாலும் அனைத்து rows-ம் வரும்.\n\nTip: totals இல்லாமல் NULL வரலாம்; `COALESCE(x, 0)` மூலம் NULL → 0 ஆக மாற்றலாம்.",
         },
         kannada: {
-          title: "6. JOINs",
-          description: "INNER JOIN, LEFT JOIN, multiple tables join",
+          title: "6. JOINs (4 ಪ್ರಕಾರಗಳು)",
+          description: "INNER, LEFT, RIGHT, ಮತ್ತು FULL OUTER JOINs",
           category: "Joins",
           content:
-            "## JOINs\n\n### ಮುಖ್ಯ idea\nmatching key ಬಳಸಿ tables ಗಳ rows ಅನ್ನು JOIN ಸೇರಿಸುತ್ತದೆ.\n\n### ಹೆಚ್ಚು ಬಳಸುವ JOINs\n- `INNER JOIN`: match ಆದ rows ಮಾತ್ರ\n- `LEFT JOIN`: left table ನ ಎಲ್ಲಾ rows (match ಇಲ್ಲದಿದ್ದರೂ)\n\nTip: totals ನಲ್ಲಿ NULL ಬರಬಹುದು; `COALESCE(x, 0)` ಬಳಸಿ NULL → 0 ಮಾಡಿ.",
+            "## JOINs\n\n### ಮುಖ್ಯ idea\nmatching key ಬಳಸಿ tables ಗಳ rows ಅನ್ನು JOIN ಸೇರಿಸುತ್ತದೆ. ಇದರಲ್ಲಿ 4 ಮುಖ್ಯ ಪ್ರಕಾರಗಳಿವೆ:\n\n### 1. INNER JOIN\nಎರಡೂ tables ನಲ್ಲಿ match ಆದ rows ಮಾತ್ರ.\n\n### 2. LEFT JOIN\nleft table ನ ಎಲ್ಲಾ rows ಮತ್ತು match ಆದ right rows.\n\n### 3. RIGHT JOIN\nright table ನ ಎಲ್ಲಾ rows ಮತ್ತು match ಆದ left rows.\n\n### 4. FULL OUTER JOIN\nಎರಡರಲ್ಲಾದರೂ match ಆದರೆ ಎಲ್ಲಾ rows ಬರುತ್ತವೆ.\n\nTip: totals ನಲ್ಲಿ NULL ಬರಬಹುದು; `COALESCE(x, 0)` ಬಳಸಿ NULL → 0 ಮಾಡಿ.",
         },
         telugu: {
-          title: "6. JOINs",
-          description: "INNER JOIN, LEFT JOIN, multiple tables join",
+          title: "6. JOINs (4 రకాలు)",
+          description: "INNER, LEFT, RIGHT, మరియు FULL OUTER JOINs",
           category: "Joins",
           content:
-            "## JOINs\n\n### ముఖ్య idea\nmatching key ద్వారా tables లోని rows ని JOIN కలుపుతుంది.\n\n### ఎక్కువగా వాడే JOINs\n- `INNER JOIN`: match అయ్యే rows మాత్రమే\n- `LEFT JOIN`: left table లోని అన్ని rows (match లేకపోయినా)\n\nTip: totals లో NULL రావచ్చు; `COALESCE(x, 0)` తో NULL → 0 చేయండి.",
+            "## JOINs\n\n### ముఖ్య idea\nmatching key ద్వారా tables లోని rows ని JOIN కలుపుతుంది. ఇందులో 4 ముఖ్య రకాలు ఉన్నాయి:\n\n### 1. INNER JOIN\nరెండు tables లో match అయ్యే rows మాత్రమే.\n\n### 2. LEFT JOIN\nleft table లోని అన్ని rows మరియు match అయిన right rows.\n\n### 3. RIGHT JOIN\nright table లోని అన్ని rows మరియు match అయిన left rows.\n\n### 4. FULL OUTER JOIN\nరెండింటిలో ఎందులో match అయినా అన్ని rows వస్తాయి.\n\nTip: totals లో NULL రావచ్చు; `COALESCE(x, 0)` తో NULL → 0 చేయండి.",
         },
         hindi: {
-          title: "6. JOINs",
-          description: "INNER JOIN, LEFT JOIN, joining multiple tables",
+          title: "6. JOINs (4 प्रकार)",
+          description: "INNER, LEFT, RIGHT, और FULL OUTER JOINs",
           category: "Joins",
           content:
-            "## JOINs\n\n### मुख्य idea\nmatching key की मदद से JOIN अलग-अलग tables के rows को जोड़ता है.\n\n### सबसे ज़्यादा उपयोग होने वाले JOINs\n- `INNER JOIN`: सिर्फ matching rows\n- `LEFT JOIN`: left table के सभी rows (match न हो तब भी)\n\nTip: totals में NULL आ सकता है; `COALESCE(x, 0)` से NULL → 0 करें.",
+            "## JOINs\n\n### मुख्य idea\nmatching key की मदद से JOIN अलग-अलग tables के rows को जोड़ता है. इसके 4 मुख्य प्रकार हैं:\n\n### 1. INNER JOIN\nसिर्फ वो rows जो दोनों tables में match हों.\n\n### 2. LEFT JOIN\nleft table के सभी rows और match होने वाले right rows.\n\n### 3. RIGHT JOIN\nright table के सभी rows और match होने वाले left rows.\n\n### 4. FULL OUTER JOIN\nदोनों में से किसी में भी match होने पर सभी rows.\n\nTip: totals में NULL आ सकता है; `COALESCE(x, 0)` से NULL → 0 करें.",
         },
       },
       exercises: {
@@ -1634,11 +1634,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-subqueries",
       title: "7. Subqueries",
       description: "IN, EXISTS, scalar subqueries, derived tables",
-      category: "Subqueries",
+      category: "Phase 3 — Advanced SQL",
       content:
-        "## Subqueries\n\nSubqueries let you use one query inside another.\n\n### Common patterns\n- `WHERE x IN (SELECT ...)`: Find items in a sub-list (e.g., `WHERE id IN (SELECT customer_id FROM orders)`)\n- `WHERE EXISTS (SELECT ...)`: Fast check for presence (e.g., `WHERE EXISTS (SELECT 1 FROM orders WHERE customer_id = c.id)`)\n- Subquery in `FROM`: Derived tables for intermediate steps (e.g., `FROM (SELECT id, price FROM products) AS p`)\n\nTip: Prefer `EXISTS` when you only need to check presence (not values).",
+        "## Subqueries 🔍\n\nA subquery is a query nested inside another query. They let you break complex problems into smaller, focused pieces.\n\n### The 3 Placement Patterns\n\n**1. In WHERE — Filter against a computed list**\n```sql\n-- Customers who placed at least one cancelled order\nSELECT name FROM customers\nWHERE id IN (SELECT customer_id FROM orders WHERE status = 'cancelled');\n```\n\n**2. In FROM — Derived Table (gives a name to a temp result)**\n```sql\n-- Find orders above the average revenue\nSELECT * FROM (\n  SELECT order_id, SUM(price * qty) AS revenue FROM order_items GROUP BY order_id\n) AS summary\nWHERE revenue > 3000;\n```\n\n**3. In SELECT — Scalar Subquery (returns exactly one value)**\n```sql\n-- Each product with count of how many times it was ordered\nSELECT name,\n  (SELECT COUNT(*) FROM order_items oi WHERE oi.product_id = p.id) AS times_ordered\nFROM products p;\n```\n\n### IN vs EXISTS\n- `IN (subquery)`: Evaluates the subquery once, builds a list, then checks membership. Can be slow for large lists.\n- `EXISTS (subquery)`: Stops as soon as the first match is found. **Faster** when you only need to know *if* something exists, not what it is.\n- `NOT IN` with NULLs: If the subquery returns even one NULL, `NOT IN` returns no rows! Use `NOT EXISTS` instead.\n\n### Correlated Subquery\nA correlated subquery references a column from the outer query. It runs once for every row in the outer query (potentially slow but very powerful):\n```sql\n-- Products priced above their category's average\nSELECT name, price, category\nFROM products p1\nWHERE price > (\n  SELECT AVG(price) FROM products p2 WHERE p2.category = p1.category\n);\n```",
       codeExample:
-        "-- Customers with any cancelled order\nSELECT name\nFROM customers\nWHERE id IN (\n  SELECT customer_id FROM orders WHERE status = 'cancelled'\n)\nORDER BY name;",
+        "-- Products ordered MORE than once (using IN)\nSELECT name, category, price\nFROM products\nWHERE id IN (\n  SELECT product_id\n  FROM order_items\n  GROUP BY product_id\n  HAVING COUNT(*) > 1\n)\nORDER BY category, name;",
       translations: {
         tamil: {
           title: "7. Subqueries",
@@ -1694,11 +1694,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-ctes",
       title: "8. CTEs (WITH)",
       description: "Readable multi-step queries with WITH",
-      category: "CTEs",
+      category: "Phase 3 — Advanced SQL",
       content:
-        "## Common Table Expressions (CTEs)\n\nCTEs make complex queries easier to read by giving names to intermediate results.\n\n### Benefits\n- Break logic into steps (e.g., `WITH valid_orders AS (SELECT * FROM orders WHERE status = 'completed') SELECT ...`)\n- Reuse computed sets\n- Safer than repeating subqueries",
+        "## CTEs (Common Table Expressions) 📐\n\nA CTE uses the `WITH` keyword to give a name to an intermediate result set. Think of it as **naming a subquery** so you can reference it cleanly.\n\n### Basic Syntax\n```sql\nWITH cte_name AS (\n  SELECT ... FROM ... WHERE ...\n)\nSELECT * FROM cte_name;\n```\n\n### Why CTEs Over Subqueries?\n- **Readability**: Each step has a name — `WITH monthly_sales AS (...)` is self-documenting.\n- **Reusability**: You can reference the same CTE multiple times in the final query (subqueries would have to be repeated).\n- **Debugging**: You can SELECT from just the CTE to inspect intermediate results.\n\n### Chaining Multiple CTEs\nYou can define several CTEs in one `WITH` clause, separated by commas. Each can reference the previous:\n```sql\nWITH\n  step1 AS (SELECT ... FROM orders WHERE status = 'completed'),\n  step2 AS (SELECT customer_id, COUNT(*) AS cnt FROM step1 GROUP BY customer_id),\n  step3 AS (SELECT * FROM step2 WHERE cnt > 2)\nSELECT c.name, s.cnt\nFROM customers c\nJOIN step3 s ON c.id = s.customer_id;\n```\n\n### CTEs vs Subqueries vs Temp Tables\n| Feature | CTE | Subquery | Temp Table |\n|---|---|---|---|\n| Readable | ✅ | ❌ (deep nesting) | ✅ |\n| Reusable in query | ✅ | ❌ | ✅ |\n| Persists beyond query | ❌ | ❌ | ✅ |\n| Materialized | No (re-runs) | No | Yes |\n\n### Recursive CTEs (Advanced)\nSQLite supports recursive CTEs for hierarchical data (like org charts or graph traversal):\n```sql\nWITH RECURSIVE countdown(n) AS (\n  SELECT 5  -- base case\n  UNION ALL\n  SELECT n - 1 FROM countdown WHERE n > 1  -- recursive step\n)\nSELECT n FROM countdown;  -- 5, 4, 3, 2, 1\n```",
       codeExample:
-        "-- Monthly revenue for completed orders\nWITH order_revenue AS (\n  SELECT o.id, substr(o.order_date, 1, 7) AS month, SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY o.id, month\n)\nSELECT month, SUM(revenue) AS revenue\nFROM order_revenue\nGROUP BY month\nORDER BY month;",
+        "-- Two-step CTE: monthly revenue, then identify peak month\nWITH order_revenue AS (\n  SELECT\n    SUBSTR(o.order_date, 1, 7) AS month,\n    SUM(p.price * oi.quantity) AS revenue\n  FROM orders o\n  JOIN order_items oi ON oi.order_id = o.id\n  JOIN products p ON p.id = oi.product_id\n  WHERE o.status = 'completed'\n  GROUP BY month\n),\npeak AS (\n  SELECT MAX(revenue) AS max_rev FROM order_revenue\n)\nSELECT month, revenue\nFROM order_revenue, peak\nWHERE revenue = max_rev;",
       translations: {
         tamil: {
           title: "8. CTEs (WITH)",
@@ -1754,11 +1754,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-windows",
       title: "9. Window Functions",
       description: "RANK, DENSE_RANK, OVER(), running totals",
-      category: "Window Functions",
+      category: "Phase 3 — Advanced SQL",
       content:
-        "## Window Functions\n\nWindow functions compute values across a set of rows **without collapsing** them like GROUP BY.\n\n### Examples\n- Ranking within a category (e.g., `RANK() OVER (PARTITION BY category ORDER BY price DESC)`)\n- Running totals (e.g., `SUM(price) OVER (ORDER BY date)`)\n- Moving averages (e.g., `AVG(price) OVER (ORDER BY date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)`)\n\nSyntax pattern:\n`func(...) OVER (PARTITION BY ... ORDER BY ...)`",
+        "## Window Functions 🪟\n\nWindow functions compute a value for each row **using a group of related rows** (the \"window\") — without collapsing those rows the way `GROUP BY` does. This is what makes them incredibly powerful for analytics.\n\n### Syntax Pattern\n```sql\nfunction_name() OVER (\n  PARTITION BY col    -- optional: define groups\n  ORDER BY col        -- optional: define order within the window\n  ROWS BETWEEN ...    -- optional: define the window frame\n)\n```\n\n### Ranking Functions\n| Function | Behavior | Gaps? |\n|---|---|---|\n| `ROW_NUMBER()` | Unique sequential number per row | N/A |\n| `RANK()` | Same rank for ties, then skips numbers | Yes (1,1,3) |\n| `DENSE_RANK()` | Same rank for ties, no gaps | No (1,1,2) |\n\nExample: `RANK() OVER (PARTITION BY category ORDER BY price DESC)` — ranks products within each category by price.\n\n### Offset Functions (Access Neighboring Rows)\n- `LAG(col, n)`: Value from `n` rows **before** the current row. Great for month-over-month comparisons.\n- `LEAD(col, n)`: Value from `n` rows **after** the current row.\n\n```sql\n-- Month-over-month revenue growth\nSELECT month, revenue,\n  LAG(revenue) OVER (ORDER BY month) AS prev_month_revenue\nFROM monthly_summary;\n```\n\n### Aggregate Window Functions (Running Totals, Moving Averages)\n```sql\n-- Running total of revenue\nSUM(revenue) OVER (ORDER BY order_date)\n\n-- 3-row moving average\nAVG(price) OVER (ORDER BY date ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)\n```\n\n### PARTITION BY vs GROUP BY\n- `GROUP BY`: collapses rows into one row per group.\n- `PARTITION BY` (in a window): splits rows into groups **but keeps all original rows**.",
       codeExample:
-        "-- Rank products by price within category\nSELECT category, name, price,\n       RANK() OVER (PARTITION BY category ORDER BY price DESC) AS price_rank\nFROM products\nORDER BY category, name;",
+        "-- Three ranking functions compared side-by-side\nSELECT\n  category, name, price,\n  ROW_NUMBER() OVER (PARTITION BY category ORDER BY price DESC) AS row_num,\n  RANK()       OVER (PARTITION BY category ORDER BY price DESC) AS rank,\n  DENSE_RANK() OVER (PARTITION BY category ORDER BY price DESC) AS dense_rank\nFROM products\nORDER BY category, price DESC;",
       translations: {
         tamil: {
           title: "9. Window Functions",
@@ -1818,11 +1818,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-ddl",
       title: "10. DDL (CREATE / ALTER / DROP)",
       description: "Define tables, constraints, and schema",
-      category: "DDL",
+      category: "Phase 4 — Database Engineering",
       content:
-        "## DDL (Data Definition Language)\n\nDDL changes the database structure.\n\n### Common commands\n- `CREATE TABLE`: Defines a new table (e.g., `CREATE TABLE users (id INTEGER PRIMARY KEY, name TEXT)`)\n- `ALTER TABLE`: Modifies an existing table (e.g., `ALTER TABLE users ADD COLUMN age INTEGER`)\n- `DROP TABLE`: Deletes a table completely (e.g., `DROP TABLE old_logs`)\n\nIn the practice editor, you can run multiple statements in one execution (separated by `;`).",
+        "## DDL (Data Definition Language) 🏗️\n\nDDL is the language for **building and modifying your database's structure**. Think of it as the architect's blueprints — it defines what tables exist and what rules govern them.\n\n### Core Commands\n- `CREATE TABLE`: Defines a new table with columns and their data types.\n- `ALTER TABLE`: Modifies an existing table (add/rename/drop columns).\n- `DROP TABLE`: Permanently deletes a table and all its data — **irreversible without a backup!**\n- `TRUNCATE TABLE`: Removes all rows but keeps the table structure (faster than DELETE without WHERE).\n\n### Column Constraints (The Rules)\n| Constraint | Description |\n|---|---|\n| `PRIMARY KEY` | Unique identifier, never NULL, one per table |\n| `NOT NULL` | Column must always have a value |\n| `UNIQUE` | All values in the column must be different |\n| `DEFAULT val` | Provides a default value if none is supplied |\n| `CHECK (expr)` | Validates data against a condition |\n| `FOREIGN KEY` | Links to a column in another table (referential integrity) |\n\n### Foreign Keys — Keeping Data Consistent\nA foreign key prevents \"orphan\" records. For example, `order.customer_id` must reference a real `customer.id`:\n```sql\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  customer_id INTEGER NOT NULL,\n  FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE\n);\n```\n`ON DELETE CASCADE`: If a customer is deleted, all their orders are automatically deleted too.\n\n### SQLite Note\nSQLite uses dynamic typing, so `INTEGER`, `TEXT`, `REAL`, and `BLOB` are the four main storage classes. Foreign key enforcement must be explicitly enabled: `PRAGMA foreign_keys = ON`.",
       codeExample:
-        "CREATE TABLE temp_notes(\n  id INTEGER,\n  note TEXT\n);\n\nSELECT name\nFROM sqlite_master\nWHERE type='table' AND name='temp_notes';",
+        "-- Create a well-constrained table and verify it\nCREATE TABLE projects (\n  id       INTEGER PRIMARY KEY,\n  name     TEXT    NOT NULL UNIQUE,\n  budget   REAL    DEFAULT 0.0,\n  status   TEXT    CHECK(status IN ('active', 'closed'))\n);\n\n-- Verify the table was created\nSELECT name FROM sqlite_master\nWHERE type = 'table' AND name = 'projects';",
       translations: {
         tamil: {
           title: "10. DDL (CREATE / ALTER / DROP)",
@@ -1878,11 +1878,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-dml",
       title: "11. DML (INSERT / UPDATE / DELETE)",
       description: "Modify rows safely with conditions",
-      category: "DML",
+      category: "Phase 4 — Database Engineering",
       content:
-        "## DML (Data Manipulation Language)\n\nDML changes row data.\n\n### Commands\n- `INSERT`: add rows (e.g., `INSERT INTO users (name) VALUES ('Alice')`)\n- `UPDATE`: change rows (e.g., `UPDATE users SET age = 30 WHERE name = 'Alice'`). Always use a `WHERE` unless you intend to update all!\n- `DELETE`: remove rows (e.g., `DELETE FROM users WHERE id = 1`)\n\nTip: For practice, you can run changes and immediately verify with a SELECT.",
+        "## DML (Data Manipulation Language) ✏️\n\nDML changes the **data within** tables — adding, modifying, and removing rows. Master DML safely and you'll never accidentally wipe a production table.\n\n### INSERT — Adding Rows\n```sql\n-- Single row\nINSERT INTO products (id, name, price) VALUES (101, 'USB Hub', 499);\n\n-- Multiple rows at once (much faster than one-by-one)\nINSERT INTO products (id, name, price) VALUES\n  (102, 'Webcam', 2499),\n  (103, 'Desk Mat', 799);\n\n-- Insert from a SELECT\nINSERT INTO archive_orders SELECT * FROM orders WHERE status = 'cancelled';\n```\n\n### UPDATE — Changing Rows\n⚠️ **Critical Rule: ALWAYS use WHERE on UPDATE or you change every row!**\n```sql\n-- Safe update: changes only matching rows\nUPDATE products SET price = price * 1.1 WHERE category = 'Electronics';\n\n-- DANGER: changes ALL rows in the table\n-- UPDATE products SET price = 0;  -- Never do this without WHERE!\n```\nUse `RETURNING` (PostgreSQL/SQLite 3.35+) to see what was changed:\n```sql\nUPDATE products SET price = 999 WHERE id = 1 RETURNING id, name, price;\n```\n\n### DELETE — Removing Rows\n⚠️ **Critical Rule: ALWAYS use WHERE on DELETE or you erase all rows!**\n```sql\n-- Safe delete: removes only cancelled orders\nDELETE FROM orders WHERE status = 'cancelled' AND order_date < '2025-01-01';\n```\n\n### The Safe Pattern for Production\nBefore running a destructive UPDATE/DELETE, run a SELECT first with the same WHERE clause to see exactly which rows will be affected.",
       codeExample:
-        "-- Insert a new customer and verify\nINSERT INTO customers(id, name, city, signup_date)\nVALUES (6, 'Farah', 'Delhi', '2026-04-01');\n\nSELECT name, city\nFROM customers\nWHERE id = 6;",
+        "-- Step 1: INSERT a new product\nINSERT INTO products (id, name, category, price)\nVALUES (100, 'Smart Pen', 'Stationery', 1299);\n\n-- Step 2: UPDATE its price with a 10% discount\nUPDATE products SET price = price * 0.9 WHERE id = 100;\n\n-- Step 3: Verify the result\nSELECT id, name, price FROM products WHERE id = 100;",
       translations: {
         tamil: {
           title: "11. DML (INSERT / UPDATE / DELETE)",
@@ -1938,11 +1938,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-transactions",
       title: "12. Transactions (TCL)",
       description: "BEGIN, COMMIT, ROLLBACK for safe changes",
-      category: "Transactions (TCL)",
+      category: "Phase 4 — Database Engineering",
       content:
-        "## Transactions\n\nTransactions let you group changes so they either all happen or none happen.\n\n### Commands\n- `BEGIN` / `BEGIN TRANSACTION`: Starts the block\n- `COMMIT`: save changes (e.g., `BEGIN; UPDATE accounts SET balance = balance - 100; COMMIT;`)\n- `ROLLBACK`: undo changes (e.g., `BEGIN; DELETE FROM users; ROLLBACK;`)\n\nThis is essential for correctness in real systems (payments, inventory, etc.).",
+        "## Transactions (TCL) 🔒\n\nA transaction is a group of SQL statements that are executed as a **single, atomic unit** — either ALL succeed or ALL fail. This is the foundation of data integrity in real-world systems.\n\n### The ACID Properties\n| Property | Meaning | Example |\n|---|---|---|\n| **A**tomicity | All-or-nothing | Transfer: debit AND credit, or neither |\n| **C**onsistency | Data stays valid | Bank balance can't go negative |\n| **I**solation | Transactions don't interfere | Two users buying last item |\n| **D**urability | Committed data survives crashes | Power outage after COMMIT |\n\n### TCL Commands\n- `BEGIN` / `BEGIN TRANSACTION`: Starts a transaction block. All changes after this are temporary.\n- `COMMIT`: Makes all changes permanent. The transaction is complete.\n- `ROLLBACK`: Discards all changes since the last `BEGIN`. Rolls the database back to its previous state.\n- `SAVEPOINT name`: Creates a named checkpoint inside a transaction.\n- `ROLLBACK TO name`: Rolls back to a savepoint without discarding the entire transaction.\n\n### Real-world Example: Bank Transfer\n```sql\nBEGIN;\n  UPDATE accounts SET balance = balance - 5000 WHERE id = 1;  -- Debit sender\n  UPDATE accounts SET balance = balance + 5000 WHERE id = 2;  -- Credit receiver\n  -- If either fails, the whole block rolls back automatically\nCOMMIT;\n```\n\n### SQLite Auto-commit\nIn SQLite, every statement outside a transaction is automatically wrapped in its own `BEGIN...COMMIT`. This means changes are permanent immediately. Use `BEGIN` explicitly when you want to group multiple changes.",
       codeExample:
-        "BEGIN;\nUPDATE products SET price = 15 WHERE name = 'Pen';\nCOMMIT;\nSELECT price FROM products WHERE name = 'Pen';",
+        "-- ROLLBACK demo: the change disappears\nBEGIN;\nUPDATE products SET price = 99999 WHERE name = 'Parker Pen';\n-- Oops, wrong price!\nROLLBACK;\n\n-- Verify price is unchanged\nSELECT name, price FROM products WHERE name = 'Parker Pen';",
       translations: {
         tamil: {
           title: "12. Transactions (TCL)",
@@ -2002,11 +2002,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-indexes",
       title: "13. Indexes & Performance Basics",
       description: "What indexes do and when to use them",
-      category: "Indexes",
+      category: "Phase 4 — Database Engineering",
       content:
-        "## Indexes\n\nIndexes speed up lookups by creating an additional data structure.\n\n### Key idea\nIndexes can improve read performance but may slow down writes. (e.g., `CREATE INDEX idx_users_name ON users(name)`)\n\nIn SQLite, you can inspect indexes via `sqlite_master`.",
+        "## Indexes & Performance 🚀\n\nAn index is a **separate lookup structure** that the database maintains alongside a table. Like a book's index, it lets the database find rows without reading every single page.\n\n### Without an Index (Full Table Scan)\nThe database reads every row to find matches — `O(n)`. Fine for small tables, catastrophically slow for millions of rows.\n\n### With an Index (B-Tree Lookup)\nThe database jumps directly to the matching rows — `O(log n)`. Dramatically faster for large tables.\n\n### Creating & Dropping Indexes\n```sql\n-- Create: speed up queries filtering by customer_id\nCREATE INDEX idx_orders_customer ON orders(customer_id);\n\n-- Composite index: speeds up queries filtering by BOTH columns\nCREATE INDEX idx_orders_status_date ON orders(status, order_date);\n\n-- Unique index: enforces uniqueness AND provides a fast lookup\nCREATE UNIQUE INDEX idx_customers_email ON customers(email);\n\n-- Drop an index\nDROP INDEX idx_orders_customer;\n```\n\n### When to Create an Index\n✅ **Do index** columns that appear frequently in:\n- `WHERE` conditions (e.g., `WHERE customer_id = 5`)\n- `JOIN` `ON` clauses (foreign keys)\n- `ORDER BY` columns on large tables\n\n❌ **Avoid indexing**:\n- Columns with very few distinct values (e.g., a boolean `is_active` — an index barely helps)\n- Tables with very few rows\n- Columns that are updated extremely frequently (every write must also update the index)\n\n### Trade-offs\n| Factor | Without Index | With Index |\n|---|---|---|\n| SELECT speed | Slow (full scan) | Fast (tree lookup) |\n| INSERT/UPDATE/DELETE | Fast | Slightly slower |\n| Storage | None | Extra disk space |\n\n### Inspecting Indexes in SQLite\n```sql\nSELECT name, tbl_name\nFROM sqlite_master\nWHERE type = 'index';\n```",
       codeExample:
-        "CREATE INDEX idx_orders_customer ON orders(customer_id);\n\nSELECT name\nFROM sqlite_master\nWHERE type='index' AND tbl_name='orders'\nORDER BY name;",
+        "-- Create two indexes and inspect them\nCREATE INDEX idx_orders_customer ON orders(customer_id);\nCREATE INDEX idx_orders_status   ON orders(status);\n\n-- List all indexes on the 'orders' table\nSELECT name AS index_name, tbl_name AS on_table\nFROM sqlite_master\nWHERE type = 'index' AND tbl_name = 'orders'\nORDER BY name;",
       translations: {
         tamil: {
           title: "13. Indexes & Performance Basics",
@@ -2062,11 +2062,11 @@ function sqlLessons(): CareerLesson[] {
       id: "sql-views",
       title: "14. Views",
       description: "Saved queries for reuse and simplicity",
-      category: "Views",
+      category: "Phase 4 — Database Engineering",
       content:
-        "## Views\n\nA view is a saved query that acts like a virtual table.\n\n### Why views?\n- Reuse common joins (e.g., `CREATE VIEW active_users AS SELECT * FROM users WHERE status = 'active'`)\n- Simplify reporting queries\n- Keep application queries cleaner",
+        "## Views 🔭\n\nA view is a **named, saved SELECT query** stored in the database. When you query a view, the database runs the underlying SELECT and returns the result. Think of it as a reusable window into your data.\n\n### Creating & Using Views\n```sql\n-- Create a view\nCREATE VIEW v_active_customers AS\nSELECT id, name, city\nFROM customers\nWHERE signup_date >= '2025-01-01';\n\n-- Query it like a regular table\nSELECT name FROM v_active_customers WHERE city = 'Delhi';\n\n-- Drop a view\nDROP VIEW v_active_customers;\n```\n\n### Why Use Views?\n- **Abstraction**: Hide complex JOIN logic behind a simple name. `SELECT * FROM v_order_details` is much cleaner than a 4-table JOIN every time.\n- **Security**: Grant users access to a view but NOT the underlying tables. Expose only the columns they should see.\n- **Consistency**: One place to update a query; all consumers get the fix automatically.\n- **Reusability**: Reference the same view across dozens of reports.\n\n### Views vs CTEs\n| Feature | View | CTE |\n|---|---|---|\n| Persists after query | ✅ Yes | ❌ No |\n| Reusable across sessions | ✅ Yes | ❌ No |\n| Supports parameters | ❌ No | ❌ No |\n| Good for one-off complex queries | ❌ | ✅ |\n\n### Updatable Views\nIn some databases (PostgreSQL, MySQL), you can `INSERT`, `UPDATE`, or `DELETE` through a simple view. SQLite supports this for single-table views without aggregations.\n\n### Inspecting Views in SQLite\n```sql\nSELECT name, sql FROM sqlite_master WHERE type = 'view';\n```",
       codeExample:
-        "CREATE VIEW v_completed_orders AS\nSELECT o.id AS order_id, c.name, o.order_date\nFROM orders o\nJOIN customers c ON c.id = o.customer_id\nWHERE o.status = 'completed';\n\nSELECT order_id, name\nFROM v_completed_orders\nORDER BY order_id\nLIMIT 2;",
+        "-- Create a view encapsulating a 3-table JOIN\nCREATE VIEW v_order_summary AS\nSELECT\n  o.id        AS order_id,\n  c.name      AS customer,\n  o.status,\n  SUM(p.price * oi.quantity) AS total\nFROM orders o\nJOIN customers c   ON c.id = o.customer_id\nJOIN order_items oi ON oi.order_id = o.id\nJOIN products p    ON p.id = oi.product_id\nGROUP BY o.id, c.name, o.status;\n\n-- Use it like a table\nSELECT customer, total\nFROM v_order_summary\nWHERE status = 'completed'\nORDER BY total DESC\nLIMIT 3;",
       translations: {
         tamil: {
           title: "14. Views",
